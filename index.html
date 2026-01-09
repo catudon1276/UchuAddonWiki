@@ -1,169 +1,193 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progate Clone - Dino Game</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progate Clone - Dino Game</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 外部CSSファイルを読み込む -->
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-left">
-        <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
-      </div>
-      <div class="header-right">
-        <a href="#">レッスン</a>
-        <a href="#">新規登録</a>
-        <a href="#" class="login">ログイン</a>
-      </div>
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
+            </div>
+            <div class="menu-icon"><i class="fa fa-bars"></i></div>
+            <div class="header-right">
+                <a href="#">レッスン</a>
+                <a href="#">新規登録</a>
+                <a href="#">ログイン</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="top-wrapper">
+        <div class="container">
+            <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
+            <p>Progateはオンラインプログラミング学習サービスです。</p>
+            <div class="btn-wrapper">
+                <a href="#game-section" class="btn signup">さっそくプレイする</a>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <div class="top-wrapper">
-    <div class="container">
-      <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-      <p>Progateはオンラインプログラミング学習サービスです。</p>
-      <div class="btn-wrapper">
-        <a href="#game-section" class="btn signup">さっそく開発（プレイ）する</a>
-      </div>
+    <div id="game-section" class="game-wrapper">
+        <div class="container">
+            <div class="heading">
+                <h2>Dino Run Game</h2>
+                <h3>Space / タップ / 右クリックでジャンプ</h3>
+            </div>
+            <div class="canvas-container">
+                <canvas id="gameCanvas" width="800" height="200"></canvas>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="game-section" class="game-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Dino Run Game</h2>
-        <h3>Spaceキー または 画面タップでジャンプ！</h3>
-      </div>
-      <div class="canvas-container">
-        <canvas id="gameCanvas" width="800" height="200"></canvas>
-      </div>
+    <div class="message-wrapper">
+        <div class="container">
+            <div class="heading">
+                <h2>さあ、あなたもプログラミングの世界へ</h2>
+            </div>
+            <span class="message">今すぐ登録する！</span>
+        </div>
     </div>
-  </div>
 
-  <footer>
-    <div class="container">
-      <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
-      <p>Learn to Code, Learn to be Creative.</p>
-    </div>
-  </footer>
+    <footer>
+        <div class="container">
+            <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
+            <p>Learn to Code, Learn to be Creative.</p>
+        </div>
+    </footer>
 
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-    const dinoImg = new Image();
-    dinoImg.src = "Resource/Hjk.png"; 
+        const dinoImg = new Image();
+        dinoImg.src = "Resource/Hjk.png";
 
-    let score = 0;
-    let gameSpeed = 5;
-    let isGameOver = false;
-    let animationId;
+        let score = 0;
+        let gameSpeed = 5;
+        let isGameOver = false;
+        let animationId;
 
-    const dino = {
-      x: 50, y: 160, width: 40, height: 40,
-      dy: 0, jumpForce: 13, gravity: 0.7, grounded: false,
-      draw() {
-        if (dinoImg.complete && dinoImg.naturalWidth !== 0) {
-          ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
-        } else {
-          ctx.fillStyle = "#535353";
-          ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-      }
-    };
+        const dino = {
+            x: 50, y: 160, width: 50, height: 50,
+            dy: 0, jumpForce: 12, gravity: 0.6, grounded: false,
+            draw() {
+                if (dinoImg.complete && dinoImg.naturalHeight !== 0) {
+                    ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
+                } else {
+                    ctx.fillStyle = "#535353";
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                }
+            }
+        };
 
-    let obstacles = [];
-    function spawnObstacle() {
-      let height = 30 + Math.random() * 40;
-      obstacles.push({ x: canvas.width, y: canvas.height - height, width: 20, height: height });
-    }
-
-    function handleAction(e) {
-      if (e.type === "keydown" && e.code !== "Space") return;
-      
-      // ゲームオーバー時でもスペースでリスタートできるようにする
-      if (isGameOver) {
-        resetGame();
-        return;
-      }
-
-      if (dino.grounded) {
-        dino.dy = -dino.jumpForce;
-        dino.grounded = false;
-      }
-      
-      // スペースキーでのページスクロールを防止
-      if (e.code === "Space") e.preventDefault();
-    }
-
-    window.addEventListener("keydown", handleAction);
-    canvas.addEventListener("touchstart", handleAction, { passive: false });
-
-    function resetGame() {
-      score = 0; gameSpeed = 5; obstacles = [];
-      isGameOver = false; dino.y = 160; dino.dy = 0;
-      if (animationId) cancelAnimationFrame(animationId);
-      update();
-    }
-
-    function update() {
-      if (isGameOver) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 地面
-      ctx.strokeStyle = "#eee";
-      ctx.beginPath(); ctx.moveTo(0, 200); ctx.lineTo(800, 200); ctx.stroke();
-
-      dino.dy += dino.gravity;
-      dino.y += dino.dy;
-      if (dino.y + dino.height > canvas.height) {
-        dino.y = canvas.height - dino.height;
-        dino.dy = 0; dino.grounded = true;
-      }
-      dino.draw();
-
-      if (Math.random() < 0.012) {
-        if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 300) {
-          spawnObstacle();
-        }
-      }
-
-      for (let i = obstacles.length - 1; i >= 0; i--) {
-        let o = obstacles[i];
-        o.x -= gameSpeed;
-        ctx.fillStyle = "#2ecc71"; 
-        ctx.fillRect(o.x, o.y, o.width, o.height);
-
-        if (dino.x < o.x + o.width && dino.x + dino.width > o.x &&
-            dino.y < o.y + o.height && dino.y + dino.height > o.y) {
-          isGameOver = true;
-          ctx.fillStyle = "rgba(0,0,0,0.7)";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "white";
-          ctx.textAlign = "center";
-          ctx.font = "bold 30px Arial";
-          ctx.fillText("GAME OVER", canvas.width/2, 90);
-          ctx.font = "16px Arial";
-          ctx.fillText("Tap or Space to Restart", canvas.width/2, 130);
+        let obstacles = [];
+        function spawnObstacle() {
+            let h = 30 + Math.random() * 40;
+            obstacles.push({ x: canvas.width, y: canvas.height - h, w: 20, h: h });
         }
 
-        if (o.x + o.width < 0) {
-          obstacles.splice(i, 1);
-          score++;
-          if (score % 5 === 0) gameSpeed += 0.2;
+        function performAction(e) {
+            if (isGameOver) {
+                resetGame();
+                return;
+            }
+            if (dino.grounded) {
+                dino.dy = -dino.jumpForce;
+                dino.grounded = false;
+            }
         }
-      }
 
-      ctx.fillStyle = "#535353";
-      ctx.font = "bold 20px Arial";
-      ctx.textAlign = "left";
-      ctx.fillText(`SCORE: ${score}`, 680, 40);
-      animationId = requestAnimationFrame(update);
-    }
-    update();
-  </script>
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                if (window.scrollY > 400) e.preventDefault();
+                performAction();
+            }
+        });
+
+        canvas.addEventListener("mousedown", (e) => {
+            if (e.button === 0) performAction();
+        });
+
+        canvas.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            performAction();
+        });
+
+        canvas.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            performAction();
+        }, { passive: false });
+
+        function resetGame() {
+            score = 0; gameSpeed = 5; obstacles = [];
+            isGameOver = false; dino.y = 160; dino.dy = 0;
+            update();
+        }
+
+        function update() {
+            if (isGameOver) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = "#eee";
+            ctx.beginPath(); ctx.moveTo(0, 200); ctx.lineTo(800, 200); ctx.stroke();
+
+            dino.dy += dino.gravity;
+            dino.y += dino.dy;
+            if (dino.y + dino.height > canvas.height) {
+                dino.y = canvas.height - dino.height;
+                dino.dy = 0; dino.grounded = true;
+            }
+            dino.draw();
+
+            if (Math.random() < 0.015 && (obstacles.length === 0 || obstacles[obstacles.length-1].x < 500)) {
+                spawnObstacle();
+            }
+
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let o = obstacles[i];
+                o.x -= gameSpeed;
+                ctx.fillStyle = "#2ecc71";
+                ctx.fillRect(o.x, o.y, o.w, o.h);
+
+                if (dino.x < o.x + o.w && dino.x + dino.width > o.x && 
+                    dino.y < o.y + o.h && dino.y + dino.height > o.y) {
+                    isGameOver = true;
+                    showGameOver();
+                }
+
+                if (o.x + o.w < 0) {
+                    obstacles.splice(i, 1);
+                    score++;
+                    if (score % 5 === 0) gameSpeed += 0.2;
+                }
+            }
+
+            ctx.fillStyle = "#535353";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "left";
+            ctx.fillText("SCORE: " + score, 680, 40);
+            animationId = requestAnimationFrame(update);
+        }
+
+        function showGameOver() {
+            ctx.fillStyle = "rgba(0,0,0,0.7)";
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.font = "30px Arial";
+            ctx.fillText("GAME OVER", canvas.width/2, 90);
+            ctx.font = "16px Arial";
+            ctx.fillText("Space / Click / Tap to Restart", canvas.width/2, 130);
+            ctx.textAlign = "left";
+        }
+
+        update();
+    </script>
 </body>
 </html>
