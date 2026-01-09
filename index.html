@@ -1,193 +1,268 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progate Clone - Dino Game</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- 外部CSSファイルを読み込む -->
-    <link rel="stylesheet" href="stylesheet.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progate</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" xintegrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-left">
-                <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
-            </div>
-            <div class="menu-icon"><i class="fa fa-bars"></i></div>
-            <div class="header-right">
-                <a href="#">レッスン</a>
-                <a href="#">新規登録</a>
-                <a href="#">ログイン</a>
-            </div>
-        </div>
-    </header>
-
-    <div class="top-wrapper">
-        <div class="container">
-            <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-            <p>Progateはオンラインプログラミング学習サービスです。</p>
-            <div class="btn-wrapper">
-                <a href="#game-section" class="btn signup">さっそくプレイする</a>
-            </div>
-        </div>
+  <header>
+    <div class="container">
+      <div class="header-left">
+        <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
+      </div>
+      <span class="fa fa-bars menu-icon"></span>
+      <div class="header-right">
+        <a href="#">レッスン</a>
+        <a href="#">新規登録</a>
+        <a href="#" class="login">ログイン</a>
+      </div>
     </div>
+  </header>
 
-    <div id="game-section" class="game-wrapper">
-        <div class="container">
-            <div class="heading">
-                <h2>Dino Run Game</h2>
-                <h3>Space / タップ / 右クリックでジャンプ</h3>
-            </div>
-            <div class="canvas-container">
-                <canvas id="gameCanvas" width="800" height="200"></canvas>
-            </div>
-        </div>
+  <div class="top-wrapper">
+    <div class="container">
+      <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
+      <p>Progateはオンラインプログラミング学習サービスです。<br>初心者にもやさしいスライドとレッスンで、ウェブサービスを作りながらプログラミングを学んでいきましょう。</p>
+      <div class="btn-wrapper">
+        <a href="#" class="btn signup">新規登録はこちら</a>
+        <p>or</p>
+        <a href="#" class="btn facebook"><span class="fa fa-facebook"></span>Facebookで登録</a>
+        <a href="#" class="btn twitter"><span class="fa fa-twitter"></span>Twitterで登録</a>
+      </div>
     </div>
+  </div>
 
-    <div class="message-wrapper">
-        <div class="container">
-            <div class="heading">
-                <h2>さあ、あなたもプログラミングの世界へ</h2>
-            </div>
-            <span class="message">今すぐ登録する！</span>
+  <div class="lesson-wrapper">
+    <div class="container">
+      <div class="heading">
+        <h2>Learn Where to Get Started!</h2>
+      </div>
+      <div class="lessons">
+        <div class="lesson">
+          <div class="lesson-icon">
+            <img src="https://prog-8.com/images/html/advanced/html.png">
+            <p>HTML & CSS</p>
+          </div>
+          <p class="text-contents">ウェブページの作成に使用される言語です。HTMLとCSSを組み合わせることで、静的なページを作り上げることができます。</p>
         </div>
+        <div class="lesson">
+          <div class="lesson-icon">
+            <img src="https://prog-8.com/images/html/advanced/jQuery.png">
+            <p>jQuery</p>
+          </div>
+          <p class="text-contents">素敵な動きを手軽に実装できるJavaScriptライブラリです。 アニメーション効果をつけたり、Ajax（エイジャックス）を使って外部ファイルを読み込んだりと色々なことができます。</p>
+        </div>
+        <div class="lesson">
+          <div class="lesson-icon">
+            <img src="https://prog-8.com/images/html/advanced/ruby.png">
+            <p>Ruby</p>
+          </div>
+          <p class="text-contents">オープンソースの動的なプログラミング言語で、 シンプルさと高い生産性を備えています。大きなWebアプリケーションから小さな日用ツールまで、さまざまなソフトウェアを作ることができます。</p>
+        </div>
+        <div class="lesson">
+          <div class="lesson-icon">
+            <img src="https://prog-8.com/images/html/advanced/php.png">
+            <p>PHP</p>
+          </div>
+          <p class="text-contents">HTMLだけではページの内容を変えることはできません。PHPはHTMLにプログラムを埋め込み、それを可能にします。</p>
+        </div>
+      </div>
+      <div class="clear"></div>
     </div>
+  </div>
 
-    <footer>
-        <div class="container">
-            <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
-            <p>Learn to Code, Learn to be Creative.</p>
-        </div>
-    </footer>
+  <!-- HjkGames Section -->
+  <div id="game-section" class="game-wrapper">
+    <div class="container">
+      <div class="heading">
+        <h2>Dino Run Game (HjkGames)</h2>
+        <h3>Space / タップ / 右クリックでジャンプ</h3>
+      </div>
+      <div class="canvas-container">
+        <canvas id="gameCanvas" width="800" height="200"></canvas>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
+  <div class="message-wrapper">
+    <div class="container">
+      <div class="heading">
+        <h2>さぁ、あなたもProgateでプログラミングを学んでみませんか?</h2>
+        <h3>Let's learn to code, learn to be creative!</h3>
+      </div>
+      <span class="btn message">さっそく開発する</span>
+    </div>
+  </div>
 
-        const dinoImg = new Image();
-        dinoImg.src = "Resource/Hjk.png";
+  <footer>
+    <div class="container">
+      <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
+      <p>Learn to Code, Learn to be Creative.</p>
+    </div>
+  </footer>
 
-        let score = 0;
-        let gameSpeed = 5;
-        let isGameOver = false;
-        let animationId;
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-        const dino = {
-            x: 50, y: 160, width: 50, height: 50,
-            dy: 0, jumpForce: 12, gravity: 0.6, grounded: false,
-            draw() {
-                if (dinoImg.complete && dinoImg.naturalHeight !== 0) {
-                    ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
-                } else {
-                    ctx.fillStyle = "#535353";
-                    ctx.fillRect(this.x, this.y, this.width, this.height);
-                }
-            }
-        };
+    // キャラクター画像設定
+    const dinoImg = new Image();
+    dinoImg.src = "Resource/Hjk.png";
 
-        let obstacles = [];
-        function spawnObstacle() {
-            let h = 30 + Math.random() * 40;
-            obstacles.push({ x: canvas.width, y: canvas.height - h, w: 20, h: h });
+    let score = 0;
+    let gameSpeed = 5;
+    let isGameOver = false;
+    let animationId;
+
+    const dino = {
+      x: 50,
+      y: 160,
+      width: 50,
+      height: 50,
+      dy: 0,
+      jumpForce: 12,
+      gravity: 0.6,
+      grounded: false,
+      draw() {
+        if (dinoImg.complete && dinoImg.naturalHeight !== 0) {
+          ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
+        } else {
+          // 画像読み込み失敗時のフォールバック
+          ctx.fillStyle = "#535353";
+          ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+      }
+    };
+
+    let obstacles = [];
+    function spawnObstacle() {
+      let h = 30 + Math.random() * 40;
+      obstacles.push({ x: canvas.width, y: canvas.height - h, w: 20, h: h });
+    }
+
+    function performAction() {
+      if (isGameOver) {
+        resetGame();
+        return;
+      }
+      if (dino.grounded) {
+        dino.dy = -dino.jumpForce;
+        dino.grounded = false;
+      }
+    }
+
+    // キーボード操作
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        if (window.scrollY > 400) e.preventDefault();
+        performAction();
+      }
+    });
+
+    // 左クリック操作
+    canvas.addEventListener("mousedown", (e) => {
+      if (e.button === 0) performAction();
+    });
+
+    // 右クリック操作
+    canvas.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      performAction();
+    });
+
+    // タッチ操作
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      performAction();
+    }, { passive: false });
+
+    function resetGame() {
+      score = 0;
+      gameSpeed = 5;
+      obstacles = [];
+      isGameOver = false;
+      dino.y = 160;
+      dino.dy = 0;
+      update();
+    }
+
+    function update() {
+      if (isGameOver) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 地面の線
+      ctx.strokeStyle = "#eee";
+      ctx.beginPath();
+      ctx.moveTo(0, 200);
+      ctx.lineTo(800, 200);
+      ctx.stroke();
+
+      // 重力と移動
+      dino.dy += dino.gravity;
+      dino.y += dino.dy;
+
+      // 接地判定
+      if (dino.y + dino.height > canvas.height) {
+        dino.y = canvas.height - dino.height;
+        dino.dy = 0;
+        dino.grounded = true;
+      }
+      dino.draw();
+
+      // 障害物生成
+      if (Math.random() < 0.015 && (obstacles.length === 0 || obstacles[obstacles.length - 1].x < 500)) {
+        spawnObstacle();
+      }
+
+      // 障害物の移動と衝突判定
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        let o = obstacles[i];
+        o.x -= gameSpeed;
+        
+        // 障害物の描画（Progateカラーの緑）
+        ctx.fillStyle = "#2ecc71";
+        ctx.fillRect(o.x, o.y, o.w, o.h);
+
+        // 衝突判定
+        if (dino.x < o.x + o.w && dino.x + dino.width > o.x && 
+            dino.y < o.y + o.h && dino.y + dino.height > o.y) {
+          isGameOver = true;
+          showGameOver();
         }
 
-        function performAction(e) {
-            if (isGameOver) {
-                resetGame();
-                return;
-            }
-            if (dino.grounded) {
-                dino.dy = -dino.jumpForce;
-                dino.grounded = false;
-            }
+        // 画面外に出た障害物の削除とスコア加算
+        if (o.x + o.w < 0) {
+          obstacles.splice(i, 1);
+          score++;
+          if (score % 5 === 0) gameSpeed += 0.2;
         }
+      }
 
-        window.addEventListener("keydown", (e) => {
-            if (e.code === "Space") {
-                if (window.scrollY > 400) e.preventDefault();
-                performAction();
-            }
-        });
+      // スコア表示
+      ctx.fillStyle = "#535353";
+      ctx.font = "bold 20px Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("SCORE: " + score, 680, 40);
 
-        canvas.addEventListener("mousedown", (e) => {
-            if (e.button === 0) performAction();
-        });
+      animationId = requestAnimationFrame(update);
+    }
 
-        canvas.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-            performAction();
-        });
+    function showGameOver() {
+      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.font = "bold 30px Arial";
+      ctx.fillText("GAME OVER", canvas.width / 2, 90);
+      ctx.font = "16px Arial";
+      ctx.fillText("Click or Tap to Restart", canvas.width / 2, 130);
+      ctx.textAlign = "left";
+    }
 
-        canvas.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            performAction();
-        }, { passive: false });
-
-        function resetGame() {
-            score = 0; gameSpeed = 5; obstacles = [];
-            isGameOver = false; dino.y = 160; dino.dy = 0;
-            update();
-        }
-
-        function update() {
-            if (isGameOver) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.strokeStyle = "#eee";
-            ctx.beginPath(); ctx.moveTo(0, 200); ctx.lineTo(800, 200); ctx.stroke();
-
-            dino.dy += dino.gravity;
-            dino.y += dino.dy;
-            if (dino.y + dino.height > canvas.height) {
-                dino.y = canvas.height - dino.height;
-                dino.dy = 0; dino.grounded = true;
-            }
-            dino.draw();
-
-            if (Math.random() < 0.015 && (obstacles.length === 0 || obstacles[obstacles.length-1].x < 500)) {
-                spawnObstacle();
-            }
-
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                let o = obstacles[i];
-                o.x -= gameSpeed;
-                ctx.fillStyle = "#2ecc71";
-                ctx.fillRect(o.x, o.y, o.w, o.h);
-
-                if (dino.x < o.x + o.w && dino.x + dino.width > o.x && 
-                    dino.y < o.y + o.h && dino.y + dino.height > o.y) {
-                    isGameOver = true;
-                    showGameOver();
-                }
-
-                if (o.x + o.w < 0) {
-                    obstacles.splice(i, 1);
-                    score++;
-                    if (score % 5 === 0) gameSpeed += 0.2;
-                }
-            }
-
-            ctx.fillStyle = "#535353";
-            ctx.font = "20px Arial";
-            ctx.textAlign = "left";
-            ctx.fillText("SCORE: " + score, 680, 40);
-            animationId = requestAnimationFrame(update);
-        }
-
-        function showGameOver() {
-            ctx.fillStyle = "rgba(0,0,0,0.7)";
-            ctx.fillRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.font = "30px Arial";
-            ctx.fillText("GAME OVER", canvas.width/2, 90);
-            ctx.font = "16px Arial";
-            ctx.fillText("Space / Click / Tap to Restart", canvas.width/2, 130);
-            ctx.textAlign = "left";
-        }
-
-        update();
-    </script>
+    update();
+  </script>
 </body>
 </html>
