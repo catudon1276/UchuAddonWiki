@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Progate Clone - Dino Game</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" xintegrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
@@ -54,7 +54,7 @@
   <div id="game-section" class="game-wrapper">
     <div class="container">
       <div class="heading">
-        <h2>Uchu Dino Run</h2>
+        <h2>Hjk Run</h2>
         <h3>Space / 左クリック / タップでジャンプ！</h3>
       </div>
       <div class="canvas-container">
@@ -74,7 +74,6 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // 画像設定
     const dinoImg = new Image();
     dinoImg.src = "Resource/Hjk.png";
 
@@ -119,7 +118,6 @@
       }
     }
 
-    // キーボード
     window.addEventListener("keydown", (e) => {
       if (e.code === "Space") {
         if (window.scrollY > 400) e.preventDefault();
@@ -127,14 +125,12 @@
       }
     });
 
-    // 左クリック対応
     canvas.addEventListener("mousedown", (e) => {
       if (e.button === 0) {
         jump();
       }
     });
 
-    // タッチ
     canvas.addEventListener("touchstart", (e) => {
       e.preventDefault();
       jump();
@@ -154,7 +150,6 @@
       if (isGameOver) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 地面
       ctx.strokeStyle = "#ddd";
       ctx.beginPath();
       ctx.moveTo(0, 200);
@@ -191,11 +186,10 @@
         if (o.x + o.w < 0) {
           obstacles.splice(i, 1);
           score++;
-          gameSpeed += 0.15; // 内部的なスピードアップ処理は継続
+          gameSpeed += 0.15;
         }
       }
 
-      // スコア表示（スピード表示を削除）
       ctx.fillStyle = "#333";
       ctx.font = "bold 22px Arial";
       ctx.textAlign = "left";
