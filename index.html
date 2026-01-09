@@ -13,7 +13,6 @@
       <div class="header-left">
         <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
       </div>
-      <span class="fa fa-bars menu-icon"></span>
       <div class="header-right">
         <a href="#">レッスン</a>
         <a href="#">新規登録</a>
@@ -25,31 +24,10 @@
   <div class="top-wrapper">
     <div class="container">
       <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-      <p>Progateはオンラインプログラミング学習サービスです。<br>初心者にもやさしいスライドとレッスンで、ウェブサービスを作りながらプログラミングを学んでいきましょう。</p>
+      <p>Progateはオンラインプログラミング学習サービスです。</p>
       <div class="btn-wrapper">
         <a href="#game-section" class="btn signup">さっそく開発（プレイ）する</a>
-        <p>or</p>
-        <a href="#" class="btn facebook"><span class="fa fa-facebook"></span>Facebookで登録</a>
-        <a href="#" class="btn twitter"><span class="fa fa-twitter"></span>Twitterで登録</a>
       </div>
-    </div>
-  </div>
-
-  <div class="lesson-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Learn Where to Get Started!</h2>
-      </div>
-      <div class="lessons">
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/html.png">
-            <p>HTML & CSS</p>
-          </div>
-          <p class="text-contents">ウェブページの作成に使用される言語です。</p>
-        </div>
-      </div>
-      <div class="clear"></div>
     </div>
   </div>
 
@@ -60,18 +38,8 @@
         <h3>Spaceキー または 画面タップでジャンプ！</h3>
       </div>
       <div class="canvas-container">
-        <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" width="800" height="200"></canvas>
       </div>
-    </div>
-  </div>
-
-  <div class="message-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>さぁ、あなたもProgateでプログラミングを学んでみませんか?</h2>
-        <h3>Let's learn to code, learn to be creative!</h3>
-      </div>
-      <a href="#game-section" class="btn message">もう一度プレイする</a>
     </div>
   </div>
 
@@ -86,10 +54,6 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.width = 800;
-    canvas.height = 200;
-
-    // --- 画像の読み込み ---
     const dinoImg = new Image();
     dinoImg.src = "Resource/Hjk.png"; 
 
@@ -102,11 +66,9 @@
       x: 50, y: 160, width: 40, height: 40,
       dy: 0, jumpForce: 13, gravity: 0.7, grounded: false,
       draw() {
-        if (dinoImg.complete) {
-          // 画像が読み込まれていれば画像を描画
+        if (dinoImg.complete && dinoImg.naturalWidth !== 0) {
           ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
         } else {
-          // 読み込み前は四角を描画
           ctx.fillStyle = "#535353";
           ctx.fillRect(this.x, this.y, this.width, this.height);
         }
@@ -119,33 +81,31 @@
       obstacles.push({ x: canvas.width, y: canvas.height - height, width: 20, height: height });
     }
 
-    // --- ジャンプ・リスタートの共通処理 ---
     function handleAction(e) {
-      // PC: スペースキー以外は無視
       if (e.type === "keydown" && e.code !== "Space") return;
       
-      // ゲームエリア付近にいない場合は無視（誤作動防止）
-      if (window.scrollY < 300) return;
-
-      // スマホのダブルタップズームやスクロールを防止
-      if (e.cancelable) e.preventDefault();
-
+      // ゲームオーバー時でもスペースでリスタートできるようにする
       if (isGameOver) {
         resetGame();
-      } else if (dino.grounded) {
+        return;
+      }
+
+      if (dino.grounded) {
         dino.dy = -dino.jumpForce;
         dino.grounded = false;
       }
+      
+      // スペースキーでのページスクロールを防止
+      if (e.code === "Space") e.preventDefault();
     }
 
-    // PC用イベント
     window.addEventListener("keydown", handleAction);
-    // スマホ用イベント（Canvas部分を触ったとき）
     canvas.addEventListener("touchstart", handleAction, { passive: false });
 
     function resetGame() {
       score = 0; gameSpeed = 5; obstacles = [];
-      isGameOver = false; dino.y = 160;
+      isGameOver = false; dino.y = 160; dino.dy = 0;
+      if (animationId) cancelAnimationFrame(animationId);
       update();
     }
 
@@ -188,7 +148,6 @@
           ctx.fillText("GAME OVER", canvas.width/2, 90);
           ctx.font = "16px Arial";
           ctx.fillText("Tap or Space to Restart", canvas.width/2, 130);
-          ctx.textAlign = "left";
         }
 
         if (o.x + o.width < 0) {
@@ -200,6 +159,7 @@
 
       ctx.fillStyle = "#535353";
       ctx.font = "bold 20px Arial";
+      ctx.textAlign = "left";
       ctx.fillText(`SCORE: ${score}`, 680, 40);
       animationId = requestAnimationFrame(update);
     }
