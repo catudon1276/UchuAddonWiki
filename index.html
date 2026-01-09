@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UchuAddon Wiki</title>
+  <meta name="description" content="UchuAddon Wiki - Addon ドキュメントやサンプルをまとめたサイト">
+  <link rel="icon" href="Resource/top.png">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
@@ -11,61 +13,64 @@
   <header>
     <div class="container">
       <div class="header-left">
-        <img class="logo" src="Resource/top.png" alt="UchuAddon Logo">
+        <img class="logo" src="Resource/top.png" alt="UchuAddon ロゴ">
       </div>
-      <span class="fa fa-bars menu-icon"></span>
-      <div class="header-right">
+      <button class="menu-icon" aria-label="メニュー"><span class="fa fa-bars"></span></button>
+      <nav class="header-right" aria-label="グローバルナビ">
         <a href="#">レッスン</a>
         <a href="#">新規登録</a>
         <a href="#" class="login">ログイン</a>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <div class="top-wrapper">
-    <div class="container">
-      <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-      <p>Progateはオンラインプログラミング学習サービスです。</p>
-      <div class="btn-wrapper">
-        <a href="#game-section" class="btn signup">新規登録はこちら</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="lesson-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Learn Where to Get Started!</h2>
-      </div>
-      <div class="lessons">
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/html.png" alt="HTML & CSS">
-            <p>HTML & CSS</p>
-          </div>
-          <p class="text-contents">ウェブページの作成に使用される言語です。</p>
+  <main>
+    <div class="top-wrapper">
+      <div class="container">
+        <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
+        <p>Progateはオンラインプログラミング学習サービスです。</p>
+        <div class="btn-wrapper">
+          <a href="#game-section" class="btn signup">新規登録はこちら</a>
         </div>
       </div>
-      <div class="clear"></div>
     </div>
-  </div>
 
-  <!-- ゲームセクション -->
-  <div id="game-section" class="game-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Hjk Run</h2>
-        <h3>Space / 左クリック / タップでジャンプ！</h3>
-      </div>
-      <div class="canvas-container">
-        <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <div class="lesson-wrapper">
+      <div class="container">
+        <div class="heading">
+          <h2>Learn Where to Get Started!</h2>
+        </div>
+        <div class="lessons">
+          <div class="lesson">
+            <div class="lesson-icon">
+              <img src="https://prog-8.com/images/html/advanced/html.png" alt="HTML & CSS">
+              <p>HTML & CSS</p>
+            </div>
+            <p class="text-contents">ウェブページの作成に使用される言語です。</p>
+          </div>
+        </div>
+        <div class="clear"></div>
       </div>
     </div>
-  </div>
+
+    <!-- ゲームセクション -->
+    <div id="game-section" class="game-wrapper">
+      <div class="container">
+        <div class="heading">
+          <h2>Hjk Run</h2>
+          <h3>Space / 左クリック / タップでジャンプ！</h3>
+        </div>
+        <div class="canvas-container">
+          <!-- canvas の実際の描画サイズはスクリプトで設定します -->
+          <canvas id="gameCanvas" width="800" height="200" role="img" aria-label="ランニングゲーム"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <footer>
     <div class="container">
-      <img src="Resource/top.png" alt="footer-logo">
+      <img src="Resource/top.png" alt="UchuAddon ロゴ（フッター）">
       <p>Learn to Code, Learn to be Creative.</p>
     </div>
   </footer>
@@ -74,9 +79,26 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
+    // 高 DPI に対応して canvas をリサイズする関数
+    function resizeCanvasToDisplaySize() {
+      const ratio = window.devicePixelRatio || 1;
+      const logicalWidth = 800;
+      const logicalHeight = 200;
+      canvas.style.width = '100%';
+      // canvas.style.height = 'auto'; // CSSで自動
+      canvas.width = logicalWidth * ratio;
+      canvas.height = logicalHeight * ratio;
+      // 描画を DPI に合わせてスケーリング
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    // 初期とリサイズ時に呼ぶ
+    resizeCanvasToDisplaySize();
+    window.addEventListener('resize', resizeCanvasToDisplaySize);
+
     const dinoImg = new Image();
-    // もし Resource/Hjk.png が存在しない場合に代替で top.png を使うようにしました
     dinoImg.src = "Resource/Hjk.png";
+    // Hjk.png がなければ top.png を代替に設定（画像がないときの保険）
     dinoImg.onerror = () => { dinoImg.src = "Resource/top.png"; };
 
     let score = 0;
@@ -97,7 +119,7 @@
         if (dinoImg.complete && dinoImg.naturalHeight !== 0) {
           ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
         } else {
-          ctx.fillStyle = "#5dca88"; 
+          ctx.fillStyle = "#5dca88";
           ctx.fillRect(this.x, this.y, this.width, this.height);
         }
       }
@@ -106,7 +128,7 @@
     let obstacles = [];
     function spawnObstacle() {
       let h = 30 + Math.random() * 40;
-      obstacles.push({ x: canvas.width, y: canvas.height - h, w: 20, h: h });
+      obstacles.push({ x: canvas.width / (window.devicePixelRatio || 1), y: canvas.height / (window.devicePixelRatio || 1) - h, w: 20, h: h });
     }
 
     function jump() {
@@ -120,17 +142,16 @@
       }
     }
 
+    // Space キーでジャンプ（フォーム入力時は無効にする）
     window.addEventListener("keydown", (e) => {
-      if (e.code === "Space") {
-        if (window.scrollY > 400) e.preventDefault();
+      if (e.code === "Space" && !(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable))) {
+        e.preventDefault();
         jump();
       }
     });
 
     canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 0) {
-        jump();
-      }
+      if (e.button === 0) jump();
     });
 
     canvas.addEventListener("touchstart", (e) => {
@@ -150,36 +171,39 @@
 
     function update() {
       if (isGameOver) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // logical canvas size (CSSでの表示サイズ) を使ってクリア/描画
+      const displayWidth = canvas.width / (window.devicePixelRatio || 1);
+      const displayHeight = canvas.height / (window.devicePixelRatio || 1);
+      ctx.clearRect(0, 0, displayWidth, displayHeight);
 
       ctx.strokeStyle = "#ddd";
       ctx.beginPath();
-      ctx.moveTo(0, 200);
-      ctx.lineTo(800, 200);
+      ctx.moveTo(0, displayHeight);
+      ctx.lineTo(displayWidth, displayHeight);
       ctx.stroke();
 
       dino.dy += dino.gravity;
       dino.y += dino.dy;
 
-      if (dino.y + dino.height > canvas.height) {
-        dino.y = canvas.height - dino.height;
+      if (dino.y + dino.height > displayHeight) {
+        dino.y = displayHeight - dino.height;
         dino.dy = 0;
         dino.grounded = true;
       }
       dino.draw();
 
-      if (Math.random() < 0.02 && (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 250)) {
+      if (Math.random() < 0.02 && (obstacles.length === 0 || obstacles[obstacles.length - 1].x < displayWidth - 250)) {
         spawnObstacle();
       }
 
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let o = obstacles[i];
         o.x -= gameSpeed;
-        
-        ctx.fillStyle = "#ff4d4d"; 
+
+        ctx.fillStyle = "#ff4d4d";
         ctx.fillRect(o.x, o.y, o.w, o.h);
 
-        if (dino.x < o.x + o.w && dino.x + dino.width > o.x && 
+        if (dino.x < o.x + o.w && dino.x + dino.width > o.x &&
             dino.y < o.y + o.h && dino.y + dino.height > o.y) {
           isGameOver = true;
           showGameOver();
@@ -195,24 +219,28 @@
       ctx.fillStyle = "#333";
       ctx.font = "bold 22px Arial";
       ctx.textAlign = "left";
-      ctx.fillText("SCORE: " + score, 650, 40);
+      ctx.fillText("SCORE: " + score, displayWidth - 150, 40);
 
       animationId = requestAnimationFrame(update);
     }
 
     function showGameOver() {
+      const displayWidth = canvas.width / (window.devicePixelRatio || 1);
+      const displayHeight = canvas.height / (window.devicePixelRatio || 1);
+
       ctx.fillStyle = "rgba(0,0,0,0.8)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, displayWidth, displayHeight);
       ctx.fillStyle = "#fff";
       ctx.textAlign = "center";
       ctx.font = "bold 40px Arial";
-      ctx.fillText("GAME OVER", canvas.width / 2, 90);
+      ctx.fillText("GAME OVER", displayWidth / 2, 90);
       ctx.font = "20px Arial";
-      ctx.fillText("Final Score: " + score, canvas.width / 2, 130);
+      ctx.fillText("Final Score: " + score, displayWidth / 2, 130);
       ctx.font = "16px Arial";
-      ctx.fillText("Click or Space to Retry", canvas.width / 2, 165);
+      ctx.fillText("Click or Space to Retry", displayWidth / 2, 165);
     }
 
+    // 初回呼び出し
     update();
   </script>
 </body>

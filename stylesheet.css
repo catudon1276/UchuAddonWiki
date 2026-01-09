@@ -6,23 +6,27 @@ body {
   margin: 0;
   font-family: "Hiragino Kaku Gothic ProN", sans-serif;
   background-color: #fff;
+  /* fixed header の高さ分の余白を確保 */
+  padding-top: 65px;
 }
 
 a {
   text-decoration: none;
 }
 
+/* 中央寄せの最大幅を指定 */
 .container {
   width: 100%;
+  max-width: 1100px;
   padding: 0 15px;
   margin: 0 auto;
 }
 
 .top-wrapper {
-  padding: 180px 0 100px 0;
+  padding: 140px 0 80px 0;
   /* 画像パスを Resource/top.png に修正 */
   background-color: #050a14;
-  background-image: linear-gradient(135deg, rgba(10, 20, 40, 0.4) 0%, rgba(5, 10, 20, 0.6) 100%), 
+  background-image: linear-gradient(135deg, rgba(10, 20, 40, 0.4) 0%, rgba(5, 10, 20, 0.6) 100%),
                     url("Resource/top.png");
   background-size: cover;
   background-position: center;
@@ -68,13 +72,17 @@ header {
   background-color: rgba(34, 49, 52, 0.95);
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 10;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
+/* ロゴ表示を安定させる */
 .logo {
-  width: 124px;
-  margin-top: 20px;
+  height: 40px;
+  margin: 12px 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .header-left {
@@ -84,6 +92,18 @@ header {
 .header-right {
   float: right;
   margin-right: -25px;
+}
+
+/* メニューアイコンをボタンにしたため見た目を調整 */
+.menu-icon {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  float: right;
+  padding: 0 12px;
 }
 
 .header-right a {
@@ -165,6 +185,7 @@ header {
   overflow: hidden;
 }
 
+/* canvas は CSS で幅100% にして、JS 側で内部ピクセルを調整する */
 #gameCanvas {
   display: block;
   width: 100%;
