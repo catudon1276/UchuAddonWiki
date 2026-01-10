@@ -1,237 +1,97 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UchuAddon Wiki</title>
-  <meta name="description" content="UchuAddon Wiki - Addon ドキュメントやサンプルをまとめたサイト">
-  <link rel="icon" href="Resource/top.png">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-left">
-        <img class="logo" src="Resource/top.png" alt="UchuAddon Logo">
-      </div>
-      <button class="menu-icon" aria-label="メニュー"><span class="fa fa-bars"></span></button>
-      <nav class="header-right" aria-label="グローバルナビ">
-        <a href="#">レッスン</a>
-        <a href="#">新規登録</a>
-        <a href="minigames/super-hjk-run.html">ミニゲーム</a>
-        <a href="#" class="login">ログイン</a>
-      </nav>
-    </div>
-  </header>
+    <header>
+        <nav>
+            <div class="logo">My Wiki</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#roles">Roles</a></li>
+                <li><a href="minigames/super-hjk-run.html">Games</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main>
-    <div class="top-wrapper">
-      <div class="container">
-        <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-        <p>Progateはオンラインプログラミング学習サービスです。</p>
-        <div class="btn-wrapper">
-          <a href="minigames/super-hjk-run.html" class="btn signup">ミニゲームをプレイ</a>
-          <a href="#game-section" class="btn signup">新規登録はこちら</a>
+    <main>
+        <div class="content">
+            <h1>ようこそ</h1>
+            <p>このWikiへようこそ。ここでは様々な情報を共有しています。</p>
+            
+            <h2>概要</h2>
+            <p>上部のナビゲーションメニューから各セクションにアクセスできます。</p>
+            
+            <h2>使い方</h2>
+            <p>
+                - <strong>Home:</strong> トップページ（現在のページ）<br>
+                - <strong>Roles:</strong> 役割や役職に関する情報<br>
+                - <strong>Games:</strong> ゲームに関する情報
+            </p>
         </div>
-      </div>
-    </div>
+    </main>
 
-    <div class="lesson-wrapper">
-      <div class="container">
-        <div class="heading">
-          <h2>Learn Where to Get Started!</h2>
-        </div>
-        <div class="lessons">
-          <div class="lesson">
-            <div class="lesson-icon">
-              <img src="https://prog-8.com/images/html/advanced/html.png" alt="HTML & CSS">
-              <p>HTML & CSS</p>
-            </div>
-            <p class="text-contents">ウェブページの作成に使用される言語です。</p>
-          </div>
-        </div>
-        <div class="clear"></div>
-      </div>
-    </div>
+    <footer>
+        <p>&copy; 2026 My Wiki. All rights reserved.</p>
+    </footer>
 
-    <!-- ゲームセクション -->
-    <div id="game-section" class="game-wrapper">
-      <div class="container">
-        <div class="heading">
-          <h2>Hjk Run</h2>
-          <h3>Space / 左クリック / タップでジャンプ！</h3>
-        </div>
-        <div class="canvas-container">
-          <!-- canvas の実際の描画サイズはスクリプトで設定します -->
-          <canvas id="gameCanvas" width="800" height="200" role="img" aria-label="ランニングゲーム"></canvas>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <img src="Resource/top.png" alt="UchuAddon ロゴ（フッター）">
-      <p>Learn to Code, Learn to be Creative.</p>
-    </div>
-  </footer>
-
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    // 高 DPI に対応して canvas をリサイズする関数
-    function resizeCanvasToDisplaySize() {
-      const ratio = window.devicePixelRatio || 1;
-      const logicalWidth = 800;
-      const logicalHeight = 200;
-      canvas.style.width = '100%';
-      canvas.width = logicalWidth * ratio;
-      canvas.height = logicalHeight * ratio;
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    }
-
-    resizeCanvasToDisplaySize();
-    window.addEventListener('resize', resizeCanvasToDisplaySize);
-
-    const dinoImg = new Image();
-    dinoImg.src = "Resource/Hjk.png";
-    dinoImg.onerror = () => { dinoImg.src = "Resource/top.png"; };
-
-    let score = 0;
-    let gameSpeed = 5;
-    let isGameOver = false;
-    let animationId;
-
-    const dino = {
-      x: 50,
-      y: 160,
-      width: 50,
-      height: 50,
-      dy: 0,
-      jumpForce: 13,
-      gravity: 0.6,
-      grounded: false,
-      draw() {
-        if (dinoImg.complete && dinoImg.naturalHeight !== 0) {
-          ctx.drawImage(dinoImg, this.x, this.y, this.width, this.height);
-        } else {
-          ctx.fillStyle = "#5dca88"; 
-          ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-      }
-    };
-
-    let obstacles = [];
-    function spawnObstacle() {
-      let h = 30 + Math.random() * 40;
-      obstacles.push({ x: canvas.width, y: canvas.height - h, w: 20, h: h });
-    }
-
-    function jump() {
-      if (isGameOver) {
-        resetGame();
-        return;
-      }
-      if (dino.grounded) {
-        dino.dy = -dino.jumpForce;
-        dino.grounded = false;
-      }
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (e.code === "Space" && !(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable))) {
-        e.preventDefault();
-        jump();
-      }
-    });
-
-    canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 0) jump();
-    });
-
-    canvas.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      jump();
-    }, { passive: false });
-
-    function resetGame() {
-      score = 0;
-      gameSpeed = 5;
-      obstacles = [];
-      isGameOver = false;
-      dino.y = 160;
-      dino.dy = 0;
-      update();
-    }
-
-    function update() {
-      if (isGameOver) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = "#ddd";
-      ctx.beginPath();
-      ctx.moveTo(0, 200);
-      ctx.lineTo(800, 200);
-      ctx.stroke();
-
-      dino.dy += dino.gravity;
-      dino.y += dino.dy;
-
-      if (dino.y + dino.height > canvas.height) {
-        dino.y = canvas.height - dino.height;
-        dino.dy = 0;
-        dino.grounded = true;
-      }
-      dino.draw();
-
-      if (Math.random() < 0.02 && (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 250)) {
-        spawnObstacle();
-      }
-
-      for (let i = obstacles.length - 1; i >= 0; i--) {
-        let o = obstacles[i];
-        o.x -= gameSpeed;
+    <script>
+        // ナビゲーションのアクティブ状態を管理
+        const links = document.querySelectorAll('.nav-links a');
         
-        ctx.fillStyle = "#ff4d4d"; 
-        ctx.fillRect(o.x, o.y, o.w, o.h);
-
-        if (dino.x < o.x + o.w && dino.x + dino.width > o.x && 
-            dino.y < o.y + o.h && dino.y + dino.height > o.y) {
-          isGameOver = true;
-          showGameOver();
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Gamesリンク（外部HTMLファイル）の場合は通常のリンクとして機能
+                if (this.getAttribute('href').includes('.html')) {
+                    return; // 通常のページ遷移を許可
+                }
+                
+                e.preventDefault();
+                
+                // すべてのリンクからactiveクラスを削除
+                links.forEach(l => l.classList.remove('active'));
+                
+                // クリックされたリンクにactiveクラスを追加
+                this.classList.add('active');
+                
+                // コンテンツを更新
+                updateContent(this.getAttribute('href'));
+            });
+        });
+        
+        function updateContent(section) {
+            const content = document.querySelector('.content');
+            
+            if (section === '#home') {
+                content.innerHTML = `
+                    <h1>ようこそ</h1>
+                    <p>このWikiへようこそ。ここでは様々な情報を共有しています。</p>
+                    <h2>概要</h2>
+                    <p>上部のナビゲーションメニューから各セクションにアクセスできます。</p>
+                    <h2>使い方</h2>
+                    <p>
+                        - <strong>Home:</strong> トップページ（現在のページ）<br>
+                        - <strong>Roles:</strong> 役割や役職に関する情報<br>
+                        - <strong>Games:</strong> ゲームに関する情報
+                    </p>
+                `;
+            } else if (section === '#roles') {
+                content.innerHTML = `
+                    <h1>Roles（役割）</h1>
+                    <p>ここでは各役割について説明します。</p>
+                    <h2>管理者</h2>
+                    <p>Wikiの管理と更新を行います。</p>
+                    <h2>編集者</h2>
+                    <p>コンテンツの作成と編集を行います。</p>
+                    <h2>閲覧者</h2>
+                    <p>Wikiの内容を閲覧できます。</p>
+                `;
+            }
         }
-
-        if (o.x + o.w < 0) {
-          obstacles.splice(i, 1);
-          score++;
-          gameSpeed += 0.15;
-        }
-      }
-
-      ctx.fillStyle = "#333";
-      ctx.font = "bold 22px Arial";
-      ctx.textAlign = "left";
-      ctx.fillText("SCORE: " + score, 650, 40);
-
-      animationId = requestAnimationFrame(update);
-    }
-
-    function showGameOver() {
-      ctx.fillStyle = "rgba(0,0,0,0.8)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.font = "bold 40px Arial";
-      ctx.fillText("GAME OVER", canvas.width / 2, 90);
-      ctx.font = "20px Arial";
-      ctx.fillText("Final Score: " + score, canvas.width / 2, 130);
-      ctx.font = "16px Arial";
-      ctx.fillText("Click or Space to Retry", canvas.width / 2, 165);
-    }
-
-    update();
-  </script>
+    </script>
 </body>
 </html>
