@@ -24,20 +24,27 @@
             height: 100vh;
             margin: 0;
             padding-top: 10px;
-            transition: background-color 0.8s;
+            transition: background-color 0.5s;
             font-family: var(--font-main);
         }
+        body.night-mode { 
+            background-color: #000; 
+        }
+
         canvas {
             background-color: #fff;
             border: 3px solid #111;
             width: 100%;
             max-width: 800px;
             height: auto;
-            transition: filter 0.8s;
+            transition: filter 0.5s, border-color 0.5s;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        .night-mode { background-color: #111; }
-        .night-canvas { filter: none; }
+        .night-canvas { 
+            background-color: #111;
+            border-color: #444;
+            filter: none; 
+        }
         
         .title-text {
             font-family: var(--font-title);
@@ -47,7 +54,7 @@
 
         .controls-container {
             width: 95%;
-            max-width: 600px;
+            max-width: 800px;
             margin-top: 10px;
         }
         .buttons-row {
@@ -56,7 +63,7 @@
             width: 100%;
         }
         .btn {
-            height: 75px;
+            height: 90px;
             border-radius: 16px;
             display: flex;
             flex-direction: column;
@@ -74,12 +81,14 @@
             transform: translateY(5px);
             box-shadow: 0 0 0 #111;
         }
-        .btn-jump { flex: 6; background: #fff; font-size: 1.5rem; }
+        
+        .btn-jump { flex: 8; background: #fff; font-size: 1.8rem; }
         .btn-ult { 
-            flex: 4; background: #ddd; opacity: 0.3; pointer-events: none; font-size: 1.1rem;
+            flex: 2; background: #ddd; opacity: 0.3; pointer-events: none;
             position: relative;
             overflow: hidden;
         }
+        
         .btn-ult.can-use { 
             opacity: 1; pointer-events: auto; background: #ff3e3e; color: white; border-color: #111;
         }
@@ -104,7 +113,13 @@
             border-radius: 50px;
             border: 3px solid #111;
             box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            transition: background-color 0.5s, border-color 0.5s;
         }
+        .night-mode .status-bar {
+            background: #222;
+            border-color: #444;
+        }
+
         .gauge-container {
             width: 140px;
             height: 18px;
@@ -114,6 +129,8 @@
             border: 2px solid #111;
             position: relative;
         }
+        .night-mode .gauge-container { background: #333; border-color: #555; }
+
         .gauge-divider {
             position: absolute;
             left: 50%;
@@ -161,11 +178,32 @@
         }
 
         #stockCount {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             background: rgba(0,0,0,0.2);
-            padding: 0 6px;
-            border-radius: 10px;
+            padding: 1px 4px;
+            border-radius: 6px;
             margin-top: 2px;
+        }
+        
+        .hint-text {
+            font-size: 0.55rem;
+            font-weight: 900;
+            margin-top: 1px;
+            opacity: 0.7;
+        }
+
+        /* Result Statistics grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -173,8 +211,8 @@
 
     <div id="uiTop" class="flex flex-col items-center w-full max-w-[800px] mb-2 px-4">
         <div class="flex justify-between items-center w-full mb-2">
-            <h1 class="text-4xl title-text text-black italic" id="titleText">SUPER HJK RUN</h1>
-            <div id="scoreDisplay" class="text-3xl score-font text-black">0</div>
+            <h1 class="text-4xl title-text text-black italic transition-colors duration-500" id="titleText">SUPER HJK RUN</h1>
+            <div id="scoreDisplay" class="text-3xl score-font text-black transition-colors duration-500">0</div>
         </div>
         
         <div class="status-bar">
@@ -197,10 +235,14 @@
 
     <div class="controls-container">
         <div class="buttons-row">
-            <div id="jumpButton" class="btn btn-jump">JUMP</div>
+            <div id="jumpButton" class="btn btn-jump">
+                <span>JUMP</span>
+                <span class="hint-text">SPACE / UP</span>
+            </div>
             <div id="ultButton" class="btn btn-ult">
-                <span>ULT</span>
-                <span id="stockCount">STOCK: 0</span>
+                <span class="text-xl">ULT</span>
+                <span id="stockCount">STK:0</span>
+                <span class="hint-text">[X]</span>
             </div>
         </div>
     </div>
@@ -208,15 +250,32 @@
     <div id="gameOverModal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center z-50 p-6">
         <div class="bg-white p-8 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-sm">
             <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Result</h2>
+            
             <div class="mb-4">
                 <div class="text-[10px] font-black text-gray-400 uppercase mb-1">Final Score</div>
                 <p id="finalScore" class="text-6xl score-font font-black text-black leading-none"></p>
             </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="text-[9px] font-black text-gray-400 uppercase mb-1">Walls Cleared</div>
+                    <div id="wallsCleared" class="text-2xl font-black italic">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-[9px] font-black text-gray-400 uppercase mb-1">ULT Used</div>
+                    <div id="ultUsed" class="text-2xl font-black italic">0</div>
+                </div>
+            </div>
+
             <div class="mb-8 p-5 bg-gray-50 rounded-2xl border-2 border-gray-100 relative">
                 <div class="text-[10px] font-black text-gray-400 uppercase mb-2">Rank Evaluation</div>
                 <div id="rankLabel" class="text-8xl font-black italic">C</div>
             </div>
-            <button id="retryBtn" class="w-full bg-black text-white py-5 rounded-2xl font-black text-2xl active:scale-95 transition-transform uppercase italic tracking-wider">RETRY</button>
+
+            <button id="retryBtn" class="w-full bg-black text-white py-5 rounded-2xl font-black text-2xl active:scale-95 transition-transform uppercase italic tracking-wider">
+                RETRY
+                <span class="block text-[10px] mt-1 opacity-60">OR PRESS [X] KEY</span>
+            </button>
         </div>
     </div>
 
@@ -225,6 +284,8 @@
         const ctx = canvas.getContext("2d");
         const modal = document.getElementById("gameOverModal");
         const finalScoreText = document.getElementById("finalScore");
+        const wallsClearedText = document.getElementById("wallsCleared");
+        const ultUsedText = document.getElementById("ultUsed");
         const rankLabel = document.getElementById("rankLabel");
         const titleText = document.getElementById("titleText");
         const scoreDisplay = document.getElementById("scoreDisplay");
@@ -235,7 +296,6 @@
         const stockDisplay = document.getElementById("stockCount");
         const retryBtn = document.getElementById("retryBtn");
 
-        // --- 画像設定 ---
         const PLAYER_IMAGE_URL = "../resource/Hjk.png";
         const playerImg = new Image();
         playerImg.src = PLAYER_IMAGE_URL;
@@ -256,6 +316,10 @@
         const ULT_THRESHOLD = 50; 
         const MAX_ULT_GAUGE = 100; 
 
+        // 統計用変数
+        let wallCount = 0;
+        let ultUsageCount = 0;
+
         let isGameOver = false;
         let score = 0;
         let gameSpeed = INITIAL_SPEED;
@@ -269,6 +333,7 @@
 
         let lives = 1;
         let invincibilityTimer = 0;
+        let transitionSafetyTimer = 0; 
         
         let currentSection = 0; 
         let nextHeartScore = -1;
@@ -321,27 +386,33 @@
         }
 
         function triggerUltimate() {
-            if (ultGauge >= ULT_THRESHOLD && !isUltActive && !isGameOver) {
+            if (isGameOver) return;
+            if (ultGauge >= ULT_THRESHOLD && !isUltActive) {
                 ultGauge -= ULT_THRESHOLD; 
                 isUltActive = true; 
                 ultTimer = 250; 
+                ultUsageCount++; // ULT使用回数をインクリメント
             }
         }
 
         window.addEventListener("keydown", (e) => {
             if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); handleJump(); }
-            if (e.code === "KeyX") { triggerUltimate(); }
+            if (e.code === "KeyX") { 
+                e.preventDefault();
+                if (isGameOver) { resetGame(); } else { triggerUltimate(); }
+            }
         });
 
         canvas.addEventListener("pointerdown", (e) => { e.preventDefault(); handleJump(); });
         jumpBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); handleJump(); });
         ultBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); triggerUltimate(); });
         retryBtn.addEventListener("click", resetGame);
-
+        
         function spawnHeart() {
+            let spawnY = isNight ? CEILING_Y + 100 : GROUND_Y - 130;
             items.push({
-                x: canvas.width,
-                y: isNight ? CEILING_Y + 85 : GROUND_Y - 120,
+                x: canvas.width + 100, 
+                y: spawnY,
                 width: 32, height: 32,
                 type: "heart",
                 speed: gameSpeed
@@ -367,15 +438,15 @@
             }
 
             if (invincibilityTimer > 0) invincibilityTimer--;
+            if (transitionSafetyTimer > 0) transitionSafetyTimer--;
 
             if (!isUltActive) {
                 ultGauge = Math.min(MAX_ULT_GAUGE, ultGauge + 0.05); 
-                
                 ultGaugeFill.style.width = ultGauge + "%";
                 ultGaugeFill.classList.remove("ult-active");
                 
                 const stocks = Math.floor(ultGauge / ULT_THRESHOLD);
-                stockDisplay.innerText = `STOCK: ${stocks}`;
+                stockDisplay.innerText = `STK:${stocks}`;
                 
                 if (stocks >= 2) {
                     ultGaugeFill.className = "gauge-fill stock-2";
@@ -398,7 +469,11 @@
             if (frameCount % 600 === 0 && gameSpeed < MAX_GAME_SPEED) gameSpeed += 0.2;
 
             let newIsNight = (score >= TRANSITION_START) && (Math.floor((score - TRANSITION_START) / CYCLE_SCORE) % 2 === 0);
-            if (newIsNight !== isNight) { isNight = newIsNight; toggleNightMode(); }
+            if (newIsNight !== isNight) { 
+                isNight = newIsNight; 
+                toggleNightMode();
+                transitionSafetyTimer = 60;
+            }
 
             const physics = getPhysics();
             const currentGravity = (isNight ? -physics.gravity : physics.gravity);
@@ -418,7 +493,7 @@
             }
 
             if (nextObstacleTimer <= 0) {
-                let h, type = "normal", color = "#111";
+                let h, type = "normal", color = isNight ? "#fff" : "#111";
                 const rObs = Math.random();
                 const canSpawnSpecial = score >= 500;
 
@@ -427,7 +502,7 @@
                 } else if (rObs < 0.65) { 
                     type = "motion-out"; color = !isNight ? "#a37c5e" : "#5e7ca3"; h = 95 + Math.random() * 45;
                 } else { 
-                    type = "static"; color = "#111"; h = 35 + Math.random() * 70;
+                    type = "static"; h = 35 + Math.random() * 70;
                 }
 
                 const speed = type === "rushing" ? (INITIAL_SPEED * 1.6) : gameSpeed;
@@ -448,6 +523,16 @@
             items = items.filter(item => item.x + item.width > 0);
 
             obstacles.forEach(o => o.x -= o.speed);
+            
+            // 越えた壁をカウント
+            obstacles.forEach(o => {
+                if (!o.passed && o.x + o.width < dino.x) {
+                    o.passed = true;
+                    wallCount++; // 越えた壁をカウント
+                    if (!isUltActive) ultGauge = Math.min(MAX_ULT_GAUGE, ultGauge + 2.5);
+                }
+            });
+
             obstacles = obstacles.filter(o => o.x + o.width + 100 > 0);
 
             for (let i = items.length - 1; i >= 0; i--) {
@@ -462,16 +547,11 @@
             }
 
             for (let obs of obstacles) {
-                if (!obs.passed && obs.x + obs.width < dino.x) {
-                    obs.passed = true;
-                    if (!isUltActive) ultGauge = Math.min(MAX_ULT_GAUGE, ultGauge + 2.5);
-                }
-
                 if (dino.x < obs.x + obs.width && dino.x + dino.width > obs.x &&
                     dino.y < obs.y + obs.height && dino.y + dino.height > obs.y) {
                     
                     if (isUltActive) { obs.x = -500; score += 50; continue; }
-                    if (invincibilityTimer > 0) continue;
+                    if (invincibilityTimer > 0 || transitionSafetyTimer > 0) continue;
 
                     let hit = (obs.type === "motion-out") ? dino.isAirborne : true;
 
@@ -496,10 +576,13 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            if (invincibilityTimer % 10 < 5) {
-                let spriteIndex = 0; 
+            let shouldDraw = true;
+            if (invincibilityTimer > 0 && invincibilityTimer % 10 < 5) {
+                shouldDraw = false;
+            }
 
-                // ULT中か通常時かで参照するスプライトのコマを変える
+            if (shouldDraw) {
+                let spriteIndex = 0; 
                 if (isUltActive) {
                     spriteIndex = 2 + (Math.floor(frameCount / 5) % 4); 
                 } else if (isNight) {
@@ -511,23 +594,17 @@
                 if (playerImg.complete) {
                     ctx.save();
                     if (isNight) {
-                        // 夜モードは画像を上下反転させる
                         ctx.translate(dino.x + dino.width / 2, dino.y + dino.height / 2);
                         ctx.scale(1, -1);
                         ctx.translate(-(dino.x + dino.width / 2), -(dino.y + dino.height / 2));
                     }
-
-                    // 以前ここにあった「必殺技時の赤いエフェクト描画」を完全に削除しました。
-                    // プレイヤーのスプライト画像のみを描画します。
                     ctx.drawImage(
                         playerImg, 
                         spriteIndex * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE,
                         dino.x - 2, dino.y - 2, dino.width + 4, dino.height + 4
                     );
-                    
                     ctx.restore();
                 } else {
-                    // 画像が読み込めない場合のフォールバック（ここからも赤色指定を削除）
                     ctx.fillStyle = isNight ? "#fff" : "#111";
                     ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
                 }
@@ -543,7 +620,9 @@
 
             obstacles.forEach(obs => {
                 ctx.globalAlpha = obs.type === "motion-out" ? 0.7 : 1.0;
-                ctx.fillStyle = obs.color;
+                if (isNight && obs.color === "#111") ctx.fillStyle = "#fff";
+                else ctx.fillStyle = obs.color;
+
                 ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
                 if (obs.type === "rushing") {
                     ctx.fillStyle = "rgba(255, 62, 62, 0.4)";
@@ -565,7 +644,11 @@
             isGameOver = true;
             const fs = Math.floor(score);
             const rank = getRank(fs);
+            
             finalScoreText.innerText = fs;
+            wallsClearedText.innerText = wallCount;
+            ultUsedText.innerText = ultUsageCount;
+            
             rankLabel.innerText = rank.label;
             rankLabel.style.color = rank.color;
             if (rank.neon) rankLabel.classList.add('neon-text');
@@ -576,10 +659,16 @@
         function resetGame() {
             isGameOver = false; score = 0; gameSpeed = INITIAL_SPEED;
             frameCount = 0; nextObstacleTimer = 0; obstacles = []; items = [];
-            isNight = false; ultGauge = 0; isUltActive = false;
-            lives = 1; invincibilityTimer = 0; 
+            isNight = false;
+            ultGauge = 0; isUltActive = false;
+            lives = 1; invincibilityTimer = 0; transitionSafetyTimer = 0;
             currentSection = 0; nextHeartScore = -1;
-            dino.vy = 0; dino.jumpCount = 0; dino.y = (isNight ? CEILING_Y : GROUND_Y - dino.height);
+            
+            // 統計リセット
+            wallCount = 0;
+            ultUsageCount = 0;
+
+            dino.vy = 0; dino.jumpCount = 0; dino.y = GROUND_Y - dino.height;
             updateLifeDisplay(); scoreDisplay.innerText = "0";
             toggleNightMode(); modal.classList.add("hidden");
         }
