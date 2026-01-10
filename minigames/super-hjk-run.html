@@ -37,7 +37,7 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
         .night-mode { background-color: #111; }
-        .night-canvas { filter: invert(1) hue-rotate(180deg); }
+        .night-canvas { filter: none; } /* キャラ画像の色を活かすため反転を無効化 */
         
         .title-text {
             font-family: var(--font-title);
@@ -87,7 +87,7 @@
             animation: pulse-border 1s infinite;
             background: #ff0000;
         }
-        
+
         @keyframes pulse-border {
             0% { box-shadow: 0 5px 0 #111, 0 0 0 0 rgba(255, 62, 62, 0.7); }
             70% { box-shadow: 0 5px 0 #111, 0 0 0 10px rgba(255, 62, 62, 0); }
@@ -235,6 +235,12 @@
         const stockDisplay = document.getElementById("stockCount");
         const retryBtn = document.getElementById("retryBtn");
 
+        // --- 画像設定 ---
+        // 画像の相対パスを resource/Hjk.png に更新
+        const PLAYER_IMAGE_URL = "resource/Hjk.png"; 
+        const playerImg = new Image();
+        playerImg.src = PLAYER_IMAGE_URL;
+        
         canvas.width = 800;
         canvas.height = 400;
 
@@ -269,7 +275,7 @@
         let nextHeartScore = -1;
 
         let dino = {
-            x: 80, y: 0, width: 35, height: 35,
+            x: 80, y: 0, width: 44, height: 44, 
             vy: 0, jumpCount: 0, maxJumps: 2,
             isAirborne: false 
         };
@@ -425,7 +431,6 @@
                     type = "static"; color = "#111"; h = 35 + Math.random() * 70;
                 }
 
-                // 赤(Rushing)は常に初期の一定速度
                 const speed = type === "rushing" ? (INITIAL_SPEED * 1.6) : gameSpeed;
 
                 obstacles.push({
@@ -492,11 +497,44 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
+            // --- プレイヤー描画 (スプライトシート対応) ---
             if (invincibilityTimer % 10 < 5) {
-                ctx.fillStyle = isUltActive ? "#ff3e3e" : "#111";
-                ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
-                ctx.fillStyle = "rgba(0,0,0,0.1)";
-                ctx.fillRect(dino.x + 4, dino.y + 4, dino.width, dino.height);
+                let spriteIndex = 0; // 1: 通常
+
+                if (isUltActive) {
+                    // 3〜6枚目をアニメーション (インデックス2〜5)
+                    spriteIndex = 2 + (Math.floor(frameCount / 5) % 4); 
+                } else if (isNight) {
+                    // 2: 夜モード (インデックス1)
+                    spriteIndex = 1;
+                }
+
+                const SPRITE_SIZE = 64;
+                
+                if (playerImg.complete) {
+                    ctx.save();
+                    if (isNight) {
+                        ctx.translate(dino.x + dino.width / 2, dino.y + dino.height / 2);
+                        ctx.scale(1, -1);
+                        ctx.translate(-(dino.x + dino.width / 2), -(dino.y + dino.height / 2));
+                    }
+                    
+                    ctx.drawImage(
+                        playerImg, 
+                        spriteIndex * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE,
+                        dino.x - 5, dino.y - 5, dino.width + 10, dino.height + 10
+                    );
+                    ctx.restore();
+                } else {
+                    ctx.fillStyle = isUltActive ? "#ff3e3e" : (isNight ? "#fff" : "#111");
+                    ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+                }
+
+                if (isUltActive) {
+                    ctx.strokeStyle = "rgba(255, 62, 62, 0.5)";
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(dino.x - 8, dino.y - 8, dino.width + 16, dino.height + 16);
+                }
             }
 
             items.forEach(item => {
