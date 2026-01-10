@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUPER HJK RUN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Kanit:ital,wght@1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --font-title: 'Kanit', sans-serif;
+        }
+        body {
+            touch-action: none;
+            background-color: #f4f4f4;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 10px;
+            transition: background-color 0.8s;
+            font-family: var(--font-main);
+        }
+        canvas {
+            background-color: #fff;
+            border: 3px solid #111;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            transition: filter 0.8s;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .night-mode { background-color: #111; }
+        .night-canvas { filter: invert(1) hue-rotate(180deg); }
+        
+        .title-text {
+            font-family: var(--font-title);
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .controls-container {
+            width: 95%;
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        .buttons-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        .btn {
+            height: 75px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            border: 3px solid #111;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #111;
+            box-shadow: 0 5px 0 #111;
+        }
+        .btn:active { 
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #111;
+        }
+        .btn-jump { flex: 6; background: #fff; font-size: 1.5rem; }
+        .btn-ult { 
+            flex: 4; background: #ddd; opacity: 0.3; pointer-events: none; font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-ult.can-use { 
+            opacity: 1; pointer-events: auto; background: #ff3e3e; color: white; border-color: #111;
+        }
+        .btn-ult.full-charge {
+            animation: pulse-border 1s infinite;
+            background: #ff0000;
+        }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 5px 0 #111, 0 0 0 0 rgba(255, 62, 62, 0.7); }
+            70% { box-shadow: 0 5px 0 #111, 0 0 0 10px rgba(255, 62, 62, 0); }
+            100% { box-shadow: 0 5px 0 #111, 0 0 0 0 rgba(255, 62, 62, 0); }
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 3px solid #111;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+        }
+        .gauge-container {
+            width: 140px;
+            height: 18px;
+            background: #eee;
+            border-radius: 9px;
+            overflow: hidden;
+            border: 2px solid #111;
+            position: relative;
+        }
+        .gauge-divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+        .gauge-fill {
+            height: 100%;
+            width: 0%;
+            background: #111;
+            transition: width 0.1s linear, background-color 0.3s;
+        }
+        .gauge-fill.stock-1 { background: #ff6b6b; }
+        .gauge-fill.stock-2 { background: #ff0000; }
+        .gauge-fill.ult-active { background: #ff3e3e; animation: blink 0.2s infinite; }
+        
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .score-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #rankLabel {
+            font-family: var(--font-title);
+            animation: rank-bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes rank-bounce {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.4); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px currentColor, 0 0 40px currentColor;
+        }
+
+        #stockCount {
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.2);
+            padding: 0 6px;
+            border-radius: 10px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="uiTop" class="flex flex-col items-center w-full max-w-[800px] mb-2 px-4">
+        <div class="flex justify-between items-center w-full mb-2">
+            <h1 class="text-4xl title-text text-black italic" id="titleText">SUPER HJK RUN</h1>
+            <div id="scoreDisplay" class="text-3xl score-font text-black">0</div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="flex flex-col">
+                <span class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1 text-center">ULT GAUGE STOCK</span>
+                <div class="gauge-container">
+                    <div class="gauge-divider"></div>
+                    <div id="ultGaugeFill" class="gauge-fill"></div>
+                </div>
+            </div>
+            <div class="h-8 w-[2px] bg-gray-200"></div>
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">LIFE</span>
+                <div id="lifeDisplay" class="text-2xl flex gap-1 leading-none">❤️</div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="controls-container">
+        <div class="buttons-row">
+            <div id="jumpButton" class="btn btn-jump">JUMP</div>
+            <div id="ultButton" class="btn btn-ult">
+                <span>ULT</span>
+                <span id="stockCount">STOCK: 0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameOverModal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center z-50 p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-sm">
+            <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Result</h2>
+            <div class="mb-4">
+                <div class="text-[10px] font-black text-gray-400 uppercase mb-1">Final Score</div>
+                <p id="finalScore" class="text-6xl score-font font-black text-black leading-none"></p>
+            </div>
+            <div class="mb-8 p-5 bg-gray-50 rounded-2xl border-2 border-gray-100 relative">
+                <div class="text-[10px] font-black text-gray-400 uppercase mb-2">Rank Evaluation</div>
+                <div id="rankLabel" class="text-8xl font-black italic">C</div>
+            </div>
+            <button id="retryBtn" class="w-full bg-black text-white py-5 rounded-2xl font-black text-2xl active:scale-95 transition-transform uppercase italic tracking-wider">RETRY</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const modal = document.getElementById("gameOverModal");
+        const finalScoreText = document.getElementById("finalScore");
+        const rankLabel = document.getElementById("rankLabel");
+        const titleText = document.getElementById("titleText");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const lifeDisplay = document.getElementById("lifeDisplay");
+        const ultGaugeFill = document.getElementById("ultGaugeFill");
+        const jumpBtn = document.getElementById("jumpButton");
+        const ultBtn = document.getElementById("ultButton");
+        const stockDisplay = document.getElementById("stockCount");
+        const retryBtn = document.getElementById("retryBtn");
+
+        canvas.width = 800;
+        canvas.height = 400;
+
+        const GROUND_Y = canvas.height - 40;
+        const CEILING_Y = 40;
+        
+        const BASE_GRAVITY = 0.6;
+        const BASE_JUMP_FORCE = 12.5; 
+        const INITIAL_SPEED = 6.0; 
+        const MAX_GAME_SPEED = 20.0;
+        const TRANSITION_START = 1000; 
+        const CYCLE_SCORE = 600;
+
+        const ULT_THRESHOLD = 50; 
+        const MAX_ULT_GAUGE = 100; 
+
+        let isGameOver = false;
+        let score = 0;
+        let gameSpeed = INITIAL_SPEED;
+        let frameCount = 0;
+        let nextObstacleTimer = 0;
+        let isNight = false;
+        
+        let ultGauge = 0; 
+        let isUltActive = false;
+        let ultTimer = 0;
+
+        let lives = 1;
+        let invincibilityTimer = 0;
+        
+        let currentSection = 0; 
+        let nextHeartScore = -1;
+
+        let dino = {
+            x: 80, y: 0, width: 35, height: 35,
+            vy: 0, jumpCount: 0, maxJumps: 2,
+            isAirborne: false 
+        };
+
+        let obstacles = [];
+        let items = [];
+
+        function getPhysics() {
+            const multiplier = Math.max(1, gameSpeed / INITIAL_SPEED);
+            const gravityScale = 1 + (multiplier - 1) * 0.85; 
+            const jumpScale = Math.sqrt(gravityScale); 
+            
+            return {
+                gravity: BASE_GRAVITY * gravityScale,
+                jumpForce: BASE_JUMP_FORCE * jumpScale
+            };
+        }
+
+        function getRank(s) {
+            if (s < 500) return { label: 'C', color: '#a3a3a3', neon: false };
+            if (s < 800) return { label: 'B', color: '#5b8a72', neon: false };
+            if (s < 1000) return { label: 'A', color: '#4a6fa5', neon: false };
+            if (s < 1500) return { label: 'S', color: '#f59e0b', neon: true };
+            if (s < 2000) return { label: 'SS', color: '#ec4899', neon: true };
+            if (s < 3000) return { label: 'SSS', color: '#8b5cf6', neon: true };
+            return { label: 'X', color: '#ff0000', neon: true };
+        }
+
+        function updateLifeDisplay() {
+            let hearts = "";
+            for (let i = 0; i < lives; i++) hearts += "❤️";
+            lifeDisplay.innerText = hearts || "💀";
+        }
+
+        function handleJump() {
+            if (isGameOver) return;
+            if (dino.jumpCount < dino.maxJumps) {
+                const physics = getPhysics();
+                const direction = isNight ? 1 : -1;
+                dino.vy = direction * physics.jumpForce;
+                dino.jumpCount++;
+                dino.isAirborne = true;
+            }
+        }
+
+        function triggerUltimate() {
+            if (ultGauge >= ULT_THRESHOLD && !isUltActive && !isGameOver) {
+                ultGauge -= ULT_THRESHOLD; 
+                isUltActive = true; 
+                ultTimer = 250; 
+            }
+        }
+
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); handleJump(); }
+            if (e.code === "KeyX") { triggerUltimate(); }
+        });
+
+        canvas.addEventListener("pointerdown", (e) => { e.preventDefault(); handleJump(); });
+        jumpBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); handleJump(); });
+        ultBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); triggerUltimate(); });
+        retryBtn.addEventListener("click", resetGame);
+
+        function spawnHeart() {
+            items.push({
+                x: canvas.width,
+                y: isNight ? CEILING_Y + 85 : GROUND_Y - 120,
+                width: 32, height: 32,
+                type: "heart",
+                speed: gameSpeed
+            });
+        }
+
+        function update() {
+            if (isGameOver) return;
+
+            frameCount++;
+            score += 0.25; 
+            scoreDisplay.innerText = Math.floor(score);
+            
+            let section = Math.floor(score / 1000);
+            if (section > currentSection) {
+                currentSection = section;
+                nextHeartScore = Math.floor(score + 500); 
+            }
+            
+            if (nextHeartScore !== -1 && score >= nextHeartScore) {
+                spawnHeart();
+                nextHeartScore = -1;
+            }
+
+            if (invincibilityTimer > 0) invincibilityTimer--;
+
+            if (!isUltActive) {
+                ultGauge = Math.min(MAX_ULT_GAUGE, ultGauge + 0.05); 
+                
+                ultGaugeFill.style.width = ultGauge + "%";
+                ultGaugeFill.classList.remove("ult-active");
+                
+                const stocks = Math.floor(ultGauge / ULT_THRESHOLD);
+                stockDisplay.innerText = `STOCK: ${stocks}`;
+                
+                if (stocks >= 2) {
+                    ultGaugeFill.className = "gauge-fill stock-2";
+                    ultBtn.classList.add("can-use", "full-charge");
+                } else if (stocks >= 1) {
+                    ultGaugeFill.className = "gauge-fill stock-1";
+                    ultBtn.classList.add("can-use");
+                    ultBtn.classList.remove("full-charge");
+                } else {
+                    ultGaugeFill.className = "gauge-fill";
+                    ultBtn.classList.remove("can-use", "full-charge");
+                }
+            } else {
+                ultTimer--;
+                ultGaugeFill.style.width = (ultTimer / 250 * 100) + "%";
+                ultGaugeFill.classList.add("ult-active");
+                if (ultTimer <= 0) isUltActive = false;
+            }
+
+            if (frameCount % 600 === 0 && gameSpeed < MAX_GAME_SPEED) gameSpeed += 0.2;
+
+            let newIsNight = (score >= TRANSITION_START) && (Math.floor((score - TRANSITION_START) / CYCLE_SCORE) % 2 === 0);
+            if (newIsNight !== isNight) { isNight = newIsNight; toggleNightMode(); }
+
+            const physics = getPhysics();
+            const currentGravity = (isNight ? -physics.gravity : physics.gravity);
+            dino.vy += currentGravity;
+            dino.y += dino.vy;
+
+            if (!isNight) {
+                if (dino.y >= GROUND_Y - dino.height) {
+                    dino.y = GROUND_Y - dino.height;
+                    dino.vy = 0; dino.jumpCount = 0; dino.isAirborne = false;
+                } else dino.isAirborne = true;
+            } else {
+                if (dino.y <= CEILING_Y) {
+                    dino.y = CEILING_Y;
+                    dino.vy = 0; dino.jumpCount = 0; dino.isAirborne = false;
+                } else dino.isAirborne = true;
+            }
+
+            if (nextObstacleTimer <= 0) {
+                let h, type = "normal", color = "#111";
+                const rObs = Math.random();
+                const canSpawnSpecial = score >= 500;
+
+                if (canSpawnSpecial && rObs < 0.25) { 
+                    type = "rushing"; color = "#ff3e3e"; h = 35 + Math.random() * 45;
+                } else if (rObs < 0.65) { 
+                    type = "motion-out"; color = !isNight ? "#a37c5e" : "#5e7ca3"; h = 95 + Math.random() * 45;
+                } else { 
+                    type = "static"; color = "#111"; h = 35 + Math.random() * 70;
+                }
+
+                // 赤(Rushing)は常に初期の一定速度
+                const speed = type === "rushing" ? (INITIAL_SPEED * 1.6) : gameSpeed;
+
+                obstacles.push({
+                    x: canvas.width,
+                    y: isNight ? CEILING_Y : GROUND_Y - h,
+                    width: 35, height: h, color, type,
+                    speed: speed, 
+                    passed: false
+                });
+
+                let baseInterval = score > 2000 ? 12 : 25;
+                nextObstacleTimer = (baseInterval / gameSpeed * 10) + Math.random() * 15;
+            } else nextObstacleTimer--;
+
+            items.forEach(item => item.x -= item.speed);
+            items = items.filter(item => item.x + item.width > 0);
+
+            obstacles.forEach(o => o.x -= o.speed);
+            obstacles = obstacles.filter(o => o.x + o.width + 100 > 0);
+
+            for (let i = items.length - 1; i >= 0; i--) {
+                let item = items[i];
+                if (dino.x < item.x + item.width && dino.x + dino.width > item.x &&
+                    dino.y < item.y + item.height && dino.y + dino.height > item.y) {
+                    if (item.type === "heart" && lives < 3) {
+                        lives++; updateLifeDisplay();
+                    }
+                    items.splice(i, 1);
+                }
+            }
+
+            for (let obs of obstacles) {
+                if (!obs.passed && obs.x + obs.width < dino.x) {
+                    obs.passed = true;
+                    if (!isUltActive) ultGauge = Math.min(MAX_ULT_GAUGE, ultGauge + 2.5);
+                }
+
+                if (dino.x < obs.x + obs.width && dino.x + dino.width > obs.x &&
+                    dino.y < obs.y + obs.height && dino.y + dino.height > obs.y) {
+                    
+                    if (isUltActive) { obs.x = -500; score += 50; continue; }
+                    if (invincibilityTimer > 0) continue;
+
+                    let hit = (obs.type === "motion-out") ? dino.isAirborne : true;
+
+                    if (hit) {
+                        lives--; updateLifeDisplay();
+                        if (lives <= 0) gameOver();
+                        else { invincibilityTimer = 120; obs.x = -500; }
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = isNight ? "#333" : "#eee";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([15, 8]);
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
+            ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            if (invincibilityTimer % 10 < 5) {
+                ctx.fillStyle = isUltActive ? "#ff3e3e" : "#111";
+                ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+                ctx.fillStyle = "rgba(0,0,0,0.1)";
+                ctx.fillRect(dino.x + 4, dino.y + 4, dino.width, dino.height);
+            }
+
+            items.forEach(item => {
+                if (item.type === "heart") {
+                    ctx.font = "34px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText("❤️", item.x + item.width/2, item.y + item.height/2 + 12);
+                }
+            });
+
+            obstacles.forEach(obs => {
+                ctx.globalAlpha = obs.type === "motion-out" ? 0.7 : 1.0;
+                ctx.fillStyle = obs.color;
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                if (obs.type === "rushing") {
+                    ctx.fillStyle = "rgba(255, 62, 62, 0.4)";
+                    ctx.fillRect(obs.x + 5, obs.y, 10, obs.height);
+                }
+                ctx.globalAlpha = 1.0;
+            });
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle("night-mode", isNight);
+            canvas.classList.toggle("night-canvas", isNight);
+            titleText.classList.toggle("text-white", isNight);
+            titleText.classList.toggle("text-black", !isNight);
+            scoreDisplay.style.color = isNight ? "#fff" : "#000";
+        }
+
+        function gameOver() {
+            isGameOver = true;
+            const fs = Math.floor(score);
+            const rank = getRank(fs);
+            finalScoreText.innerText = fs;
+            rankLabel.innerText = rank.label;
+            rankLabel.style.color = rank.color;
+            if (rank.neon) rankLabel.classList.add('neon-text');
+            else rankLabel.classList.remove('neon-text');
+            modal.classList.remove("hidden");
+        }
+
+        function resetGame() {
+            isGameOver = false; score = 0; gameSpeed = INITIAL_SPEED;
+            frameCount = 0; nextObstacleTimer = 0; obstacles = []; items = [];
+            isNight = false; ultGauge = 0; isUltActive = false;
+            lives = 1; invincibilityTimer = 0; 
+            currentSection = 0; nextHeartScore = -1;
+            dino.vy = 0; dino.jumpCount = 0; dino.y = GROUND_Y - dino.height;
+            updateLifeDisplay(); scoreDisplay.innerText = "0";
+            toggleNightMode(); modal.classList.add("hidden");
+        }
+
+        function gameLoop() { update(); draw(); requestAnimationFrame(gameLoop); }
+        dino.y = GROUND_Y - dino.height;
+        updateLifeDisplay();
+        gameLoop();
+    </script>
+</body>
+</html>
