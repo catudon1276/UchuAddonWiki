@@ -251,6 +251,16 @@
                 <div id="final-rank-box" class="rank-large">C</div>
                 <div class="result-stats">
                     <div class="res-item">
+                        <div class="res-label">HIGH SCORE</div>
+                        <div id="res-highscore" class="res-val" style="color: #ffd700;">0</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-label">MAX COMBO</div>
+                        <div id="res-maxcombo" class="res-val" style="color: var(--accent-yellow);">0</div>
+                    </div>
+                </div>
+                <div class="result-stats">
+                    <div class="res-item">
                         <div class="res-label">HIJIKI</div>
                         <div id="res-yellow" class="res-val" style="color: var(--yellow-glow);">0</div>
                     </div>
@@ -325,10 +335,17 @@ let lastMousePos = { x: 0, y: 0 };
 let touchOffset = { x: 0, y: 0 };
 let score = 0;
 let combo = 0;
+let maxCombo = 0;
+let highScore = 0;
 let lastMatchTime = 0;
 let lastSpawn = 0;
 let spawnInterval = 1800;
 let shakeTime = 0;
+let vacuums = []; // 掃除機オブジェクトの配列
+let lastVacuumSpawn = 0;
+let beakers = []; // 🧪ビーカーオブジェクトの配列
+let autoMergeLevel = 0; // 自動合体レベル (0=未取得, 1=2段階, 2=3段階, 3=4段階)
+let nextBeakerThreshold = 10000; // 次の🧪出現スコア
 
 // ===== Rank System =====
 function getRank(s) {
@@ -375,17 +392,60 @@ function resize() {
     const logicalWidth = rect.width;
     const logicalHeight = rect.height;
 
-    // Adaptive zone width based on screen size
-    const zoneW = Math.min(logicalWidth * 0.28, 180);
-    const marginY = Math.max(20, logicalHeight * 0.08);
-    const zoneH = logicalHeight - (marginY * 2); 
+    // PC画面では中央の湧き空間を固定サイズに
+    const isPC = logicalWidth >= 768;
+    let zoneW, spawnAreaWidth;
     
-    ZONES = {
-        yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
-        indigo: { x: logicalWidth - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
-    };
+    if (isPC) {
+        // PC: 仕分けゾーンは画面端から湧き場所の境界まで
+        spawnAreaWidth = 800; // 中央の湧き空間の幅を800pxに拡大
+        const spawnAreaLeft = (logicalWidth - spawnAreaWidth) / 2;
+        const spawnAreaRight = (logicalWidth + spawnAreaWidth) / 2;
+        
+        zoneW = spawnAreaLeft; // 左端から湧き場所までの幅
+        
+        ZONES = {
+            yellow: { x: 0, y: 0, w: spawnAreaLeft, h: logicalHeight, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
+            indigo: { x: spawnAreaRight, y: 0, w: logicalWidth - spawnAreaRight, h: logicalHeight, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+        };
+    } else {
+        // モバイル: 仕分けゾーンを画面外まで拡張（慣性対策）
+        zoneW = Math.min(logicalWidth * 0.28, 180);
+        const marginY = Math.max(20, logicalHeight * 0.08);
+        const zoneH = logicalHeight - (marginY * 2);
+        
+        // 判定エリアを画面外500pxまで拡張
+        const extendArea = 500;
+        
+        ZONES = {
+            yellow: { 
+                x: -extendArea, 
+                y: -extendArea, 
+                w: zoneW + extendArea, 
+                h: logicalHeight + (extendArea * 2), 
+                visualX: 0,
+                visualY: marginY,
+                visualW: zoneW,
+                visualH: zoneH,
+                color: '#ffcc00', 
+                glow: 'rgba(255, 204, 0, 0.15)' 
+            },
+            indigo: { 
+                x: logicalWidth - zoneW, 
+                y: -extendArea, 
+                w: zoneW + extendArea, 
+                h: logicalHeight + (extendArea * 2),
+                visualX: logicalWidth - zoneW,
+                visualY: marginY,
+                visualW: zoneW,
+                visualH: zoneH,
+                color: '#3b5998', 
+                glow: 'rgba(59, 89, 152, 0.15)' 
+            }
+        };
+    }
 
-    // Update grid padding for mobile
+    // Update grid padding
     GRID.padding = Math.max(25, Math.min(35, zoneW / 4));
 }
 
@@ -505,23 +565,29 @@ function spawnBomb() {
     const type = isIndigo ? "indigo" : "yellow";
     const spriteIndex = isIndigo ? 1 : 0;
     
-    const topSpawnChance = score < 1000 ? 0.3 : Math.min(0.6, (score - 1000) / 15000);
+    // 緩やかな上からのスポーン確率上昇
+    const topSpawnChance = score < 2000 ? 0.2 : Math.min(0.5, (score - 2000) / 20000);
     const spawnFromTop = Math.random() < topSpawnChance;
     
     const startY = spawnFromTop ? -40 : logicalH + 40;
-    const baseSpeed = 2.5 + score/8000;
+    // 速度も緩やかに上昇
+    const baseSpeed = 2.0 + score/12000;
     const vyBase = spawnFromTop ? baseSpeed : -baseSpeed;
 
+    // スポーン位置を中央エリアに限定（PC対応）
+    const isPC = logicalW >= 768;
+    const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+    
     bombs.push({
-        x: logicalW / 2 + (Math.random() - 0.5) * (logicalW * 0.3),
+        x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
         y: startY,
-        vx: (Math.random() - 0.5) * (2.5 + score/10000),
-        vy: vyBase + (Math.random() - 0.5) * 1.2,
+        vx: (Math.random() - 0.5) * (2.0 + score/15000),
+        vy: vyBase + (Math.random() - 0.5) * 1.0,
         r: BOMB_RADIUS,
         type,
         spriteIndex, 
         born: Date.now(),
-        fuseTime: Math.max(4000, 12000 - (score * 0.3)), 
+        fuseTime: Math.max(5000, 14000 - (score * 0.25)), // より長い時間
         wobble: Math.random() * Math.PI,
         color: type === 'yellow' ? '#ffcc00' : '#3b5998',
         sizeLevel: 0
@@ -530,14 +596,19 @@ function spawnBomb() {
 
 function getSortedPosition(type, index) {
     const zone = ZONES[type];
-    const cols = Math.floor((zone.w - 20) / GRID.padding);
+    // モバイルではvisualプロパティを使用
+    const zoneX = zone.visualX !== undefined ? zone.visualX : zone.x;
+    const zoneY = zone.visualY !== undefined ? zone.visualY : zone.y;
+    const zoneW = zone.visualW !== undefined ? zone.visualW : zone.w;
+    
+    const cols = Math.floor((zoneW - 20) / GRID.padding);
     const visualIndex = index % VISUAL_CAPACITY;
     
     const col = visualIndex % Math.max(1, cols);
     const row = Math.floor(visualIndex / Math.max(1, cols));
     
-    const startX = type === 'yellow' ? 25 : zone.x + 25;
-    const startY = zone.y + 40;
+    const startX = zoneX + 25;
+    const startY = zoneY + 40;
     return {
         x: startX + (col * GRID.padding),
         y: startY + (row * GRID.padding)
@@ -572,22 +643,82 @@ function mergeBombs(b1, b2, b2Index) {
     
     b1.sizeLevel = newLevel;
     b1.born = Date.now();
-    b1.fuseTime = Math.max(3000, 12000 - (score * 0.4)) + levelData.fuseBonus;
+    b1.fuseTime = Math.max(4000, 14000 - (score * 0.3)) + levelData.fuseBonus;
     
     const mergeX = (b1.x + b2.x) / 2;
     const mergeY = (b1.y + b2.y) / 2;
     b1.x = mergeX;
     b1.y = mergeY;
     
+    // コンボを半減
+    if (combo > 0) {
+        combo = Math.floor(combo / 2);
+        comboEl.innerText = combo;
+        if (combo <= 1) {
+            comboGroup.classList.remove('active');
+        }
+    }
+    
     createMergeEffect(mergeX, mergeY, b1.color);
     
     return b1;
 }
 
+function autoMergeBombs(maxLevel) {
+    let mergedCount = 0;
+    
+    // maxLevelまで自動合体
+    for (let targetLevel = 0; targetLevel < maxLevel; targetLevel++) {
+        let changed = true;
+        while (changed) {
+            changed = false;
+            
+            for (let i = 0; i < bombs.length; i++) {
+                const b1 = bombs[i];
+                if (b1.sizeLevel !== targetLevel) continue;
+                
+                for (let j = i + 1; j < bombs.length; j++) {
+                    const b2 = bombs[j];
+                    if (b2.sizeLevel !== targetLevel || b1.type !== b2.type) continue;
+                    
+                    const dist = Math.hypot(b1.x - b2.x, b1.y - b2.y);
+                    const levelData = SIZE_LEVELS[b1.sizeLevel];
+                    const mergeRadius = MERGE_DISTANCE * levelData.scale * 2; // 通常より広い範囲
+                    
+                    if (dist < mergeRadius && b1.sizeLevel < SIZE_LEVELS.length - 1) {
+                        // 合体実行（コンボは切れない）
+                        const newLevel = b1.sizeLevel + 1;
+                        const newLevelData = SIZE_LEVELS[newLevel];
+                        
+                        bombs.splice(j, 1);
+                        
+                        b1.sizeLevel = newLevel;
+                        b1.born = Date.now();
+                        b1.fuseTime = Math.max(4000, 14000 - (score * 0.3)) + newLevelData.fuseBonus;
+                        
+                        const mergeX = (b1.x + b2.x) / 2;
+                        const mergeY = (b1.y + b2.y) / 2;
+                        b1.x = mergeX;
+                        b1.y = mergeY;
+                        
+                        createMergeEffect(mergeX, mergeY, b1.color);
+                        mergedCount++;
+                        changed = true;
+                        break;
+                    }
+                }
+                if (changed) break;
+            }
+        }
+    }
+    
+    return mergedCount;
+}
+
 function checkZoneEntry(b) {
-    const withinXYellow = b.x < ZONES.yellow.x + ZONES.yellow.w;
-    const withinXIndigo = b.x > ZONES.indigo.x;
-    const withinY = b.y > ZONES.yellow.y && b.y < ZONES.yellow.y + ZONES.yellow.h;
+    const withinXYellow = b.x >= ZONES.yellow.x && b.x <= ZONES.yellow.x + ZONES.yellow.w;
+    const withinXIndigo = b.x >= ZONES.indigo.x && b.x <= ZONES.indigo.x + ZONES.indigo.w;
+    const withinY = b.y >= ZONES.yellow.y && b.y <= ZONES.yellow.y + ZONES.yellow.h;
     
     if (withinY && (withinXYellow || withinXIndigo)) {
         const zoneType = withinXYellow ? 'yellow' : 'indigo';
@@ -604,16 +735,20 @@ function checkZoneEntry(b) {
             const levelData = SIZE_LEVELS[b.sizeLevel];
             
             if (b.sizeLevel > 0) {
-                combo = 0;
-                comboGroup.classList.remove('active');
+                // 大きいボールでもコンボは継続
+                combo++;
+                lastMatchTime = Date.now();
+                if (combo > maxCombo) maxCombo = combo;
                 const megaPoints = 100 * levelData.scoreMultiplier;
                 score += megaPoints;
+                if (combo > 1) comboGroup.classList.add('active');
                 createText(b.x, b.y, `+${megaPoints}`, "#ffff00", 32);
                 createText(b.x, b.y - 40, `${levelData.name.toUpperCase()} BONUS!`, "#fff", 20);
                 applyShake(12);
             } else {
                 combo++;
                 lastMatchTime = Date.now();
+                if (combo > maxCombo) maxCombo = combo;
                 const points = Math.floor(10 * (1 + combo * 0.1));
                 score += points;
                 if (combo > 1) comboGroup.classList.add('active');
@@ -648,10 +783,92 @@ function update(ts) {
     const logicalW = canvas.width / (window.devicePixelRatio || 1);
     const logicalH = canvas.height / (window.devicePixelRatio || 1);
 
+    // より緩やかなスポーン間隔の減少
     if (gameState === 'PLAYING' && ts - lastSpawn > spawnInterval) {
         spawnBomb();
         lastSpawn = ts;
-        spawnInterval = Math.max(200, 700 - (score * 0.08));
+        spawnInterval = Math.max(400, 1200 - (score * 0.05));
+    }
+
+    // 🧪ビーカーのスポーン（スコアが閾値を超えたら）
+    if (gameState === 'PLAYING' && beakers.length === 0 && score >= nextBeakerThreshold) {
+        const isPC = logicalW >= 768;
+        const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+        
+        beakers.push({
+            x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth * 0.5,
+            y: -50,
+            vy: 3.5, // 掃除機より速い
+            radius: 30,
+            born: Date.now(),
+            level: autoMergeLevel + 1 // 次のレベル
+        });
+    }
+
+    // 🧪ビーカーの移動（上から下へ直線的に落ちる）
+    for (let i = beakers.length - 1; i >= 0; i--) {
+        const beaker = beakers[i];
+        beaker.y += beaker.vy;
+        
+        // 画面下に出たら削除
+        if (beaker.y > logicalH + 100) {
+            beakers.splice(i, 1);
+        }
+    }
+
+    // 掃除機のスポーン（20秒～40秒に1回）
+    if (gameState === 'PLAYING' && ts - lastVacuumSpawn > 20000 + Math.random() * 20000) {
+        const spawnFromTop = Math.random() < 0.5;
+        const startY = spawnFromTop ? -50 : logicalH + 50;
+        const baseSpeed = 1.5;
+        const vyBase = spawnFromTop ? baseSpeed : -baseSpeed;
+        
+        // スポーン位置を中央エリアに限定（PC対応）
+        const isPC = logicalW >= 768;
+        const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+        
+        vacuums.push({
+            x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
+            y: startY,
+            vx: (Math.random() - 0.5) * 2.5,
+            vy: vyBase + (Math.random() - 0.5) * 1.0,
+            radius: 30,
+            wobble: Math.random() * Math.PI,
+            born: Date.now()
+        });
+        lastVacuumSpawn = ts;
+    }
+
+    // 掃除機の移動（ボムと同じ動き）
+    for (let i = vacuums.length - 1; i >= 0; i--) {
+        const vac = vacuums[i];
+        vac.x += vac.vx;
+        vac.y += vac.vy;
+        vac.vx += Math.sin(ts / 500 + vac.wobble) * 0.05;
+        
+        // 湧き場所エリアの境界を計算
+        const isPC = logicalW >= 768;
+        const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
+        const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
+        const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+        
+        // 壁で跳ね返る（湧き場所エリア内に制限）
+        if (vac.x < spawnAreaLeft + vac.radius) { 
+            vac.vx = Math.abs(vac.vx); 
+            vac.x = spawnAreaLeft + vac.radius; 
+        }
+        if (vac.x > spawnAreaRight - vac.radius) { 
+            vac.vx = -Math.abs(vac.vx); 
+            vac.x = spawnAreaRight - vac.radius; 
+        }
+        if (vac.y < vac.radius) {
+            vac.vy = Math.abs(vac.vy);
+            vac.y = vac.radius;
+        }
+        if (vac.y > logicalH - vac.radius) {
+            vac.vy = -Math.abs(vac.vy);
+            vac.y = logicalH - vac.radius;
+        }
     }
 
     if (Date.now() - lastMatchTime > 3000) {
@@ -673,15 +890,23 @@ function update(ts) {
             const levelData = SIZE_LEVELS[b.sizeLevel];
             const effectiveRadius = b.r * levelData.scale;
 
-            if (b.x < effectiveRadius) { 
+            // 湧き場所エリアの境界を計算（ドラッグ中でないボムのみ）
+            const isPC = logicalW >= 768;
+            const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
+            const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
+            const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+
+            // 左右の境界（湧き場所エリア内に制限）
+            if (b.x < spawnAreaLeft + effectiveRadius) { 
                 b.vx = Math.abs(b.vx); 
-                b.x = effectiveRadius; 
+                b.x = spawnAreaLeft + effectiveRadius; 
             }
-            if (b.x > logicalW - effectiveRadius) { 
+            if (b.x > spawnAreaRight - effectiveRadius) { 
                 b.vx = -Math.abs(b.vx); 
-                b.x = logicalW - effectiveRadius; 
+                b.x = spawnAreaRight - effectiveRadius; 
             }
             
+            // 上下の境界
             if (b.y < effectiveRadius) {
                 b.vy = Math.abs(b.vy);
                 b.y = effectiveRadius;
@@ -691,6 +916,8 @@ function update(ts) {
                 b.y = logicalH - effectiveRadius;
             }
         }
+        // ドラッグ中は制限なし（画面全体を移動可能）
+        
         if (gameState === 'PLAYING' && Date.now() - b.born > b.fuseTime) {
             finalCounts.yellow = sortedBombs.yellow.length;
             finalCounts.indigo = sortedBombs.indigo.length;
@@ -737,17 +964,6 @@ function drawBomb(b, isStatic = false) {
             ctx.lineWidth = 2;
             ctx.strokeRect(-currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize);
         }
-        
-        if (b.sizeLevel > 0) {
-            ctx.font = `900 ${12 * scale}px 'Inter'`;
-            ctx.fillStyle = "#fff";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.strokeStyle = "#000";
-            ctx.lineWidth = 3;
-            ctx.strokeText(`x${levelData.scoreMultiplier}`, 0, currentDrawSize/2 + 12);
-            ctx.fillText(`x${levelData.scoreMultiplier}`, 0, currentDrawSize/2 + 12);
-        }
     } else {
         ctx.beginPath();
         ctx.arc(0, 0, (b.r * scale) + pulse, 0, Math.PI*2);
@@ -766,29 +982,115 @@ function draw() {
     ctx.clearRect(0, 0, logicalW, logicalH);
 
     Object.entries(ZONES).forEach(([key, z]) => {
+        // 描画用の座標（モバイルではvisualプロパティを使用）
+        const drawX = z.visualX !== undefined ? z.visualX : z.x;
+        const drawY = z.visualY !== undefined ? z.visualY : z.y;
+        const drawW = z.visualW !== undefined ? z.visualW : z.w;
+        const drawH = z.visualH !== undefined ? z.visualH : z.h;
+        
         const isYellow = key === 'yellow';
-        const gradient = ctx.createLinearGradient(isYellow ? z.x : z.x + z.w, z.y, isYellow ? z.x + z.w : z.x, z.y);
+        const gradient = ctx.createLinearGradient(isYellow ? drawX : drawX + drawW, drawY, isYellow ? drawX + drawW : drawX, drawY);
         gradient.addColorStop(0, z.glow);
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
-        ctx.fillRect(z.x, z.y, z.w, z.h);
+        ctx.fillRect(drawX, drawY, drawW, drawH);
         ctx.strokeStyle = z.color;
         ctx.lineWidth = 3;
         ctx.beginPath();
-        const lineX = isYellow ? z.x + z.w : z.x;
-        ctx.moveTo(lineX, z.y); ctx.lineTo(lineX, z.y + z.h);
+        const lineX = isYellow ? drawX + drawW : drawX;
+        ctx.moveTo(lineX, drawY); ctx.lineTo(lineX, drawY + drawH);
         ctx.stroke();
 
         ctx.setLineDash([8, 4]);
         ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
-        ctx.beginPath(); ctx.moveTo(z.x, z.y); ctx.lineTo(z.x + z.w, z.y); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(z.x, z.y + z.h); ctx.lineTo(z.x + z.w, z.y + z.h); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(drawX, drawY); ctx.lineTo(drawX + drawW, drawY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(drawX, drawY + drawH); ctx.lineTo(drawX + drawW, drawY + drawH); ctx.stroke();
         ctx.setLineDash([]); ctx.globalAlpha = 1.0;
     });
 
     sortedBombs.yellow.forEach(b => drawBomb(b, true));
     sortedBombs.indigo.forEach(b => drawBomb(b, true));
     bombs.forEach(b => drawBomb(b, false));
+
+    // 🧪ビーカーの描画
+    beakers.forEach(beaker => {
+        ctx.save();
+        ctx.translate(beaker.x, beaker.y);
+        
+        // ビーカーのアイコン
+        ctx.fillStyle = "#ff66ff";
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 3;
+        
+        // 本体
+        ctx.beginPath();
+        ctx.arc(0, 0, beaker.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        // 🧪マーク
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 28px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🧪", 0, 0);
+        
+        // レベル表示
+        ctx.font = "bold 14px Inter";
+        ctx.fillStyle = "#fff";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 3;
+        ctx.strokeText(`Lv${beaker.level}`, 0, beaker.radius + 18);
+        ctx.fillText(`Lv${beaker.level}`, 0, beaker.radius + 18);
+        
+        // ホバーエフェクト
+        const dist = Math.hypot(mousePos.x - beaker.x, mousePos.y - beaker.y);
+        if (dist < beaker.radius + 20) {
+            ctx.strokeStyle = "#ffff00";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(0, 0, beaker.radius + 5, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        
+        ctx.restore();
+    });
+
+    // 掃除機の描画
+    vacuums.forEach(vac => {
+        ctx.save();
+        ctx.translate(vac.x, vac.y);
+        
+        // 掃除機のアイコン（簡易版）
+        ctx.fillStyle = "#44ff44";
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 3;
+        
+        // 本体
+        ctx.beginPath();
+        ctx.arc(0, 0, vac.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        // 掃除機マーク
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 28px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🧹", 0, 0);
+        
+        // ホバーエフェクト
+        const dist = Math.hypot(mousePos.x - vac.x, mousePos.y - vac.y);
+        if (dist < vac.radius + 20) {
+            ctx.strokeStyle = "#ffff00";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(0, 0, vac.radius + 5, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        
+        ctx.restore();
+    });
 
     particles.forEach((p, i) => {
         ctx.globalAlpha = p.life;
@@ -829,6 +1131,75 @@ function draw() {
 const onStart = e => {
     if(gameState !== 'PLAYING') return; 
     const p = getPos(e);
+    
+    // 🧪ビーカーのクリック判定
+    for (let i = beakers.length - 1; i >= 0; i--) {
+        const beaker = beakers[i];
+        const dist = Math.hypot(p.x - beaker.x, p.y - beaker.y);
+        if (dist < beaker.radius + 20) {
+            // 自動合体レベルアップ
+            autoMergeLevel = beaker.level;
+            nextBeakerThreshold += 10000; // 次は+10000点で出現
+            
+            // 自動合体実行
+            const mergedCount = autoMergeBombs(autoMergeLevel);
+            
+            if (mergedCount > 0) {
+                createText(beaker.x, beaker.y - 40, `AUTO MERGE Lv${autoMergeLevel}!`, "#ff66ff", 28);
+                createText(beaker.x, beaker.y + 40, `${mergedCount} MERGED`, "#fff", 20);
+                applyShake(12);
+            }
+            
+            // ビーカーを削除
+            beakers.splice(i, 1);
+            return;
+        }
+    }
+    
+    // 掃除機のクリック判定
+    for (let i = vacuums.length - 1; i >= 0; i--) {
+        const vac = vacuums[i];
+        const dist = Math.hypot(p.x - vac.x, p.y - vac.y);
+        if (dist < vac.radius + 20) {
+            // 周囲のボムを吸収
+            const absorbRadius = 250;
+            let absorbed = 0;
+            
+            for (let j = bombs.length - 1; j >= 0; j--) {
+                const b = bombs[j];
+                const bombDist = Math.hypot(b.x - vac.x, b.y - vac.y);
+                if (bombDist < absorbRadius) {
+                    // 吸収エフェクト
+                    createParticles(b.x, b.y, b.color, 15, 10);
+                    bombs.splice(j, 1);
+                    absorbed++;
+                }
+            }
+            
+            // 他の掃除機も吸収
+            for (let j = vacuums.length - 1; j >= 0; j--) {
+                if (i === j) continue;
+                const vac2 = vacuums[j];
+                const vacDist = Math.hypot(vac2.x - vac.x, vac2.y - vac.y);
+                if (vacDist < absorbRadius) {
+                    createParticles(vac2.x, vac2.y, "#44ff44", 20, 12);
+                    vacuums.splice(j, 1);
+                    if (j < i) i--; // インデックス調整
+                    absorbed++;
+                }
+            }
+            
+            if (absorbed > 0) {
+                createText(vac.x, vac.y - 40, `ABSORBED ${absorbed}!`, "#44ff44", 28);
+                applyShake(10);
+            }
+            
+            // 使用した掃除機を削除
+            vacuums.splice(i, 1);
+            return;
+        }
+    }
+    
     let target = null;
     let minDist = HIT_SLOP + BOMB_RADIUS;
     let targetIdx = -1;
@@ -920,13 +1291,18 @@ window.addEventListener("touchend", onEnd);
 
 // ===== Flow =====
 function startGame() {
-    score = 0; combo = 0;
+    score = 0; combo = 0; maxCombo = 0;
     bombs = [];
     sortedBombs = { yellow: [], indigo: [] };
     finalCounts = { yellow: 0, indigo: 0 };
     particles = []; floatingTexts = []; mergeEffects = [];
+    vacuums = [];
+    beakers = [];
+    autoMergeLevel = 0;
+    nextBeakerThreshold = 10000;
     lastSpawn = performance.now();
-    spawnInterval = 700;
+    lastVacuumSpawn = performance.now();
+    spawnInterval = 1200; // より緩やかな初期値
     scoreEl.innerText = "0";
     comboEl.innerText = "0";
     comboGroup.classList.remove('active');
@@ -945,9 +1321,14 @@ function doGameOver(reason) {
     statusTitle.innerText = "SYSTEM FAILED";
     statusTitle.style.color = "var(--neon-red)";
     
+    // ハイスコア更新
+    if (score > highScore) highScore = score;
+    
     const rank = getRank(score);
     finalRankBox.innerText = rank.name;
     finalRankBox.style.color = rank.color;
+    document.getElementById("res-highscore").innerText = highScore;
+    document.getElementById("res-maxcombo").innerText = maxCombo;
     document.getElementById("res-yellow").innerText = finalCounts.yellow;
     document.getElementById("res-indigo").innerText = finalCounts.indigo;
     document.getElementById("res-total").innerText = finalCounts.yellow + finalCounts.indigo;
