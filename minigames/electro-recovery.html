@@ -406,14 +406,39 @@ function resize() {
             indigo: { x: spawnAreaRight, y: 0, w: logicalWidth - spawnAreaRight, h: logicalHeight, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
         };
     } else {
-        // モバイル: 既存の計算式
+        // モバイル: 仕分けゾーンを画面外まで拡張（慣性対策）
         zoneW = Math.min(logicalWidth * 0.28, 180);
         const marginY = Math.max(20, logicalHeight * 0.08);
         const zoneH = logicalHeight - (marginY * 2);
         
+        // 判定エリアを画面外500pxまで拡張
+        const extendArea = 500;
+        
         ZONES = {
-            yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
-            indigo: { x: logicalWidth - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+            yellow: { 
+                x: -extendArea, 
+                y: -extendArea, 
+                w: zoneW + extendArea, 
+                h: logicalHeight + (extendArea * 2), 
+                visualX: 0,
+                visualY: marginY,
+                visualW: zoneW,
+                visualH: zoneH,
+                color: '#ffcc00', 
+                glow: 'rgba(255, 204, 0, 0.15)' 
+            },
+            indigo: { 
+                x: logicalWidth - zoneW, 
+                y: -extendArea, 
+                w: zoneW + extendArea, 
+                h: logicalHeight + (extendArea * 2),
+                visualX: logicalWidth - zoneW,
+                visualY: marginY,
+                visualW: zoneW,
+                visualH: zoneH,
+                color: '#3b5998', 
+                glow: 'rgba(59, 89, 152, 0.15)' 
+            }
         };
     }
 
@@ -568,14 +593,19 @@ function spawnBomb() {
 
 function getSortedPosition(type, index) {
     const zone = ZONES[type];
-    const cols = Math.floor((zone.w - 20) / GRID.padding);
+    // モバイルではvisualプロパティを使用
+    const zoneX = zone.visualX !== undefined ? zone.visualX : zone.x;
+    const zoneY = zone.visualY !== undefined ? zone.visualY : zone.y;
+    const zoneW = zone.visualW !== undefined ? zone.visualW : zone.w;
+    
+    const cols = Math.floor((zoneW - 20) / GRID.padding);
     const visualIndex = index % VISUAL_CAPACITY;
     
     const col = visualIndex % Math.max(1, cols);
     const row = Math.floor(visualIndex / Math.max(1, cols));
     
-    const startX = zone.x + 25;
-    const startY = zone.y + 40;
+    const startX = zoneX + 25;
+    const startY = zoneY + 40;
     return {
         x: startX + (col * GRID.padding),
         y: startY + (row * GRID.padding)
@@ -872,23 +902,29 @@ function draw() {
     ctx.clearRect(0, 0, logicalW, logicalH);
 
     Object.entries(ZONES).forEach(([key, z]) => {
+        // 描画用の座標（モバイルではvisualプロパティを使用）
+        const drawX = z.visualX !== undefined ? z.visualX : z.x;
+        const drawY = z.visualY !== undefined ? z.visualY : z.y;
+        const drawW = z.visualW !== undefined ? z.visualW : z.w;
+        const drawH = z.visualH !== undefined ? z.visualH : z.h;
+        
         const isYellow = key === 'yellow';
-        const gradient = ctx.createLinearGradient(isYellow ? z.x : z.x + z.w, z.y, isYellow ? z.x + z.w : z.x, z.y);
+        const gradient = ctx.createLinearGradient(isYellow ? drawX : drawX + drawW, drawY, isYellow ? drawX + drawW : drawX, drawY);
         gradient.addColorStop(0, z.glow);
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
-        ctx.fillRect(z.x, z.y, z.w, z.h);
+        ctx.fillRect(drawX, drawY, drawW, drawH);
         ctx.strokeStyle = z.color;
         ctx.lineWidth = 3;
         ctx.beginPath();
-        const lineX = isYellow ? z.x + z.w : z.x;
-        ctx.moveTo(lineX, z.y); ctx.lineTo(lineX, z.y + z.h);
+        const lineX = isYellow ? drawX + drawW : drawX;
+        ctx.moveTo(lineX, drawY); ctx.lineTo(lineX, drawY + drawH);
         ctx.stroke();
 
         ctx.setLineDash([8, 4]);
         ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
-        ctx.beginPath(); ctx.moveTo(z.x, z.y); ctx.lineTo(z.x + z.w, z.y); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(z.x, z.y + z.h); ctx.lineTo(z.x + z.w, z.y + z.h); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(drawX, drawY); ctx.lineTo(drawX + drawW, drawY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(drawX, drawY + drawH); ctx.lineTo(drawX + drawW, drawY + drawH); ctx.stroke();
         ctx.setLineDash([]); ctx.globalAlpha = 1.0;
     });
 
