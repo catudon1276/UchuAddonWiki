@@ -313,12 +313,29 @@ const DRAW_SIZE = 54;
 const HIT_SLOP = 50; 
 const VISUAL_CAPACITY = 100;
 const MERGE_DISTANCE = 100;
-const SIZE_LEVELS = [
+const BASE_SIZE_LEVELS = [
     { scale: 1.0, fuseBonus: 0, scoreMultiplier: 1, name: "Normal", dragWeight: 1.0 },
     { scale: 1.4, fuseBonus: 2000, scoreMultiplier: 5, name: "Big", dragWeight: 1.0 },
     { scale: 1.8, fuseBonus: 3000, scoreMultiplier: 12, name: "Huge", dragWeight: 0.7 },
     { scale: 2.2, fuseBonus: 4000, scoreMultiplier: 25, name: "Mega", dragWeight: 0.4 }
 ];
+
+// 動的にサイズレベルを取得する関数
+function getSizeLevel(level) {
+    if (level < BASE_SIZE_LEVELS.length) {
+        return BASE_SIZE_LEVELS[level];
+    }
+    // レベル4以降は動的に生成
+    const extraLevels = level - BASE_SIZE_LEVELS.length + 1;
+    return {
+        scale: 2.2 + (extraLevels * 0.3),
+        fuseBonus: 4000 + (extraLevels * 1000),
+        scoreMultiplier: 25 + (extraLevels * 10),
+        name: `Ultra${extraLevels}`,
+        dragWeight: Math.max(0.1, 0.4 - (extraLevels * 0.05))
+    };
+}
+
 const MERGE_COOLDOWN = 300; 
 
 // ===== Game State =====
@@ -344,8 +361,9 @@ let shakeTime = 0;
 let vacuums = []; // 掃除機オブジェクトの配列
 let lastVacuumSpawn = 0;
 let beakers = []; // 🧪ビーカーオブジェクトの配列
-let autoMergeLevel = 0; // 自動合体レベル (0=未取得, 1=2段階, 2=3段階, 3=4段階)
-let nextBeakerThreshold = 10000; // 次の🧪出現スコア
+let autoMergeLevel = 0; // 永続的な自動合体レベル (0=なし, 1=Lv1同士, 2=Lv2同士...)
+let beakerSchedule = [10000, 20000, 30000, 40000, 50000]; // 🧪出現スケジュール
+let currentBeakerIndex = 0; // 次に出現する🧪のインデックス
 
 // ===== Rank System =====
 function getRank(s) {
@@ -587,7 +605,7 @@ function spawnBomb() {
         type,
         spriteIndex, 
         born: Date.now(),
-        fuseTime: Math.max(5000, 14000 - (score * 0.25)), // より長い時間
+        fuseTime: Math.max(5000, 14000 - (score * 0.25)),
         wobble: Math.random() * Math.PI,
         color: type === 'yellow' ? '#ffcc00' : '#3b5998',
         sizeLevel: 0
@@ -616,16 +634,19 @@ function getSortedPosition(type, index) {
 }
 
 function checkMerge(draggedBomb) {
-    if (!draggedBomb || draggedBomb.sizeLevel >= SIZE_LEVELS.length - 1) return null;
+    if (!draggedBomb) return null;
     
     for (let i = bombs.length - 1; i >= 0; i--) {
         const b = bombs[i];
         if (b === draggedBomb) continue;
         
         const dist = Math.hypot(b.x - draggedBomb.x, b.y - draggedBomb.y);
-        const levelData = SIZE_LEVELS[b.sizeLevel];
+        const levelData = getSizeLevel(b.sizeLevel);
         const mergeRadius = MERGE_DISTANCE * levelData.scale;
         
+        // 同じタイプ、同じサイズレベルなら合体可能
+        // 🧪取得前: 手動ドラッグで合体（コンボ半減）
+        // 🧪取得後: 自動合体もできる（コンボ維持）
         if (dist < mergeRadius && 
             b.type === draggedBomb.type && 
             b.sizeLevel === draggedBomb.sizeLevel) {
@@ -636,8 +657,8 @@ function checkMerge(draggedBomb) {
 }
 
 function mergeBombs(b1, b2, b2Index) {
-    const newLevel = Math.min(b1.sizeLevel + 1, SIZE_LEVELS.length - 1);
-    const levelData = SIZE_LEVELS[newLevel];
+    const newLevel = b1.sizeLevel + 1;
+    const levelData = getSizeLevel(newLevel);
     
     bombs.splice(b2Index, 1);
     
@@ -664,56 +685,99 @@ function mergeBombs(b1, b2, b2Index) {
     return b1;
 }
 
-function autoMergeBombs(maxLevel) {
-    let mergedCount = 0;
+const onStart = e => {
+    if(gameState !== 'PLAYING') return; 
+    const p = getPos(e);
     
-    // maxLevelまで自動合体
-    for (let targetLevel = 0; targetLevel < maxLevel; targetLevel++) {
-        let changed = true;
-        while (changed) {
-            changed = false;
+    // 🧪ビーカーのクリック判定
+    for (let i = beakers.length - 1; i >= 0; i--) {
+        const beaker = beakers[i];
+        const dist = Math.hypot(p.x - beaker.x, p.y - beaker.y);
+        if (dist < beaker.radius + 20) {
+            // 永続的に自動合体レベルアップ
+            autoMergeLevel = beaker.level;
+            currentBeakerIndex++; // 次のスケジュールへ
             
-            for (let i = 0; i < bombs.length; i++) {
-                const b1 = bombs[i];
-                if (b1.sizeLevel !== targetLevel) continue;
-                
-                for (let j = i + 1; j < bombs.length; j++) {
-                    const b2 = bombs[j];
-                    if (b2.sizeLevel !== targetLevel || b1.type !== b2.type) continue;
-                    
-                    const dist = Math.hypot(b1.x - b2.x, b1.y - b2.y);
-                    const levelData = SIZE_LEVELS[b1.sizeLevel];
-                    const mergeRadius = MERGE_DISTANCE * levelData.scale * 2; // 通常より広い範囲
-                    
-                    if (dist < mergeRadius && b1.sizeLevel < SIZE_LEVELS.length - 1) {
-                        // 合体実行（コンボは切れない）
-                        const newLevel = b1.sizeLevel + 1;
-                        const newLevelData = SIZE_LEVELS[newLevel];
-                        
-                        bombs.splice(j, 1);
-                        
-                        b1.sizeLevel = newLevel;
-                        b1.born = Date.now();
-                        b1.fuseTime = Math.max(4000, 14000 - (score * 0.3)) + newLevelData.fuseBonus;
-                        
-                        const mergeX = (b1.x + b2.x) / 2;
-                        const mergeY = (b1.y + b2.y) / 2;
-                        b1.x = mergeX;
-                        b1.y = mergeY;
-                        
-                        createMergeEffect(mergeX, mergeY, b1.color);
-                        mergedCount++;
-                        changed = true;
-                        break;
-                    }
-                }
-                if (changed) break;
-            }
+            createText(beaker.x, beaker.y - 40, `AUTO MERGE Lv${autoMergeLevel} UNLOCKED!`, "#ff66ff", 28);
+            createText(beaker.x, beaker.y + 40, `PERMANENT UPGRADE`, "#fff", 20);
+            applyShake(12);
+            
+            // ビーカーを削除
+            beakers.splice(i, 1);
+            return;
         }
     }
     
-    return mergedCount;
-}
+    // 掃除機のクリック判定
+    for (let i = vacuums.length - 1; i >= 0; i--) {
+        const vac = vacuums[i];
+        const dist = Math.hypot(p.x - vac.x, p.y - vac.y);
+        if (dist < vac.radius + 20) {
+            // 周囲のボムを吸収
+            const absorbRadius = 250;
+            let absorbed = 0;
+            
+            for (let j = bombs.length - 1; j >= 0; j--) {
+                const b = bombs[j];
+                const bombDist = Math.hypot(b.x - vac.x, b.y - vac.y);
+                if (bombDist < absorbRadius) {
+                    // 吸収エフェクト
+                    createParticles(b.x, b.y, b.color, 15, 10);
+                    bombs.splice(j, 1);
+                    absorbed++;
+                }
+            }
+            
+            // 他の掃除機も吸収
+            for (let j = vacuums.length - 1; j >= 0; j--) {
+                if (i === j) continue;
+                const vac2 = vacuums[j];
+                const vacDist = Math.hypot(vac2.x - vac.x, vac2.y - vac.y);
+                if (vacDist < absorbRadius) {
+                    createParticles(vac2.x, vac2.y, "#44ff44", 20, 12);
+                    vacuums.splice(j, 1);
+                    if (j < i) i--; // インデックス調整
+                    absorbed++;
+                }
+            }
+            
+            if (absorbed > 0) {
+                createText(vac.x, vac.y - 40, `ABSORBED ${absorbed}!`, "#44ff44", 28);
+                applyShake(10);
+            }
+            
+            // 使用した掃除機を削除
+            vacuums.splice(i, 1);
+            return;
+        }
+    }
+    
+    // ボムのドラッグ判定
+    let target = null;
+    let minDist = HIT_SLOP + BOMB_RADIUS;
+    let targetIdx = -1;
+    
+    for(let i=bombs.length-1; i>=0; i--) {
+        const b = bombs[i];
+        const levelData = getSizeLevel(b.sizeLevel);
+        const adjustedRadius = (b.r * levelData.scale) + HIT_SLOP;
+        const d = Math.hypot(p.x - b.x, p.y - b.y);
+        if(d < adjustedRadius) { 
+            minDist = d; 
+            target = b; 
+            targetIdx = i; 
+            break;
+        }
+    }
+    if(target) {
+        dragging = target;
+        touchOffset.x = p.x - target.x;
+        touchOffset.y = p.y - target.y;
+        dragging.vx = 0; dragging.vy = 0;
+        bombs.splice(targetIdx, 1);
+        bombs.push(target);
+    }
+};
 
 function checkZoneEntry(b) {
     const withinXYellow = b.x >= ZONES.yellow.x && b.x <= ZONES.yellow.x + ZONES.yellow.w;
@@ -732,7 +796,7 @@ function checkZoneEntry(b) {
             const bombIdx = bombs.indexOf(b);
             if (bombIdx > -1) bombs.splice(bombIdx, 1);
 
-            const levelData = SIZE_LEVELS[b.sizeLevel];
+            const levelData = getSizeLevel(b.sizeLevel);
             
             if (b.sizeLevel > 0) {
                 // 大きいボールでもコンボは継続
@@ -791,18 +855,25 @@ function update(ts) {
     }
 
     // 🧪ビーカーのスポーン（スコアが閾値を超えたら）
-    if (gameState === 'PLAYING' && beakers.length === 0 && score >= nextBeakerThreshold) {
-        const isPC = logicalW >= 768;
-        const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
-        
-        beakers.push({
-            x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth * 0.5,
-            y: -50,
-            vy: 3.5, // 掃除機より速い
-            radius: 30,
-            born: Date.now(),
-            level: autoMergeLevel + 1 // 次のレベル
-        });
+    if (gameState === 'PLAYING' && beakers.length === 0 && currentBeakerIndex < beakerSchedule.length) {
+        const threshold = beakerSchedule[currentBeakerIndex];
+        if (score >= threshold) {
+            const isPC = logicalW >= 768;
+            const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+            
+            // 現在のautoMergeLevelに基づいて次のレベルを決定
+            const nextLevel = autoMergeLevel + 1;
+            
+            beakers.push({
+                x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth * 0.5,
+                y: -50,
+                vy: 4.0, // より速く
+                radius: 30,
+                born: Date.now(),
+                level: nextLevel,
+                scheduleIndex: currentBeakerIndex
+            });
+        }
     }
 
     // 🧪ビーカーの移動（上から下へ直線的に落ちる）
@@ -810,9 +881,11 @@ function update(ts) {
         const beaker = beakers[i];
         beaker.y += beaker.vy;
         
-        // 画面下に出たら削除
+        // 画面下に出たら削除し、次のスケジュールに進む（取り逃し）
         if (beaker.y > logicalH + 100) {
             beakers.splice(i, 1);
+            // 5000点後に再出現
+            beakerSchedule.push(score + 5000);
         }
     }
 
@@ -878,6 +951,44 @@ function update(ts) {
 
     if (shakeTime > 0) shakeTime -= 1;
     
+    // 🧪取得後の自動合体チェック（ドラッグ中でないボムのみ）
+    if (autoMergeLevel > 0 && gameState === 'PLAYING') {
+        for (let i = 0; i < bombs.length; i++) {
+            const b1 = bombs[i];
+            if (b1 === dragging || b1.sizeLevel > autoMergeLevel - 1) continue;
+            
+            for (let j = i + 1; j < bombs.length; j++) {
+                const b2 = bombs[j];
+                if (b2 === dragging || b2.sizeLevel > autoMergeLevel - 1) continue;
+                if (b1.type !== b2.type || b1.sizeLevel !== b2.sizeLevel) continue;
+                
+                const dist = Math.hypot(b1.x - b2.x, b1.y - b2.y);
+                const levelData = getSizeLevel(b1.sizeLevel);
+                const mergeRadius = MERGE_DISTANCE * levelData.scale;
+                
+                if (dist < mergeRadius) {
+                    // 自動合体（コンボは切れない）
+                    const newLevel = b1.sizeLevel + 1;
+                    const newLevelData = getSizeLevel(newLevel);
+                    
+                    bombs.splice(j, 1);
+                    
+                    b1.sizeLevel = newLevel;
+                    b1.born = Date.now();
+                    b1.fuseTime = Math.max(4000, 14000 - (score * 0.3)) + newLevelData.fuseBonus;
+                    
+                    const mergeX = (b1.x + b2.x) / 2;
+                    const mergeY = (b1.y + b2.y) / 2;
+                    b1.x = mergeX;
+                    b1.y = mergeY;
+                    
+                    createMergeEffect(mergeX, mergeY, b1.color);
+                    break; // 1フレームに1回だけ
+                }
+            }
+        }
+    }
+    
     checkForMerges();
 
     for (let i = bombs.length - 1; i >= 0; i--) {
@@ -887,7 +998,7 @@ function update(ts) {
             b.y += b.vy;
             b.vx += Math.sin(ts / 500 + b.wobble) * 0.05;
 
-            const levelData = SIZE_LEVELS[b.sizeLevel];
+            const levelData = getSizeLevel(b.sizeLevel);
             const effectiveRadius = b.r * levelData.scale;
 
             // 湧き場所エリアの境界を計算（ドラッグ中でないボムのみ）
@@ -935,7 +1046,7 @@ function drawBomb(b, isStatic = false) {
     const pulse = (isUrgent && gameState === 'PLAYING') ? Math.sin(Date.now() / 40) * 4 : 0;
     const isHovered = !isStatic && !dragging && gameState === 'PLAYING' && Math.hypot(mousePos.x - b.x, mousePos.y - b.y) < b.r + HIT_SLOP;
 
-    const levelData = SIZE_LEVELS[b.sizeLevel];
+    const levelData = getSizeLevel(b.sizeLevel);
     const scale = levelData.scale;
 
     ctx.save();
@@ -1127,105 +1238,6 @@ function draw() {
     requestAnimationFrame((ts) => { update(ts); draw(); });
 }
 
-// ===== Interaction =====
-const onStart = e => {
-    if(gameState !== 'PLAYING') return; 
-    const p = getPos(e);
-    
-    // 🧪ビーカーのクリック判定
-    for (let i = beakers.length - 1; i >= 0; i--) {
-        const beaker = beakers[i];
-        const dist = Math.hypot(p.x - beaker.x, p.y - beaker.y);
-        if (dist < beaker.radius + 20) {
-            // 自動合体レベルアップ
-            autoMergeLevel = beaker.level;
-            nextBeakerThreshold += 10000; // 次は+10000点で出現
-            
-            // 自動合体実行
-            const mergedCount = autoMergeBombs(autoMergeLevel);
-            
-            if (mergedCount > 0) {
-                createText(beaker.x, beaker.y - 40, `AUTO MERGE Lv${autoMergeLevel}!`, "#ff66ff", 28);
-                createText(beaker.x, beaker.y + 40, `${mergedCount} MERGED`, "#fff", 20);
-                applyShake(12);
-            }
-            
-            // ビーカーを削除
-            beakers.splice(i, 1);
-            return;
-        }
-    }
-    
-    // 掃除機のクリック判定
-    for (let i = vacuums.length - 1; i >= 0; i--) {
-        const vac = vacuums[i];
-        const dist = Math.hypot(p.x - vac.x, p.y - vac.y);
-        if (dist < vac.radius + 20) {
-            // 周囲のボムを吸収
-            const absorbRadius = 250;
-            let absorbed = 0;
-            
-            for (let j = bombs.length - 1; j >= 0; j--) {
-                const b = bombs[j];
-                const bombDist = Math.hypot(b.x - vac.x, b.y - vac.y);
-                if (bombDist < absorbRadius) {
-                    // 吸収エフェクト
-                    createParticles(b.x, b.y, b.color, 15, 10);
-                    bombs.splice(j, 1);
-                    absorbed++;
-                }
-            }
-            
-            // 他の掃除機も吸収
-            for (let j = vacuums.length - 1; j >= 0; j--) {
-                if (i === j) continue;
-                const vac2 = vacuums[j];
-                const vacDist = Math.hypot(vac2.x - vac.x, vac2.y - vac.y);
-                if (vacDist < absorbRadius) {
-                    createParticles(vac2.x, vac2.y, "#44ff44", 20, 12);
-                    vacuums.splice(j, 1);
-                    if (j < i) i--; // インデックス調整
-                    absorbed++;
-                }
-            }
-            
-            if (absorbed > 0) {
-                createText(vac.x, vac.y - 40, `ABSORBED ${absorbed}!`, "#44ff44", 28);
-                applyShake(10);
-            }
-            
-            // 使用した掃除機を削除
-            vacuums.splice(i, 1);
-            return;
-        }
-    }
-    
-    let target = null;
-    let minDist = HIT_SLOP + BOMB_RADIUS;
-    let targetIdx = -1;
-    
-    for(let i=bombs.length-1; i>=0; i--) {
-        const b = bombs[i];
-        const levelData = SIZE_LEVELS[b.sizeLevel];
-        const adjustedRadius = (b.r * levelData.scale) + HIT_SLOP;
-        const d = Math.hypot(p.x - b.x, p.y - b.y);
-        if(d < adjustedRadius) { 
-            minDist = d; 
-            target = b; 
-            targetIdx = i; 
-            break;
-        }
-    }
-    if(target) {
-        dragging = target;
-        touchOffset.x = p.x - target.x;
-        touchOffset.y = p.y - target.y;
-        dragging.vx = 0; dragging.vy = 0;
-        bombs.splice(targetIdx, 1);
-        bombs.push(target);
-    }
-};
-
 const onMove = e => {
     const p = getPos(e);
     lastMousePos.x = mousePos.x;
@@ -1235,7 +1247,7 @@ const onMove = e => {
     
     if(!dragging || gameState !== 'PLAYING') return;
     
-    const levelData = SIZE_LEVELS[dragging.sizeLevel];
+    const levelData = getSizeLevel(dragging.sizeLevel);
     const dragWeight = levelData.dragWeight;
     
     const targetX = p.x - touchOffset.x;
@@ -1299,10 +1311,11 @@ function startGame() {
     vacuums = [];
     beakers = [];
     autoMergeLevel = 0;
-    nextBeakerThreshold = 10000;
+    beakerSchedule = [10000, 20000, 30000, 40000, 50000];
+    currentBeakerIndex = 0;
     lastSpawn = performance.now();
     lastVacuumSpawn = performance.now();
-    spawnInterval = 1200; // より緩やかな初期値
+    spawnInterval = 1200;
     scoreEl.innerText = "0";
     comboEl.innerText = "0";
     comboGroup.classList.remove('active');
