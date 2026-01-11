@@ -206,7 +206,6 @@
         const GROUND_Y = canvas.height - 40;
         const CEILING_Y = 40;
 
-        // --- 基礎物理パラメータ ---
         const GRAVITY_BASE = 2400;   
         const JUMP_FORCE_BASE = 850; 
         const SPEED_INITIAL = 360;   
@@ -219,14 +218,15 @@
             isNight: false,
             lives: 1,
             invincible: 0,
-            safety: 0,
+            safety: 0, // 切り替え時の無敵時間
             wallCount: 0,
             ultUsed: 0,
             ultGauge: 0,
             isUlt: false,
             ultTimer: 0,
             lastTime: 0,
-            obsTimer: 0
+            obsTimer: 0,
+            isPhasing: false
         };
 
         let dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
@@ -239,7 +239,6 @@
             if (s < 1500) return { label: 'S', color: '#f59e0b', neon: true };
             if (s < 2000) return { label: 'SS', color: '#ec4899', neon: true };
             if (s < 2500) return { label: 'SSS', color: '#8b5cf6', neon: true };
-            
             if (s < 3000) return { label: 'SSS+', color: '#8b5cf6', neon: true };
             if (s < 3500) return { label: 'X', color: '#ef4444', neon: true };
             if (s < 4000) return { label: 'XX', color: '#ef4444', neon: true };
@@ -288,10 +287,11 @@
             const globalMult = getGlobalSpeedMultiplier();
             const currentRunSpeed = Math.min(SPEED_MAX_LIMIT, gameState.baseGameSpeed * globalMult);
 
+            // 昼夜切り替えロジック
             let night = (gameState.score >= 1000) && (Math.floor((gameState.score - 1000) / 600) % 2 === 0);
             if (night !== gameState.isNight) {
                 gameState.isNight = night;
-                gameState.safety = 0.8;
+                gameState.safety = 0.8; // 切り替え時の無敵を付与
                 document.body.classList.toggle("night-mode", night);
                 canvas.classList.toggle("night-canvas", night);
                 document.getElementById("titleText").style.color = night ? "#fff" : "#000";
@@ -319,32 +319,52 @@
             dino.vy += grav * dt;
             dino.y += dino.vy * dt;
 
+            let onSurface = false;
             if (!gameState.isNight) {
-                if (dino.y > GROUND_Y - dino.h) { dino.y = GROUND_Y - dino.h; dino.vy = 0; dino.jumps = 0; }
+                if (dino.y >= GROUND_Y - dino.h) { 
+                    dino.y = GROUND_Y - dino.h; dino.vy = 0; dino.jumps = 0; onSurface = true; 
+                }
+                if (dino.y < 0) { dino.y = 0; dino.vy = 0; }
             } else {
-                if (dino.y < CEILING_Y) { dino.y = CEILING_Y; dino.vy = 0; dino.jumps = 0; }
+                if (dino.y <= CEILING_Y) { 
+                    dino.y = CEILING_Y; dino.vy = 0; dino.jumps = 0; onSurface = true; 
+                }
+                if (dino.y > canvas.height - dino.h) { dino.y = canvas.height - dino.h; dino.vy = 0; }
             }
+
+            // 静止している時のみ透過可能
+            gameState.isPhasing = onSurface && Math.abs(dino.vy) < 1;
 
             gameState.obsTimer -= dt;
             if (gameState.obsTimer <= 0) {
                 const r = Math.random();
                 let type = "normal";
-                let color = gameState.isNight ? "#fff" : "#111";
                 let h = 40 + Math.random() * 60;
+                let color = gameState.isNight ? "#ffffff" : "#111111"; 
 
-                if (gameState.score > 500 && r < 0.22) {
-                    type = "rushing"; color = "#ff3e3e"; h = 35;
+                // 透過壁は最初から(スコア0から)出現
+                if (r < 0.20) {
+                    type = "transparent";
+                    h = 160; 
+                    color = gameState.isNight ? "rgba(0, 150, 255, 0.6)" : "rgba(255, 120, 0, 0.6)";
+                } else if (gameState.score > 500 && r < 0.40) {
+                    type = "rushing"; 
+                    color = "#ff3e3e"; 
+                    h = 35;
                 }
+
+                const yPos = gameState.isNight ? CEILING_Y : GROUND_Y - h;
 
                 obstacles.push({
                     x: canvas.width,
-                    y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
-                    w: 30, h: h,
+                    y: yPos,
+                    w: type === "transparent" ? 45 : 30, 
+                    h: h,
                     type: type, color: color,
                     passed: false
                 });
 
-                let intervalFactor = gameState.score >= 2000 ? 0.7 : 1.25;
+                let intervalFactor = gameState.score >= 2000 ? 0.6 : 1.1;
                 gameState.obsTimer = intervalFactor * (SPEED_INITIAL / currentRunSpeed) + Math.random() * 0.4;
             }
 
@@ -364,6 +384,8 @@
                     if (gameState.isUlt) {
                         obstacles.splice(i, 1);
                         gameState.score += 25;
+                    } else if (o.type === "transparent" && gameState.isPhasing) {
+                        // 静止中は透過
                     } else if (gameState.invincible <= 0 && gameState.safety <= 0) {
                         gameState.lives--;
                         updateLifeDisplay();
@@ -381,6 +403,7 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
             ctx.strokeStyle = gameState.isNight ? "#333" : "#eee";
             ctx.setLineDash([10, 10]);
             ctx.beginPath();
@@ -389,26 +412,45 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            if (gameState.invincible <= 0 || Math.floor(Date.now() / 100) % 2 === 0) {
-                const animSpeed = 150 / getGlobalSpeedMultiplier();
-                const frame = Math.floor(Date.now() / animSpeed) % 4;
-                let sx = 0;
-                if (gameState.isUlt) sx = (2 + frame) * 64;
-                else if (gameState.isNight) sx = 64;
-
-                ctx.save();
-                if (gameState.isNight) {
-                    ctx.translate(dino.x + dino.w/2, dino.y + dino.h/2);
-                    ctx.scale(1, -1);
-                    ctx.translate(-(dino.x + dino.w/2), -(dino.y + dino.h/2));
-                }
-                ctx.drawImage(playerImg, sx, 0, 64, 64, dino.x-2, dino.y-2, dino.w+4, dino.h+4);
-                ctx.restore();
+            ctx.save();
+            if ((gameState.invincible > 0 || gameState.safety > 0) && Math.floor(Date.now() / 100) % 2 === 0) {
+                ctx.globalAlpha = 0.3;
+            } else if (gameState.isPhasing) {
+                ctx.globalAlpha = 0.6;
             }
+
+            const animSpeed = 150 / getGlobalSpeedMultiplier();
+            const frame = Math.floor(Date.now() / animSpeed) % 4;
+            let sx = 0;
+            if (gameState.isUlt) sx = (2 + frame) * 64;
+            else if (gameState.isNight) sx = 64;
+
+            if (gameState.isNight) {
+                ctx.translate(dino.x + dino.w/2, dino.y + dino.h/2);
+                ctx.scale(1, -1);
+                ctx.translate(-(dino.x + dino.w/2), -(dino.y + dino.h/2));
+            }
+            ctx.drawImage(playerImg, sx, 0, 64, 64, dino.x-2, dino.y-2, dino.w+4, dino.h+4);
+            ctx.restore();
 
             obstacles.forEach(o => {
                 ctx.fillStyle = o.color;
                 ctx.fillRect(o.x, o.y, o.w, o.h);
+                
+                if(o.type === "rushing") {
+                    ctx.strokeStyle = "#fff";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(o.x, o.y, o.w, o.h);
+                } else if (o.type === "transparent") {
+                    ctx.strokeStyle = o.color.replace("0.6", "1.0");
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(o.x, o.y, o.w, o.h);
+                    
+                    ctx.fillStyle = "rgba(255,255,255,0.2)";
+                    for(let j=0; j<o.h; j+=20) {
+                        ctx.fillRect(o.x, o.y + j, o.w, 2);
+                    }
+                }
             });
         }
 
@@ -431,7 +473,7 @@
                 score: 0, baseGameSpeed: SPEED_INITIAL, isGameOver: false, isNight: false,
                 lives: 1, invincible: 0, safety: 0, wallCount: 0, ultUsed: 0,
                 ultGauge: 0, isUlt: false, ultTimer: 0, lastTime: performance.now(),
-                obsTimer: 0
+                obsTimer: 0, isPhasing: false
             };
             dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
             obstacles = [];
