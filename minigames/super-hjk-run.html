@@ -197,8 +197,14 @@
         const rankLabel = document.getElementById("rankLabel");
         const rankContainer = document.getElementById("rankContainer");
 
+        // --- 画像読み込みとフォールバックの管理 ---
+        let isImageLoaded = false;
+        let isImageError = false;
         const playerImg = new Image();
-        playerImg.src = "../resource/Hjk.png";
+        playerImg.src = "../resource/Hjk.png"; 
+
+        playerImg.onload = () => { isImageLoaded = true; };
+        playerImg.onerror = () => { isImageError = true; };
         
         canvas.width = 800;
         canvas.height = 400;
@@ -226,7 +232,8 @@
             ultTimer: 0,
             lastTime: 0,
             obsTimer: 0,
-            itemTimer: 2.0,
+            lastHeartMilestone: 0, 
+            isHeartPending: false, 
             isPhasing: false
         };
 
@@ -247,7 +254,6 @@
             if (s < 4500) return { label: 'XXX', color: '#ef4444', neon: true };
             if (s < 5000) return { label: 'XXX+', color: '#ef4444', neon: true };
             if (s < 5500) return { label: 'U', color: '#fff', neon: true, ultra: true };
-            
             const level = Math.floor((s - 6000) / 500) + 3;
             return { label: 'U' + level, color: '#fff', neon: true, ultra: true };
         }
@@ -334,7 +340,21 @@
 
             gameState.isPhasing = onSurface && Math.abs(dino.vy) < 1;
 
-            // 障害物生成ロジック
+            const currentMilestone = Math.floor(gameState.score / 1000) * 1000;
+            if (currentMilestone >= 1000 && currentMilestone > gameState.lastHeartMilestone) {
+                gameState.isHeartPending = true;
+                gameState.lastHeartMilestone = currentMilestone;
+            }
+
+            if (gameState.isHeartPending && gameState.obsTimer > 0.6) {
+                items.push({
+                    x: canvas.width,
+                    y: gameState.isNight ? CEILING_Y + 10 : GROUND_Y - 40,
+                    w: 30, h: 30, type: "life"
+                });
+                gameState.isHeartPending = false;
+            }
+
             gameState.obsTimer -= dt;
             if (gameState.obsTimer <= 0) {
                 const r = Math.random();
@@ -349,7 +369,6 @@
                         y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
                         w: 45, h: h, type: "transparent", color: color, passed: false
                     });
-                    // 2段ジャンプの滞空時間を考慮し、透過壁の後のマージンをさらに広げる
                     addedInterval = 0.45;
                 } else {
                     const h = 40 + Math.random() * 60;
@@ -360,7 +379,6 @@
                     });
                 }
 
-                // 赤い壁は独立。重なりすぎを防ぐため出現距離を微調整
                 if (gameState.score > 500 && Math.random() < 0.25) {
                     obstacles.push({
                         x: canvas.width + 300, 
@@ -369,22 +387,8 @@
                     });
                 }
 
-                // 出現間隔の計算 (2段ジャンプの着地スペースを考慮し、0.55から0.6に微増)
                 let intervalFactor = gameState.score >= 2000 ? 0.6 : 1.1; 
                 gameState.obsTimer = intervalFactor * (SPEED_INITIAL / currentRunSpeed) + Math.random() * 0.4 + addedInterval;
-            }
-
-            // 回復アイテム生成ロジック
-            gameState.itemTimer -= dt;
-            if (gameState.itemTimer <= 0 && gameState.lives < 1) {
-                if (gameState.obsTimer > 0.5) {
-                    items.push({
-                        x: canvas.width,
-                        y: gameState.isNight ? CEILING_Y + 10 : GROUND_Y - 40,
-                        w: 30, h: 30, type: "life"
-                    });
-                    gameState.itemTimer = 15 + Math.random() * 10;
-                }
             }
 
             items.forEach((item, idx) => {
@@ -393,6 +397,8 @@
                     if (gameState.lives < 1) {
                         gameState.lives++;
                         updateLifeDisplay();
+                    } else {
+                        gameState.score += 100;
                     }
                     items.splice(idx, 1);
                 }
@@ -442,8 +448,12 @@
             ctx.setLineDash([]);
 
             items.forEach(item => {
+                ctx.save();
                 ctx.font = "24px serif";
-                ctx.fillText("❤️", item.x, item.y + 24);
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("❤️", item.x + item.w/2, item.y + item.h/2);
+                ctx.restore();
             });
 
             ctx.save();
@@ -453,18 +463,35 @@
                 ctx.globalAlpha = 0.6;
             }
 
-            const animSpeed = 150 / getGlobalSpeedMultiplier();
-            const frame = Math.floor(Date.now() / animSpeed) % 4;
+            // --- スプライト切り出しロジックの修正 ---
             let sx = 0;
-            if (gameState.isUlt) sx = (2 + frame) * 64;
-            else if (gameState.isNight) sx = 64;
+            if (gameState.isUlt) {
+                // ULT時: 3〜6コマ目 (2〜5インデックス) をループ
+                const ultAnimSpeed = 100; // ULTは少し速めに
+                const ultFrame = Math.floor(Date.now() / ultAnimSpeed) % 4;
+                sx = (2 + ultFrame) * 64;
+            } else if (gameState.isNight) {
+                // 夜モード: 2コマ目 (1インデックス) 固定
+                sx = 64;
+            } else {
+                // 通常モード: 1コマ目 (0インデックス) 固定
+                sx = 0;
+            }
 
             if (gameState.isNight) {
                 ctx.translate(dino.x + dino.w/2, dino.y + dino.h/2);
                 ctx.scale(1, -1);
                 ctx.translate(-(dino.x + dino.w/2), -(dino.y + dino.h/2));
             }
-            ctx.drawImage(playerImg, sx, 0, 64, 64, dino.x-2, dino.y-2, dino.w+4, dino.h+4);
+            
+            // プレイヤー描画
+            if (isImageLoaded && !isImageError) {
+                ctx.drawImage(playerImg, sx, 0, 64, 64, dino.x-2, dino.y-2, dino.w+4, dino.h+4);
+            } else {
+                // 画像が読み込まれない時は■（矩形）にする
+                ctx.fillStyle = gameState.isNight ? "#fff" : "#333";
+                ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+            }
             ctx.restore();
 
             obstacles.forEach(o => {
@@ -479,7 +506,6 @@
                     ctx.strokeStyle = o.color.replace("0.6", "1.0");
                     ctx.lineWidth = 3;
                     ctx.strokeRect(o.x, o.y, o.w, o.h);
-                    
                     ctx.fillStyle = "rgba(255,255,255,0.2)";
                     for(let j=0; j<o.h; j+=20) {
                         ctx.fillRect(o.x, o.y + j, o.w, 2);
@@ -507,7 +533,7 @@
                 score: 0, baseGameSpeed: SPEED_INITIAL, isGameOver: false, isNight: false,
                 lives: 1, invincible: 0, safety: 0, wallCount: 0, ultUsed: 0,
                 ultGauge: 0, isUlt: false, ultTimer: 0, lastTime: performance.now(),
-                obsTimer: 0, itemTimer: 2.0, isPhasing: false
+                obsTimer: 0, lastHeartMilestone: 0, isHeartPending: false, isPhasing: false
             };
             dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
             obstacles = [];
