@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ELECTRO RECOVERY</title>
     <style>
         :root {
@@ -10,6 +10,10 @@
             --indigo-glow: #3b5998;
             --accent-yellow: #ffcc00;
             --neon-red: #ff0044;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background: #050508;
@@ -19,6 +23,7 @@
             align-items: center;
             justify-content: flex-start;
             height: 100vh;
+            height: -webkit-fill-available; /* Mobile height fix */
             margin: 0;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             overflow: hidden;
@@ -27,45 +32,41 @@
 
         .header-ui {
             width: 100%;
-            height: 100px;
+            height: 80px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 60px;
+            gap: 20px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%);
             border-bottom: 1px solid rgba(255,255,255,0.08);
             z-index: 10;
+            flex-shrink: 0;
         }
 
         .stat-group {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 140px;
+            min-width: 80px;
         }
 
         .score-label { 
-            font-size: 10px; 
+            font-size: 9px; 
             color: rgba(255,255,255,0.4); 
             text-transform: uppercase; 
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             margin-bottom: 2px;
         }
         .score-val { 
-            font-size: 48px; 
+            font-size: 28px; 
             font-weight: 900; 
             font-variant-numeric: tabular-nums; 
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
         }
 
         #rank-display {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 900;
             font-style: italic;
-            background: linear-gradient(45deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
         
         #combo-group {
@@ -92,15 +93,11 @@
 
         #game-container {
             position: relative;
-            width: 98vw;
+            width: 100vw;
             flex: 1; 
-            max-width: 1400px;
-            margin: 10px 0;
             background: #000;
-            border-radius: 12px;
             overflow: hidden;
             display: flex;
-            border: 1px solid rgba(255,255,255,0.05);
         }
 
         canvas {
@@ -108,6 +105,7 @@
             width: 100%;
             height: 100%;
             display: block;
+            touch-action: none;
         }
         
         #overlay-screen {
@@ -123,26 +121,21 @@
             backdrop-filter: blur(15px);
             padding: 20px;
         }
-        h1 { font-size: 72px; font-weight: 900; margin: 0; letter-spacing: -2px; text-align: center; line-height: 1; }
+        h1 { font-size: 48px; font-weight: 900; margin: 0; letter-spacing: -1px; text-align: center; line-height: 1; }
         
         .rank-large {
-            font-size: 120px;
+            font-size: 80px;
             font-weight: 900;
-            margin: -10px 0;
-            background: linear-gradient(to bottom, #fff, #666);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px rgba(255,255,255,0.2));
+            margin: 10px 0;
         }
 
         .result-stats {
             display: flex;
-            gap: 30px;
-            margin: 20px 0;
-            padding: 20px 40px;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px 25px;
             background: rgba(255,255,255,0.05);
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .res-item {
@@ -152,21 +145,19 @@
         }
 
         .res-label {
-            font-size: 10px;
+            font-size: 9px;
             color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
-            margin-bottom: 5px;
             text-transform: uppercase;
         }
 
         .res-val {
-            font-size: 32px;
+            font-size: 20px;
             font-weight: 900;
         }
 
         .btn {
-            padding: 20px 60px;
-            font-size: 24px;
+            padding: 15px 40px;
+            font-size: 18px;
             background: #fff;
             color: #000;
             border: none;
@@ -175,10 +166,18 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all 0.2s;
         }
-        .btn:hover { background: var(--accent-yellow); transform: translateY(-2px); }
         .hidden { opacity: 0 !important; pointer-events: none !important; }
+
+        /* Tablet/Desktop scale up */
+        @media (min-width: 768px) {
+            .header-ui { height: 100px; gap: 60px; }
+            .score-val { font-size: 48px; }
+            #rank-display { font-size: 32px; }
+            h1 { font-size: 72px; }
+            .rank-large { font-size: 120px; }
+            .res-val { font-size: 32px; }
+        }
     </style>
 </head>
 <body>
@@ -220,7 +219,7 @@
                 </div>
             </div>
 
-            <p id="status-msg" style="color: #ccc; margin: 10px 0 40px; text-align: center; max-width: 500px; line-height: 1.6;">
+            <p id="status-msg" style="color: #ccc; margin: 10px 0 30px; text-align: center; max-width: 320px; line-height: 1.6; font-size: 14px;">
                 ドラッグして色を仕分けろ。<br>ミスは許されない。
             </p>
             <button class="btn" onclick="startGame()" id="action-btn">INITIALIZE</button>
@@ -244,20 +243,19 @@ const actionBtn = document.getElementById("action-btn");
 
 // ===== Asset Loading =====
 const bombSprite = new Image();
-bombSprite.src = "../resource/HjkBom.png"; // 128x64のスプライト画像（64x64が2枚）
+bombSprite.src = "../resource/HjkBom.png"; 
 
 let imgReady = false;
 bombSprite.onload = () => { imgReady = true; };
-bombSprite.onerror = () => { console.warn("Resource not found: ../resource/HjkBom.png"); };
 
 // ===== Constants & Config =====
 let ZONES = {};
-const GRID = { padding: 45 };
-const BOMB_RADIUS = 25;
+const GRID = { padding: 35 }; 
+const BOMB_RADIUS = 22;
 const TILE_SIZE = 64; 
-const DRAW_SIZE = 64; 
-const HIT_SLOP = 60; 
-const VISUAL_CAPACITY = 80; 
+const DRAW_SIZE = 54; 
+const HIT_SLOP = 50; 
+const VISUAL_CAPACITY = 100; 
 
 // ===== Game State =====
 let gameState = 'START'; 
@@ -310,27 +308,40 @@ function updateRankUI() {
 // ===== Setup =====
 function resize() {
     const container = document.getElementById("game-container");
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    // UI layout scaling for mobile
+    const logicalWidth = rect.width;
+    const logicalHeight = rect.height;
 
-    const zoneW = Math.min(280, canvas.width * 0.28);
-    const marginY = canvas.height * 0.12;
-    const zoneH = canvas.height * 0.76; 
+    const zoneW = Math.min(logicalWidth * 0.3, 200);
+    const marginY = logicalHeight * 0.1;
+    const zoneH = logicalHeight * 0.8; 
     
     ZONES = {
         yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
-        indigo: { x: canvas.width - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+        indigo: { x: logicalWidth - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
     };
+
+    // Update grid padding for mobile
+    GRID.padding = Math.min(35, zoneW / 4);
 }
+
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 resize();
 
 // ===== FX Utils =====
-function createText(x, y, text, color, size = 32) {
-    floatingTexts.push({ x, y, text, color, life: 1.0, vy: -2, size });
+function createText(x, y, text, color, size = 24) {
+    floatingTexts.push({ x, y, text, color, life: 1.0, vy: -1.5, size });
 }
 
-function createParticles(x, y, color, count = 20, speed = 12) {
+function createParticles(x, y, color, count = 10, speed = 8) {
     for (let i = 0; i < count; i++) {
         const ang = Math.random() * Math.PI * 2;
         const s = Math.random() * speed;
@@ -338,31 +349,31 @@ function createParticles(x, y, color, count = 20, speed = 12) {
             x, y,
             vx: Math.cos(ang) * s,
             vy: Math.sin(ang) * s,
-            r: Math.random() * 4 + 1,
+            r: Math.random() * 3 + 1,
             color,
             life: 1.0,
-            decay: 0.02 + Math.random() * 0.02
+            decay: 0.03 + Math.random() * 0.03
         });
     }
 }
 
-function applyShake(intensity = 15) {
+function applyShake(intensity = 10) {
     shakeTime = intensity;
 }
 
 function createBigExplosion(x, y) {
-    applyShake(20);
-    for (let i = 0; i < 50; i++) {
+    applyShake(15);
+    for (let i = 0; i < 30; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const s = Math.random() * 25;
+        const s = Math.random() * 20;
         particles.push({
             x, y,
             vx: Math.cos(ang) * s,
             vy: Math.sin(ang) * s,
-            r: Math.random() * 8 + 2,
+            r: Math.random() * 6 + 1,
             color: Math.random() > 0.3 ? "#ff4400" : (Math.random() > 0.5 ? "#ffcc00" : "#fff"),
             life: 1.0,
-            decay: 0.015
+            decay: 0.02
         });
     }
 }
@@ -386,7 +397,7 @@ async function triggerChainExplosionSequence(wrongZoneType, wrongBomb, reason) {
     for (let i = 0; i < explosionLimit; i++) {
         const b = targetList.pop();
         if (b) createBigExplosion(b.x, b.y);
-        await new Promise(r => setTimeout(r, 30));
+        await new Promise(r => setTimeout(r, 40));
     }
     sortedBombs[wrongZoneType] = [];
 
@@ -394,14 +405,17 @@ async function triggerChainExplosionSequence(wrongZoneType, wrongBomb, reason) {
         const b = bombs[i];
         createBigExplosion(b.x, b.y);
         bombs.splice(i, 1);
-        if (i % 3 === 0) await new Promise(r => setTimeout(r, 5));
+        if (i % 3 === 0) await new Promise(r => setTimeout(r, 10));
     }
 
-    setTimeout(() => doGameOver(reason), 1000);
+    setTimeout(() => doGameOver(reason), 800);
 }
 
 // ===== Logic =====
 function spawnBomb() {
+    const logicalW = canvas.width / (window.devicePixelRatio || 1);
+    const logicalH = canvas.height / (window.devicePixelRatio || 1);
+
     const isIndigo = Math.random() < 0.5;
     const type = isIndigo ? "indigo" : "yellow";
     const spriteIndex = isIndigo ? 1 : 0;
@@ -409,13 +423,13 @@ function spawnBomb() {
     const topSpawnChance = score < 1000 ? 0 : Math.min(0.6, (score - 1000) / 15000);
     const spawnFromTop = Math.random() < topSpawnChance;
     
-    const startY = spawnFromTop ? -40 : canvas.height + 40;
-    const vyBase = spawnFromTop ? (2.5 + score/5000) : -(2.5 + score/5000);
+    const startY = spawnFromTop ? -40 : logicalH + 40;
+    const vyBase = spawnFromTop ? (2.0 + score/6000) : -(2.0 + score/6000);
 
     bombs.push({
-        x: canvas.width / 2 + (Math.random() - 0.5) * (canvas.width * 0.4),
+        x: logicalW / 2 + (Math.random() - 0.5) * (logicalW * 0.3),
         y: startY,
-        vx: (Math.random() - 0.5) * (3 + score/8000),
+        vx: (Math.random() - 0.5) * (2 + score/10000),
         vy: vyBase + (Math.random() - 0.5) * 1,
         r: BOMB_RADIUS,
         type,
@@ -429,14 +443,14 @@ function spawnBomb() {
 
 function getSortedPosition(type, index) {
     const zone = ZONES[type];
-    const cols = Math.floor((zone.w - 30) / GRID.padding);
+    const cols = Math.floor((zone.w - 20) / GRID.padding);
     const visualIndex = index % VISUAL_CAPACITY;
     
     const col = visualIndex % Math.max(1, cols);
     const row = Math.floor(visualIndex / Math.max(1, cols));
     
-    const startX = type === 'yellow' ? 40 : zone.x + 40;
-    const startY = zone.y + 60;
+    const startX = type === 'yellow' ? 25 : zone.x + 25;
+    const startY = zone.y + 40;
     return {
         x: startX + (col * GRID.padding),
         y: startY + (row * GRID.padding)
@@ -472,15 +486,16 @@ function checkZoneEntry(b) {
             updateRankUI();
 
             if (oldRank !== getRank(score).name) {
-                createText(canvas.width/2, canvas.height/2, "RANK UP!", "#fff", 60);
+                const logicalW = canvas.width / (window.devicePixelRatio || 1);
+                const logicalH = canvas.height / (window.devicePixelRatio || 1);
+                createText(logicalW/2, logicalH/2, "RANK UP!", "#fff", 40);
                 applyShake(10);
             }
 
             createText(b.x, b.y, `+${points}`, ZONES[zoneType].color);
-            createParticles(b.x, b.y, ZONES[zoneType].color, 12);
+            createParticles(b.x, b.y, ZONES[zoneType].color, 8);
             return true;
         } else {
-            // 仕分けミス時の原因変更
             triggerChainExplosionSequence(zoneType, b, "原因：扱い方を間違えた末路");
             return false;
         }
@@ -491,10 +506,13 @@ function checkZoneEntry(b) {
 function update(ts) {
     if (gameState !== 'PLAYING' && gameState !== 'EXPLODING') return;
 
+    const logicalW = canvas.width / (window.devicePixelRatio || 1);
+    const logicalH = canvas.height / (window.devicePixelRatio || 1);
+
     if (gameState === 'PLAYING' && ts - lastSpawn > spawnInterval) {
         spawnBomb();
         lastSpawn = ts;
-        spawnInterval = Math.max(250, 1800 - (score * 0.2));
+        spawnInterval = Math.max(300, 1800 - (score * 0.2));
     }
 
     if (Date.now() - lastMatchTime > 3000) {
@@ -509,19 +527,24 @@ function update(ts) {
         if (b !== dragging) {
             b.x += b.vx;
             b.y += b.vy;
-            b.vx += Math.sin(ts / 500 + b.wobble) * 0.08;
+            b.vx += Math.sin(ts / 500 + b.wobble) * 0.05;
 
             if (b.x < b.r) { b.vx = Math.abs(b.vx); b.x = b.r; }
-            if (b.x > canvas.width - b.r) { b.vx = -Math.abs(b.vx); b.x = canvas.width - b.r; }
-            if (b.y < b.r) { b.vy = Math.abs(b.vy); b.y = b.r; }
-            if (b.y > canvas.height - b.r) { b.vy = -Math.abs(b.vy); b.y = canvas.height - b.r; }
+            if (b.x > logicalW - b.r) { b.vx = -Math.abs(b.vx); b.x = logicalW - b.r; }
+            
+            // Allow them to slightly exit top/bottom but bounce if far out
+            if (b.y < -100 || b.y > logicalH + 100) {
+                // Keep them within logic or recycle if missed? 
+                // For this game, let's bounce them inside the logical area
+                if (b.y < -50) { b.vy = Math.abs(b.vy); }
+                if (b.y > logicalH + 50) { b.vy = -Math.abs(b.vy); }
+            }
         }
         if (gameState === 'PLAYING' && Date.now() - b.born > b.fuseTime) {
             finalCounts.yellow = sortedBombs.yellow.length;
             finalCounts.indigo = sortedBombs.indigo.length;
             createBigExplosion(b.x, b.y);
             bombs.splice(i, 1);
-            // タイムアップ時の原因変更
             doGameOver("原因：突然の裏切り");
         }
     }
@@ -531,7 +554,7 @@ function update(ts) {
 function drawBomb(b, isStatic = false) {
     const age = Date.now() - b.born;
     const isUrgent = !isStatic && age > b.fuseTime * 0.75;
-    const pulse = (isUrgent && gameState === 'PLAYING') ? Math.sin(Date.now() / 40) * 5 : 0;
+    const pulse = (isUrgent && gameState === 'PLAYING') ? Math.sin(Date.now() / 40) * 4 : 0;
     const isHovered = !isStatic && !dragging && gameState === 'PLAYING' && Math.hypot(mousePos.x - b.x, mousePos.y - b.y) < b.r + HIT_SLOP;
 
     ctx.save();
@@ -548,11 +571,9 @@ function drawBomb(b, isStatic = false) {
             -currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize 
         );
         
-        if (isHovered) {
+        if (isHovered && !('ontouchstart' in window)) {
             ctx.strokeStyle = "#fff";
             ctx.lineWidth = 2;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "#fff";
             ctx.strokeRect(-currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize);
         }
     } else {
@@ -560,21 +581,17 @@ function drawBomb(b, isStatic = false) {
         ctx.arc(0, 0, b.r + pulse, 0, Math.PI*2);
         ctx.fillStyle = b.color;
         ctx.fill();
-        if (isHovered) {
-            ctx.strokeStyle = "#fff";
-            ctx.lineWidth = 4;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = "#fff";
-            ctx.stroke();
-        }
     }
     ctx.restore();
 }
 
 function draw() {
+    const logicalW = canvas.width / (window.devicePixelRatio || 1);
+    const logicalH = canvas.height / (window.devicePixelRatio || 1);
+
     ctx.save();
     if (shakeTime > 0) ctx.translate((Math.random()-0.5)*shakeTime, (Math.random()-0.5)*shakeTime);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, logicalW, logicalH);
 
     Object.entries(ZONES).forEach(([key, z]) => {
         const isYellow = key === 'yellow';
@@ -584,14 +601,14 @@ function draw() {
         ctx.fillStyle = gradient;
         ctx.fillRect(z.x, z.y, z.w, z.h);
         ctx.strokeStyle = z.color;
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.beginPath();
         const lineX = isYellow ? z.x + z.w : z.x;
         ctx.moveTo(lineX, z.y); ctx.lineTo(lineX, z.y + z.h);
         ctx.stroke();
 
-        ctx.setLineDash([10, 5]);
-        ctx.lineWidth = 2; ctx.globalAlpha = 0.6;
+        ctx.setLineDash([8, 4]);
+        ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
         ctx.beginPath(); ctx.moveTo(z.x, z.y); ctx.lineTo(z.x + z.w, z.y); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(z.x, z.y + z.h); ctx.lineTo(z.x + z.w, z.y + z.h); ctx.stroke();
         ctx.setLineDash([]); ctx.globalAlpha = 1.0;
@@ -615,7 +632,7 @@ function draw() {
         ctx.font = `900 ${t.size}px 'Inter'`;
         ctx.textAlign = "center";
         ctx.fillText(t.text, t.x, t.y);
-        t.y += t.vy; t.life -= 0.02;
+        t.y += t.vy; t.life -= 0.025;
         if(t.life <= 0) floatingTexts.splice(i, 1);
     });
     ctx.restore();
@@ -629,6 +646,7 @@ const onStart = e => {
     let target = null;
     let minDist = HIT_SLOP + BOMB_RADIUS;
     let targetIdx = -1;
+    
     for(let i=bombs.length-1; i>=0; i--) {
         const b = bombs[i];
         const d = Math.hypot(p.x - b.x, p.y - b.y);
@@ -650,7 +668,7 @@ const onMove = e => {
     if(!dragging || gameState !== 'PLAYING') return;
     dragging.x = p.x - touchOffset.x;
     dragging.y = p.y - touchOffset.y;
-    e.preventDefault();
+    if(e.cancelable) e.preventDefault();
 };
 
 const onEnd = () => {
@@ -663,9 +681,14 @@ function getPos(e) {
     const r = canvas.getBoundingClientRect();
     const cx = e.touches ? e.touches[0].clientX : e.clientX;
     const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    // Calculate relative pos within the rect, then map to logical canvas size
+    const logicalW = r.width;
+    const logicalH = r.height;
+    
     return {
-        x: (cx - r.left) * (canvas.width / r.width),
-        y: (cy - r.top) * (canvas.height / r.height)
+        x: (cx - r.left),
+        y: (cy - r.top)
     };
 }
 
@@ -711,7 +734,6 @@ function doGameOver(reason) {
     document.getElementById("res-total").innerText = finalCounts.yellow + finalCounts.indigo;
     
     resultBox.classList.remove('hidden');
-    // 指定された原因テキストを表示
     statusMsg.innerHTML = `<span style="color: #fff; font-weight: bold;">${reason}</span><br>FINAL SCORE: ${score}`;
     
     actionBtn.innerText = "REBOOT";
