@@ -218,7 +218,7 @@
             isNight: false,
             lives: 1,
             invincible: 0,
-            safety: 0, // 切り替え時の無敵時間
+            safety: 0,
             wallCount: 0,
             ultUsed: 0,
             ultGauge: 0,
@@ -226,11 +226,13 @@
             ultTimer: 0,
             lastTime: 0,
             obsTimer: 0,
+            itemTimer: 2.0,
             isPhasing: false
         };
 
         let dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
         let obstacles = [];
+        let items = [];
 
         function getRank(s) {
             if (s < 500) return { label: 'C', color: '#a3a3a3', neon: false };
@@ -245,7 +247,6 @@
             if (s < 4500) return { label: 'XXX', color: '#ef4444', neon: true };
             if (s < 5000) return { label: 'XXX+', color: '#ef4444', neon: true };
             if (s < 5500) return { label: 'U', color: '#fff', neon: true, ultra: true };
-            if (s < 6000) return { label: 'U2', color: '#fff', neon: true, ultra: true };
             
             const level = Math.floor((s - 6000) / 500) + 3;
             return { label: 'U' + level, color: '#fff', neon: true, ultra: true };
@@ -287,11 +288,10 @@
             const globalMult = getGlobalSpeedMultiplier();
             const currentRunSpeed = Math.min(SPEED_MAX_LIMIT, gameState.baseGameSpeed * globalMult);
 
-            // 昼夜切り替えロジック
             let night = (gameState.score >= 1000) && (Math.floor((gameState.score - 1000) / 600) % 2 === 0);
             if (night !== gameState.isNight) {
                 gameState.isNight = night;
-                gameState.safety = 0.8; // 切り替え時の無敵を付与
+                gameState.safety = 0.8; 
                 document.body.classList.toggle("night-mode", night);
                 canvas.classList.toggle("night-canvas", night);
                 document.getElementById("titleText").style.color = night ? "#fff" : "#000";
@@ -332,46 +332,75 @@
                 if (dino.y > canvas.height - dino.h) { dino.y = canvas.height - dino.h; dino.vy = 0; }
             }
 
-            // 静止している時のみ透過可能
             gameState.isPhasing = onSurface && Math.abs(dino.vy) < 1;
 
+            // 障害物生成ロジック
             gameState.obsTimer -= dt;
             if (gameState.obsTimer <= 0) {
                 const r = Math.random();
-                let type = "normal";
-                let h = 40 + Math.random() * 60;
-                let color = gameState.isNight ? "#ffffff" : "#111111"; 
-
-                // 透過壁は最初から(スコア0から)出現
-                if (r < 0.20) {
-                    type = "transparent";
-                    h = 160; 
-                    color = gameState.isNight ? "rgba(0, 150, 255, 0.6)" : "rgba(255, 120, 0, 0.6)";
-                } else if (gameState.score > 500 && r < 0.40) {
-                    type = "rushing"; 
-                    color = "#ff3e3e"; 
-                    h = 35;
+                let transparentProb = (gameState.score >= 2000) ? 0.35 : 0.20;
+                let addedInterval = 0;
+                
+                if (r < transparentProb) {
+                    const h = 160; 
+                    const color = gameState.isNight ? "rgba(0, 150, 255, 0.6)" : "rgba(255, 120, 0, 0.6)";
+                    obstacles.push({
+                        x: canvas.width,
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
+                        w: 45, h: h, type: "transparent", color: color, passed: false
+                    });
+                    // 2段ジャンプの滞空時間を考慮し、透過壁の後のマージンをさらに広げる
+                    addedInterval = 0.45;
+                } else {
+                    const h = 40 + Math.random() * 60;
+                    obstacles.push({
+                        x: canvas.width,
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
+                        w: 30, h: h, type: "normal", color: gameState.isNight ? "#ffffff" : "#111111", passed: false
+                    });
                 }
 
-                const yPos = gameState.isNight ? CEILING_Y : GROUND_Y - h;
+                // 赤い壁は独立。重なりすぎを防ぐため出現距離を微調整
+                if (gameState.score > 500 && Math.random() < 0.25) {
+                    obstacles.push({
+                        x: canvas.width + 300, 
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - 35,
+                        w: 30, h: 35, type: "rushing", color: "#ff3e3e", passed: false
+                    });
+                }
 
-                obstacles.push({
-                    x: canvas.width,
-                    y: yPos,
-                    w: type === "transparent" ? 45 : 30, 
-                    h: h,
-                    type: type, color: color,
-                    passed: false
-                });
-
-                let intervalFactor = gameState.score >= 2000 ? 0.6 : 1.1;
-                gameState.obsTimer = intervalFactor * (SPEED_INITIAL / currentRunSpeed) + Math.random() * 0.4;
+                // 出現間隔の計算 (2段ジャンプの着地スペースを考慮し、0.55から0.6に微増)
+                let intervalFactor = gameState.score >= 2000 ? 0.6 : 1.1; 
+                gameState.obsTimer = intervalFactor * (SPEED_INITIAL / currentRunSpeed) + Math.random() * 0.4 + addedInterval;
             }
 
-            obstacles.forEach((o, i) => {
-                let moveSpeed = currentRunSpeed;
-                if (o.type === "rushing") moveSpeed = currentRunSpeed * 1.6;
+            // 回復アイテム生成ロジック
+            gameState.itemTimer -= dt;
+            if (gameState.itemTimer <= 0 && gameState.lives < 1) {
+                if (gameState.obsTimer > 0.5) {
+                    items.push({
+                        x: canvas.width,
+                        y: gameState.isNight ? CEILING_Y + 10 : GROUND_Y - 40,
+                        w: 30, h: 30, type: "life"
+                    });
+                    gameState.itemTimer = 15 + Math.random() * 10;
+                }
+            }
 
+            items.forEach((item, idx) => {
+                item.x -= currentRunSpeed * dt;
+                if (dino.x < item.x + item.w && dino.x + dino.w > item.x && dino.y < item.y + item.h && dino.y + dino.h > item.y) {
+                    if (gameState.lives < 1) {
+                        gameState.lives++;
+                        updateLifeDisplay();
+                    }
+                    items.splice(idx, 1);
+                }
+            });
+            items = items.filter(it => it.x > -50);
+
+            obstacles.forEach((o, i) => {
+                let moveSpeed = (o.type === "rushing") ? currentRunSpeed * 1.6 : currentRunSpeed;
                 o.x -= moveSpeed * dt;
 
                 if (!o.passed && o.x + o.w < dino.x) {
@@ -385,7 +414,7 @@
                         obstacles.splice(i, 1);
                         gameState.score += 25;
                     } else if (o.type === "transparent" && gameState.isPhasing) {
-                        // 静止中は透過
+                        // 透過中
                     } else if (gameState.invincible <= 0 && gameState.safety <= 0) {
                         gameState.lives--;
                         updateLifeDisplay();
@@ -411,6 +440,11 @@
             ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
             ctx.stroke();
             ctx.setLineDash([]);
+
+            items.forEach(item => {
+                ctx.font = "24px serif";
+                ctx.fillText("❤️", item.x, item.y + 24);
+            });
 
             ctx.save();
             if ((gameState.invincible > 0 || gameState.safety > 0) && Math.floor(Date.now() / 100) % 2 === 0) {
@@ -473,10 +507,11 @@
                 score: 0, baseGameSpeed: SPEED_INITIAL, isGameOver: false, isNight: false,
                 lives: 1, invincible: 0, safety: 0, wallCount: 0, ultUsed: 0,
                 ultGauge: 0, isUlt: false, ultTimer: 0, lastTime: performance.now(),
-                obsTimer: 0, isPhasing: false
+                obsTimer: 0, itemTimer: 2.0, isPhasing: false
             };
             dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
             obstacles = [];
+            items = [];
             updateLifeDisplay();
             modal.classList.add("hidden");
             document.body.classList.remove("night-mode");
