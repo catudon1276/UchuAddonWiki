@@ -15,6 +15,11 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+        
         body {
             background: #050508;
             color: white;
@@ -22,49 +27,58 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            height: 100vh;
-            height: -webkit-fill-available; /* Mobile height fix */
+            height: 100%;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
             margin: 0;
+            padding: 0;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             overflow: hidden;
             touch-action: none;
+            position: fixed;
+            width: 100%;
         }
 
         .header-ui {
             width: 100%;
-            height: 80px;
+            min-height: 60px;
+            max-height: 80px;
+            height: 12vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%);
             border-bottom: 1px solid rgba(255,255,255,0.08);
             z-index: 10;
             flex-shrink: 0;
+            padding: 5px 10px;
         }
 
         .stat-group {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 80px;
+            min-width: 60px;
+            flex: 0 1 auto;
         }
 
         .score-label { 
-            font-size: 9px; 
+            font-size: 8px; 
             color: rgba(255,255,255,0.4); 
             text-transform: uppercase; 
-            letter-spacing: 2px;
-            margin-bottom: 2px;
+            letter-spacing: 1px;
+            margin-bottom: 1px;
+            white-space: nowrap;
         }
         .score-val { 
-            font-size: 28px; 
+            font-size: clamp(18px, 5vw, 28px);
             font-weight: 900; 
             font-variant-numeric: tabular-nums; 
         }
 
         #rank-display {
-            font-size: 24px;
+            font-size: clamp(16px, 4.5vw, 24px);
             font-weight: 900;
             font-style: italic;
         }
@@ -93,8 +107,9 @@
 
         #game-container {
             position: relative;
-            width: 100vw;
+            width: 100%;
             flex: 1; 
+            min-height: 0;
             background: #000;
             overflow: hidden;
             display: flex;
@@ -121,21 +136,31 @@
             backdrop-filter: blur(15px);
             padding: 20px;
         }
-        h1 { font-size: 48px; font-weight: 900; margin: 0; letter-spacing: -1px; text-align: center; line-height: 1; }
+        h1 { 
+            font-size: clamp(32px, 10vw, 48px);
+            font-weight: 900; 
+            margin: 0; 
+            letter-spacing: -1px; 
+            text-align: center; 
+            line-height: 1.1;
+            padding: 0 10px;
+        }
         
         .rank-large {
-            font-size: 80px;
+            font-size: clamp(48px, 15vw, 80px);
             font-weight: 900;
             margin: 10px 0;
         }
 
         .result-stats {
             display: flex;
-            gap: 15px;
-            margin: 15px 0;
-            padding: 15px 25px;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px 15px;
             background: rgba(255,255,255,0.05);
             border-radius: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .res-item {
@@ -151,13 +176,13 @@
         }
 
         .res-val {
-            font-size: 20px;
+            font-size: clamp(16px, 4vw, 20px);
             font-weight: 900;
         }
 
         .btn {
-            padding: 15px 40px;
-            font-size: 18px;
+            padding: 12px 30px;
+            font-size: clamp(14px, 3.5vw, 18px);
             background: #fff;
             color: #000;
             border: none;
@@ -166,17 +191,38 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-top: 10px;
         }
         .hidden { opacity: 0 !important; pointer-events: none !important; }
 
         /* Tablet/Desktop scale up */
         @media (min-width: 768px) {
-            .header-ui { height: 100px; gap: 60px; }
+            .header-ui { 
+                height: 15vh;
+                max-height: 100px; 
+                gap: 60px; 
+            }
             .score-val { font-size: 48px; }
             #rank-display { font-size: 32px; }
             h1 { font-size: 72px; }
             .rank-large { font-size: 120px; }
             .res-val { font-size: 32px; }
+            .stat-group { min-width: 80px; }
+        }
+        
+        /* Small mobile optimization */
+        @media (max-width: 380px) {
+            .header-ui {
+                gap: 8px;
+                padding: 5px;
+            }
+            .stat-group {
+                min-width: 50px;
+            }
+            .score-label {
+                font-size: 7px;
+                letter-spacing: 0.5px;
+            }
         }
     </style>
 </head>
@@ -219,7 +265,7 @@
                 </div>
             </div>
 
-            <p id="status-msg" style="color: #ccc; margin: 10px 0 30px; text-align: center; max-width: 320px; line-height: 1.6; font-size: 14px;">
+            <p id="status-msg" style="color: #ccc; margin: 10px 0 20px; text-align: center; max-width: 90%; line-height: 1.5; font-size: clamp(12px, 3vw, 14px); padding: 0 15px;">
                 ドラッグして色を仕分けろ。<br>ミスは許されない。
             </p>
             <button class="btn" onclick="startGame()" id="action-btn">INITIALIZE</button>
@@ -319,9 +365,10 @@ function resize() {
     const logicalWidth = rect.width;
     const logicalHeight = rect.height;
 
-    const zoneW = Math.min(logicalWidth * 0.3, 200);
-    const marginY = logicalHeight * 0.1;
-    const zoneH = logicalHeight * 0.8; 
+    // Adaptive zone width based on screen size
+    const zoneW = Math.min(logicalWidth * 0.28, 180);
+    const marginY = Math.max(20, logicalHeight * 0.08);
+    const zoneH = logicalHeight - (marginY * 2); 
     
     ZONES = {
         yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
@@ -329,11 +376,27 @@ function resize() {
     };
 
     // Update grid padding for mobile
-    GRID.padding = Math.min(35, zoneW / 4);
+    GRID.padding = Math.max(25, Math.min(35, zoneW / 4));
 }
 
-window.addEventListener('resize', resize);
-window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+// Mobile viewport height fix
+function setVH() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+window.addEventListener('resize', () => {
+    setVH();
+    resize();
+});
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        setVH();
+        resize();
+    }, 300);
+});
+
+setVH();
 resize();
 
 // ===== FX Utils =====
@@ -532,10 +595,7 @@ function update(ts) {
             if (b.x < b.r) { b.vx = Math.abs(b.vx); b.x = b.r; }
             if (b.x > logicalW - b.r) { b.vx = -Math.abs(b.vx); b.x = logicalW - b.r; }
             
-            // Allow them to slightly exit top/bottom but bounce if far out
             if (b.y < -100 || b.y > logicalH + 100) {
-                // Keep them within logic or recycle if missed? 
-                // For this game, let's bounce them inside the logical area
                 if (b.y < -50) { b.vy = Math.abs(b.vy); }
                 if (b.y > logicalH + 50) { b.vy = -Math.abs(b.vy); }
             }
@@ -681,10 +741,6 @@ function getPos(e) {
     const r = canvas.getBoundingClientRect();
     const cx = e.touches ? e.touches[0].clientX : e.clientX;
     const cy = e.touches ? e.touches[0].clientY : e.clientY;
-    
-    // Calculate relative pos within the rect, then map to logical canvas size
-    const logicalW = r.width;
-    const logicalH = r.height;
     
     return {
         x: (cx - r.left),
