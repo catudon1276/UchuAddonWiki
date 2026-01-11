@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ELECTRO RECOVERY</title>
+    <style>
+        :root {
+            --yellow-glow: #ffcc00;
+            --indigo-glow: #3b5998;
+            --accent-yellow: #ffcc00;
+            --neon-red: #ff0044;
+        }
+        body {
+            background: #050508;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .header-ui {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 10;
+        }
+
+        .stat-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 140px;
+        }
+
+        .score-label { 
+            font-size: 10px; 
+            color: rgba(255,255,255,0.4); 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            margin-bottom: 2px;
+        }
+        .score-val { 
+            font-size: 48px; 
+            font-weight: 900; 
+            font-variant-numeric: tabular-nums; 
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+        }
+
+        #rank-display {
+            font-size: 32px;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(45deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        #combo-group {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0);
+            opacity: 0;
+        }
+        #combo-group.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .rainbow-text {
+            animation: rainbow 2s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            20% { color: #ffff00; }
+            40% { color: #00ff00; }
+            60% { color: #00ffff; }
+            80% { color: #0000ff; }
+            100% { color: #ff00ff; }
+        }
+
+        #game-container {
+            position: relative;
+            width: 98vw;
+            flex: 1; 
+            max-width: 1400px;
+            margin: 10px 0;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        canvas {
+            background: radial-gradient(circle at center, #0e0e12 0%, #000 100%);
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        #overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.4s;
+            backdrop-filter: blur(15px);
+            padding: 20px;
+        }
+        h1 { font-size: 72px; font-weight: 900; margin: 0; letter-spacing: -2px; text-align: center; line-height: 1; }
+        
+        .rank-large {
+            font-size: 120px;
+            font-weight: 900;
+            margin: -10px 0;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.2));
+        }
+
+        .result-stats {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .res-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .res-label {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .res-val {
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        .btn {
+            padding: 20px 60px;
+            font-size: 24px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: var(--accent-yellow); transform: translateY(-2px); }
+        .hidden { opacity: 0 !important; pointer-events: none !important; }
+    </style>
+</head>
+<body>
+
+    <header class="header-ui">
+        <div class="stat-group">
+            <div class="score-label">SCORE</div>
+            <div id="score" class="score-val">0</div>
+        </div>
+        <div class="stat-group">
+            <div class="score-label">RANK</div>
+            <div id="rank-display">C</div>
+        </div>
+        <div id="combo-group" class="stat-group">
+            <div class="score-label">COMBO</div>
+            <div id="combo" class="score-val" style="color: var(--accent-yellow);">0</div>
+        </div>
+    </header>
+
+    <div id="game-container">
+        <div id="overlay-screen">
+            <h1 id="status-title">ELECTRO<br>RECOVERY</h1>
+            
+            <div id="result-box" class="hidden" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                <div id="final-rank-box" class="rank-large">C</div>
+                <div class="result-stats">
+                    <div class="res-item">
+                        <div class="res-label">HIJIKI</div>
+                        <div id="res-yellow" class="res-val" style="color: var(--yellow-glow);">0</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-label">LOZ</div>
+                        <div id="res-indigo" class="res-val" style="color: #5c7cfa;">0</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-label">TOTAL</div>
+                        <div id="res-total" class="res-val">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <p id="status-msg" style="color: #ccc; margin: 10px 0 40px; text-align: center; max-width: 500px; line-height: 1.6;">
+                ドラッグして色を仕分けろ。<br>ミスは許されない。
+            </p>
+            <button class="btn" onclick="startGame()" id="action-btn">INITIALIZE</button>
+        </div>
+        <canvas id="game"></canvas>
+    </div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const comboEl = document.getElementById("combo");
+const rankEl = document.getElementById("rank-display");
+const comboGroup = document.getElementById("combo-group");
+const overlay = document.getElementById("overlay-screen");
+const statusTitle = document.getElementById("status-title");
+const statusMsg = document.getElementById("status-msg");
+const finalRankBox = document.getElementById("final-rank-box");
+const resultBox = document.getElementById("result-box");
+const actionBtn = document.getElementById("action-btn");
+
+// ===== Asset Loading =====
+const bombSprite = new Image();
+bombSprite.src = "../resource/HjkBom.png"; // 128x64のスプライト画像（64x64が2枚）
+
+let imgReady = false;
+bombSprite.onload = () => { imgReady = true; };
+bombSprite.onerror = () => { console.warn("Resource not found: ../resource/HjkBom.png"); };
+
+// ===== Constants & Config =====
+let ZONES = {};
+const GRID = { padding: 45 };
+const BOMB_RADIUS = 25;
+const TILE_SIZE = 64; 
+const DRAW_SIZE = 64; 
+const HIT_SLOP = 60; 
+const VISUAL_CAPACITY = 80; 
+
+// ===== Game State =====
+let gameState = 'START'; 
+let bombs = [];
+let sortedBombs = { yellow: [], indigo: [] };
+let finalCounts = { yellow: 0, indigo: 0 };
+let particles = [];
+let floatingTexts = [];
+let dragging = null;
+let mousePos = { x: 0, y: 0 };
+let touchOffset = { x: 0, y: 0 };
+let score = 0;
+let combo = 0;
+let lastMatchTime = 0;
+let lastSpawn = 0;
+let spawnInterval = 1800;
+let shakeTime = 0;
+
+// ===== Rank System =====
+function getRank(s) {
+    if (s < 500) return { name: "C", color: "#aaa" };
+    if (s < 1500) return { name: "B", color: "#8f8" };
+    if (s < 3000) return { name: "A", color: "#4af" };
+    if (s < 6000) return { name: "S", color: "#f5f" };
+    if (s < 10000) return { name: "SS", color: "#f22" };
+    if (s < 15000) return { name: "SSS", color: "#ff0" };
+    if (s < 20000) return { name: "SSS+", color: "#fff" };
+    if (s < 30000) return { name: "X", color: "#ff8c00" }; 
+    if (s < 45000) return { name: "XX", color: "#00ffcc" };
+    if (s < 65000) return { name: "XXX", color: "#ff00ff" };
+    const uNum = Math.floor((s - 65000) / 25000) + 1;
+    return { name: `U${uNum}`, color: "#fff", special: true };
+}
+
+function updateRankUI() {
+    const r = getRank(score);
+    rankEl.innerText = r.name;
+    if (r.special) {
+        rankEl.style.background = "linear-gradient(45deg, #ff0, #f0f, #0ff)";
+        rankEl.style.webkitTextFillColor = "transparent";
+        rankEl.style.webkitBackgroundClip = "text";
+        rankEl.classList.add('rainbow-text');
+    } else {
+        rankEl.style.background = "none";
+        rankEl.style.webkitTextFillColor = r.color;
+        rankEl.classList.remove('rainbow-text');
+    }
+}
+
+// ===== Setup =====
+function resize() {
+    const container = document.getElementById("game-container");
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
+    const zoneW = Math.min(280, canvas.width * 0.28);
+    const marginY = canvas.height * 0.12;
+    const zoneH = canvas.height * 0.76; 
+    
+    ZONES = {
+        yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
+        indigo: { x: canvas.width - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+    };
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ===== FX Utils =====
+function createText(x, y, text, color, size = 32) {
+    floatingTexts.push({ x, y, text, color, life: 1.0, vy: -2, size });
+}
+
+function createParticles(x, y, color, count = 20, speed = 12) {
+    for (let i = 0; i < count; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const s = Math.random() * speed;
+        particles.push({
+            x, y,
+            vx: Math.cos(ang) * s,
+            vy: Math.sin(ang) * s,
+            r: Math.random() * 4 + 1,
+            color,
+            life: 1.0,
+            decay: 0.02 + Math.random() * 0.02
+        });
+    }
+}
+
+function applyShake(intensity = 15) {
+    shakeTime = intensity;
+}
+
+function createBigExplosion(x, y) {
+    applyShake(20);
+    for (let i = 0; i < 50; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const s = Math.random() * 25;
+        particles.push({
+            x, y,
+            vx: Math.cos(ang) * s,
+            vy: Math.sin(ang) * s,
+            r: Math.random() * 8 + 2,
+            color: Math.random() > 0.3 ? "#ff4400" : (Math.random() > 0.5 ? "#ffcc00" : "#fff"),
+            life: 1.0,
+            decay: 0.015
+        });
+    }
+}
+
+async function triggerChainExplosionSequence(wrongZoneType, wrongBomb, reason) {
+    if (gameState === 'EXPLODING' || gameState === 'GAMEOVER') return;
+    gameState = 'EXPLODING';
+    dragging = null; 
+
+    finalCounts.yellow = sortedBombs.yellow.length;
+    finalCounts.indigo = sortedBombs.indigo.length;
+
+    sortedBombs[wrongZoneType].push(wrongBomb);
+    const bombIdx = bombs.indexOf(wrongBomb);
+    if (bombIdx > -1) bombs.splice(bombIdx, 1);
+
+    const targetList = sortedBombs[wrongZoneType];
+    ZONES[wrongZoneType].glow = 'rgba(255, 0, 40, 0.7)';
+
+    const explosionLimit = Math.min(targetList.length, VISUAL_CAPACITY);
+    for (let i = 0; i < explosionLimit; i++) {
+        const b = targetList.pop();
+        if (b) createBigExplosion(b.x, b.y);
+        await new Promise(r => setTimeout(r, 30));
+    }
+    sortedBombs[wrongZoneType] = [];
+
+    for (let i = bombs.length - 1; i >= 0; i--) {
+        const b = bombs[i];
+        createBigExplosion(b.x, b.y);
+        bombs.splice(i, 1);
+        if (i % 3 === 0) await new Promise(r => setTimeout(r, 5));
+    }
+
+    setTimeout(() => doGameOver(reason), 1000);
+}
+
+// ===== Logic =====
+function spawnBomb() {
+    const isIndigo = Math.random() < 0.5;
+    const type = isIndigo ? "indigo" : "yellow";
+    const spriteIndex = isIndigo ? 1 : 0;
+    
+    const topSpawnChance = score < 1000 ? 0 : Math.min(0.6, (score - 1000) / 15000);
+    const spawnFromTop = Math.random() < topSpawnChance;
+    
+    const startY = spawnFromTop ? -40 : canvas.height + 40;
+    const vyBase = spawnFromTop ? (2.5 + score/5000) : -(2.5 + score/5000);
+
+    bombs.push({
+        x: canvas.width / 2 + (Math.random() - 0.5) * (canvas.width * 0.4),
+        y: startY,
+        vx: (Math.random() - 0.5) * (3 + score/8000),
+        vy: vyBase + (Math.random() - 0.5) * 1,
+        r: BOMB_RADIUS,
+        type,
+        spriteIndex, 
+        born: Date.now(),
+        fuseTime: Math.max(3000, 12000 - (score * 0.4)), 
+        wobble: Math.random() * Math.PI,
+        color: type === 'yellow' ? '#ffcc00' : '#3b5998'
+    });
+}
+
+function getSortedPosition(type, index) {
+    const zone = ZONES[type];
+    const cols = Math.floor((zone.w - 30) / GRID.padding);
+    const visualIndex = index % VISUAL_CAPACITY;
+    
+    const col = visualIndex % Math.max(1, cols);
+    const row = Math.floor(visualIndex / Math.max(1, cols));
+    
+    const startX = type === 'yellow' ? 40 : zone.x + 40;
+    const startY = zone.y + 60;
+    return {
+        x: startX + (col * GRID.padding),
+        y: startY + (row * GRID.padding)
+    };
+}
+
+function checkZoneEntry(b) {
+    const withinXYellow = b.x < ZONES.yellow.x + ZONES.yellow.w;
+    const withinXIndigo = b.x > ZONES.indigo.x;
+    const withinY = b.y > ZONES.yellow.y && b.y < ZONES.yellow.y + ZONES.yellow.h;
+    
+    if (withinY && (withinXYellow || withinXIndigo)) {
+        const zoneType = withinXYellow ? 'yellow' : 'indigo';
+        
+        if (b.type === zoneType) {
+            const index = sortedBombs[zoneType].length;
+            const targetPos = getSortedPosition(zoneType, index);
+            b.x = targetPos.x; b.y = targetPos.y;
+
+            sortedBombs[zoneType].push(b);
+            const bombIdx = bombs.indexOf(b);
+            if (bombIdx > -1) bombs.splice(bombIdx, 1);
+
+            combo++;
+            lastMatchTime = Date.now();
+            const points = Math.floor(10 * (1 + combo * 0.1));
+            const oldRank = getRank(score).name;
+            score += points;
+            scoreEl.innerText = score;
+            comboEl.innerText = combo;
+            
+            if (combo > 1) comboGroup.classList.add('active');
+            updateRankUI();
+
+            if (oldRank !== getRank(score).name) {
+                createText(canvas.width/2, canvas.height/2, "RANK UP!", "#fff", 60);
+                applyShake(10);
+            }
+
+            createText(b.x, b.y, `+${points}`, ZONES[zoneType].color);
+            createParticles(b.x, b.y, ZONES[zoneType].color, 12);
+            return true;
+        } else {
+            // 仕分けミス時の原因変更
+            triggerChainExplosionSequence(zoneType, b, "原因：扱い方を間違えた末路");
+            return false;
+        }
+    }
+    return false;
+}
+
+function update(ts) {
+    if (gameState !== 'PLAYING' && gameState !== 'EXPLODING') return;
+
+    if (gameState === 'PLAYING' && ts - lastSpawn > spawnInterval) {
+        spawnBomb();
+        lastSpawn = ts;
+        spawnInterval = Math.max(250, 1800 - (score * 0.2));
+    }
+
+    if (Date.now() - lastMatchTime > 3000) {
+        combo = 0;
+        comboGroup.classList.remove('active');
+    }
+
+    if (shakeTime > 0) shakeTime -= 1;
+
+    for (let i = bombs.length - 1; i >= 0; i--) {
+        const b = bombs[i];
+        if (b !== dragging) {
+            b.x += b.vx;
+            b.y += b.vy;
+            b.vx += Math.sin(ts / 500 + b.wobble) * 0.08;
+
+            if (b.x < b.r) { b.vx = Math.abs(b.vx); b.x = b.r; }
+            if (b.x > canvas.width - b.r) { b.vx = -Math.abs(b.vx); b.x = canvas.width - b.r; }
+            if (b.y < b.r) { b.vy = Math.abs(b.vy); b.y = b.r; }
+            if (b.y > canvas.height - b.r) { b.vy = -Math.abs(b.vy); b.y = canvas.height - b.r; }
+        }
+        if (gameState === 'PLAYING' && Date.now() - b.born > b.fuseTime) {
+            finalCounts.yellow = sortedBombs.yellow.length;
+            finalCounts.indigo = sortedBombs.indigo.length;
+            createBigExplosion(b.x, b.y);
+            bombs.splice(i, 1);
+            // タイムアップ時の原因変更
+            doGameOver("原因：突然の裏切り");
+        }
+    }
+}
+
+// ===== Drawing =====
+function drawBomb(b, isStatic = false) {
+    const age = Date.now() - b.born;
+    const isUrgent = !isStatic && age > b.fuseTime * 0.75;
+    const pulse = (isUrgent && gameState === 'PLAYING') ? Math.sin(Date.now() / 40) * 5 : 0;
+    const isHovered = !isStatic && !dragging && gameState === 'PLAYING' && Math.hypot(mousePos.x - b.x, mousePos.y - b.y) < b.r + HIT_SLOP;
+
+    ctx.save();
+    ctx.translate(b.x, b.y);
+
+    if (imgReady) {
+        const currentDrawSize = DRAW_SIZE + pulse * 2;
+        const sx = b.spriteIndex * TILE_SIZE;
+        const sy = 0;
+
+        ctx.drawImage(
+            bombSprite, 
+            sx, sy, TILE_SIZE, TILE_SIZE,  
+            -currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize 
+        );
+        
+        if (isHovered) {
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#fff";
+            ctx.strokeRect(-currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize);
+        }
+    } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, b.r + pulse, 0, Math.PI*2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+        if (isHovered) {
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 4;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#fff";
+            ctx.stroke();
+        }
+    }
+    ctx.restore();
+}
+
+function draw() {
+    ctx.save();
+    if (shakeTime > 0) ctx.translate((Math.random()-0.5)*shakeTime, (Math.random()-0.5)*shakeTime);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    Object.entries(ZONES).forEach(([key, z]) => {
+        const isYellow = key === 'yellow';
+        const gradient = ctx.createLinearGradient(isYellow ? z.x : z.x + z.w, z.y, isYellow ? z.x + z.w : z.x, z.y);
+        gradient.addColorStop(0, z.glow);
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(z.x, z.y, z.w, z.h);
+        ctx.strokeStyle = z.color;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        const lineX = isYellow ? z.x + z.w : z.x;
+        ctx.moveTo(lineX, z.y); ctx.lineTo(lineX, z.y + z.h);
+        ctx.stroke();
+
+        ctx.setLineDash([10, 5]);
+        ctx.lineWidth = 2; ctx.globalAlpha = 0.6;
+        ctx.beginPath(); ctx.moveTo(z.x, z.y); ctx.lineTo(z.x + z.w, z.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(z.x, z.y + z.h); ctx.lineTo(z.x + z.w, z.y + z.h); ctx.stroke();
+        ctx.setLineDash([]); ctx.globalAlpha = 1.0;
+    });
+
+    sortedBombs.yellow.forEach(b => drawBomb(b, true));
+    sortedBombs.indigo.forEach(b => drawBomb(b, true));
+    bombs.forEach(b => drawBomb(b, false));
+
+    particles.forEach((p, i) => {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+        p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+        if(p.life <= 0) particles.splice(i, 1);
+    });
+
+    floatingTexts.forEach((t, i) => {
+        ctx.globalAlpha = t.life;
+        ctx.fillStyle = t.color;
+        ctx.font = `900 ${t.size}px 'Inter'`;
+        ctx.textAlign = "center";
+        ctx.fillText(t.text, t.x, t.y);
+        t.y += t.vy; t.life -= 0.02;
+        if(t.life <= 0) floatingTexts.splice(i, 1);
+    });
+    ctx.restore();
+    requestAnimationFrame((ts) => { update(ts); draw(); });
+}
+
+// ===== Interaction =====
+const onStart = e => {
+    if(gameState !== 'PLAYING') return; 
+    const p = getPos(e);
+    let target = null;
+    let minDist = HIT_SLOP + BOMB_RADIUS;
+    let targetIdx = -1;
+    for(let i=bombs.length-1; i>=0; i--) {
+        const b = bombs[i];
+        const d = Math.hypot(p.x - b.x, p.y - b.y);
+        if(d < minDist) { minDist = d; target = b; targetIdx = i; }
+    }
+    if(target) {
+        dragging = target;
+        touchOffset.x = p.x - target.x;
+        touchOffset.y = p.y - target.y;
+        dragging.vx = 0; dragging.vy = 0;
+        bombs.splice(targetIdx, 1);
+        bombs.push(target);
+    }
+};
+
+const onMove = e => {
+    const p = getPos(e);
+    mousePos.x = p.x; mousePos.y = p.y;
+    if(!dragging || gameState !== 'PLAYING') return;
+    dragging.x = p.x - touchOffset.x;
+    dragging.y = p.y - touchOffset.y;
+    e.preventDefault();
+};
+
+const onEnd = () => {
+    if (!dragging || gameState !== 'PLAYING') return;
+    checkZoneEntry(dragging);
+    dragging = null;
+};
+
+function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+        x: (cx - r.left) * (canvas.width / r.width),
+        y: (cy - r.top) * (canvas.height / r.height)
+    };
+}
+
+canvas.addEventListener("mousedown", onStart);
+window.addEventListener("mousemove", onMove);
+window.addEventListener("mouseup", onEnd);
+canvas.addEventListener("touchstart", onStart, {passive:false});
+window.addEventListener("touchmove", onMove, {passive:false});
+window.addEventListener("touchend", onEnd);
+
+// ===== Flow =====
+function startGame() {
+    score = 0; combo = 0;
+    bombs = [];
+    sortedBombs = { yellow: [], indigo: [] };
+    finalCounts = { yellow: 0, indigo: 0 };
+    particles = []; floatingTexts = [];
+    lastSpawn = performance.now();
+    spawnInterval = 1800;
+    scoreEl.innerText = "0";
+    comboEl.innerText = "0";
+    comboGroup.classList.remove('active');
+    updateRankUI();
+    gameState = 'PLAYING';
+    overlay.classList.add('hidden');
+    resultBox.classList.add('hidden');
+    statusTitle.innerHTML = "ELECTRO<br>RECOVERY";
+    statusTitle.style.color = "white";
+    statusMsg.innerHTML = "ドラッグして色を仕分けろ。<br>ミスは許されない。";
+    resize();
+}
+
+function doGameOver(reason) {
+    gameState = 'GAMEOVER';
+    statusTitle.innerText = "SYSTEM FAILED";
+    statusTitle.style.color = "var(--neon-red)";
+    
+    const rank = getRank(score);
+    finalRankBox.innerText = rank.name;
+    finalRankBox.style.color = rank.color;
+    document.getElementById("res-yellow").innerText = finalCounts.yellow;
+    document.getElementById("res-indigo").innerText = finalCounts.indigo;
+    document.getElementById("res-total").innerText = finalCounts.yellow + finalCounts.indigo;
+    
+    resultBox.classList.remove('hidden');
+    // 指定された原因テキストを表示
+    statusMsg.innerHTML = `<span style="color: #fff; font-weight: bold;">${reason}</span><br>FINAL SCORE: ${score}`;
+    
+    actionBtn.innerText = "REBOOT";
+    overlay.classList.remove('hidden');
+}
+
+draw();
+</script>
+</body>
+</html>
