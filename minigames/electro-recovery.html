@@ -394,28 +394,30 @@ function resize() {
     let zoneW, spawnAreaWidth;
     
     if (isPC) {
-        // PC: 仕分けゾーン幅を大きくし、中央の湧き空間を固定
-        zoneW = 220;
+        // PC: 仕分けゾーンは画面端から湧き場所の境界まで
         spawnAreaWidth = 800; // 中央の湧き空間の幅を800pxに拡大
+        const spawnAreaLeft = (logicalWidth - spawnAreaWidth) / 2;
+        const spawnAreaRight = (logicalWidth + spawnAreaWidth) / 2;
+        
+        zoneW = spawnAreaLeft; // 左端から湧き場所までの幅
+        
+        ZONES = {
+            yellow: { x: 0, y: 0, w: spawnAreaLeft, h: logicalHeight, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
+            indigo: { x: spawnAreaRight, y: 0, w: logicalWidth - spawnAreaRight, h: logicalHeight, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+        };
     } else {
         // モバイル: 既存の計算式
         zoneW = Math.min(logicalWidth * 0.28, 180);
-        spawnAreaWidth = logicalWidth - (zoneW * 2);
+        const marginY = Math.max(20, logicalHeight * 0.08);
+        const zoneH = logicalHeight - (marginY * 2);
+        
+        ZONES = {
+            yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
+            indigo: { x: logicalWidth - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+        };
     }
-    
-    const marginY = Math.max(20, logicalHeight * 0.08);
-    const zoneH = logicalHeight - (marginY * 2);
-    
-    // PC画面では左右のゾーンを外側に配置
-    const leftZoneX = isPC ? (logicalWidth - spawnAreaWidth) / 2 - zoneW : 0;
-    const rightZoneX = isPC ? (logicalWidth + spawnAreaWidth) / 2 : logicalWidth - zoneW;
-    
-    ZONES = {
-        yellow: { x: leftZoneX, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
-        indigo: { x: rightZoneX, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
-    };
 
-    // Update grid padding for mobile
+    // Update grid padding
     GRID.padding = Math.max(25, Math.min(35, zoneW / 4));
 }
 
@@ -778,7 +780,7 @@ function update(ts) {
             const levelData = SIZE_LEVELS[b.sizeLevel];
             const effectiveRadius = b.r * levelData.scale;
 
-            // 湧き場所エリアの境界を計算
+            // 湧き場所エリアの境界を計算（ドラッグ中でないボムのみ）
             const isPC = logicalW >= 768;
             const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
             const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
@@ -804,6 +806,8 @@ function update(ts) {
                 b.y = logicalH - effectiveRadius;
             }
         }
+        // ドラッグ中は制限なし（画面全体を移動可能）
+        
         if (gameState === 'PLAYING' && Date.now() - b.born > b.fuseTime) {
             finalCounts.yellow = sortedBombs.yellow.length;
             finalCounts.indigo = sortedBombs.indigo.length;
