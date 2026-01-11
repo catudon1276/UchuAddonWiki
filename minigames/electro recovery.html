@@ -389,14 +389,30 @@ function resize() {
     const logicalWidth = rect.width;
     const logicalHeight = rect.height;
 
-    // Adaptive zone width based on screen size
-    const zoneW = Math.min(logicalWidth * 0.28, 180);
+    // PC画面では中央の湧き空間を固定サイズに
+    const isPC = logicalWidth >= 768;
+    let zoneW, spawnAreaWidth;
+    
+    if (isPC) {
+        // PC: 仕分けゾーン幅を大きくし、中央の湧き空間を固定
+        zoneW = 220;
+        spawnAreaWidth = 800; // 中央の湧き空間の幅を800pxに拡大
+    } else {
+        // モバイル: 既存の計算式
+        zoneW = Math.min(logicalWidth * 0.28, 180);
+        spawnAreaWidth = logicalWidth - (zoneW * 2);
+    }
+    
     const marginY = Math.max(20, logicalHeight * 0.08);
-    const zoneH = logicalHeight - (marginY * 2); 
+    const zoneH = logicalHeight - (marginY * 2);
+    
+    // PC画面では左右のゾーンを外側に配置
+    const leftZoneX = isPC ? (logicalWidth - spawnAreaWidth) / 2 - zoneW : 0;
+    const rightZoneX = isPC ? (logicalWidth + spawnAreaWidth) / 2 : logicalWidth - zoneW;
     
     ZONES = {
-        yellow: { x: 0, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
-        indigo: { x: logicalWidth - zoneW, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
+        yellow: { x: leftZoneX, y: marginY, w: zoneW, h: zoneH, color: '#ffcc00', glow: 'rgba(255, 204, 0, 0.15)' },
+        indigo: { x: rightZoneX, y: marginY, w: zoneW, h: zoneH, color: '#3b5998', glow: 'rgba(59, 89, 152, 0.15)' }
     };
 
     // Update grid padding for mobile
@@ -528,8 +544,12 @@ function spawnBomb() {
     const baseSpeed = 2.0 + score/12000;
     const vyBase = spawnFromTop ? baseSpeed : -baseSpeed;
 
+    // スポーン位置を中央エリアに限定（PC対応）
+    const isPC = logicalW >= 768;
+    const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+    
     bombs.push({
-        x: logicalW / 2 + (Math.random() - 0.5) * (logicalW * 0.3),
+        x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
         y: startY,
         vx: (Math.random() - 0.5) * (2.0 + score/15000),
         vy: vyBase + (Math.random() - 0.5) * 1.0,
@@ -552,7 +572,7 @@ function getSortedPosition(type, index) {
     const col = visualIndex % Math.max(1, cols);
     const row = Math.floor(visualIndex / Math.max(1, cols));
     
-    const startX = type === 'yellow' ? 25 : zone.x + 25;
+    const startX = zone.x + 25;
     const startY = zone.y + 40;
     return {
         x: startX + (col * GRID.padding),
@@ -610,9 +630,9 @@ function mergeBombs(b1, b2, b2Index) {
 }
 
 function checkZoneEntry(b) {
-    const withinXYellow = b.x < ZONES.yellow.x + ZONES.yellow.w;
-    const withinXIndigo = b.x > ZONES.indigo.x;
-    const withinY = b.y > ZONES.yellow.y && b.y < ZONES.yellow.y + ZONES.yellow.h;
+    const withinXYellow = b.x >= ZONES.yellow.x && b.x <= ZONES.yellow.x + ZONES.yellow.w;
+    const withinXIndigo = b.x >= ZONES.indigo.x && b.x <= ZONES.indigo.x + ZONES.indigo.w;
+    const withinY = b.y >= ZONES.yellow.y && b.y <= ZONES.yellow.y + ZONES.yellow.h;
     
     if (withinY && (withinXYellow || withinXIndigo)) {
         const zoneType = withinXYellow ? 'yellow' : 'indigo';
@@ -686,44 +706,57 @@ function update(ts) {
 
     // 掃除機のスポーン（20秒～40秒に1回）
     if (gameState === 'PLAYING' && ts - lastVacuumSpawn > 20000 + Math.random() * 20000) {
+        const spawnFromTop = Math.random() < 0.5;
+        const startY = spawnFromTop ? -50 : logicalH + 50;
+        const baseSpeed = 1.5;
+        const vyBase = spawnFromTop ? baseSpeed : -baseSpeed;
+        
+        // スポーン位置を中央エリアに限定（PC対応）
+        const isPC = logicalW >= 768;
+        const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+        
         vacuums.push({
-            x: logicalW / 2 + (Math.random() - 0.5) * (logicalW * 0.4),
-            y: -50,
-            vx: 0,
-            vy: 1.2,
+            x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
+            y: startY,
+            vx: (Math.random() - 0.5) * 2.5,
+            vy: vyBase + (Math.random() - 0.5) * 1.0,
             radius: 30,
+            wobble: Math.random() * Math.PI,
             born: Date.now()
         });
         lastVacuumSpawn = ts;
     }
 
-    // 掃除機の移動
+    // 掃除機の移動（ボムと同じ動き）
     for (let i = vacuums.length - 1; i >= 0; i--) {
         const vac = vacuums[i];
         vac.x += vac.vx;
         vac.y += vac.vy;
+        vac.vx += Math.sin(ts / 500 + vac.wobble) * 0.05;
         
-        // 壁で跳ね返る（エリア外に出ない）
-        if (vac.x < vac.radius) { 
-            vac.vx = Math.abs(vac.vx) * 0.8; 
-            vac.x = vac.radius; 
+        // 湧き場所エリアの境界を計算
+        const isPC = logicalW >= 768;
+        const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
+        const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
+        const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+        
+        // 壁で跳ね返る（湧き場所エリア内に制限）
+        if (vac.x < spawnAreaLeft + vac.radius) { 
+            vac.vx = Math.abs(vac.vx); 
+            vac.x = spawnAreaLeft + vac.radius; 
         }
-        if (vac.x > logicalW - vac.radius) { 
-            vac.vx = -Math.abs(vac.vx) * 0.8; 
-            vac.x = logicalW - vac.radius; 
+        if (vac.x > spawnAreaRight - vac.radius) { 
+            vac.vx = -Math.abs(vac.vx); 
+            vac.x = spawnAreaRight - vac.radius; 
         }
         if (vac.y < vac.radius) {
-            vac.vy = Math.abs(vac.vy) * 0.8;
+            vac.vy = Math.abs(vac.vy);
             vac.y = vac.radius;
         }
         if (vac.y > logicalH - vac.radius) {
-            vac.vy = -Math.abs(vac.vy) * 0.8;
+            vac.vy = -Math.abs(vac.vy);
             vac.y = logicalH - vac.radius;
         }
-        
-        // 速度減衰
-        vac.vx *= 0.98;
-        vac.vy *= 0.98;
     }
 
     if (Date.now() - lastMatchTime > 3000) {
@@ -745,15 +778,23 @@ function update(ts) {
             const levelData = SIZE_LEVELS[b.sizeLevel];
             const effectiveRadius = b.r * levelData.scale;
 
-            if (b.x < effectiveRadius) { 
+            // 湧き場所エリアの境界を計算
+            const isPC = logicalW >= 768;
+            const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
+            const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
+            const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+
+            // 左右の境界（湧き場所エリア内に制限）
+            if (b.x < spawnAreaLeft + effectiveRadius) { 
                 b.vx = Math.abs(b.vx); 
-                b.x = effectiveRadius; 
+                b.x = spawnAreaLeft + effectiveRadius; 
             }
-            if (b.x > logicalW - effectiveRadius) { 
+            if (b.x > spawnAreaRight - effectiveRadius) { 
                 b.vx = -Math.abs(b.vx); 
-                b.x = logicalW - effectiveRadius; 
+                b.x = spawnAreaRight - effectiveRadius; 
             }
             
+            // 上下の境界
             if (b.y < effectiveRadius) {
                 b.vy = Math.abs(b.vy);
                 b.y = effectiveRadius;
@@ -808,17 +849,6 @@ function drawBomb(b, isStatic = false) {
             ctx.strokeStyle = "#fff";
             ctx.lineWidth = 2;
             ctx.strokeRect(-currentDrawSize/2, -currentDrawSize/2, currentDrawSize, currentDrawSize);
-        }
-        
-        if (b.sizeLevel > 0) {
-            ctx.font = `900 ${12 * scale}px 'Inter'`;
-            ctx.fillStyle = "#fff";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.strokeStyle = "#000";
-            ctx.lineWidth = 3;
-            ctx.strokeText(`x${levelData.scoreMultiplier}`, 0, currentDrawSize/2 + 12);
-            ctx.fillText(`x${levelData.scoreMultiplier}`, 0, currentDrawSize/2 + 12);
         }
     } else {
         ctx.beginPath();
