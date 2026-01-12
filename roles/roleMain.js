@@ -30,10 +30,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 // すべての役職データを読み込む
 async function loadAllRoles() {
     try {
-        // roles-list.json から役職リストを取得
-        const response = await fetch('roles-list.json');
+        // rolesList.json から役職リストを取得
+        const response = await fetch('rolesList.json');
         if (!response.ok) {
-            console.error('roles-list.json が見つかりません。');
+            console.error('rolesList.json が見つかりません。');
             allRoles = [];
             filteredRoles = [];
             return;
