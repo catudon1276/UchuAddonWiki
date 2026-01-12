@@ -7,33 +7,49 @@ let activeFilters = {
     tags: []
 };
 
+// 読み込む役職JSONファイルのリスト
+const ROLE_FILES = [
+    'crewmate/mayor.json',
+    'crewmate/sheriff.json',
+    'crewmate/engineer.json',
+    'impostor/serialkiller.json',
+    'neutral/joker.json'
+    // 新しい役職を追加する場合、ここにパスを追加
+];
+
 // ページ読み込み時に実行
-document.addEventListener('DOMContentLoaded', function() {
-    // データベースから役職データを読み込む
-    allRoles = getRoleData();
-    filteredRoles = allRoles;
-    
-    // 統計情報を更新
-    updateStats();
-    
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadAllRoles();
     setupEventListeners();
     renderTags();
     renderRoles();
 });
 
-// 統計情報を更新
-function updateStats() {
-    const statsHtml = `
-        <span class="badge bg-primary me-2">${allRoles.length} 役職</span>
-        <span class="badge bg-secondary">フィルター機能付き</span>
-    `;
-    // ヒーローセクションに統計を表示
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection) {
-        const statsDiv = document.createElement('div');
-        statsDiv.className = 'mt-4';
-        statsDiv.innerHTML = statsHtml;
-        heroSection.appendChild(statsDiv);
+// すべての役職データを読み込む
+async function loadAllRoles() {
+    const loadingPromises = ROLE_FILES.map(file => loadRoleFromJSON(file));
+    const results = await Promise.all(loadingPromises);
+    
+    // 成功した読み込みのみをフィルター
+    allRoles = results.filter(role => role !== null);
+    filteredRoles = allRoles;
+    
+    console.log(`${allRoles.length}個の役職を読み込みました`);
+}
+
+// JSONファイルから役職データを読み込む
+async function loadRoleFromJSON(filePath) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            console.warn(`${filePath} の読み込みに失敗しました`);
+            return null;
+        }
+        const role = await response.json();
+        return role;
+    } catch (error) {
+        console.error(`${filePath} の読み込みエラー:`, error);
+        return null;
     }
 }
 
@@ -61,6 +77,7 @@ function renderTags() {
     const tagsContainer = document.getElementById('tagsContainer');
     const allTags = [...new Set(allRoles.flatMap(role => role.tags))];
     
+    tagsContainer.innerHTML = '';
     allTags.forEach(tag => {
         const tagElement = document.createElement('div');
         tagElement.className = 'tag-filter';
@@ -121,10 +138,10 @@ function renderRoles() {
     noResults.style.display = 'none';
     container.innerHTML = filteredRoles.map(role => `
         <div class="col-lg-6 col-xl-4 mb-4">
-            <div class="role-card" onclick="showRoleDetails('${role.id}')" style="border-left: 4px solid ${role.color || '#667eea'};">
+            <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${role.color || '#667eea'};">
                 <div class="role-header">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="${role.character_image || 'https://via.placeholder.com/80x120/667eea/white?text=' + role.name.charAt(0)}" 
+                        <img src="${role.character_image || 'https://via.placeholder.com/80x120/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
                              alt="${role.name}" class="role-character">
                         <div class="ms-3">
                             <div class="role-name">${role.name}</div>
@@ -152,15 +169,12 @@ function getTeamClass(team) {
 }
 
 // 役職詳細を表示
-function showRoleDetails(roleId) {
-    const role = getRoleById(roleId);
-    if (!role) return;
-
+function showRoleDetails(role) {
     const overlayContent = document.getElementById('overlayContent');
     overlayContent.innerHTML = `
         <div class="row">
             <div class="col-md-4 text-center mb-4 mb-md-0">
-                <img src="${role.character_image || 'https://via.placeholder.com/200x300/667eea/white?text=' + role.name.charAt(0)}" 
+                <img src="${role.character_image || 'https://via.placeholder.com/200x300/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
                      alt="${role.name}" class="img-fluid rounded-3 shadow-lg" 
                      style="border: 3px solid ${role.color || '#667eea'};">
                 <div class="mt-3">
