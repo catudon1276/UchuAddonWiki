@@ -594,7 +594,15 @@ function spawnBomb() {
 
     // スポーン位置を中央エリアに限定（PC対応）
     const isPC = logicalW >= 768;
-    const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+    let spawnAreaWidth;
+    
+    if (isPC) {
+        spawnAreaWidth = 800;
+    } else {
+        // モバイル: 両サイドのゾーン幅を取得
+        const zoneW = Math.min(logicalW * 0.28, 180);
+        spawnAreaWidth = logicalW - (zoneW * 2);
+    }
     
     bombs.push({
         x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
@@ -859,7 +867,15 @@ function update(ts) {
         const threshold = beakerSchedule[currentBeakerIndex];
         if (score >= threshold) {
             const isPC = logicalW >= 768;
-            const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+            let spawnAreaWidth;
+            
+            if (isPC) {
+                spawnAreaWidth = 800;
+            } else {
+                // モバイル: 両サイドのゾーン幅を取得
+                const zoneW = Math.min(logicalW * 0.28, 180);
+                spawnAreaWidth = logicalW - (zoneW * 2);
+            }
             
             // 現在のautoMergeLevelに基づいて次のレベルを決定
             const nextLevel = autoMergeLevel + 1;
@@ -898,7 +914,15 @@ function update(ts) {
         
         // スポーン位置を中央エリアに限定（PC対応）
         const isPC = logicalW >= 768;
-        const spawnAreaWidth = isPC ? 800 : logicalW * 0.3;
+        let spawnAreaWidth;
+        
+        if (isPC) {
+            spawnAreaWidth = 800;
+        } else {
+            // モバイル: 両サイドのゾーン幅を取得
+            const zoneW = Math.min(logicalW * 0.28, 180);
+            spawnAreaWidth = logicalW - (zoneW * 2);
+        }
         
         vacuums.push({
             x: logicalW / 2 + (Math.random() - 0.5) * spawnAreaWidth,
@@ -993,6 +1017,15 @@ function update(ts) {
 
     for (let i = bombs.length - 1; i >= 0; i--) {
         const b = bombs[i];
+        
+        // 異常に速いボムを削除（速度が10以上）
+        const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+        if (speed > 10) {
+            console.warn('Removing fast bomb:', speed);
+            bombs.splice(i, 1);
+            continue;
+        }
+        
         if (b !== dragging) {
             b.x += b.vx;
             b.y += b.vy;
@@ -1009,21 +1042,21 @@ function update(ts) {
 
             // 左右の境界（湧き場所エリア内に制限）
             if (b.x < spawnAreaLeft + effectiveRadius) { 
-                b.vx = Math.abs(b.vx); 
+                b.vx = Math.abs(b.vx) * 0.8; // 速度を少し減衰
                 b.x = spawnAreaLeft + effectiveRadius; 
             }
             if (b.x > spawnAreaRight - effectiveRadius) { 
-                b.vx = -Math.abs(b.vx); 
+                b.vx = -Math.abs(b.vx) * 0.8; // 速度を少し減衰
                 b.x = spawnAreaRight - effectiveRadius; 
             }
             
             // 上下の境界
             if (b.y < effectiveRadius) {
-                b.vy = Math.abs(b.vy);
+                b.vy = Math.abs(b.vy) * 0.8; // 速度を少し減衰
                 b.y = effectiveRadius;
             }
             if (b.y > logicalH - effectiveRadius) {
-                b.vy = -Math.abs(b.vy);
+                b.vy = -Math.abs(b.vy) * 0.8; // 速度を少し減衰
                 b.y = logicalH - effectiveRadius;
             }
         }
