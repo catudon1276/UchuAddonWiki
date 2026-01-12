@@ -862,11 +862,19 @@ function update(ts) {
     const logicalW = canvas.width / (window.devicePixelRatio || 1);
     const logicalH = canvas.height / (window.devicePixelRatio || 1);
 
-    // より緩やかなスポーン間隔の減少
+    // スポーン間隔の計算（高得点でもさらに加速）
     if (gameState === 'PLAYING' && ts - lastSpawn > spawnInterval) {
         spawnBomb();
         lastSpawn = ts;
-        spawnInterval = Math.max(400, 1200 - (score * 0.05));
+        // 段階的に加速（90000点以降も加速し続ける）
+        if (score < 16000) {
+            spawnInterval = Math.max(400, 1200 - (score * 0.05));
+        } else if (score < 50000) {
+            spawnInterval = 400;
+        } else {
+            // 50000点以降はさらに加速
+            spawnInterval = Math.max(250, 400 - ((score - 50000) * 0.002));
+        }
     }
 
     // 🧪ビーカーのスポーン（スコアが閾値を超えたら）
@@ -1030,6 +1038,65 @@ function update(ts) {
     }
     
     checkForMerges();
+
+    // ボム同士の衝突判定と反発（最適化版）
+    for (let i = 0; i < bombs.length; i++) {
+        const b1 = bombs[i];
+        if (b1 === dragging) continue;
+        
+        for (let j = i + 1; j < bombs.length; j++) {
+            const b2 = bombs[j];
+            if (b2 === dragging) continue;
+            
+            const dx = b2.x - b1.x;
+            const dy = b2.y - b1.y;
+            const distSq = dx * dx + dy * dy; // 平方根計算を避ける
+            
+            const levelData1 = getSizeLevel(b1.sizeLevel);
+            const levelData2 = getSizeLevel(b2.sizeLevel);
+            const r1 = b1.r * levelData1.scale;
+            const r2 = b2.r * levelData2.scale;
+            const minDist = r1 + r2;
+            const minDistSq = minDist * minDist;
+            
+            // 衝突している場合（平方根なしで判定）
+            if (distSq < minDistSq && distSq > 0.01) {
+                const dist = Math.sqrt(distSq); // ここで初めて平方根
+                const overlap = minDist - dist;
+                const nx = dx / dist;
+                const ny = dy / dist;
+                
+                // 質量（サイズに応じた重さ）
+                const mass1 = levelData1.scale * levelData1.scale;
+                const mass2 = levelData2.scale * levelData2.scale;
+                const totalMass = mass1 + mass2;
+                
+                // 位置補正（重い方が少なく動く）
+                const push1 = overlap * (mass2 / totalMass);
+                const push2 = overlap * (mass1 / totalMass);
+                
+                b1.x -= nx * push1;
+                b1.y -= ny * push1;
+                b2.x += nx * push2;
+                b2.y += ny * push2;
+                
+                // 速度の反発（弾性衝突）
+                const dvx = b2.vx - b1.vx;
+                const dvy = b2.vy - b1.vy;
+                const dvn = dvx * nx + dvy * ny;
+                
+                if (dvn < 0) { // 近づいている場合のみ反発
+                    const restitution = 0.6; // 反発係数
+                    const impulse = (1 + restitution) * dvn / totalMass;
+                    
+                    b1.vx += impulse * mass2 * nx;
+                    b1.vy += impulse * mass2 * ny;
+                    b2.vx -= impulse * mass1 * nx;
+                    b2.vy -= impulse * mass1 * ny;
+                }
+            }
+        }
+    }
 
     for (let i = bombs.length - 1; i >= 0; i--) {
         const b = bombs[i];
