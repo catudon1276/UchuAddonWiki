@@ -7,46 +7,91 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-
     <header>
-        <div class="header-left">
-            <a href="index.html">
-                <img src="../resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="header-logo">
+        <nav>
+            <a href="#top">
+                <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="logo">
             </a>
-        </div>
-        <nav class="header-nav">
-            <ul>
+            <ul class="nav-links">
                 <li><a href="#top">トップ</a></li>
-                <li><a href="#roles">役職</a></li>
-                <li><a href="minigames/super-hjk-run.html">ゲーム</a></li>
-                <li><a href="minigames/electro-recovery.html">ゲーム2</a></li>
+                <li><a href="pages/roles.html">役職</a></li>
+                <li class="dropdown">
+                    <a href="#games">ゲーム</a>
+                    <div class="dropdown-content">
+                        <a href="minigames/super-hjk-run.html">Super HJK Run</a>
+                        <a href="minigames/electro-recovery.html">Electro Recovery</a>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
 
-    <main id="top">
-        <section class="hero">
-            <div class="hero-content">
-                <img src="../resource/UchuAddonTitleLogo.png" alt="UchuAddonWiki Title" class="main-title-logo">
+    <main>
+        <section class="hero" id="top">
+            <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="hero-logo">
+            <h1>UchuAddonWikiへようこそ！</h1>
+            <div class="addon-info">
+                <p><strong>UchuAddon</strong>は、Among Us MOD「Nebula on the Ship」のアドオンです。新しい役職やゲームモードを追加し、より楽しいゲーム体験を提供します。</p>
             </div>
-            <div class="star-field"></div>
+            <p class="description">
+                このサイトはUchuAddonの公式Wikiです。役職の詳細情報やゲームモードの遊び方など、UchuAddonに関するあらゆる情報をご覧いただけます。
+            </p>
+            <a href="pages/roles.html" class="cta-button">役職一覧を見る</a>
         </section>
 
-        <div class="container" id="roles">
-            <section class="welcome-section">
-                <h1>UchuAddonWikiへようこそ！</h1>
-                <p>このサイトはUchuAddonの公式Wikiです。</p>
-                
-                <div class="btn-group">
-                    <a href="pages/roles.html" class="btn btn-primary">役職一覧を見る</a>
+        <section class="credits-section">
+            <h2 class="credits-title">クレジット</h2>
+            <div class="credits-grid">
+                <div class="credit-card">
+                    <h3>💡 IDEA / UIデザイン</h3>
+                    <ul>
+                        <li>かつどん</li>
+                    </ul>
                 </div>
-            </section>
-        </div>
+
+                <div class="credit-card">
+                    <h3>💻 コード・開発</h3>
+                    <ul>
+                        <li>ごま</li>
+                        <li>あらいもん</li>
+                        <li>アンハッピーセット</li>
+                        <li>たこやき</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🔧 コード・開発見習い</h3>
+                    <ul>
+                        <li>ExNEO</li>
+                        <li>ラムネ</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🎨 立ち絵デザイナー</h3>
+                    <ul>
+                        <li>ねこかぼちゃ</li>
+                        <li>momoneco</li>
+                        <li>シート</li>
+                        <li>マカロン</li>
+                        <li>慮医</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🌐 翻訳</h3>
+                    <ul>
+                        <li>したにあ（English）</li>
+                        <li>Plana（China）</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
-        &copy; 2024 UchuAddonWiki
+        <p><strong>UchuAddon</strong> - Nebula on the Ship のアドオン</p>
+        <p>© 2024 UchuAddonWiki</p>
     </footer>
-
 </body>
 </html>
