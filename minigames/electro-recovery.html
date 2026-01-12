@@ -315,7 +315,7 @@ const BOMB_RADIUS = 22;
 const TILE_SIZE = 64; 
 const DRAW_SIZE = 54; 
 const HIT_SLOP = 50; 
-const VISUAL_CAPACITY = 100;
+const VISUAL_CAPACITY = 100; // 廃止：格納上限は無制限
 const MERGE_DISTANCE = 100;
 const BASE_SIZE_LEVELS = [
     { scale: 1.0, fuseBonus: 0, scoreMultiplier: 1, name: "Normal", dragWeight: 1.0 },
@@ -560,11 +560,11 @@ async function triggerChainExplosionSequence(wrongZoneType, wrongBomb, reason) {
     const targetList = sortedBombs[wrongZoneType];
     ZONES[wrongZoneType].glow = 'rgba(255, 0, 40, 0.7)';
 
-    const explosionLimit = Math.min(targetList.length, VISUAL_CAPACITY);
-    for (let i = 0; i < explosionLimit; i++) {
-        const b = targetList.pop();
+    // 全てのボムを爆発（上限なし）
+    for (let i = 0; i < targetList.length; i++) {
+        const b = targetList[i];
         if (b) createBigExplosion(b.x, b.y);
-        await new Promise(r => setTimeout(r, 40));
+        if (i % 5 === 0) await new Promise(r => setTimeout(r, 30)); // 5個ごとに待機
     }
     sortedBombs[wrongZoneType] = [];
 
@@ -632,10 +632,10 @@ function getSortedPosition(type, index) {
     const zoneW = zone.visualW !== undefined ? zone.visualW : zone.w;
     
     const cols = Math.floor((zoneW - 20) / GRID.padding);
-    const visualIndex = index % VISUAL_CAPACITY;
     
-    const col = visualIndex % Math.max(1, cols);
-    const row = Math.floor(visualIndex / Math.max(1, cols));
+    // 無制限：indexをそのまま使用（% VISUAL_CAPACITYを削除）
+    const col = index % Math.max(1, cols);
+    const row = Math.floor(index / Math.max(1, cols));
     
     const startX = zoneX + 25;
     const startY = zoneY + 40;
@@ -1042,17 +1042,26 @@ function update(ts) {
     checkForMerges();
 
     // ボム同士の衝突判定と反発（最適化版）
-    for (let i = 0; i < bombs.length; i++) {
+    // ボムが多い場合は近くのボムのみチェック
+    const maxCollisionChecks = 50; // 1フレームあたりの最大チェック数
+    let collisionChecks = 0;
+    
+    for (let i = 0; i < bombs.length && collisionChecks < maxCollisionChecks; i++) {
         const b1 = bombs[i];
         if (b1 === dragging) continue;
         
-        for (let j = i + 1; j < bombs.length; j++) {
+        for (let j = i + 1; j < bombs.length && collisionChecks < maxCollisionChecks; j++) {
             const b2 = bombs[j];
             if (b2 === dragging) continue;
+            
+            collisionChecks++;
             
             const dx = b2.x - b1.x;
             const dy = b2.y - b1.y;
             const distSq = dx * dx + dy * dy; // 平方根計算を避ける
+            
+            // 距離が遠すぎる場合はスキップ（最適化）
+            if (distSq > 10000) continue; // 100px以上離れている
             
             const levelData1 = getSizeLevel(b1.sizeLevel);
             const levelData2 = getSizeLevel(b2.sizeLevel);
@@ -1246,8 +1255,18 @@ function draw() {
         ctx.setLineDash([]); ctx.globalAlpha = 1.0;
     });
 
-    sortedBombs.yellow.forEach(b => drawBomb(b, true));
-    sortedBombs.indigo.forEach(b => drawBomb(b, true));
+    sortedBombs.yellow.forEach(b => {
+        // 画面内のボムのみ描画（最適化）
+        if (b.y >= -100 && b.y <= logicalH + 100) {
+            drawBomb(b, true);
+        }
+    });
+    sortedBombs.indigo.forEach(b => {
+        // 画面内のボムのみ描画（最適化）
+        if (b.y >= -100 && b.y <= logicalH + 100) {
+            drawBomb(b, true);
+        }
+    });
     bombs.forEach(b => drawBomb(b, false));
 
     // 🧪ビーカーの描画
