@@ -419,8 +419,8 @@ function resize() {
     let zoneW, spawnAreaWidth;
     
     if (isPC) {
-        // PC: 仕分けゾーンは画面端から湧き場所の境界まで
-        spawnAreaWidth = 800; // 中央の湧き空間の幅を800pxに拡大
+        // PC/タブレット: 仕分けゾーンは画面端から湧き場所の境界まで
+        spawnAreaWidth = 400; // 中央の湧き空間の幅を400pxに変更
         const spawnAreaLeft = (logicalWidth - spawnAreaWidth) / 2;
         const spawnAreaRight = (logicalWidth + spawnAreaWidth) / 2;
         
@@ -601,7 +601,7 @@ function spawnBomb() {
     let spawnAreaWidth;
     
     if (isPC) {
-        spawnAreaWidth = 800;
+        spawnAreaWidth = 400; // PC/タブレットは400px
     } else {
         // モバイル: 両サイドのゾーン幅を取得
         const zoneW = Math.min(logicalW * 0.28, 180);
@@ -863,18 +863,20 @@ function update(ts) {
     const logicalH = canvas.height / (window.devicePixelRatio || 1);
 
     // スポーン間隔の計算（高得点でもさらに加速）
+    // 先にspawnIntervalを更新
+    if (score < 16000) {
+        spawnInterval = Math.max(400, 1200 - (score * 0.05));
+    } else if (score < 50000) {
+        spawnInterval = 400;
+    } else {
+        // 50000点以降はさらに加速
+        spawnInterval = Math.max(200, 400 - ((score - 50000) * 0.002));
+    }
+    
+    // スポーン実行
     if (gameState === 'PLAYING' && ts - lastSpawn > spawnInterval) {
         spawnBomb();
         lastSpawn = ts;
-        // 段階的に加速（90000点以降も加速し続ける）
-        if (score < 16000) {
-            spawnInterval = Math.max(400, 1200 - (score * 0.05));
-        } else if (score < 50000) {
-            spawnInterval = 400;
-        } else {
-            // 50000点以降はさらに加速
-            spawnInterval = Math.max(250, 400 - ((score - 50000) * 0.002));
-        }
     }
 
     // 🧪ビーカーのスポーン（スコアが閾値を超えたら）
@@ -885,7 +887,7 @@ function update(ts) {
             let spawnAreaWidth;
             
             if (isPC) {
-                spawnAreaWidth = 800;
+                spawnAreaWidth = 400; // PC/タブレットは400px
             } else {
                 // モバイル: 両サイドのゾーン幅を取得
                 const zoneW = Math.min(logicalW * 0.28, 180);
@@ -932,7 +934,7 @@ function update(ts) {
         let spawnAreaWidth;
         
         if (isPC) {
-            spawnAreaWidth = 800;
+            spawnAreaWidth = 400; // PC/タブレットは400px
         } else {
             // モバイル: 両サイドのゾーン幅を取得
             const zoneW = Math.min(logicalW * 0.28, 180);
@@ -963,7 +965,7 @@ function update(ts) {
         let spawnAreaLeft, spawnAreaRight;
         
         if (isPC) {
-            const spawnAreaWidth = 800;
+            const spawnAreaWidth = 400; // PC/タブレットは400px
             spawnAreaLeft = (logicalW - spawnAreaWidth) / 2;
             spawnAreaRight = (logicalW + spawnAreaWidth) / 2;
         } else {
@@ -1122,7 +1124,7 @@ function update(ts) {
             let spawnAreaLeft, spawnAreaRight;
             
             if (isPC) {
-                const spawnAreaWidth = 800;
+                const spawnAreaWidth = 400; // PC/タブレットは400px
                 spawnAreaLeft = (logicalW - spawnAreaWidth) / 2;
                 spawnAreaRight = (logicalW + spawnAreaWidth) / 2;
             } else {
@@ -1483,6 +1485,20 @@ function doGameOver(reason) {
     actionBtn.innerText = "REBOOT";
     overlay.classList.remove('hidden');
 }
+
+// ===== Button Events =====
+actionBtn.addEventListener("click", () => {
+    if (gameState === 'START' || gameState === 'GAMEOVER') {
+        startGame();
+    }
+});
+
+// タブレット/モバイル対応：オーバーレイクリックでもスタート
+overlay.addEventListener("click", (e) => {
+    if (e.target === overlay && (gameState === 'START' || gameState === 'GAMEOVER')) {
+        startGame();
+    }
+});
 
 draw();
 </script>
