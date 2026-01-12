@@ -7,15 +7,17 @@ let activeFilters = {
     tags: []
 };
 
-// 読み込む役職JSONファイルのリスト
-const ROLE_FILES = [
-    'crewmate/mayor.json',
-    'crewmate/sheriff.json',
-    'crewmate/engineer.json',
-    'impostor/serialkiller.json',
-    'neutral/joker.json'
-    // 新しい役職を追加する場合、ここにパスを追加
-];
+// 役職フォルダのマッピング
+const ROLE_FOLDERS = {
+    'クルーメイト': 'crewmate',
+    'インポスター': 'impostor',
+    '第3陣営': 'neutral',
+    'モディファイア': 'modifier',
+    '幽霊': 'ghost'
+};
+
+// YAMLフォルダから役職リストを自動生成
+const YAML_FOLDER = 'yaml';
 
 // ページ読み込み時に実行
 document.addEventListener('DOMContentLoaded', async function() {
@@ -27,25 +29,58 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // すべての役職データを読み込む
 async function loadAllRoles() {
-    const loadingPromises = ROLE_FILES.map(file => loadRoleFromJSON(file));
-    const results = await Promise.all(loadingPromises);
-    
-    // 成功した読み込みのみをフィルター
-    allRoles = results.filter(role => role !== null);
-    filteredRoles = allRoles;
-    
-    console.log(`${allRoles.length}個の役職を読み込みました`);
+    try {
+        // roles-list.json から役職リストを取得
+        const response = await fetch('roles-list.json');
+        if (!response.ok) {
+            console.error('roles-list.json が見つかりません。');
+            allRoles = [];
+            filteredRoles = [];
+            return;
+        }
+        
+        const rolesList = await response.json();
+        
+        // 各陣営のフォルダから役職を読み込む
+        const loadingPromises = [];
+        
+        // yamlフォルダ内の各陣営フォルダから読み込み
+        for (const [teamName, folderName] of Object.entries(ROLE_FOLDERS)) {
+            const roles = rolesList.roles[folderName] || [];
+            roles.forEach(fileName => {
+                loadingPromises.push(loadRoleFromJSON(`${YAML_FOLDER}/${folderName}/${fileName}`, teamName));
+            });
+        }
+        
+        const results = await Promise.all(loadingPromises);
+        
+        // 成功した読み込みのみをフィルター
+        allRoles = results.filter(role => role !== null);
+        filteredRoles = allRoles;
+        
+        console.log(`${allRoles.length}個の役職を読み込みました`);
+    } catch (error) {
+        console.error('役職データの読み込みに失敗しました:', error);
+        allRoles = [];
+        filteredRoles = [];
+    }
 }
 
 // JSONファイルから役職データを読み込む
-async function loadRoleFromJSON(filePath) {
+async function loadRoleFromJSON(filePath, teamName) {
     try {
         const response = await fetch(filePath);
         if (!response.ok) {
-            console.warn(`${filePath} の読み込みに失敗しました`);
+            console.warn(`${filePath} の読み込みに失敗しました（削除された可能性があります）`);
             return null;
         }
         const role = await response.json();
+        
+        // teamが指定されていない場合、フォルダ名から自動設定
+        if (!role.team) {
+            role.team = teamName;
+        }
+        
         return role;
     } catch (error) {
         console.error(`${filePath} の読み込みエラー:`, error);
@@ -142,7 +177,7 @@ function renderRoles() {
                 <div class="role-header">
                     <div class="d-flex align-items-center mb-3">
                         <img src="${role.character_image || 'https://via.placeholder.com/80x120/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
-                             alt="${role.name}" class="role-character">
+                             alt="${role.name}" class="role-character" onerror="this.src='https://via.placeholder.com/80x120/667eea/white?text=' + encodeURIComponent('${role.name.charAt(0)}')">
                         <div class="ms-3">
                             <div class="role-name">${role.name}</div>
                             <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
@@ -161,9 +196,11 @@ function renderRoles() {
 // チームクラスを取得
 function getTeamClass(team) {
     switch(team) {
-        case 'クルー': return 'crew';
+        case 'クルーメイト': return 'crew';
         case 'インポスター': return 'impostor';
-        case 'ニュートラル': return 'neutral';
+        case '第3陣営': return 'neutral';
+        case 'モディファイア': return 'modifier';
+        case '幽霊': return 'ghost';
         default: return 'neutral';
     }
 }
@@ -176,7 +213,8 @@ function showRoleDetails(role) {
             <div class="col-md-4 text-center mb-4 mb-md-0">
                 <img src="${role.character_image || 'https://via.placeholder.com/200x300/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
                      alt="${role.name}" class="img-fluid rounded-3 shadow-lg" 
-                     style="border: 3px solid ${role.color || '#667eea'};">
+                     style="border: 3px solid ${role.color || '#667eea'};"
+                     onerror="this.src='https://via.placeholder.com/200x300/667eea/white?text=' + encodeURIComponent('${role.name.charAt(0)}')">
                 <div class="mt-3">
                     <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block px-3 py-2">
                         ${role.team}
@@ -213,6 +251,19 @@ function showRoleDetails(role) {
                 <div class="mb-4">
                     <h5 class="text-primary mb-3"><i class="fas fa-trophy me-2"></i>勝利条件</h5>
                     <p class="text-light">${role.win_condition}</p>
+                </div>
+                ` : ''}
+                
+                ${role.tips && role.tips.length > 0 ? `
+                <div class="mb-4">
+                    <h5 class="text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>プレイのコツ</h5>
+                    <ul class="list-unstyled">
+                        ${role.tips.map(tip => `
+                            <li class="mb-2">
+                                <i class="fas fa-star text-warning me-2"></i>${tip}
+                            </li>
+                        `).join('')}
+                    </ul>
                 </div>
                 ` : ''}
                 
