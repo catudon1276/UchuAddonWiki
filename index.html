@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>役職一覧 - UchuAddonWiki</title>
+    <title>UchuAddonWiki</title>
     <style>
         * {
             margin: 0;
@@ -51,8 +51,6 @@
             display: flex;
             gap: 2rem;
             list-style: none;
-            margin: 0;
-            padding: 0;
         }
 
         .nav-links a {
@@ -102,544 +100,270 @@
             background: rgba(102, 126, 234, 0.3);
         }
 
-        .hero-section {
+        .hero {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 6rem 2rem 4rem;
+            padding: 4rem 2rem;
             text-align: center;
-            position: relative;
         }
 
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-            pointer-events: none;
+        .hero-logo {
+            max-width: 600px;
+            width: 100%;
+            margin: 2rem auto;
+            filter: drop-shadow(0 10px 30px rgba(102, 126, 234, 0.4));
         }
 
-        .hero-title {
-            font-size: 3.5rem;
+        h1 {
+            font-size: 3rem;
             margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 800;
-            letter-spacing: -1px;
-            position: relative;
-            z-index: 1;
         }
 
-        .hero-subtitle {
-            font-size: 1.4rem;
+        .subtitle {
+            font-size: 1.3rem;
             color: #cbd5e0;
             margin-bottom: 1rem;
-            font-weight: 300;
-            opacity: 0.9;
         }
 
-        .search-section {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
-            border-radius: 20px;
-            padding: 2.5rem;
-            margin: 2rem auto;
-            max-width: 1200px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
-
-        .search-section:hover {
-            transform: translateY(-8px);
-            border-color: rgba(102, 126, 234, 0.6);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 1.2rem 1.2rem 1.2rem 3.5rem;
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 15px;
-            font-size: 1.2rem;
-            color: #fff;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
-        }
-
-        .search-input::placeholder {
+        .description {
+            font-size: 1.1rem;
             color: #a0aec0;
-            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
         }
 
-        .search-icon {
-            position: absolute;
-            left: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0aec0;
-            font-size: 1.4rem;
-            transition: color 0.3s ease;
-        }
-
-        .search-input:focus + .search-icon {
-            color: #667eea;
-        }
-
-        .team-filter {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .team-btn {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #e2e8f0;
-            backdrop-filter: blur(10px);
-            font-size: 1rem;
-        }
-
-        .team-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .team-btn.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            justify-content: center;
-        }
-
-        .tag-filter {
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 25px;
-            padding: 0.7rem 1.4rem;
-            cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #e2e8f0;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .tag-filter:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
         }
 
-        .tag-filter.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .roles-container {
+        .credits-section {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+            margin: 4rem auto;
+            padding: 2rem;
         }
 
-        .role-card {
+        .credits-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .credits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .credit-card {
             background: rgba(30, 41, 59, 0.6);
             border-radius: 15px;
             padding: 2rem;
-            margin-bottom: 1.5rem;
             border: 1px solid rgba(102, 126, 234, 0.2);
             transition: all 0.3s ease;
-            cursor: pointer;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
         }
 
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .role-card:hover::before {
-            opacity: 1;
-        }
-
-        .role-card:hover {
-            transform: translateY(-10px) scale(1.02);
+        .credit-card:hover {
+            transform: translateY(-5px);
             border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
         }
 
-        .role-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .credit-card h3 {
+            color: #667eea;
             margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
+            font-size: 1.3rem;
         }
 
-        .role-character {
-            width: 80px;
-            height: 120px;
-            border-radius: 10px;
-            margin-right: 1rem;
-            float: left;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+        .credit-card ul {
+            list-style: none;
         }
 
-        .role-card:hover .role-character {
-            transform: scale(1.1) rotate(-2deg);
-        }
-
-        .role-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 0.5rem;
-        }
-
-        .role-team-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .team-crew { 
-            background: linear-gradient(45deg, #48bb78, #38a169); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
-        }
-        .team-impostor { 
-            background: linear-gradient(45deg, #f56565, #e53e3e); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
-        }
-        .team-neutral { 
-            background: linear-gradient(45deg, #ed8936, #dd6b20); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
-        }
-
-        .role-description {
+        .credit-card li {
+            padding: 0.5rem 0;
             color: #cbd5e0;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-            font-size: 1rem;
-            min-height: 60px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            border-bottom: 1px solid rgba(203, 213, 224, 0.1);
         }
 
-        .role-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            position: relative;
-            z-index: 2;
+        .credit-card li:last-child {
+            border-bottom: none;
         }
 
-        .role-tag {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .role-tag:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: rgba(102, 126, 234, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .no-results {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 15px;
-            padding: 3rem;
+        footer {
+            background: rgba(15, 23, 42, 0.95);
             text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 2px solid #4a5568;
+        }
+
+        footer p {
             color: #a0aec0;
-            font-size: 1.2rem;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            margin: 0.5rem 0;
+        }
+
+        .addon-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
             margin: 2rem auto;
             max-width: 800px;
+            border-radius: 8px;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .overlay-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 25px;
-            padding: 3rem;
-            max-width: 800px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
-            animation: slideIn 0.4s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translate(-50%, -40%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, -50%);
-                opacity: 1;
-            }
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #a0aec0;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .close-btn:hover {
-            background: rgba(245, 101, 101, 0.2);
-            color: #f56565;
-            transform: rotate(90deg) scale(1.1);
+        .addon-info p {
+            color: #cbd5e0;
+            line-height: 1.8;
         }
 
         @media (max-width: 768px) {
-            .hero-title {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            h1 {
                 font-size: 2rem;
             }
 
-            .search-section {
-                padding: 1.5rem;
-                margin: 1rem;
+            .hero {
+                padding: 2rem 1rem;
             }
 
-            .role-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .team-filter {
-                flex-wrap: wrap;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                flex-direction: column;
-                width: 100%;
+            .credits-grid {
+                grid-template-columns: 1fr;
             }
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .role-card {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-
-        .role-card:nth-child(1) { animation-delay: 0.1s; }
-        .role-card:nth-child(2) { animation-delay: 0.2s; }
-        .role-card:nth-child(3) { animation-delay: 0.3s; }
-        .role-card:nth-child(4) { animation-delay: 0.4s; }
-        .role-card:nth-child(5) { animation-delay: 0.5s; }
-        .role-card:nth-child(6) { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <a href="../index.html">
-                <img src="../resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="logo">
+            <a href="#top">
+                <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="logo">
             </a>
             <ul class="nav-links">
-                <li><a href="../index.html">トップ</a></li>
-                <li><a href="#" class="active">役職</a></li>
+                <li><a href="#top">トップ</a></li>
+                <li><a href="roles/index.html">役職</a></li>
                 <li class="dropdown">
                     <a href="#games">ゲーム</a>
                     <div class="dropdown-content">
-                        <a href="../minigames/super-hjk-run.html">Super HJK Run</a>
-                        <a href="../minigames/electro-recovery.html">Electro Recovery</a>
+                        <a href="minigames/super-hjk-run.html">Super HJK Run</a>
+                        <a href="minigames/electro-recovery.html">Electro Recovery</a>
                     </div>
                 </li>
             </ul>
         </nav>
     </header>
 
-    <div class="hero-section">
-        <h1 class="hero-title">
-            <i class="fas fa-users me-3"></i>役職一覧
-        </h1>
-        <p class="hero-subtitle">UchuAddonのすべての役職を検索・フィルター機能付きで確認</p>
-    </div>
-
-    <div class="search-section">
-        <h2 class="mb-4 text-center">
-            <i class="fas fa-search me-2"></i>役職検索
-        </h2>
-        
-        <div class="search-box">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="役職名や説明文で検索...">
-        </div>
-
-        <div class="team-filter mb-3">
-            <button class="team-btn active" data-team="all">
-                <i class="fas fa-users me-2"></i>すべて
-            </button>
-            <button class="team-btn" data-team="クルー">
-                <i class="fas fa-users text-success me-2"></i>クルー
-            </button>
-            <button class="team-btn" data-team="インポスター">
-                <i class="fas fa-user-secret text-danger me-2"></i>インポスター
-            </button>
-            <button class="team-btn" data-team="ニュートラル">
-                <i class="fas fa-balance-scale text-warning me-2"></i>ニュートラル
-            </button>
-        </div>
-
-        <div class="tags-container" id="tagsContainer">
-            <!-- タグはJavaScriptで動的に生成 -->
-        </div>
-    </div>
-
-    <div class="container-fluid roles-container">
-        <div class="row" id="rolesContainer">
-            <!-- 役職カードはJavaScriptで動的に生成 -->
-        </div>
-    </div>
-
-    <div class="no-results" id="noResults" style="display: none;">
-        <i class="fas fa-search-minus fa-3x mb-3"></i>
-        <p>該当する役職が見つかりませんでした。</p>
-        <p>検索条件を変えてみてください。</p>
-    </div>
-
-    <!-- オーバーレイ -->
-    <div class="overlay" id="overlay">
-        <div class="overlay-content">
-            <button class="close-btn" onclick="closeOverlay()">
-                <i class="fas fa-times"></i>
-            </button>
-            <div id="overlayContent">
-                <!-- 詳細情報はJavaScriptで動的に生成 -->
+    <main>
+        <section class="hero" id="top">
+            <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="hero-logo">
+            <h1>UchuAddonWikiへようこそ！</h1>
+            <div class="addon-info">
+                <p><strong>UchuAddon</strong>は、Among Us MOD「Nebula on the Ship」のアドオンです。新しい役職やゲームモードを追加し、より幅広くゲーム体験を提供します。</p>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="roleMain.js"></script>
+        <section class="credits-section">
+            <h2 class="credits-title">Credit</h2>
+            <div class="credits-grid">
+                <div class="credit-card">
+                    <h3>💡 IDEA</h3>
+                    <ul>
+                        <li>ネコうどん</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>💻 コード・開発</h3>
+                    <ul>
+                        <li>ごま</li>
+                        <li>あらいもん</li>
+                        <li>アンハッピーセット</li>
+                        <li>たこやき</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🔧 コード・開発見習い</h3>
+                    <ul>
+                        <li>ExNEO</li>
+                        <li>ラムネ</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🎨 デザイナー</h3>
+                    <ul>
+                        <li>ねこかぼちゃ</li>
+                        <li>momoneco</li>
+                        <li>シート</li>
+                        <li>マカロン</li>
+                        <li>慮医</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🌐 翻訳</h3>
+                    <ul>
+                        <li>したにあ（English）</li>
+                        <li>Plana（China）</li>
+                    </ul>
+                </div>
+
+                <div class="credit-card">
+                    <h3>🌟 スペシャルサンクス</h3>
+                    <ul>
+                        <li>Nebula on the Ship （制作：Dolly）</li>
+
+                        <li>Super New Roles（代表：ykundesu）</li>
+
+                        <li>Extreme Roles（制作：Yukieiji）</li>
+
+                        <li>Town of Host（代表：tukasa0001）</li>
+
+                        <li>Town of Host Y（制作：Yumenopai）</li>
+
+                        <li>Town of Host K（制作：KYMario）</li>
+
+                        <li>Town of Us（制作：slushiegoose）</li>
+
+                        <li>Town of Us-R（制作：eDonnes124）</li>
+
+                        <li>The Other Roles（代表：Eisbison）</li>
+
+                        <li>The Other Roles-GM-Haoming（制作：Hageming）</li>
+
+                    </ul>
+                </div>                
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>UchuAddon</strong></p>
+        <p>© 2026 UchuAddonWiki</p>
+    </footer>
 </body>
-</html>
