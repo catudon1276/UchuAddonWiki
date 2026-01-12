@@ -273,6 +273,10 @@
                         <div id="res-total" class="res-val">0</div>
                     </div>
                 </div>
+                <div style="margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                    <div class="res-label" style="margin-bottom: 4px;">DEVICE</div>
+                    <div id="res-device" class="res-val" style="font-size: clamp(14px, 3.5vw, 18px); color: #aaa;">-</div>
+                </div>
             </div>
 
             <p id="status-msg" style="color: #ccc; margin: 10px 0 20px; text-align: center; max-width: 90%; line-height: 1.5; font-size: clamp(12px, 3vw, 14px); padding: 0 15px;">
@@ -374,10 +378,10 @@ function getRank(s) {
     if (s < 20000) return { name: "SS", color: "#f22" };
     if (s < 30000) return { name: "SSS", color: "#ff0" };
     if (s < 45000) return { name: "SSS+", color: "#fff" };
-    if (s < 55000) return { name: "X", color: "#ff8c00" }; 
-    if (s < 65000) return { name: "XX", color: "#00ffcc" };
-    if (s < 80000) return { name: "XXX", color: "#ff00ff" };
-    const uNum = Math.floor((s - 80000) / 40000) + 1;
+    if (s < 65000) return { name: "X", color: "#ff8c00" }; 
+    if (s < 90000) return { name: "XX", color: "#00ffcc" };
+    if (s < 120000) return { name: "XXX", color: "#ff00ff" };
+    const uNum = Math.floor((s - 120000) / 40000) + 1;
     return { name: `U${uNum}`, color: "#fff", special: true };
 }
 
@@ -768,7 +772,10 @@ const onStart = e => {
     for(let i=bombs.length-1; i>=0; i--) {
         const b = bombs[i];
         const levelData = getSizeLevel(b.sizeLevel);
-        const adjustedRadius = (b.r * levelData.scale) + HIT_SLOP;
+        // 大きいボムほどHIT_SLOPを減らして忠実な判定に
+        const slopReduction = Math.min(b.sizeLevel * 10, HIT_SLOP - 10); // 最大40削減
+        const adjustedSlop = Math.max(10, HIT_SLOP - slopReduction);
+        const adjustedRadius = (b.r * levelData.scale) + adjustedSlop;
         const d = Math.hypot(p.x - b.x, p.y - b.y);
         if(d < adjustedRadius) { 
             minDist = d; 
@@ -1388,6 +1395,11 @@ function doGameOver(reason) {
     // ハイスコア更新
     if (score > highScore) highScore = score;
     
+    // デバイス判定
+    const logicalW = canvas.width / (window.devicePixelRatio || 1);
+    const isPC = logicalW >= 768;
+    const deviceName = isPC ? "PC" : "MOBILE";
+    
     const rank = getRank(score);
     finalRankBox.innerText = rank.name;
     finalRankBox.style.color = rank.color;
@@ -1396,6 +1408,7 @@ function doGameOver(reason) {
     document.getElementById("res-yellow").innerText = finalCounts.yellow;
     document.getElementById("res-indigo").innerText = finalCounts.indigo;
     document.getElementById("res-total").innerText = finalCounts.yellow + finalCounts.indigo;
+    document.getElementById("res-device").innerText = deviceName;
     
     resultBox.classList.remove('hidden');
     statusMsg.innerHTML = `<span style="color: #fff; font-weight: bold;">${reason}</span><br>FINAL SCORE: ${score}`;
