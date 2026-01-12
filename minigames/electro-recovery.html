@@ -374,10 +374,10 @@ function getRank(s) {
     if (s < 20000) return { name: "SS", color: "#f22" };
     if (s < 30000) return { name: "SSS", color: "#ff0" };
     if (s < 45000) return { name: "SSS+", color: "#fff" };
-    if (s < 65000) return { name: "X", color: "#ff8c00" }; 
-    if (s < 90000) return { name: "XX", color: "#00ffcc" };
-    if (s < 120000) return { name: "XXX", color: "#ff00ff" };
-    const uNum = Math.floor((s - 120000) / 40000) + 1;
+    if (s < 55000) return { name: "X", color: "#ff8c00" }; 
+    if (s < 65000) return { name: "XX", color: "#00ffcc" };
+    if (s < 80000) return { name: "XXX", color: "#ff00ff" };
+    const uNum = Math.floor((s - 80000) / 40000) + 1;
     return { name: `U${uNum}`, color: "#fff", special: true };
 }
 
@@ -945,9 +945,18 @@ function update(ts) {
         
         // 湧き場所エリアの境界を計算
         const isPC = logicalW >= 768;
-        const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
-        const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
-        const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+        let spawnAreaLeft, spawnAreaRight;
+        
+        if (isPC) {
+            const spawnAreaWidth = 800;
+            spawnAreaLeft = (logicalW - spawnAreaWidth) / 2;
+            spawnAreaRight = (logicalW + spawnAreaWidth) / 2;
+        } else {
+            // モバイル: visualWを使って正しい境界を計算
+            const visualZoneW = ZONES.yellow.visualW || ZONES.yellow.w;
+            spawnAreaLeft = visualZoneW;
+            spawnAreaRight = logicalW - visualZoneW;
+        }
         
         // 壁で跳ね返る（湧き場所エリア内に制限）
         if (vac.x < spawnAreaLeft + vac.radius) { 
@@ -1036,9 +1045,18 @@ function update(ts) {
 
             // 湧き場所エリアの境界を計算（ドラッグ中でないボムのみ）
             const isPC = logicalW >= 768;
-            const spawnAreaWidth = isPC ? 800 : logicalW - (ZONES.yellow.w + ZONES.indigo.w);
-            const spawnAreaLeft = isPC ? (logicalW - spawnAreaWidth) / 2 : ZONES.yellow.w;
-            const spawnAreaRight = isPC ? (logicalW + spawnAreaWidth) / 2 : logicalW - ZONES.indigo.w;
+            let spawnAreaLeft, spawnAreaRight;
+            
+            if (isPC) {
+                const spawnAreaWidth = 800;
+                spawnAreaLeft = (logicalW - spawnAreaWidth) / 2;
+                spawnAreaRight = (logicalW + spawnAreaWidth) / 2;
+            } else {
+                // モバイル: visualWを使って正しい境界を計算
+                const visualZoneW = ZONES.yellow.visualW || ZONES.yellow.w;
+                spawnAreaLeft = visualZoneW;
+                spawnAreaRight = logicalW - visualZoneW;
+            }
 
             // 左右の境界（湧き場所エリア内に制限）
             if (b.x < spawnAreaLeft + effectiveRadius) { 
