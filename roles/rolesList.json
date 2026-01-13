@@ -3,13 +3,12 @@
     "_update_info": "定期的にこのファイルを更新することで、追加・削除された役職が自動反映されます",
     "roles": {
         "crewmate": [
-            "mayor.json"
+            "mayor.json",
+            "admiral.json"
         ],
         "impostor": [
-            "serialkiller.json"
         ],
         "neutral": [
-            "joker.json"
         ],
         "modifier": [
         ],
