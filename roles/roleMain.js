@@ -11,15 +11,29 @@ let activeFilters = {
 const ROLE_FOLDERS = {
     'クルーメイト': 'crewmate',
     'インポスター': 'impostor',
-    '第3陣営': 'neutral',
+    'ニュートラル': 'neutral',
     'モディファイア': 'modifier',
-    '幽霊': 'ghost'
+    'ゴースト': 'ghost'
 };
 
-// 出典元のマッピング
-const FROM_SOURCES = {
-    'ExR': 'ExtremeRoles',
-    'SNR': 'SuperNewRoles'
+// 出典元のマッピング（表示順）
+const FROM_SOURCES = [
+    { code: 'Original', name: 'UchuAddon', logo: 'UchuAddon.png' },
+    { code: 'ExR', name: 'ExtremeRoles', logo: 'ExtremeRoles.png' },
+    { code: 'SNR', name: 'SuperNewRoles', logo: 'SuperNewRoles.png' },
+    { code: 'TOR', name: 'TheOtherRoles', logo: 'TheOtherRoles.png' },
+    { code: 'TOHK', name: 'TownOfHost-K', logo: 'TownOfHost-K.png' },
+    { code: 'TOHY', name: 'TownOfHost-Y', logo: 'TownOfHost-Y.png' },
+    { code: 'TOU', name: 'TownOfUs', logo: 'TownOfUs.png' }
+];
+
+// 陣営アイコンのフォールバック
+const TEAM_ICONS = {
+    'クルーメイト': 'Crewmate.png',
+    'インポスター': 'Impostor.png',
+    'ニュートラル': 'Neutral.png',
+    'モディファイア': 'Modifier.png',
+    'ゴースト': 'Ghost.png'
 };
 
 // YAMLフォルダから役職リストを自動生成
@@ -137,19 +151,19 @@ function renderFromFilters() {
     container.appendChild(allBtn);
     
     // 出典元ボタン
-    for (const [code, name] of Object.entries(FROM_SOURCES)) {
+    FROM_SOURCES.forEach(source => {
         const btn = document.createElement('button');
         btn.className = 'from-btn';
-        btn.dataset.from = code;
-        btn.textContent = name;
+        btn.dataset.from = source.code;
+        btn.textContent = source.name;
         btn.addEventListener('click', function() {
             document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            activeFilters.from = code;
+            activeFilters.from = source.code;
             filterAndRender();
         });
         container.appendChild(btn);
-    }
+    });
 }
 
 // フィルター処理
@@ -193,13 +207,15 @@ function renderRoles() {
     noResults.style.display = 'none';
     container.innerHTML = filteredRoles.map(role => {
         const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+        const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
+        const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
         
         return `
         <div class="col-lg-6 col-xl-4 mb-4">
-            <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${role.color || '#667eea'};">
+            <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${roleColor};">
                 <div class="role-header">
                     <div class="d-flex align-items-center mb-3">
-                        ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-icon" onerror="this.style.display='none'">` : ''}
+                        ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-icon" onerror="this.onerror=null; this.src='${fallbackIcon}';">` : ''}
                         <div class="ms-3">
                             <div class="role-name">${role.name}</div>
                             <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
@@ -218,9 +234,9 @@ function getTeamClass(team) {
     switch(team) {
         case 'クルーメイト': return 'crew';
         case 'インポスター': return 'impostor';
-        case '第3陣営': return 'neutral';
+        case 'ニュートラル': return 'neutral';
         case 'モディファイア': return 'modifier';
-        case '幽霊': return 'ghost';
+        case 'ゴースト': return 'ghost';
         default: return 'neutral';
     }
 }
@@ -231,8 +247,10 @@ function showRoleDetails(role) {
     
     // 画像パス生成
     const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+    const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
     const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
     const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
+    const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
     
     // 能力セクション生成
     const abilitiesHTML = role.abilities && role.abilities.length > 0 ? `
@@ -257,14 +275,14 @@ function showRoleDetails(role) {
         </div>
     ` : '';
     
-    // ギャラリーセクション生成
+    // ギャラリーセクション生成（画像がある場合のみ）
     const galleryHTML = role.gallery && role.gallery.length > 0 ? `
         <div class="gallery-section mb-4">
-            <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>ギャラリー</h5>
+            <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>使用イメージ画像</h5>
             <div class="gallery-grid">
                 ${role.gallery.map(img => `
                     <img src="../resource/rolepicture/${img}" 
-                         alt="ギャラリー画像" 
+                         alt="使用イメージ" 
                          class="gallery-image"
                          onerror="this.style.display='none'">
                 `).join('')}
@@ -276,9 +294,9 @@ function showRoleDetails(role) {
         <div class="role-detail-header mb-4">
             <div class="d-flex justify-content-between align-items-start">
                 <div class="d-flex align-items-center">
-                    ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-detail-icon me-3" onerror="this.style.display='none'">` : ''}
+                    ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-detail-icon me-3" onerror="this.onerror=null; this.src='${fallbackIcon}';">` : ''}
                     <div>
-                        <h2 class="role-detail-name mb-2" style="color: ${role.color || '#667eea'};">${role.name}</h2>
+                        <h2 class="role-detail-name mb-2" style="color: ${roleColor};">${role.name}</h2>
                         <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block">${role.team}</div>
                     </div>
                 </div>

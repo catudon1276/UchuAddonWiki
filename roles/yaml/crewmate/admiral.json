@@ -1,0 +1,22 @@
+{
+    "id": "admiral",
+    "english_name": "Admiral",
+    "name": "アドミラル",
+    "team": "クルーメイト",
+    "color": "61, 88, 179",
+    "intro": "絶対権限",
+    "description": "提督権限を行使し追放を防ぐクルーメイトです。",
+    "abilities": [
+        {
+            "button": "AdmiralSkillButton.png",
+            "name": "固有能力 絶対的提督権限",
+            "description": "アドミラルは追放を防ぐクルーメイトです。能力を使用した会議は追放を防ぎます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "自己開示",
+            "description": "設定で設定量のタスクを終えた時、アドミラルの名前が変色します。"
+        }
+    ],
+    "from": "Orginal"
+}
