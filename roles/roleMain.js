@@ -4,7 +4,7 @@ let filteredRoles = [];
 let activeFilters = {
     search: '',
     team: 'all',
-    tags: []
+    from: 'all'
 };
 
 // 役職フォルダのマッピング
@@ -16,14 +16,23 @@ const ROLE_FOLDERS = {
     '幽霊': 'ghost'
 };
 
+// 出典元のマッピング
+const FROM_SOURCES = {
+    'ExR': 'ExtremeRoles',
+    'SNR': 'SuperNewRoles'
+};
+
 // YAMLフォルダから役職リストを自動生成
 const YAML_FOLDER = 'yaml';
+
+// rolesList.json から役職リストを取得
+const ROLE_LIST_FILE = 'rolesList.json';
 
 // ページ読み込み時に実行
 document.addEventListener('DOMContentLoaded', async function() {
     await loadAllRoles();
     setupEventListeners();
-    renderTags();
+    renderFromFilters();
     renderRoles();
 });
 
@@ -107,28 +116,40 @@ function setupEventListeners() {
     });
 }
 
-// タグをレンダリング
-function renderTags() {
-    const tagsContainer = document.getElementById('tagsContainer');
-    const allTags = [...new Set(allRoles.flatMap(role => role.tags))];
+// 出典フィルターをレンダリング
+function renderFromFilters() {
+    const container = document.getElementById('fromContainer');
+    if (!container) return;
     
-    tagsContainer.innerHTML = '';
-    allTags.forEach(tag => {
-        const tagElement = document.createElement('div');
-        tagElement.className = 'tag-filter';
-        tagElement.textContent = tag;
-        tagElement.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const tagIndex = activeFilters.tags.indexOf(tag);
-            if (tagIndex > -1) {
-                activeFilters.tags.splice(tagIndex, 1);
-            } else {
-                activeFilters.tags.push(tag);
-            }
+    container.innerHTML = '';
+    
+    // すべてボタン
+    const allBtn = document.createElement('button');
+    allBtn.className = 'from-btn active';
+    allBtn.dataset.from = 'all';
+    allBtn.innerHTML = '<i class="fas fa-globe me-2"></i>すべて';
+    allBtn.addEventListener('click', function() {
+        document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        activeFilters.from = 'all';
+        filterAndRender();
+    });
+    container.appendChild(allBtn);
+    
+    // 出典元ボタン
+    for (const [code, name] of Object.entries(FROM_SOURCES)) {
+        const btn = document.createElement('button');
+        btn.className = 'from-btn';
+        btn.dataset.from = code;
+        btn.textContent = name;
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            activeFilters.from = code;
             filterAndRender();
         });
-        tagsContainer.appendChild(tagElement);
-    });
+        container.appendChild(btn);
+    }
 }
 
 // フィルター処理
@@ -138,7 +159,7 @@ function filterAndRender() {
         if (activeFilters.search) {
             const searchMatch = role.name.toLowerCase().includes(activeFilters.search) || 
                               role.description.toLowerCase().includes(activeFilters.search) ||
-                              role.tags.some(tag => tag.toLowerCase().includes(activeFilters.search));
+                              (role.english_name && role.english_name.toLowerCase().includes(activeFilters.search));
             if (!searchMatch) return false;
         }
 
@@ -147,10 +168,9 @@ function filterAndRender() {
             return false;
         }
 
-        // タグフィルター
-        if (activeFilters.tags.length > 0) {
-            const hasAllTags = activeFilters.tags.every(tag => role.tags.includes(tag));
-            if (!hasAllTags) return false;
+        // 出典フィルター
+        if (activeFilters.from !== 'all' && role.from !== activeFilters.from) {
+            return false;
         }
 
         return true;
@@ -171,26 +191,26 @@ function renderRoles() {
     }
 
     noResults.style.display = 'none';
-    container.innerHTML = filteredRoles.map(role => `
+    container.innerHTML = filteredRoles.map(role => {
+        const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+        
+        return `
         <div class="col-lg-6 col-xl-4 mb-4">
             <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${role.color || '#667eea'};">
                 <div class="role-header">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="${role.character_image || 'https://via.placeholder.com/80x120/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
-                             alt="${role.name}" class="role-character" onerror="this.src='https://via.placeholder.com/80x120/667eea/white?text=' + encodeURIComponent('${role.name.charAt(0)}')">
+                        ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-icon" onerror="this.style.display='none'">` : ''}
                         <div class="ms-3">
                             <div class="role-name">${role.name}</div>
                             <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
                         </div>
                     </div>
                 </div>
+                ${role.intro ? `<div class="role-intro">${role.intro}</div>` : ''}
                 <div class="role-description">${role.description}</div>
-                <div class="role-tags">
-                    ${role.tags.map(tag => `<span class="role-tag">${tag}</span>`).join('')}
-                </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // チームクラスを取得
@@ -208,80 +228,100 @@ function getTeamClass(team) {
 // 役職詳細を表示
 function showRoleDetails(role) {
     const overlayContent = document.getElementById('overlayContent');
-    overlayContent.innerHTML = `
-        <div class="row">
-            <div class="col-md-4 text-center mb-4 mb-md-0">
-                <img src="${role.character_image || 'https://via.placeholder.com/200x300/667eea/white?text=' + encodeURIComponent(role.name.charAt(0))}" 
-                     alt="${role.name}" class="img-fluid rounded-3 shadow-lg" 
-                     style="border: 3px solid ${role.color || '#667eea'};"
-                     onerror="this.src='https://via.placeholder.com/200x300/667eea/white?text=' + encodeURIComponent('${role.name.charAt(0)}')">
-                <div class="mt-3">
-                    <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block px-3 py-2">
-                        ${role.team}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="text-center mb-4">
-                    <h2 class="role-name" style="font-size: 2.5rem;">${role.name}</h2>
-                    <div class="badge bg-gradient px-3 py-2" style="background: ${role.color || '#667eea'};">
-                        <i class="fas fa-signal me-2"></i>難易度: ${role.difficulty}
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>説明</h5>
-                    <p class="role-description" style="font-size: 1.1rem;">${role.description}</p>
-                </div>
-                
-                ${role.abilities ? `
-                <div class="mb-4">
-                    <h5 class="text-primary mb-3"><i class="fas fa-bolt me-2"></i>能力</h5>
-                    <ul class="list-unstyled">
-                        ${role.abilities.map(ability => `
-                            <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>${ability}
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-                ` : ''}
-                
-                ${role.win_condition ? `
-                <div class="mb-4">
-                    <h5 class="text-primary mb-3"><i class="fas fa-trophy me-2"></i>勝利条件</h5>
-                    <p class="text-light">${role.win_condition}</p>
-                </div>
-                ` : ''}
-                
-                ${role.tips && role.tips.length > 0 ? `
-                <div class="mb-4">
-                    <h5 class="text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>プレイのコツ</h5>
-                    <ul class="list-unstyled">
-                        ${role.tips.map(tip => `
-                            <li class="mb-2">
-                                <i class="fas fa-star text-warning me-2"></i>${tip}
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-                ` : ''}
-                
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h5 class="text-primary mb-3"><i class="fas fa-tags me-2"></i>タグ</h5>
-                        <div class="role-tags">
-                            ${role.tags.map(tag => `<span class="role-tag" style="font-size: 0.9rem;">${tag}</span>`).join('')}
+    
+    // 画像パス生成
+    const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+    const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
+    const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
+    
+    // 能力セクション生成
+    const abilitiesHTML = role.abilities && role.abilities.length > 0 ? `
+        <div class="abilities-section mb-4">
+            <h5 class="text-primary mb-3"><i class="fas fa-bolt me-2"></i>固有能力</h5>
+            ${role.abilities.map(ability => `
+                <div class="ability-item mb-3">
+                    <div class="d-flex align-items-start">
+                        <div class="ability-button-container">
+                            <img src="../resource/rolebutton/${ability.button}" 
+                                 alt="${ability.name}" 
+                                 class="ability-button"
+                                 onerror="this.src='../resource/rolebutton/NoImage.png'">
+                        </div>
+                        <div class="ability-content ms-3">
+                            <h6 class="ability-name">${ability.name}</h6>
+                            <p class="ability-description">${ability.description}</p>
                         </div>
                     </div>
                 </div>
-                
-                <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
-                        <i class="fas fa-times me-2"></i>閉じる
-                    </button>
-                </div>
+            `).join('')}
+        </div>
+    ` : '';
+    
+    // ギャラリーセクション生成
+    const galleryHTML = role.gallery && role.gallery.length > 0 ? `
+        <div class="gallery-section mb-4">
+            <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>ギャラリー</h5>
+            <div class="gallery-grid">
+                ${role.gallery.map(img => `
+                    <img src="../resource/rolepicture/${img}" 
+                         alt="ギャラリー画像" 
+                         class="gallery-image"
+                         onerror="this.style.display='none'">
+                `).join('')}
             </div>
+        </div>
+    ` : '';
+    
+    overlayContent.innerHTML = `
+        <div class="role-detail-header mb-4">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex align-items-center">
+                    ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-detail-icon me-3" onerror="this.style.display='none'">` : ''}
+                    <div>
+                        <h2 class="role-detail-name mb-2" style="color: ${role.color || '#667eea'};">${role.name}</h2>
+                        <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block">${role.team}</div>
+                    </div>
+                </div>
+                ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="from-logo" onerror="this.style.display='none'">` : ''}
+            </div>
+            ${role.intro ? `<div class="role-detail-intro mt-3">${role.intro}</div>` : ''}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                ${characterPath ? `
+                    <div class="character-container">
+                        <img src="${characterPath}" 
+                             alt="${role.name}" 
+                             class="character-image"
+                             onerror="this.style.display='none'">
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="col-md-8">
+                <div class="mb-4">
+                    <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>概要</h5>
+                    <p class="role-detail-description">${role.description}</p>
+                </div>
+                
+                ${abilitiesHTML}
+                
+                ${role.tips ? `
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>豆知識</h5>
+                        <p class="tips-text">${role.tips}</p>
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+        
+        ${galleryHTML}
+        
+        <div class="text-center mt-4">
+            <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
+                <i class="fas fa-times me-2"></i>閉じる
+            </button>
         </div>
     `;
 

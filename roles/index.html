@@ -107,116 +107,79 @@
         .hero-section {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 6rem 2rem 4rem;
+            padding: 4rem 2rem 3rem;
             text-align: center;
-            position: relative;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-            pointer-events: none;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 800;
-            letter-spacing: -1px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-subtitle {
-            font-size: 1.4rem;
-            color: #cbd5e0;
-            margin-bottom: 1rem;
-            font-weight: 300;
-            opacity: 0.9;
         }
 
         .search-section {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2rem;
             margin: 2rem auto;
             max-width: 1200px;
             border: 1px solid rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
-
-        .search-section:hover {
-            transform: translateY(-8px);
-            border-color: rgba(102, 126, 234, 0.6);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
         }
 
         .search-box {
             position: relative;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .search-input {
             width: 100%;
-            padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+            padding: 1rem 1rem 1rem 3rem;
             background: rgba(15, 23, 42, 0.6);
             border: 2px solid rgba(102, 126, 234, 0.4);
             border-radius: 15px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #fff;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
         .search-input:focus {
             outline: none;
             border-color: #667eea;
-            background: rgba(15, 23, 42, 0.8);
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
-        }
-
-        .search-input::placeholder {
-            color: #a0aec0;
-            font-style: italic;
         }
 
         .search-icon {
             position: absolute;
-            left: 1.2rem;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: #a0aec0;
-            font-size: 1.4rem;
-            transition: color 0.3s ease;
         }
 
-        .search-input:focus + .search-icon {
-            color: #667eea;
+        .filter-section {
+            margin-bottom: 1.5rem;
         }
 
-        .team-filter {
+        .filter-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #cbd5e0;
+        }
+
+        .team-filter, .from-filter {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .team-btn {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
+        .team-btn, .from-btn {
+            padding: 0.75rem 1.25rem;
             background: rgba(15, 23, 42, 0.6);
             border: 2px solid rgba(102, 126, 234, 0.4);
             border-radius: 15px;
@@ -224,59 +187,20 @@
             transition: all 0.3s ease;
             font-weight: 600;
             color: #e2e8f0;
-            backdrop-filter: blur(10px);
-            font-size: 1rem;
-        }
-
-        .team-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .team-btn.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            justify-content: center;
-        }
-
-        .tag-filter {
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 25px;
-            padding: 0.7rem 1.4rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 0.95rem;
-            font-weight: 500;
-            color: #e2e8f0;
-            backdrop-filter: blur(10px);
         }
 
-        .tag-filter:hover {
+        .team-btn:hover, .from-btn:hover {
             background: rgba(102, 126, 234, 0.3);
             border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
         }
 
-        .tag-filter.active {
+        .team-btn.active, .from-btn.active {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
         }
 
         .roles-container {
@@ -288,160 +212,61 @@
         .role-card {
             background: rgba(30, 41, 59, 0.6);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
             border: 1px solid rgba(102, 126, 234, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
             height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .role-card:hover::before {
-            opacity: 1;
         }
 
         .role-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-5px);
             border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
         }
 
-        .role-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .role-character {
-            width: 80px;
-            height: 120px;
-            border-radius: 10px;
-            margin-right: 1rem;
-            float: left;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .role-card:hover .role-character {
-            transform: scale(1.1) rotate(-2deg);
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
         }
 
         .role-name {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             margin-bottom: 0.5rem;
+        }
+
+        .role-intro {
+            font-size: 0.95rem;
+            color: #a0aec0;
+            font-style: italic;
+            margin-bottom: 0.75rem;
+        }
+
+        .role-description {
+            color: #cbd5e0;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         .role-team-badge {
             display: inline-block;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .team-crew { 
-            background: linear-gradient(45deg, #48bb78, #38a169); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
-        }
-        .team-impostor { 
-            background: linear-gradient(45deg, #f56565, #e53e3e); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
-        }
-        .team-neutral { 
-            background: linear-gradient(45deg, #ed8936, #dd6b20); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
-        }
-        .team-modifier { 
-            background: linear-gradient(45deg, #4299e1, #3182ce); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
-        }
-        .team-ghost { 
-            background: linear-gradient(45deg, #a0aec0, #718096); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(160, 174, 192, 0.4);
-        }
-
-        .role-description {
-            color: #cbd5e0;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-            font-size: 1rem;
-            min-height: 60px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .role-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .role-tag {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .role-tag:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: rgba(102, 126, 234, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .no-results {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 15px;
-            padding: 3rem;
-            text-align: center;
-            color: #a0aec0;
-            font-size: 1.2rem;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            margin: 2rem auto;
-            max-width: 800px;
-        }
+        .team-crew { background: linear-gradient(45deg, #48bb78, #38a169); color: white; }
+        .team-impostor { background: linear-gradient(45deg, #f56565, #e53e3e); color: white; }
+        .team-neutral { background: linear-gradient(45deg, #ed8936, #dd6b20); color: white; }
+        .team-modifier { background: linear-gradient(45deg, #4299e1, #3182ce); color: white; }
+        .team-ghost { background: linear-gradient(45deg, #a0aec0, #718096); color: white; }
 
         .overlay {
             display: none;
@@ -450,43 +275,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
         }
 
         .overlay-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             border-radius: 25px;
             padding: 3rem;
-            max-width: 800px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
+            max-width: 1000px;
+            margin: 3rem auto;
             border: 2px solid rgba(102, 126, 234, 0.3);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
-            animation: slideIn 0.4s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translate(-50%, -40%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, -50%);
-                opacity: 1;
-            }
         }
 
         .close-btn {
@@ -498,20 +299,134 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 1.5rem;
             cursor: pointer;
             color: #a0aec0;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
         .close-btn:hover {
             background: rgba(245, 101, 101, 0.2);
             color: #f56565;
-            transform: rotate(90deg) scale(1.1);
+            transform: rotate(90deg);
+        }
+
+        .role-detail-icon {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .role-detail-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .role-detail-intro {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .role-detail-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #cbd5e0;
+        }
+
+        .from-logo {
+            max-width: 150px;
+            max-height: 50px;
+            object-fit: contain;
+            opacity: 0.8;
+        }
+
+        .character-container {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 15px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .ability-item {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .ability-button-container {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .ability-button {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .ability-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .ability-description {
+            font-size: 0.95rem;
+            color: #cbd5e0;
+            margin: 0;
+        }
+
+        .tips-text {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #cbd5e0;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        .no-results {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            color: #a0aec0;
+            margin: 2rem auto;
+            max-width: 600px;
         }
 
         @media (max-width: 768px) {
@@ -519,55 +434,15 @@
                 font-size: 2rem;
             }
 
-            .search-section {
-                padding: 1.5rem;
+            .overlay-content {
+                padding: 2rem 1.5rem;
                 margin: 1rem;
             }
 
-            .role-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .team-filter {
-                flex-wrap: wrap;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                flex-direction: column;
-                width: 100%;
+            .role-detail-name {
+                font-size: 1.8rem;
             }
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .role-card {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-
-        .role-card:nth-child(1) { animation-delay: 0.1s; }
-        .role-card:nth-child(2) { animation-delay: 0.2s; }
-        .role-card:nth-child(3) { animation-delay: 0.3s; }
-        .role-card:nth-child(4) { animation-delay: 0.4s; }
-        .role-card:nth-child(5) { animation-delay: 0.5s; }
-        .role-card:nth-child(6) { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
@@ -594,42 +469,31 @@
         <h1 class="hero-title">
             <i class="fas fa-users me-3"></i>役職一覧
         </h1>
-        <p class="hero-subtitle">UchuAddonのすべての役職を検索・フィルター機能付きで確認</p>
     </div>
 
     <div class="search-section">
-        <h2 class="mb-4 text-center">
-            <i class="fas fa-search me-2"></i>役職検索
-        </h2>
-        
         <div class="search-box">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="役職名や説明文で検索...">
+            <input type="text" class="search-input" id="searchInput" placeholder="役職名で検索...">
         </div>
 
-        <div class="team-filter mb-3">
-            <button class="team-btn active" data-team="all">
-                <i class="fas fa-users me-2"></i>すべて
-            </button>
-            <button class="team-btn" data-team="クルーメイト">
-                <i class="fas fa-user-check text-success me-2"></i>クルーメイト
-            </button>
-            <button class="team-btn" data-team="インポスター">
-                <i class="fas fa-user-secret text-danger me-2"></i>インポスター
-            </button>
-            <button class="team-btn" data-team="第3陣営">
-                <i class="fas fa-balance-scale text-warning me-2"></i>第3陣営
-            </button>
-            <button class="team-btn" data-team="モディファイア">
-                <i class="fas fa-magic text-info me-2"></i>モディファイア
-            </button>
-            <button class="team-btn" data-team="幽霊">
-                <i class="fas fa-ghost text-secondary me-2"></i>幽霊
-            </button>
+        <div class="filter-section">
+            <div class="filter-label"><i class="fas fa-users me-2"></i>陣営</div>
+            <div class="team-filter">
+                <button class="team-btn active" data-team="all">すべて</button>
+                <button class="team-btn" data-team="クルーメイト">クルーメイト</button>
+                <button class="team-btn" data-team="インポスター">インポスター</button>
+                <button class="team-btn" data-team="第3陣営">第3陣営</button>
+                <button class="team-btn" data-team="モディファイア">モディファイア</button>
+                <button class="team-btn" data-team="幽霊">幽霊</button>
+            </div>
         </div>
 
-        <div class="tags-container" id="tagsContainer">
-            <!-- タグはJavaScriptで動的に生成 -->
+        <div class="filter-section">
+            <div class="filter-label"><i class="fas fa-book me-2"></i>出典元</div>
+            <div class="from-filter" id="fromContainer">
+                <!-- 出典フィルターはJSで生成 -->
+            </div>
         </div>
     </div>
 
@@ -642,18 +506,14 @@
     <div class="no-results" id="noResults" style="display: none;">
         <i class="fas fa-search-minus fa-3x mb-3"></i>
         <p>該当する役職が見つかりませんでした。</p>
-        <p>検索条件を変えてみてください。</p>
     </div>
 
-    <!-- オーバーレイ -->
     <div class="overlay" id="overlay">
         <div class="overlay-content">
             <button class="close-btn" onclick="closeOverlay()">
                 <i class="fas fa-times"></i>
             </button>
-            <div id="overlayContent">
-                <!-- 詳細情報はJavaScriptで動的に生成 -->
-            </div>
+            <div id="overlayContent"></div>
         </div>
     </div>
 
