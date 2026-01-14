@@ -327,14 +327,15 @@ function showRoleDetails(role) {
     const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
     
     // 能力セクション生成
-    const abilitiesHTML = role.abilities && role.abilities.length > 0 ? `
-        <div class="abilities-section mb-4">
-            <h5 class="text-primary mb-3"><i class="fas fa-bolt me-2"></i>固有能力</h5>
-            ${role.abilities.map(ability => `
+    let abilitiesHTML = '';
+    if (role.abilities && role.abilities.length > 0) {
+        const abilitiesItems = role.abilities.map(ability => {
+            const buttonSrc = `../resource/rolebutton/${ability.button}`;
+            return `
                 <div class="ability-item mb-3">
                     <div class="d-flex align-items-start">
                         <div class="ability-button-container">
-                            <img src="../resource/rolebutton/${ability.button}" 
+                            <img src="${buttonSrc}" 
                                  alt="${ability.name}" 
                                  class="ability-button"
                                  onerror="this.src='../resource/rolebutton/NoImage.png'">
@@ -345,29 +346,44 @@ function showRoleDetails(role) {
                         </div>
                     </div>
                 </div>
-            `).join('')}
-        </div>
-    ` : '';
+            `;
+        }).join('');
+        
+        abilitiesHTML = `
+            <div class="abilities-section mb-4">
+                <h5 class="text-primary mb-3"><i class="fas fa-bolt me-2"></i>固有能力</h5>
+                ${abilitiesItems}
+            </div>
+        `;
+    }
     
     // ギャラリーセクション生成（画像がある場合のみ）
-    const galleryHTML = role.gallery && role.gallery.length > 0 ? `
-        <div class="gallery-section mb-4">
-            <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>使用イメージ画像</h5>
-            <div class="gallery-grid">
-                ${role.gallery.map(img => `
-                    <img src="../resource/rolepicture/${img}" 
-                         alt="使用イメージ" 
-                         class="gallery-image"
-                         onerror="this.style.display='none'">
-                `).join('')}
+    let galleryHTML = '';
+    if (role.gallery && role.gallery.length > 0) {
+        const galleryImages = role.gallery.map(img => {
+            return `
+                <img src="../resource/rolepicture/${img}" 
+                     alt="使用イメージ" 
+                     class="gallery-image"
+                     onerror="this.style.display='none'">
+            `;
+        }).join('');
+        
+        galleryHTML = `
+            <div class="gallery-section mb-4">
+                <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>使用イメージ画像</h5>
+                <div class="gallery-grid">
+                    ${galleryImages}
+                </div>
             </div>
-        </div>
-    ` : '';
+        `;
+    }
+    
+    // 出典名を取得
+    const fromSourceName = role.from ? (FROM_SOURCES.find(s => s.code === role.from)?.name || role.from) : '';
     
     overlayContent.innerHTML = `
-        ${characterPath ? `
-            <div class="character-background" style="background-image: url('${characterPath}');"></div>
-        ` : ''}
+        ${characterPath ? `<div class="character-background" style="background-image: url('${characterPath}');"></div>` : ''}
         
         <div class="role-detail-header">
             <div class="role-detail-title-section">
@@ -380,16 +396,12 @@ function showRoleDetails(role) {
                         </h2>
                         ${role.intro ? `<div class="role-detail-intro-text">${role.intro}</div>` : ''}
                     </div>
-                    ${fromLogoPath ? `
-                        <img src="${fromLogoPath}" alt="出典" class="role-detail-from-logo" onerror="this.style.display='none'">
-                    ` : ''}
+                    ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="role-detail-from-logo" onerror="this.style.display='none'">` : ''}
                 </div>
                 
                 <div class="role-badges">
                     <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
-                    ${role.from ? `
-                        <div class="from-source-badge">${FROM_SOURCES.find(s => s.code === role.from)?.name || role.from}</div>
-                    ` : ''}
+                    ${fromSourceName ? `<div class="from-source-badge">${fromSourceName}</div>` : ''}
                 </div>
             </div>
         </div>
