@@ -371,29 +371,24 @@ function showRoleDetails(role) {
         
         <div class="role-detail-header">
             <div class="role-detail-title-section">
-                <div class="role-detail-name-group">
-                    <h2 class="role-detail-name" style="color: ${roleColor};">${role.name}</h2>
-                    ${role.english_name ? `<div class="role-detail-english">${role.english_name}</div>` : ''}
+                <div class="role-detail-intro-section">
+                    <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
+                    <div class="role-detail-content-wrapper">
+                        <h2 class="role-detail-name" style="color: ${roleColor};">
+                            ${role.name}
+                            ${role.english_name ? `<span class="role-detail-english-inline">${role.english_name}</span>` : ''}
+                        </h2>
+                        ${role.intro ? `<div class="role-detail-intro-text">${role.intro}</div>` : ''}
+                    </div>
+                    ${fromLogoPath ? `
+                        <img src="${fromLogoPath}" alt="出典" class="role-detail-from-logo" onerror="this.style.display='none'">
+                    ` : ''}
                 </div>
-                
-                ${role.intro ? `
-                    <div class="role-detail-intro-section">
-                        <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
-                        <div class="role-detail-intro-text">${role.intro}</div>
-                    </div>
-                ` : `
-                    <div class="d-flex align-items-center">
-                        <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
-                    </div>
-                `}
                 
                 <div class="role-badges">
                     <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
-                    ${fromLogoPath ? `
-                        <div class="from-badge">
-                            <span>出典:</span>
-                            <img src="${fromLogoPath}" alt="出典" onerror="this.parentElement.style.display='none'">
-                        </div>
+                    ${role.from ? `
+                        <div class="from-source-badge">${FROM_SOURCES.find(s => s.code === role.from)?.name || role.from}</div>
                     ` : ''}
                 </div>
             </div>
@@ -402,7 +397,6 @@ function showRoleDetails(role) {
         <div class="row position-relative" style="z-index: 2;">
             <div class="col-md-12">
                 <div class="mb-4">
-                    <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>概要</h5>
                     <p class="role-detail-description">${role.description}</p>
                 </div>
                 
