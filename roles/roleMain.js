@@ -218,11 +218,9 @@ function renderRoles() {
                         ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-icon" onerror="this.onerror=null; this.src='${fallbackIcon}';">` : ''}
                         <div class="ms-3">
                             <div class="role-name">${role.name}</div>
-                            <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
                         </div>
                     </div>
                 </div>
-                ${role.intro ? `<div class="role-intro">${role.intro}</div>` : ''}
                 <div class="role-description">${role.description}</div>
             </div>
         </div>
@@ -300,24 +298,16 @@ function showRoleDetails(role) {
                         <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block">${role.team}</div>
                     </div>
                 </div>
-                ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="from-logo" onerror="this.style.display='none'">` : ''}
             </div>
             ${role.intro ? `<div class="role-detail-intro mt-3">${role.intro}</div>` : ''}
         </div>
         
-        <div class="row">
-            <div class="col-md-4 text-center mb-4">
-                ${characterPath ? `
-                    <div class="character-container">
-                        <img src="${characterPath}" 
-                             alt="${role.name}" 
-                             class="character-image"
-                             onerror="this.style.display='none'">
-                    </div>
-                ` : ''}
-            </div>
-            
-            <div class="col-md-8">
+        ${characterPath ? `
+            <div class="character-background" style="background-image: url('${characterPath}');"></div>
+        ` : ''}
+        
+        <div class="row position-relative" style="z-index: 2;">
+            <div class="col-md-12">
                 <div class="mb-4">
                     <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>概要</h5>
                     <p class="role-detail-description">${role.description}</p>
@@ -336,7 +326,13 @@ function showRoleDetails(role) {
         
         ${galleryHTML}
         
-        <div class="text-center mt-4">
+        <div class="text-center mt-4 position-relative" style="z-index: 2;">
+            ${fromLogoPath ? `
+                <div class="from-logo-container mb-3">
+                    <span class="from-label">出典：</span>
+                    <img src="${fromLogoPath}" alt="出典" class="from-logo-inline" onerror="this.style.display='none'">
+                </div>
+            ` : ''}
             <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
                 <i class="fas fa-times me-2"></i>閉じる
             </button>

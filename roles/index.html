@@ -288,6 +288,39 @@
             max-width: 1000px;
             margin: 3rem auto;
             border: 2px solid rgba(102, 126, 234, 0.3);
+            overflow: hidden;
+        }
+
+        .character-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .from-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .from-label {
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+
+        .from-logo-inline {
+            max-width: 150px;
+            max-height: 40px;
+            object-fit: contain;
         }
 
         .close-btn {
@@ -345,9 +378,7 @@
             background: rgba(30, 41, 59, 0.4);
             border-radius: 15px;
             padding: 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: none;
         }
 
         .character-image {
