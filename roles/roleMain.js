@@ -18,13 +18,13 @@ const ROLE_FOLDERS = {
 
 // 出典元のマッピング（表示順）
 const FROM_SOURCES = [
-    { code: 'Original', name: 'Uchu Addon', logo: '../resource/from/UchuAddon.png' },
-    { code: 'ExR', name: 'Extreme Roles', logo: '../resource/from/ExtremeRoles.png' },
-    { code: 'SNR', name: 'Super New Roles', logo: '../resource/from/SuperNewRoles.png' },
-    { code: 'TOR', name: 'The Other Roles', logo: '../resource/from/TheOtherRoles.png' },
-    { code: 'TOHK', name: 'Town Of Host-K', logo: '../resource/from/TownOfHost-K.png' },
-    { code: 'TOHY', name: 'Town Of Host-Y', logo: '../resource/from/TownOfHost-Y.png' },
-    { code: 'TOU', name: 'Town Of Us', logo: '../resource/from/TownOfUs.png' }
+    { code: 'Original', name: 'Uchu Addon' },
+    { code: 'ExR', name: 'Extreme Roles' },
+    { code: 'SNR', name: 'Super New Roles' },
+    { code: 'TOR', name: 'The Other Roles' },
+    { code: 'TOHK', name: 'Town Of Host-K' },
+    { code: 'TOHY', name: 'Town Of Host-Y' },
+    { code: 'TOU', name: 'Town Of Us' }
 ];
 
 // 陣営アイコンのフォールバック
@@ -35,6 +35,58 @@ const TEAM_ICONS = {
     'モディファイア': 'Modifier.png',
     'ゴースト': 'Ghost.png'
 };
+
+// アイコンの色を変換（赤→役職カラー、青→白）
+function recolorIcon(imagePath, roleColor, callback) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    
+    img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        ctx.drawImage(img, 0, 0);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // RGB値を取得（"72, 187, 120" → [72, 187, 120]）
+        const targetRGB = roleColor ? roleColor.split(',').map(n => parseInt(n.trim())) : [102, 126, 234];
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const a = data[i + 3];
+            
+            // 赤色の検出（赤が強く、緑青が弱い）
+            if (r > 150 && g < 100 && b < 100) {
+                // 赤→役職カラーに変換
+                data[i] = targetRGB[0];
+                data[i + 1] = targetRGB[1];
+                data[i + 2] = targetRGB[2];
+            }
+            // 青色の検出（青が強く、赤緑が弱い）
+            else if (b > 150 && r < 100 && g < 100) {
+                // 青→白に変換
+                data[i] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 255;
+            }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        callback(canvas.toDataURL());
+    };
+    
+    img.onerror = function() {
+        callback(null);
+    };
+    
+    img.src = imagePath;
+}
 
 // YAMLフォルダから役職リストを自動生成
 const YAML_FOLDER = 'yaml';
@@ -205,26 +257,50 @@ function renderRoles() {
     }
 
     noResults.style.display = 'none';
-    container.innerHTML = filteredRoles.map(role => {
-        const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
-        const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
+    
+    // カードを生成
+    const cardsHTML = filteredRoles.map((role, index) => {
         const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
+        const cardId = `role-card-${index}`;
         
         return `
         <div class="col-lg-6 col-xl-4 mb-4">
             <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${roleColor};">
-                <div class="role-header">
-                    <div class="d-flex align-items-center mb-3">
-                        ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-icon" onerror="this.onerror=null; this.src='${fallbackIcon}';">` : ''}
-                        <div class="ms-3">
-                            <div class="role-name">${role.name}</div>
-                        </div>
-                    </div>
+                <img id="${cardId}-icon" class="role-card-icon" alt="${role.name}" style="display:none;">
+                <div class="role-card-content">
+                    <div class="role-name">${role.name}</div>
+                    <div class="role-description">${role.description}</div>
                 </div>
-                <div class="role-description">${role.description}</div>
             </div>
         </div>
     `}).join('');
+    
+    container.innerHTML = cardsHTML;
+    
+    // アイコンを色変換して表示
+    filteredRoles.forEach((role, index) => {
+        const cardId = `role-card-${index}`;
+        const iconElement = document.getElementById(`${cardId}-icon`);
+        const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+        const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
+        
+        if (iconPath) {
+            recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+                if (recoloredDataURL) {
+                    iconElement.src = recoloredDataURL;
+                    iconElement.style.display = 'block';
+                } else if (fallbackIcon) {
+                    // フォールバック
+                    recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
+                        if (fallbackDataURL) {
+                            iconElement.src = fallbackDataURL;
+                            iconElement.style.display = 'block';
+                        }
+                    });
+                }
+            });
+        }
+    });
 }
 
 // チームクラスを取得
@@ -289,22 +365,39 @@ function showRoleDetails(role) {
     ` : '';
     
     overlayContent.innerHTML = `
-        <div class="role-detail-header mb-4">
-            <div class="d-flex justify-content-between align-items-start">
-                <div class="d-flex align-items-center">
-                    ${iconPath ? `<img src="${iconPath}" alt="${role.name}" class="role-detail-icon me-3" onerror="this.onerror=null; this.src='${fallbackIcon}';">` : ''}
-                    <div>
-                        <h2 class="role-detail-name mb-2" style="color: ${roleColor};">${role.name}</h2>
-                        <div class="role-team-badge team-${getTeamClass(role.team)} d-inline-block">${role.team}</div>
-                    </div>
-                </div>
-            </div>
-            ${role.intro ? `<div class="role-detail-intro mt-3">${role.intro}</div>` : ''}
-        </div>
-        
         ${characterPath ? `
             <div class="character-background" style="background-image: url('${characterPath}');"></div>
         ` : ''}
+        
+        <div class="role-detail-header">
+            <div class="role-detail-title-section">
+                <div class="role-detail-name-group">
+                    <h2 class="role-detail-name" style="color: ${roleColor};">${role.name}</h2>
+                    ${role.english_name ? `<div class="role-detail-english">${role.english_name}</div>` : ''}
+                </div>
+                
+                ${role.intro ? `
+                    <div class="role-detail-intro-section">
+                        <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
+                        <div class="role-detail-intro-text">${role.intro}</div>
+                    </div>
+                ` : `
+                    <div class="d-flex align-items-center">
+                        <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
+                    </div>
+                `}
+                
+                <div class="role-badges">
+                    <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
+                    ${fromLogoPath ? `
+                        <div class="from-badge">
+                            <span>出典:</span>
+                            <img src="${fromLogoPath}" alt="出典" onerror="this.parentElement.style.display='none'">
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
         
         <div class="row position-relative" style="z-index: 2;">
             <div class="col-md-12">
@@ -327,17 +420,29 @@ function showRoleDetails(role) {
         ${galleryHTML}
         
         <div class="text-center mt-4 position-relative" style="z-index: 2;">
-            ${fromLogoPath ? `
-                <div class="from-logo-container mb-3">
-                    <span class="from-label">出典：</span>
-                    <img src="${fromLogoPath}" alt="出典" class="from-logo-inline" onerror="this.style.display='none'">
-                </div>
-            ` : ''}
             <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
                 <i class="fas fa-times me-2"></i>閉じる
             </button>
         </div>
     `;
+
+    // アイコンを色変換して表示
+    const detailIconElement = document.getElementById('detail-icon');
+    if (iconPath) {
+        recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+            if (recoloredDataURL) {
+                detailIconElement.src = recoloredDataURL;
+                detailIconElement.style.display = 'block';
+            } else if (fallbackIcon) {
+                recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
+                    if (fallbackDataURL) {
+                        detailIconElement.src = fallbackDataURL;
+                        detailIconElement.style.display = 'block';
+                    }
+                });
+            }
+        });
+    }
 
     document.getElementById('overlay').style.display = 'block';
 }
