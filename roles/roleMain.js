@@ -18,13 +18,13 @@ const ROLE_FOLDERS = {
 
 // 出典元のマッピング（表示順）
 const FROM_SOURCES = [
-    { code: 'Original', name: 'UchuAddon', logo: 'UchuAddon.png' },
-    { code: 'ExR', name: 'ExtremeRoles', logo: 'ExtremeRoles.png' },
-    { code: 'SNR', name: 'SuperNewRoles', logo: 'SuperNewRoles.png' },
-    { code: 'TOR', name: 'TheOtherRoles', logo: 'TheOtherRoles.png' },
-    { code: 'TOHK', name: 'TownOfHost-K', logo: 'TownOfHost-K.png' },
-    { code: 'TOHY', name: 'TownOfHost-Y', logo: 'TownOfHost-Y.png' },
-    { code: 'TOU', name: 'TownOfUs', logo: 'TownOfUs.png' }
+    { code: 'Original', name: 'Uchu Addon', logo: '../resource/from/UchuAddon.png' },
+    { code: 'ExR', name: 'Extreme Roles', logo: '../resource/from/ExtremeRoles.png' },
+    { code: 'SNR', name: 'Super New Roles', logo: '../resource/from/SuperNewRoles.png' },
+    { code: 'TOR', name: 'The Other Roles', logo: '../resource/from/TheOtherRoles.png' },
+    { code: 'TOHK', name: 'Town Of Host-K', logo: '../resource/from/TownOfHost-K.png' },
+    { code: 'TOHY', name: 'Town Of Host-Y', logo: '../resource/from/TownOfHost-Y.png' },
+    { code: 'TOU', name: 'Town Of Us', logo: '../resource/from/TownOfUs.png' }
 ];
 
 // 陣営アイコンのフォールバック
