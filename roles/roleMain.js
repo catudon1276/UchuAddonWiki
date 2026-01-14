@@ -3,8 +3,8 @@ let allRoles = [];
 let filteredRoles = [];
 let activeFilters = {
     search: '',
-    team: 'all',
-    from: 'all'
+    teams: [], // 配列に変更（複数選択対応）
+    froms: []  // 配列に変更（複数選択対応）
 };
 
 // 役職フォルダのマッピング
@@ -171,12 +171,36 @@ function setupEventListeners() {
         filterAndRender();
     });
 
-    // チームフィルター
+    // チームフィルター（複数選択対応）
     document.querySelectorAll('.team-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            activeFilters.team = this.dataset.team;
+            const team = this.dataset.team;
+            
+            if (team === 'all') {
+                // すべて選択時は他を解除
+                activeFilters.teams = [];
+                document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            } else {
+                // すべてボタンを解除
+                document.querySelector('.team-btn[data-team="all"]').classList.remove('active');
+                
+                // トグル動作
+                const index = activeFilters.teams.indexOf(team);
+                if (index > -1) {
+                    activeFilters.teams.splice(index, 1);
+                    this.classList.remove('active');
+                } else {
+                    activeFilters.teams.push(team);
+                    this.classList.add('active');
+                }
+                
+                // 何も選択されていない場合は「すべて」を有効化
+                if (activeFilters.teams.length === 0) {
+                    document.querySelector('.team-btn[data-team="all"]').classList.add('active');
+                }
+            }
+            
             filterAndRender();
         });
     });
@@ -195,30 +219,48 @@ function renderFromFilters() {
     allBtn.dataset.from = 'all';
     allBtn.innerHTML = '<i class="fas fa-globe me-2"></i>すべて';
     allBtn.addEventListener('click', function() {
+        // すべて選択時は他を解除
+        activeFilters.froms = [];
         document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        activeFilters.from = 'all';
         filterAndRender();
     });
     container.appendChild(allBtn);
     
-    // 出典元ボタン
+    // 出典元ボタン（複数選択対応）
     FROM_SOURCES.forEach(source => {
         const btn = document.createElement('button');
         btn.className = 'from-btn';
         btn.dataset.from = source.code;
         btn.textContent = source.name;
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            activeFilters.from = source.code;
+            const from = source.code;
+            
+            // すべてボタンを解除
+            document.querySelector('.from-btn[data-from="all"]').classList.remove('active');
+            
+            // トグル動作
+            const index = activeFilters.froms.indexOf(from);
+            if (index > -1) {
+                activeFilters.froms.splice(index, 1);
+                this.classList.remove('active');
+            } else {
+                activeFilters.froms.push(from);
+                this.classList.add('active');
+            }
+            
+            // 何も選択されていない場合は「すべて」を有効化
+            if (activeFilters.froms.length === 0) {
+                document.querySelector('.from-btn[data-from="all"]').classList.add('active');
+            }
+            
             filterAndRender();
         });
         container.appendChild(btn);
     });
 }
 
-// フィルター処理
+// フィルター処理（複数選択対応）
 function filterAndRender() {
     filteredRoles = allRoles.filter(role => {
         // 検索フィルター
@@ -229,14 +271,18 @@ function filterAndRender() {
             if (!searchMatch) return false;
         }
 
-        // チームフィルター
-        if (activeFilters.team !== 'all' && role.team !== activeFilters.team) {
-            return false;
+        // チームフィルター（複数選択：いずれかに該当すればOK）
+        if (activeFilters.teams.length > 0) {
+            if (!activeFilters.teams.includes(role.team)) {
+                return false;
+            }
         }
 
-        // 出典フィルター
-        if (activeFilters.from !== 'all' && role.from !== activeFilters.from) {
-            return false;
+        // 出典フィルター（複数選択：いずれかに該当すればOK）
+        if (activeFilters.froms.length > 0) {
+            if (!activeFilters.froms.includes(role.from)) {
+                return false;
+            }
         }
 
         return true;

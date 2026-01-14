@@ -201,6 +201,20 @@
             color: white;
             border-color: #667eea;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 複数選択時のヒント表示 */
+        .filter-section {
+            position: relative;
+        }
+
+        .filter-hint {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-style: italic;
         }
 
         .roles-container {
@@ -613,6 +627,7 @@
                 <button class="team-btn" data-team="モディファイア">モディファイア</button>
                 <button class="team-btn" data-team="ゴースト">ゴースト</button>
             </div>
+            <div class="filter-hint">💡 複数選択可能（クリックで切り替え）</div>
         </div>
 
         <div class="filter-section">
@@ -620,6 +635,7 @@
             <div class="from-filter" id="fromContainer">
                 <!-- 出典フィルターはJSで生成 -->
             </div>
+            <div class="filter-hint">💡 複数選択可能（クリックで切り替え）</div>
         </div>
     </div>
 
