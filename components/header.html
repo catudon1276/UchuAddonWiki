@@ -1,8 +1,8 @@
 <!-- UCHU ADDON - COMMON HEADER -->
 <header class="uchu-header">
     <nav class="uchu-nav">
-        <a href="/index.html">
-            <img src="/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
+        <a href="#" id="logoLink">
+            <img src="#" alt="UchuAddon Logo" class="uchu-logo" id="logoImg">
         </a>
         
         <button class="uchu-menu-toggle" id="menuToggle" aria-label="メニュー">
@@ -10,14 +10,42 @@
         </button>
         
         <ul class="uchu-nav-links" id="navLinks">
-            <li><a href="/index.html" class="uchu-nav-link">トップ</a></li>
-            <li><a href="/roles/index.html" class="uchu-nav-link">役職</a></li>
-            <li><a href="/gallery/index.html" class="uchu-nav-link">ギャラリー</a></li>
+            <li><a href="#" class="uchu-nav-link" data-page="index">トップ</a></li>
+            <li><a href="#" class="uchu-nav-link" data-page="roles">役職</a></li>
+            <li><a href="#" class="uchu-nav-link" data-page="gallery">ギャラリー</a></li>
         </ul>
     </nav>
 </header>
 
 <script>
+// ページの階層を検出
+const currentPath = window.location.pathname;
+let basePath = '';
+
+if (currentPath.includes('/roles/')) {
+    basePath = '../';
+} else if (currentPath.includes('/gallery/')) {
+    basePath = '../';
+} else {
+    basePath = '';
+}
+
+// ロゴのパスを設定
+document.getElementById('logoLink').href = basePath + 'index.html';
+document.getElementById('logoImg').src = basePath + 'resource/UchuAddonTitleLogo.png';
+
+// ナビゲーションリンクを設定
+document.querySelectorAll('.uchu-nav-link').forEach(link => {
+    const page = link.dataset.page;
+    if (page === 'index') {
+        link.href = basePath + 'index.html';
+    } else if (page === 'roles') {
+        link.href = basePath + 'roles/index.html';
+    } else if (page === 'gallery') {
+        link.href = basePath + 'gallery/index.html';
+    }
+});
+
 // Mobile menu toggle
 document.getElementById('menuToggle')?.addEventListener('click', function() {
     const navLinks = document.getElementById('navLinks');
@@ -27,10 +55,11 @@ document.getElementById('menuToggle')?.addEventListener('click', function() {
 });
 
 // Set active nav link
-const currentPath = window.location.pathname;
 document.querySelectorAll('.uchu-nav-link').forEach(link => {
-    const linkPath = new URL(link.href).pathname;
-    if (currentPath === linkPath || (currentPath.includes('/roles/') && linkPath.includes('/roles/')) || (currentPath.includes('/gallery/') && linkPath.includes('/gallery/'))) {
+    const page = link.dataset.page;
+    if ((page === 'roles' && currentPath.includes('roles')) ||
+        (page === 'gallery' && currentPath.includes('gallery')) ||
+        (page === 'index' && !currentPath.includes('roles') && !currentPath.includes('gallery'))) {
         link.classList.add('active');
     }
 });

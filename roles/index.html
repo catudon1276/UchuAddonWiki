@@ -238,12 +238,40 @@
         .modal-content {
             max-width: 1000px;
             margin: var(--space-2xl) auto;
-            background: linear-gradient(135deg, rgba(30, 39, 73, 0.9) 0%, rgba(10, 14, 39, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(30, 39, 73, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
             backdrop-filter: var(--blur-glass);
             border: 2px solid var(--uchu-border);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
             position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景の役職立ち絵 */
+        .modal-background-image {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 400px;
+            height: 600px;
+            background-size: contain;
+            background-position: bottom right;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 右上の出典ロゴ */
+        .modal-from-logo {
+            position: absolute;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            max-width: 150px;
+            max-height: 80px;
+            object-fit: contain;
+            opacity: 0.9;
+            z-index: 3;
         }
 
         .modal-close {
@@ -500,6 +528,12 @@
             const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
             const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : 'Ghost'}.png`;
             
+            // 背景画像（役職立ち絵）
+            const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
+            
+            // 出典ロゴ
+            const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
+            
             let abilitiesHTML = '';
             if (role.abilities && role.abilities.length > 0) {
                 const abilitiesItems = role.abilities.map(ability => `
@@ -508,7 +542,7 @@
                             <img src="../resource/rolebutton/${ability.button}" 
                                  alt="${ability.name}" 
                                  class="ability-button"
-                                 onerror="this.src='../resource/rolebutton/NoImage.png'">
+                                 onerror="this.src='../resource/roleimage/NoImage.png'">
                         </div>
                         <div class="ability-content">
                             <div class="ability-name">${ability.name}</div>
@@ -533,11 +567,14 @@
                              role.team === 'モディファイア' ? 'modifier' : 'ghost';
             
             content.innerHTML = `
+                ${characterPath ? `<div class="modal-background-image" style="background-image: url('${characterPath}');"></div>` : ''}
+                ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="modal-from-logo" onerror="this.style.display='none'">` : ''}
+                
                 <button class="modal-close" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
                 
-                <div class="modal-header">
+                <div class="modal-header" style="position: relative; z-index: 2;">
                     <div class="modal-icon">
                         <img id="modal-icon" src="${iconPath}" alt="${role.name}"
                              onerror="this.src='${fallbackIcon}'">
@@ -552,22 +589,24 @@
                     </div>
                 </div>
                 
-                <div class="modal-description">${role.description}</div>
+                <div class="modal-description" style="position: relative; z-index: 2;">${role.description}</div>
                 
-                ${abilitiesHTML}
-                
-                ${role.tips ? `
-                    <div class="abilities-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-lightbulb"></i> 豆知識
-                        </h3>
-                        <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid var(--uchu-warning); padding: var(--space-lg); border-radius: var(--radius-md); color: var(--uchu-text-secondary);">
-                            ${role.tips}
+                <div style="position: relative; z-index: 2;">
+                    ${abilitiesHTML}
+                    
+                    ${role.tips ? `
+                        <div class="abilities-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-lightbulb"></i> 豆知識
+                            </h3>
+                            <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid var(--uchu-warning); padding: var(--space-lg); border-radius: var(--radius-md); color: var(--uchu-text-secondary);">
+                                ${role.tips}
+                            </div>
                         </div>
-                    </div>
-                ` : ''}
+                    ` : ''}
+                </div>
                 
-                <div style="text-align: center; margin-top: var(--space-2xl);">
+                <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
                     <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
                         <i class="fas fa-times"></i> 閉じる
                     </button>

@@ -2,14 +2,14 @@
    UCHU ADDON - UNIFIED DESIGN SYSTEM
    ================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
     /* Brand Colors - Deep Space Theme */
     --uchu-primary: #4A90E2;        /* Nebula Blue */
     --uchu-secondary: #7B68EE;       /* Cosmic Purple */
     --uchu-accent: #00D9FF;          /* Stellar Cyan */
-    --uchu-danger: #FF4757;          /* Supernova Red */
+    --uchu-danger: #FF0044;          /* Supernova Red */
     --uchu-success: #2ECC71;         /* Alien Green */
     --uchu-warning: #FFA502;         /* Solar Orange */
     
@@ -28,13 +28,13 @@
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, var(--uchu-primary) 0%, var(--uchu-secondary) 100%);
     --gradient-accent: linear-gradient(45deg, var(--uchu-accent) 0%, var(--uchu-primary) 100%);
-    --gradient-danger: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
+    --gradient-danger: linear-gradient(135deg, #FF0044 0%, #FF6B81 100%);
     --gradient-cosmic: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     
     /* Typography */
-    --font-display: 'Orbitron', monospace;      /* Titles & Headers */
-    --font-heading: 'Rajdhani', sans-serif;     /* Section Headers */
-    --font-body: 'Exo 2', sans-serif;           /* Body Text */
+    --font-display: 'Inter', sans-serif;
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
     
     /* Spacing */
     --space-xs: 0.25rem;
@@ -114,14 +114,12 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: 0.5px;
 }
 
 h1 {
     font-family: var(--font-display);
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 900;
-    letter-spacing: 2px;
     text-transform: uppercase;
 }
 

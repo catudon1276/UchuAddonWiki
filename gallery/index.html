@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../components/styles-common.css">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Gallery Grid */
+        /* Gallery Filters */
         .gallery-filters {
             display: flex;
             gap: var(--space-md);
@@ -45,9 +45,10 @@
             box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
         }
 
+        /* Gallery Grid */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: var(--space-lg);
         }
 
@@ -59,20 +60,11 @@
             overflow: hidden;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-
-        .gallery-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md);
         }
 
         .gallery-item:hover {
@@ -81,58 +73,10 @@
             box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 217, 255, 0.3);
         }
 
-        .gallery-item:hover::before {
-            opacity: 0.1;
-        }
-
-        .gallery-image-container {
-            width: 100%;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(10, 14, 39, 0.6);
-            padding: var(--space-lg);
-            position: relative;
-            z-index: 2;
-        }
-
         .gallery-image {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover .gallery-image {
-            transform: scale(1.1);
-        }
-
-        .gallery-info {
-            padding: var(--space-lg);
-            position: relative;
-            z-index: 2;
-        }
-
-        .gallery-title {
-            font-family: var(--font-heading);
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--uchu-text-primary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .gallery-category {
-            display: inline-block;
-            padding: var(--space-xs) var(--space-md);
-            background: rgba(74, 144, 226, 0.2);
-            border: 1px solid var(--uchu-accent);
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--uchu-accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         /* Lightbox */
@@ -146,30 +90,23 @@
             background: rgba(0, 0, 0, 0.95);
             z-index: 9999;
             padding: var(--space-xl);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .lightbox.active {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
         }
 
         .lightbox-content {
             max-width: 90vw;
-            max-height: 80vh;
+            max-height: 90vh;
             position: relative;
         }
 
         .lightbox-image {
             max-width: 100%;
-            max-height: 80vh;
+            max-height: 90vh;
             object-fit: contain;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg), 0 0 60px rgba(74, 144, 226, 0.5);
@@ -177,9 +114,9 @@
 
         .lightbox-close {
             position: absolute;
-            top: -50px;
+            top: -60px;
             right: 0;
-            background: rgba(255, 71, 87, 0.2);
+            background: rgba(255, 0, 68, 0.2);
             border: 2px solid var(--uchu-danger);
             color: var(--uchu-danger);
             width: 50px;
@@ -199,19 +136,6 @@
             transform: rotate(90deg);
         }
 
-        .lightbox-info {
-            margin-top: var(--space-lg);
-            text-align: center;
-            color: var(--uchu-text-primary);
-        }
-
-        .lightbox-title {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: var(--space-sm);
-        }
-
         .no-results {
             grid-column: 1 / -1;
             text-align: center;
@@ -221,62 +145,11 @@
             color: var(--uchu-text-muted);
         }
 
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: var(--space-lg);
-            opacity: 0.5;
-        }
-
-        /* Search Box */
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto var(--space-2xl);
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: var(--space-lg) var(--space-lg) var(--space-lg) 3.5rem;
-            background: rgba(30, 39, 73, 0.4);
-            border: 2px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
-            color: var(--uchu-text-primary);
-            font-family: var(--font-body);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--uchu-accent);
-            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: var(--space-lg);
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--uchu-text-muted);
-            font-size: 1.2rem;
-        }
-
-        /* Loading Animation */
         .loading {
             grid-column: 1 / -1;
             text-align: center;
             padding: var(--space-2xl);
-        }
-
-        .loading i {
-            font-size: 3rem;
-            color: var(--uchu-accent);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            color: var(--uchu-text-secondary);
         }
     </style>
 </head>
@@ -284,7 +157,7 @@
     <!-- Header -->
     <div id="header"></div>
 
-    <!-- Hero Section -->
+    <!-- Gallery Section -->
     <section class="uchu-section">
         <div class="uchu-section-header">
             <h1 class="uchu-section-title">
@@ -295,24 +168,18 @@
             </p>
         </div>
 
-        <!-- Search -->
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="画像を検索...">
-        </div>
-
         <!-- Filters -->
         <div class="gallery-filters">
             <button class="filter-btn active" data-category="all">
                 <i class="fas fa-th"></i> すべて
             </button>
-            <button class="filter-btn" data-category="rolebutton">
+            <button class="filter-btn" data-category="ボタン">
                 <i class="fas fa-hand-pointer"></i> ボタン
             </button>
-            <button class="filter-btn" data-category="roleimage">
+            <button class="filter-btn" data-category="役職画像">
                 <i class="fas fa-image"></i> 役職画像
             </button>
-            <button class="filter-btn" data-category="other">
+            <button class="filter-btn" data-category="その他">
                 <i class="fas fa-ellipsis-h"></i> その他
             </button>
         </div>
@@ -320,7 +187,7 @@
         <!-- Gallery Grid -->
         <div class="gallery-grid" id="galleryGrid">
             <div class="loading">
-                <i class="fas fa-spinner"></i>
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
                 <p>読み込み中...</p>
             </div>
         </div>
@@ -333,10 +200,6 @@
                 <i class="fas fa-times"></i>
             </button>
             <img src="" alt="" class="lightbox-image" id="lightboxImage">
-            <div class="lightbox-info">
-                <div class="lightbox-title" id="lightboxTitle"></div>
-                <div class="gallery-category" id="lightboxCategory"></div>
-            </div>
         </div>
     </div>
 
@@ -344,36 +207,8 @@
     <div id="footer"></div>
 
     <script>
-        // Gallery data structure
-        const galleryData = {
-            rolebutton: [
-                { title: 'Admiral Skill Button', src: '../resource/rolebutton/AdmiralSkillButton.png' },
-                { title: 'No Image', src: '../resource/rolebutton/NoImage.png' }
-            ],
-            roleimage: [
-                { title: 'Admiral', src: '../resource/roleimage/Admiral.png' },
-                { title: 'Mayor', src: '../resource/roleimage/Mayor.png' }
-            ],
-            other: [
-                { title: 'UchuAddon Logo', src: '../resource/UchuAddonTitleLogo.png' },
-                { title: 'Extreme Roles', src: '../resource/from/ExR.png' },
-                { title: 'Original', src: '../resource/from/Original.png' },
-                { title: 'Super New Roles', src: '../resource/from/SNR.png' },
-                { title: 'The Other Roles', src: '../resource/from/TOR.png' },
-                { title: 'Town Of Host-K', src: '../resource/from/TOHK.png' },
-                { title: 'Town Of Host-Y', src: '../resource/from/TOHY.png' },
-                { title: 'Town Of Us', src: '../resource/from/TOU.png' }
-            ]
-        };
-
-        const categoryNames = {
-            rolebutton: 'ボタン',
-            roleimage: '役職画像',
-            other: 'その他'
-        };
-
         let currentFilter = 'all';
-        let searchQuery = '';
+        let galleryData = [];
 
         // Load header and footer
         fetch('../components/header.html')
@@ -388,40 +223,35 @@
                 document.getElementById('footer').innerHTML = data;
             });
 
-        // Initialize gallery
-        function initGallery() {
-            renderGallery();
-            setupEventListeners();
+        // Load gallery data from JSON (generated by GalleryUpdate.yml)
+        async function loadGallery() {
+            try {
+                const response = await fetch('gallery.json');
+                if (!response.ok) throw new Error('gallery.json not found');
+                
+                galleryData = await response.json();
+                renderGallery();
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                document.getElementById('galleryGrid').innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>ギャラリーデータの読み込みに失敗しました</p>
+                        <p style="font-size: 0.9rem; color: var(--uchu-text-muted); margin-top: 0.5rem;">gallery.jsonが見つかりません</p>
+                    </div>
+                `;
+            }
         }
 
         // Render gallery
         function renderGallery() {
             const grid = document.getElementById('galleryGrid');
-            let items = [];
-
-            // Collect items based on filter
-            if (currentFilter === 'all') {
-                Object.keys(galleryData).forEach(category => {
-                    items = items.concat(galleryData[category].map(item => ({
-                        ...item,
-                        category
-                    })));
-                });
-            } else {
-                items = galleryData[currentFilter].map(item => ({
-                    ...item,
-                    category: currentFilter
-                }));
+            
+            let items = galleryData;
+            if (currentFilter !== 'all') {
+                items = galleryData.filter(item => item.category === currentFilter);
             }
 
-            // Apply search filter
-            if (searchQuery) {
-                items = items.filter(item => 
-                    item.title.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-            }
-
-            // Render items
             if (items.length === 0) {
                 grid.innerHTML = `
                     <div class="no-results">
@@ -433,80 +263,44 @@
             }
 
             grid.innerHTML = items.map(item => `
-                <div class="gallery-item" data-src="${item.src}" data-title="${item.title}" data-category="${item.category}">
-                    <div class="gallery-image-container">
-                        <img src="${item.src}" alt="${item.title}" class="gallery-image" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-image-slash\\' style=\\'font-size:3rem;color:var(--uchu-text-muted);\\></i>'">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">${item.title}</div>
-                        <span class="gallery-category">${categoryNames[item.category]}</span>
-                    </div>
+                <div class="gallery-item" data-src="${item.path}" onclick="openLightbox('${item.path}')">
+                    <img src="${item.path}" alt="Gallery Image" class="gallery-image" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ctext x=\\'50\\' y=\\'50\\' text-anchor=\\'middle\\' fill=\\'%23666\\'%3ENO IMAGE%3C/text%3E%3C/svg%3E'">
                 </div>
             `).join('');
-
-            // Add click listeners
-            document.querySelectorAll('.gallery-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    openLightbox(
-                        item.dataset.src,
-                        item.dataset.title,
-                        item.dataset.category
-                    );
-                });
-            });
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.category;
-                    renderGallery();
-                });
-            });
-
-            // Search input
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                searchQuery = e.target.value;
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.category;
                 renderGallery();
             });
+        });
 
-            // Lightbox close
-            document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-            document.getElementById('lightbox').addEventListener('click', (e) => {
-                if (e.target.id === 'lightbox') {
-                    closeLightbox();
-                }
-            });
-
-            // ESC key to close lightbox
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeLightbox();
-                }
-            });
-        }
-
-        // Open lightbox
-        function openLightbox(src, title, category) {
+        // Lightbox functions
+        function openLightbox(src) {
             document.getElementById('lightboxImage').src = src;
-            document.getElementById('lightboxTitle').textContent = title;
-            document.getElementById('lightboxCategory').textContent = categoryNames[category];
             document.getElementById('lightbox').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        // Close lightbox
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
             document.body.style.overflow = '';
         }
 
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', initGallery);
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Initialize
+        loadGallery();
     </script>
 </body>
 </html>
