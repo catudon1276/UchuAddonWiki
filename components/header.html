@@ -1,15 +1,11 @@
 <!-- UCHU ADDON - COMMON HEADER -->
 <header class="uchu-header">
     <nav class="uchu-nav">
-        <a href="/UchuAddonWiki/">
+        <a href="/UchuAddonWiki/" class="uchu-logo-link">
             <img src="/UchuAddonWiki/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
         </a>
         
-        <button class="uchu-menu-toggle" id="menuToggle" aria-label="メニュー">
-            <i class="fas fa-bars"></i>
-        </button>
-        
-        <ul class="uchu-nav-links" id="navLinks">
+        <ul class="uchu-nav-links">
             <li><a href="/UchuAddonWiki/" class="uchu-nav-link">トップ</a></li>
             <li><a href="/UchuAddonWiki/roles/" class="uchu-nav-link">役職</a></li>
             <li><a href="/UchuAddonWiki/gallery/" class="uchu-nav-link">ギャラリー</a></li>
@@ -17,15 +13,84 @@
     </nav>
 </header>
 
-<script>
-// Mobile menu toggle
-document.getElementById('menuToggle')?.addEventListener('click', function() {
-    const navLinks = document.getElementById('navLinks');
-    navLinks.classList.toggle('active');
-    this.querySelector('i').classList.toggle('fa-bars');
-    this.querySelector('i').classList.toggle('fa-times');
-});
+<style>
+.uchu-header {
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
+.uchu-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.uchu-logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.uchu-logo {
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.uchu-logo:hover {
+    transform: scale(1.05);
+}
+
+.uchu-nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.uchu-nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.uchu-nav-link:hover,
+.uchu-nav-link.active {
+    background: rgba(74, 144, 226, 0.2);
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .uchu-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .uchu-nav-links {
+        gap: 1rem;
+    }
+    
+    .uchu-logo {
+        height: 40px;
+    }
+}
+</style>
+
+<script>
 // Set active nav link
 const currentPath = window.location.pathname;
 document.querySelectorAll('.uchu-nav-link').forEach(link => {
@@ -37,16 +102,5 @@ document.querySelectorAll('.uchu-nav-link').forEach(link => {
     } else if (currentPath.includes('/gallery/') && href.includes('/gallery/')) {
         link.classList.add('active');
     }
-});
-
-// Close mobile menu on link click
-document.querySelectorAll('.uchu-nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-            document.getElementById('navLinks').classList.remove('active');
-            document.getElementById('menuToggle').querySelector('i').classList.add('fa-bars');
-            document.getElementById('menuToggle').querySelector('i').classList.remove('fa-times');
-        }
-    });
 });
 </script>

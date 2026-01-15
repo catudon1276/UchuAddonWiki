@@ -1,0 +1,81 @@
+name: Contents Update
+
+# 役職データまたはリソースファイルに変更があった時に自動実行
+on:
+  push:
+    paths:
+      - 'roles/yaml/**/*.json'  # 役職データ変更時
+      - 'resource/**'            # リソース（画像等）変更時
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  update-contents:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write  # 書き込み権限を明示的に付与
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      # 役職リスト更新
+      - name: Update rolesList.json
+        run: |
+          cd roles
+          node update-roles-list.js
+      
+      # ギャラリーリスト更新
+      - name: Update gallery.json
+        run: |
+          cd gallery
+          node update-gallery.js
+      
+      # 変更確認
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet roles/rolesList.json gallery/gallery.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      # コミット＆プッシュ
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add roles/rolesList.json gallery/gallery.json
+          git commit -m "🤖 Auto-update rolesList.json & gallery.json"
+          git push
+      
+      # サマリー表示
+      - name: Summary
+        run: |
+          echo "✅ Contents update completed!"
+          if [ "${{ steps.check_changes.outputs.changed }}" == "true" ]; then
+            echo "📝 rolesList.json and/or gallery.json were updated and committed"
+            
+            # 統計情報表示
+            if [ -f roles/rolesList.json ]; then
+              role_count=$(find roles/yaml -name "*.json" | wc -l)
+              echo "   - Total roles: $role_count"
+            fi
+            
+            if [ -f gallery/gallery.json ]; then
+              image_count=$(find resource -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.gif" -o -iname "*.webp" -o -iname "*.svg" \) | wc -l)
+              echo "   - Total images: $image_count"
+            fi
+          else
+            echo "ℹ️ No changes detected"
+          fi
