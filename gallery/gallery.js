@@ -90,6 +90,14 @@ function renderGallery() {
         return;
     }
     
+    // カテゴリボタンのactive状態を更新
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.category === currentCategory) {
+            btn.classList.add('active');
+        }
+    });
+    
     if (currentCategory === 'all') {
         // すべてのカテゴリを表示
         Object.keys(galleryData).forEach(categoryId => {
@@ -156,15 +164,9 @@ function createGalleryItem(categoryId, filename) {
     
     item.appendChild(img);
     
-    // ロゴカテゴリのみファイル名を表示、立ち絵とボタンは非表示
-    if (categoryId === 'logo') {
-        const filenameDiv = document.createElement('div');
-        filenameDiv.className = 'gallery-filename';
-        filenameDiv.textContent = filename;
-        item.appendChild(filenameDiv);
-    }
+    // ファイル名は一切表示しない
     
-    // クリックでモーダル表示（ホバーオーバーレイは削除）
+    // クリックでモーダル表示
     item.onclick = function() {
         openImageModal(imagePath, filename);
     };
@@ -190,11 +192,9 @@ function downloadImage(imagePath, filename) {
 function openImageModal(imagePath, filename) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
-    const modalFilename = document.getElementById('modalFilename');
     const modalDownloadBtn = document.getElementById('modalDownloadBtn');
     
     modalImage.src = imagePath;
-    modalFilename.textContent = filename;
     modal.classList.add('active');
     
     // ダウンロードボタンのイベント
