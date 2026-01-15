@@ -121,9 +121,43 @@
         .neon-text { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px currentColor, 0 0 40px currentColor; }
 
         .hint-text { font-size: 0.55rem; font-weight: 900; margin-top: 1px; opacity: 0.7; }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            font-style: italic;
+            border: 3px solid #111;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+        .modal-btn:active { transform: scale(0.95); }
+        .modal-btn-primary { background: #111; color: #fff; }
+        .modal-btn-secondary { background: #fff; color: #111; }
     </style>
 </head>
 <body>
+
+    <!-- スタート画面 -->
+    <div id="startModal" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-md">
+            <h1 class="text-6xl title-text text-black italic mb-6">SUPER<br>HJK RUN</h1>
+            <div class="mb-6 p-4 bg-gray-50 rounded-2xl border-2 border-gray-100">
+                <div class="text-xs font-black text-gray-400 uppercase mb-2">操作方法</div>
+                <div class="text-sm font-bold space-y-1">
+                    <div>SPACE / UP / タップ でジャンプ</div>
+                    <div>[X] でULT発動</div>
+                </div>
+            </div>
+            <button id="startBtn" class="modal-btn modal-btn-primary mb-3">START</button>
+            <a href="/UchuAddonWiki/" class="block">
+                <button class="modal-btn modal-btn-secondary">Back Wiki</button>
+            </a>
+        </div>
+    </div>
 
     <div id="uiTop" class="flex flex-col items-center w-full max-w-[800px] mb-2 px-4">
         <div class="flex justify-between items-center w-full mb-2">
@@ -162,6 +196,7 @@
         </div>
     </div>
 
+    <!-- ゲームオーバー画面 -->
     <div id="gameOverModal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center z-50 p-6">
         <div class="bg-white p-6 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-sm">
             <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Result</h2>
@@ -183,7 +218,10 @@
                 <div class="text-[10px] font-black text-gray-400 uppercase mb-1">Rank</div>
                 <div id="rankLabel" class="text-7xl font-black italic">C</div>
             </div>
-            <button id="retryBtn" class="w-full bg-black text-white py-4 rounded-2xl font-black text-2xl active:scale-95 transition-transform uppercase italic">RETRY</button>
+            <button id="retryBtn" class="modal-btn modal-btn-primary mb-3">RETRY</button>
+            <a href="/UchuAddonWiki/" class="block">
+                <button class="modal-btn modal-btn-secondary">Back Wiki</button>
+            </a>
             <p class="text-[10px] font-black text-gray-400 mt-3 uppercase italic">または [X] キーでリトライ</p>
         </div>
     </div>
@@ -191,12 +229,15 @@
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        const modal = document.getElementById("gameOverModal");
+        const startModal = document.getElementById("startModal");
+        const gameOverModal = document.getElementById("gameOverModal");
         const scoreDisplay = document.getElementById("scoreDisplay");
         const ultGaugeFill = document.getElementById("ultGaugeFill");
         const stockDisplay = document.getElementById("stockCount");
         const rankLabel = document.getElementById("rankLabel");
         const rankContainer = document.getElementById("rankContainer");
+
+        let gameStarted = false;
 
         // --- 画像読み込みとフォールバックの管理 ---
         let isImageLoaded = false;
@@ -265,7 +306,7 @@
         }
 
         function jump() {
-            if (gameState.isGameOver) return;
+            if (!gameStarted || gameState.isGameOver) return;
             if (dino.jumps < 2) {
                 const mult = getGlobalSpeedMultiplier();
                 const dir = gameState.isNight ? 1 : -1;
@@ -275,7 +316,7 @@
         }
 
         function useUlt() {
-            if (gameState.isGameOver || gameState.isUlt) return;
+            if (!gameStarted || gameState.isGameOver || gameState.isUlt) return;
             if (gameState.ultGauge >= 50) {
                 gameState.ultGauge -= 50;
                 gameState.isUlt = true;
@@ -285,7 +326,7 @@
         }
 
         function update(dt) {
-            if (gameState.isGameOver) return;
+            if (!gameStarted || gameState.isGameOver) return;
 
             gameState.score += 20 * dt;
             scoreDisplay.innerText = Math.floor(gameState.score);
@@ -464,7 +505,6 @@
                 ctx.globalAlpha = 0.6;
             }
 
-            // --- スプライト切り出しロジックの修正 ---
             let sx = 0;
             if (gameState.isUlt) {
                 const ultAnimSpeed = 100;
@@ -521,7 +561,13 @@
             rankContainer.style.backgroundColor = res.ultra ? "#000" : "";
             rankContainer.style.borderColor = res.ultra ? "#ff3e3e" : "";
             rankLabel.className = "text-7xl font-black italic " + (res.neon ? "neon-text" : "");
-            modal.classList.remove("hidden");
+            gameOverModal.classList.remove("hidden");
+        }
+
+        function startGame() {
+            gameStarted = true;
+            startModal.classList.add("hidden");
+            gameState.lastTime = performance.now();
         }
 
         function reset() {
@@ -535,7 +581,7 @@
             obstacles = [];
             items = [];
             updateLifeDisplay();
-            modal.classList.add("hidden");
+            gameOverModal.classList.add("hidden");
             document.body.classList.remove("night-mode");
             canvas.classList.remove("night-canvas");
             document.getElementById("titleText").style.color = "#000";
@@ -572,6 +618,7 @@
 
         document.getElementById("jumpButton").addEventListener("pointerdown", e => { e.preventDefault(); jump(); });
         document.getElementById("ultButton").addEventListener("pointerdown", e => { e.preventDefault(); useUlt(); });
+        document.getElementById("startBtn").addEventListener("click", startGame);
         document.getElementById("retryBtn").addEventListener("click", reset);
         
         gameState.lastTime = performance.now();

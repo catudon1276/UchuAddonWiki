@@ -283,6 +283,7 @@
                 ドラッグして色を仕分けろ。<br>ミスは許されない。
             </p>
             <button class="btn" onclick="startGame()" id="action-btn">INITIALIZE</button>
+            <a href="/UchuAddonWiki/" style="display: inline-block; margin-top: 15px; padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(68,170,255,0.3); border-radius: 4px; color: #4af; text-decoration: none; font-size: clamp(11px, 2.5vw, 13px); font-family: monospace; letter-spacing: 1px; transition: all 0.3s;">BACK WIKI</a>
         </div>
         <canvas id="game"></canvas>
     </div>
@@ -1111,14 +1112,6 @@ function update(ts) {
 
     for (let i = bombs.length - 1; i >= 0; i--) {
         const b = bombs[i];
-        
-        // 異常に速いボムを削除（速度が10以上）
-        const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-        if (speed > 10) {
-            console.warn('Removing fast bomb:', speed);
-            bombs.splice(i, 1);
-            continue;
-        }
         
         if (b !== dragging) {
             b.x += b.vx;
