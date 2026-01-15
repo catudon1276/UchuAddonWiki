@@ -202,11 +202,7 @@
         }
 
         .gallery-filename {
-            margin-top: 0.75rem;
-            font-size: 0.85rem;
-            color: #cbd5e0;
-            text-align: center;
-            word-break: break-word;
+            display: none;
         }
 
         .stats-bar {
@@ -285,7 +281,7 @@
         .modal-controls {
             display: flex;
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 3rem;
         }
 
         .modal-btn {
@@ -351,21 +347,11 @@
 
     <div class="filter-section">
         <div class="category-buttons" id="categoryButtons">
-            <button class="category-btn active" data-category="all"><i class="fas fa-globe me-2"></i>すべて</button>
+            <button class="category-btn active" data-category="all">すべて</button>
         </div>
     </div>
 
     <div class="gallery-container">
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-value" id="totalCount">0</div>
-                <div class="stat-label">Total Images</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="categoryCount">0</div>
-                <div class="stat-label">Categories</div>
-            </div>
-        </div>
         <div id="galleryContent"></div>
     </div>
 
@@ -394,15 +380,11 @@
                 const btn = document.createElement('button');
                 btn.className = 'category-btn';
                 btn.dataset.category = id;
-                btn.innerHTML = `<i class="fas fa-folder me-2"></i>${galleryData[id].name}`;
+                btn.textContent = galleryData[id].name;
                 btn.onclick = () => { currentFilter = id; document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderGallery(); };
                 document.getElementById('categoryButtons').appendChild(btn);
             });
             renderGallery();
-            let total = 0, cats = 0;
-            Object.keys(galleryData).forEach(id => { if (!id.startsWith('_') && galleryData[id].images) { total += galleryData[id].images.length; cats++; } });
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('categoryCount').textContent = cats;
         }).catch(() => {
             document.getElementById('galleryContent').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>読み込みエラー</p></div>';
         });
@@ -424,7 +406,7 @@
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
                     item.onclick = () => openModal(path, img);
-                    item.innerHTML = `<img src="${path}" alt="${img}" class="gallery-image"><div class="gallery-filename">${img}</div>`;
+                    item.innerHTML = `<img src="${path}" alt="${img}" class="gallery-image">`;
                     grid.appendChild(item);
                 });
                 sec.appendChild(grid);

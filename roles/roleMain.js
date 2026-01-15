@@ -213,11 +213,11 @@ function renderFromFilters() {
     
     container.innerHTML = '';
     
-    // すべてボタン
+    // すべてボタン（地球儀アイコン削除）
     const allBtn = document.createElement('button');
     allBtn.className = 'from-btn active';
     allBtn.dataset.from = 'all';
-    allBtn.innerHTML = '<i class="fas fa-globe me-2"></i>すべて';
+    allBtn.textContent = 'すべて';
     allBtn.addEventListener('click', function() {
         // すべて選択時は他を解除
         activeFilters.froms = [];
