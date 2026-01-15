@@ -1,0 +1,55 @@
+name: Update Gallery List
+
+# resourceフォルダに変更があった時に自動実行（役職リスト自動化と同じパターン）
+on:
+  push:
+    paths:
+      - 'resource/**'
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  update-gallery-list:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Update gallery.json
+        run: |
+          cd gallery
+          node update-gallery.js
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet gallery/gallery.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add gallery/gallery.json
+          git commit -m "🤖 Auto-update gallery.json"
+          git push
+      
+      - name: Summary
+        run: |
+          echo "✅ Gallery list update completed!"
+          if [ "${{ steps.check_changes.outputs.changed }}" == "true" ]; then
+            echo "📝 gallery/gallery.json was updated and committed"
+          else
+            echo "ℹ️ No changes detected in gallery.json"
+          fi

@@ -1,0 +1,26 @@
+{
+    "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
+    "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
+    "_generated_at": "初回セットアップ時に自動生成されます",
+    
+    "logo": {
+        "name": "ロゴ・タイトル",
+        "description": "UchuAddonの公式ロゴ",
+        "images": [
+            "UchuAddonTitleFront.png",
+            "UchuAddonTitleLogo.png"
+        ]
+    },
+    
+    "roleimage": {
+        "name": "役職立ち絵",
+        "description": "役職詳細ページの背景画像・立ち絵",
+        "images": []
+    },
+    
+    "rolebutton": {
+        "name": "能力ボタン",
+        "description": "役職の能力ボタン画像",
+        "images": []
+    }
+}
