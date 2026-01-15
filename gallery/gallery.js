@@ -33,12 +33,13 @@ async function loadGalleryData() {
     }
 }
 
-// 総画像数を取得
+// 総画像数を取得（NoImage.pngを除外）
 function getTotalImageCount() {
     let count = 0;
     Object.values(galleryData).forEach(category => {
         if (category.images) {
-            count += category.images.length;
+            const filteredImages = category.images.filter(filename => filename !== 'NoImage.png');
+            count += filteredImages.length;
         }
     });
     return count;
@@ -53,10 +54,13 @@ function setupEventListeners() {
         const category = galleryData[categoryId];
         if (!category.images) return;
         
+        // NoImage.pngを除外してカウント
+        const filteredCount = category.images.filter(filename => filename !== 'NoImage.png').length;
+        
         const btn = document.createElement('button');
         btn.className = 'category-btn';
         btn.dataset.category = categoryId;
-        btn.innerHTML = `<i class="fas fa-folder me-2"></i>${category.name} (${category.images.length})`;
+        btn.innerHTML = `<i class="fas fa-folder me-2"></i>${category.name} (${filteredCount})`;
         btn.addEventListener('click', function() {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
@@ -102,6 +106,11 @@ function renderCategory(categoryId, container) {
     const category = galleryData[categoryId];
     if (!category || !category.images || category.images.length === 0) return;
     
+    // NoImage.pngを除外
+    const filteredImages = category.images.filter(filename => filename !== 'NoImage.png');
+    
+    if (filteredImages.length === 0) return;
+    
     const section = document.createElement('div');
     section.className = 'category-section';
     
@@ -110,7 +119,7 @@ function renderCategory(categoryId, container) {
     title.innerHTML = `
         <i class="fas fa-folder-open me-2"></i>${category.name}
         <small style="font-size: 0.7rem; color: #a0aec0; font-weight: normal; margin-left: 1rem;">
-            ${category.description || ''} (${category.images.length}枚)
+            ${category.description || ''} (${filteredImages.length}枚)
         </small>
     `;
     section.appendChild(title);
@@ -118,7 +127,7 @@ function renderCategory(categoryId, container) {
     const grid = document.createElement('div');
     grid.className = 'gallery-grid';
     
-    category.images.forEach(filename => {
+    filteredImages.forEach(filename => {
         const item = createGalleryItem(categoryId, filename);
         grid.appendChild(item);
     });
@@ -145,30 +154,19 @@ function createGalleryItem(categoryId, filename) {
         this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="150"%3E%3Crect fill="%23333" width="200" height="150"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23666" font-family="Arial" font-size="12"%3EImage Not Found%3C/text%3E%3C/svg%3E';
     };
     
-    const filenameDiv = document.createElement('div');
-    filenameDiv.className = 'gallery-filename';
-    filenameDiv.textContent = filename;
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'download-overlay';
-    
-    const downloadBtn = document.createElement('button');
-    downloadBtn.className = 'download-btn';
-    downloadBtn.innerHTML = '<i class="fas fa-download me-2"></i>ダウンロード';
-    downloadBtn.onclick = function(e) {
-        e.stopPropagation();
-        downloadImage(imagePath, filename);
-    };
-    
-    overlay.appendChild(downloadBtn);
-    
     item.appendChild(img);
-    item.appendChild(filenameDiv);
-    item.appendChild(overlay);
     
-    // 画像クリックでもダウンロード
+    // ロゴカテゴリのみファイル名を表示、立ち絵とボタンは非表示
+    if (categoryId === 'logo') {
+        const filenameDiv = document.createElement('div');
+        filenameDiv.className = 'gallery-filename';
+        filenameDiv.textContent = filename;
+        item.appendChild(filenameDiv);
+    }
+    
+    // クリックでモーダル表示（ホバーオーバーレイは削除）
     item.onclick = function() {
-        downloadImage(imagePath, filename);
+        openImageModal(imagePath, filename);
     };
     
     return item;
@@ -187,6 +185,53 @@ function downloadImage(imagePath, filename) {
     // ダウンロード成功のフィードバック
     showToast(`${filename} をダウンロードしました`);
 }
+
+// 画像モーダルを開く
+function openImageModal(imagePath, filename) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalFilename = document.getElementById('modalFilename');
+    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+    
+    modalImage.src = imagePath;
+    modalFilename.textContent = filename;
+    modal.classList.add('active');
+    
+    // ダウンロードボタンのイベント
+    modalDownloadBtn.onclick = function() {
+        downloadImage(imagePath, filename);
+    };
+    
+    // ESCキーで閉じる
+    document.addEventListener('keydown', closeModalOnEsc);
+}
+
+// 画像モーダルを閉じる
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.removeEventListener('keydown', closeModalOnEsc);
+}
+
+// ESCキーでモーダルを閉じる
+function closeModalOnEsc(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+}
+
+// モーダル初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // 閉じるボタン
+    document.getElementById('modalCloseBtn').addEventListener('click', closeImageModal);
+    
+    // モーダル背景クリックで閉じる
+    document.getElementById('imageModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeImageModal();
+        }
+    });
+});
 
 // トースト通知を表示
 function showToast(message) {
