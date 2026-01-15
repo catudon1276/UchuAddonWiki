@@ -12,9 +12,9 @@
         <div class="uchu-footer-section">
             <h3>ナビゲーション</h3>
             <ul class="uchu-footer-links">
-                <li><a href="#" class="footer-link" data-page="index"><i class="fas fa-home"></i> トップページ</a></li>
-                <li><a href="#" class="footer-link" data-page="roles"><i class="fas fa-users"></i> 役職一覧</a></li>
-                <li><a href="#" class="footer-link" data-page="gallery"><i class="fas fa-images"></i> ギャラリー</a></li>
+                <li><a href="/UchuAddonWiki/"><i class="fas fa-home"></i> トップページ</a></li>
+                <li><a href="/UchuAddonWiki/roles/"><i class="fas fa-users"></i> 役職一覧</a></li>
+                <li><a href="/UchuAddonWiki/gallery/"><i class="fas fa-images"></i> ギャラリー</a></li>
             </ul>
         </div>
         
@@ -33,31 +33,3 @@
         <p>© 2026 UchuAddonWiki. All rights reserved.</p>
     </div>
 </footer>
-
-<script>
-// ページの階層を検出してフッターリンクを設定
-(function() {
-    const currentPath = window.location.pathname;
-    let basePath = '';
-
-    if (currentPath.includes('/roles/')) {
-        basePath = '../';
-    } else if (currentPath.includes('/gallery/')) {
-        basePath = '../';
-    } else {
-        basePath = '';
-    }
-
-    // ナビゲーションリンクを設定
-    document.querySelectorAll('.footer-link').forEach(link => {
-        const page = link.dataset.page;
-        if (page === 'index') {
-            link.href = basePath + 'index.html';
-        } else if (page === 'roles') {
-            link.href = basePath + 'roles/index.html';
-        } else if (page === 'gallery') {
-            link.href = basePath + 'gallery/index.html';
-        }
-    });
-})();
-</script>
