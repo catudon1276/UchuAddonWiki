@@ -1,8 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "初回セットアップ時に自動生成されます",
-    
+    "_generated_at": "2026-01-15T03:17:40.339Z",
     "logo": {
         "name": "ロゴ・タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -11,16 +10,76 @@
             "UchuAddonTitleLogo.png"
         ]
     },
-    
     "roleimage": {
         "name": "役職立ち絵",
         "description": "役職詳細ページの背景画像・立ち絵",
-        "images": []
+        "images": [
+            "Admiral.png",
+            "Bakery.png",
+            "Eclipse.png",
+            "Guardian.png",
+            "Hawk.png",
+            "HawkNice.png",
+            "LoversBreaker.png",
+            "Magician.png",
+            "Observer.png",
+            "Rocket.png",
+            "Slime.png",
+            "Waraningyou.png"
+        ]
     },
-    
     "rolebutton": {
         "name": "能力ボタン",
         "description": "役職の能力ボタン画像",
-        "images": []
+        "images": [
+            "AdmiralSkillButton.png",
+            "Alchemy.png",
+            "AlchemyBullet.png",
+            "AlicePremonitionButton.png",
+            "CameraNextButton.png",
+            "CameraSelfButton.png",
+            "CurseButton.png",
+            "DJButton.png",
+            "DecorationButton.png",
+            "DecorationButtonNice.png",
+            "EmergencyButton.png",
+            "EpsilonCovertButton.png",
+            "EpsilonScanButton.png",
+            "EraserEraseButton.png",
+            "ExpButton.png",
+            "HawkButton.png",
+            "HawkButtonNice.png",
+            "HoldButton.png",
+            "KillButtonCyan.png",
+            "KillButtonLime.png",
+            "KillButtonOrange.png",
+            "KillButtonYellow.png",
+            "LightButton.png",
+            "MagicButton.png",
+            "MeteorButton.png",
+            "MeteorMark.png",
+            "NimrodButton.png",
+            "NoImage.png",
+            "ObserverMonitorButton.png",
+            "ObserverMonitorButtonN.png",
+            "ObserverPlaceButton.png",
+            "ObserverPlaceButtonN.png",
+            "OperateButton.png",
+            "PolarisMediumButton.png",
+            "ProsecuterButton.png",
+            "ProsecutorButton.png",
+            "RocketLaunchButton.png",
+            "SeedButton.png",
+            "SlimeJumboButton.png",
+            "SlimeMiniButton.png",
+            "SonarPlaceButton.png",
+            "VanillaKillButton.png",
+            "VisorAdminButton .png",
+            "WarlockCurseButton.png",
+            "WitchSpellButton.png",
+            "XinobiButton.png",
+            "XinobiVentButton.png",
+            "passBreadButton.png"
+        ]
     }
 }
