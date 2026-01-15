@@ -1,0 +1,48 @@
+<!-- UCHU ADDON - COMMON HEADER -->
+<header class="uchu-header">
+    <nav class="uchu-nav">
+        <a href="/index.html">
+            <img src="/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
+        </a>
+        
+        <button class="uchu-menu-toggle" id="menuToggle" aria-label="メニュー">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="uchu-nav-links" id="navLinks">
+            <li><a href="/index.html" class="uchu-nav-link">トップ</a></li>
+            <li><a href="/roles/index.html" class="uchu-nav-link">役職</a></li>
+            <li><a href="/gallery/index.html" class="uchu-nav-link">ギャラリー</a></li>
+        </ul>
+    </nav>
+</header>
+
+<script>
+// Mobile menu toggle
+document.getElementById('menuToggle')?.addEventListener('click', function() {
+    const navLinks = document.getElementById('navLinks');
+    navLinks.classList.toggle('active');
+    this.querySelector('i').classList.toggle('fa-bars');
+    this.querySelector('i').classList.toggle('fa-times');
+});
+
+// Set active nav link
+const currentPath = window.location.pathname;
+document.querySelectorAll('.uchu-nav-link').forEach(link => {
+    const linkPath = new URL(link.href).pathname;
+    if (currentPath === linkPath || (currentPath.includes('/roles/') && linkPath.includes('/roles/')) || (currentPath.includes('/gallery/') && linkPath.includes('/gallery/'))) {
+        link.classList.add('active');
+    }
+});
+
+// Close mobile menu on link click
+document.querySelectorAll('.uchu-nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            document.getElementById('navLinks').classList.remove('active');
+            document.getElementById('menuToggle').querySelector('i').classList.add('fa-bars');
+            document.getElementById('menuToggle').querySelector('i').classList.remove('fa-times');
+        }
+    });
+});
+</script>

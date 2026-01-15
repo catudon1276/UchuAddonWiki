@@ -4,260 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>役職一覧 - UchuAddonWiki</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../components/styles-common.css">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            min-height: 100vh;
-        }
-
-        header {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid #4a5568;
-        }
-
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            height: 50px;
-            filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.4));
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links a {
-            color: #e2e8f0;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background: rgba(102, 126, 234, 0.2);
-            color: #fff;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: rgba(30, 41, 59, 0.98);
-            min-width: 200px;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 0.75rem 1.25rem;
-            color: #e2e8f0;
-            text-decoration: none;
-            transition: background 0.3s ease;
-        }
-
-        .dropdown-content a:hover {
-            background: rgba(102, 126, 234, 0.3);
-        }
-
-        .hero-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem 3rem;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-        }
-
-        .search-section {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 1200px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: rgba(30, 39, 73, 0.3);
+            backdrop-filter: var(--blur-glass);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-2xl);
         }
 
         .search-box {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: var(--space-xl);
         }
 
         .search-input {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 15px;
+            padding: var(--space-lg) var(--space-lg) var(--space-lg) 3.5rem;
+            background: rgba(10, 14, 39, 0.6);
+            border: 2px solid var(--uchu-border);
+            border-radius: var(--radius-lg);
             font-size: 1.1rem;
-            color: #fff;
+            color: var(--uchu-text-primary);
+            font-family: var(--font-body);
             transition: all 0.3s ease;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
+            border-color: var(--uchu-accent);
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2);
         }
 
         .search-icon {
             position: absolute;
-            left: 1rem;
+            left: var(--space-lg);
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
+            color: var(--uchu-text-muted);
+            font-size: 1.3rem;
         }
 
         .filter-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: var(--space-lg);
         }
 
         .filter-label {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: #cbd5e0;
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            color: var(--uchu-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
 
-        .team-filter, .from-filter {
+        .filter-buttons {
             display: flex;
-            gap: 1rem;
+            gap: var(--space-md);
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .team-btn, .from-btn {
-            padding: 0.75rem 1.25rem;
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 15px;
+        .filter-btn {
+            padding: var(--space-md) var(--space-xl);
+            background: rgba(10, 14, 39, 0.6);
+            border: 2px solid var(--uchu-border);
+            border-radius: var(--radius-md);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 600;
-            color: #e2e8f0;
-            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            color: var(--uchu-text-secondary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
         }
 
-        .team-btn:hover, .from-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
+        .filter-btn:hover {
+            background: rgba(74, 144, 226, 0.2);
+            border-color: var(--uchu-accent);
+            color: var(--uchu-text-primary);
             transform: translateY(-2px);
         }
 
-        .team-btn.active, .from-btn.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        .filter-btn.active {
+            background: var(--gradient-accent);
+            border-color: var(--uchu-accent);
+            color: var(--uchu-text-primary);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
         }
 
-        .roles-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        /* Role Cards */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-xl);
         }
 
         .role-card {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            transition: all 0.3s ease;
+            background: rgba(30, 39, 73, 0.4);
+            backdrop-filter: var(--blur-glass);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
             cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
-            align-items: center;
-            gap: 1.5rem;
+            gap: var(--space-lg);
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .role-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 217, 255, 0.3);
         }
 
-        .role-card-icon {
+        .role-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .role-icon-container {
             width: 80px;
             height: 80px;
-            object-fit: contain;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: var(--radius-md);
+            position: relative;
+            z-index: 1;
         }
 
-        .role-card-content {
+        .role-icon {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .role-content {
             flex: 1;
             min-width: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .role-name {
+            font-family: var(--font-heading);
             font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-sm);
             line-height: 1.2;
         }
 
-        .role-english-name {
-            font-size: 0.85rem;
-            color: #a0aec0;
-            opacity: 0.7;
-            margin-bottom: 0.3rem;
-        }
-
         .role-description {
-            color: #cbd5e0;
+            color: var(--uchu-text-secondary);
             line-height: 1.6;
             font-size: 0.95rem;
             display: -webkit-box;
@@ -266,45 +190,34 @@
             overflow: hidden;
         }
 
-        .role-team-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .role-badges {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-md);
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid;
         }
 
-        .team-crew { 
-            background: #8CFFFF;
-            color: #000;
-            border-color: #8CFFFF;
-        }
-        .team-impostor { 
-            background: #FF1919;
-            color: #fff;
-            border-color: #FF1919;
-        }
-        .team-neutral { 
-            background: #F3A200;
-            color: #000;
-            border-color: #F3A200;
-        }
-        .team-modifier { 
-            background: #FFFFFF;
-            color: #000;
-            border-color: #FFFFFF;
-        }
-        .team-ghost { 
-            background: #CCCCCC;
-            color: #000;
-            border-color: #CCCCCC;
-        }
+        .badge-crew { background: #8CFFFF; color: #000; border-color: #8CFFFF; }
+        .badge-impostor { background: #FF1919; color: #fff; border-color: #FF1919; }
+        .badge-neutral { background: #F3A200; color: #000; border-color: #F3A200; }
+        .badge-modifier { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+        .badge-ghost { background: #CCCCCC; color: #000; border-color: #CCCCCC; }
 
-        .overlay {
+        /* Modal/Overlay */
+        .role-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -312,426 +225,377 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 2000;
+            z-index: 9999;
             overflow-y: auto;
+            padding: var(--space-xl);
         }
 
-        .overlay-content {
-            position: relative;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 25px;
-            padding: 3rem;
+        .role-modal.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
             max-width: 1000px;
-            width: 90%;
-            max-height: 85vh;
-            margin: 3rem auto;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            overflow-y: auto;
-            overflow-x: hidden;
+            margin: var(--space-2xl) auto;
+            background: linear-gradient(135deg, rgba(30, 39, 73, 0.9) 0%, rgba(10, 14, 39, 0.9) 100%);
+            backdrop-filter: var(--blur-glass);
+            border: 2px solid var(--uchu-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            position: relative;
         }
 
-        .character-background {
+        .modal-close {
             position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 400px;
-            height: 600px;
-            background-size: contain;
-            background-position: bottom right;
-            background-repeat: no-repeat;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .role-detail-header {
-            position: relative;
-            z-index: 2;
-        }
-
-        .role-detail-title-section {
-            margin-bottom: 2rem;
-        }
-
-        .role-detail-intro-section {
+            top: var(--space-lg);
+            right: var(--space-lg);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 71, 87, 0.2);
+            border: 2px solid var(--uchu-danger);
+            border-radius: 50%;
+            color: var(--uchu-danger);
+            font-size: 1.5rem;
+            cursor: pointer;
             display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .role-detail-icon-large {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .role-detail-content-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            min-height: 80px;
-            overflow: visible;
-            padding-right: 140px;
+            transition: all 0.3s ease;
         }
 
-        .role-detail-name {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 0;
-            line-height: 1.2;
+        .modal-close:hover {
+            background: var(--uchu-danger);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
             display: flex;
-            align-items: baseline;
-            gap: 0.75rem;
-            flex-wrap: wrap;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+            align-items: flex-start;
         }
 
-        .role-detail-english-inline {
-            font-size: 0.85rem;
-            color: #718096;
-            opacity: 0.5;
-            font-weight: normal;
-        }
-
-        .role-detail-intro-text {
-            font-size: 0.95rem;
-            color: #cbd5e0;
-            font-style: italic;
-            line-height: 1.4;
-            margin-top: 0.5rem;
-        }
-
-        .role-detail-from-logo {
-            position: absolute;
-            top: 0;
-            right: 0;
-            max-width: 120px;
-            max-height: 50px;
-            object-fit: contain;
-        }
-
-        .role-badges {
+        .modal-icon {
+            width: 120px;
+            height: 120px;
+            flex-shrink: 0;
+            border-radius: var(--radius-lg);
+            background: rgba(10, 14, 39, 0.6);
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
+            align-items: center;
+            justify-content: center;
         }
 
-        .from-source-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: #6C757D;
-            border: 1px solid #6C757D;
-            color: #fff;
+        .modal-icon img {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .role-detail-description {
+        .modal-header-content {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: var(--space-sm);
+            background: var(--gradient-cosmic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-intro {
             font-size: 1.1rem;
+            color: var(--uchu-text-secondary);
+            font-style: italic;
+            margin-bottom: var(--space-md);
+        }
+
+        .modal-description {
+            font-size: 1rem;
+            color: var(--uchu-text-secondary);
             line-height: 1.8;
-            color: #cbd5e0;
+            margin-bottom: var(--space-xl);
+        }
+
+        .abilities-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            color: var(--uchu-accent);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
 
         .ability-item {
-            background: rgba(30, 41, 59, 0.4);
-            border-radius: 12px;
-            padding: 1rem;
+            background: rgba(30, 39, 73, 0.4);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+            display: flex;
+            gap: var(--space-lg);
         }
 
         .ability-button-container {
             width: 80px;
             height: 80px;
+            flex-shrink: 0;
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 10px;
-            flex-shrink: 0;
         }
 
         .ability-button {
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain;
+        }
+
+        .ability-content {
+            flex: 1;
         }
 
         .ability-name {
+            font-family: var(--font-heading);
             font-size: 1.1rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-sm);
         }
 
         .ability-description {
-            font-size: 0.95rem;
-            color: #cbd5e0;
-            margin: 0;
-        }
-
-        .tips-text {
-            background: rgba(255, 193, 7, 0.1);
-            border-left: 4px solid #ffc107;
-            padding: 1rem;
-            border-radius: 8px;
-            color: #cbd5e0;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-image:hover {
-            transform: scale(1.05);
+            color: var(--uchu-text-secondary);
+            line-height: 1.6;
         }
 
         .no-results {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 15px;
-            padding: 3rem;
+            grid-column: 1 / -1;
             text-align: center;
-            color: #a0aec0;
-            margin: 2rem auto;
-            max-width: 600px;
+            padding: var(--space-2xl);
+            background: rgba(30, 39, 73, 0.4);
+            border-radius: var(--radius-lg);
+            color: var(--uchu-text-muted);
         }
 
-        /* モバイル最適化 */
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.5;
+        }
+
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
+            .roles-grid {
+                grid-template-columns: 1fr;
             }
 
-            .search-section {
-                padding: 1.5rem 1rem;
-                margin: 1rem;
-            }
-
-            .roles-container {
-                padding: 0 1rem;
-            }
-
-            .overlay-content {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-                width: 95%;
-                max-height: 90vh;
-                border-radius: 20px;
-            }
-
-            .role-detail-intro-section {
+            .modal-header {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+                text-align: center;
             }
 
-            .role-detail-icon-large {
-                width: 60px;
-                height: 60px;
-            }
-
-            .role-detail-content-wrapper {
-                padding-right: 0;
-                min-height: auto;
-            }
-
-            .role-detail-name {
-                font-size: 1.5rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
-            }
-
-            .role-detail-english-inline {
-                font-size: 0.75rem;
-            }
-
-            .role-detail-intro-text {
-                font-size: 0.85rem;
-            }
-
-            .role-detail-from-logo {
-                position: static;
-                margin-top: 0.5rem;
-                max-width: 100px;
-                max-height: 40px;
-            }
-
-            .role-badges {
-                margin-bottom: 1.5rem;
-            }
-
-            .character-background {
-                width: 250px;
-                height: 400px;
-                opacity: 0.3;
-            }
-
-            .ability-item {
-                padding: 0.75rem;
-            }
-
-            .ability-button-container {
-                width: 60px;
-                height: 60px;
-            }
-
-            .ability-name {
-                font-size: 1rem;
-            }
-
-            .ability-description {
-                font-size: 0.85rem;
-            }
-
-            nav {
-                padding: 0 1rem;
-            }
-
-            .nav-links {
-                gap: 0.5rem;
-                font-size: 0.9rem;
-            }
-
-            .nav-links a {
-                padding: 0.4rem 0.8rem;
-            }
-
-            .logo {
-                height: 40px;
-            }
-
-            .team-btn, .from-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* 極小画面対応 */
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 1.5rem;
-            }
-
-            .overlay-content {
-                padding: 1.5rem 1rem;
-                margin: 0.5rem;
-            }
-
-            .role-detail-name {
-                font-size: 1.3rem;
-            }
-
-            .role-card {
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .role-card-icon {
-                width: 60px;
-                height: 60px;
-            }
-
-            .role-name {
-                font-size: 1.2rem;
-            }
-
-            .role-description {
-                font-size: 0.85rem;
+            .modal-icon {
+                margin: 0 auto;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="../index.html">
-                <img src="../resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="logo">
-            </a>
-                <ul class="nav-links">
-                    <li><a href="../index.html">トップ</a></li>
-                    <li><a href="#" class="active">役職</a></li>
-                    <li class="dropdown">
-                        <a href="#games">ゲーム</a>
-                        <div class="dropdown-content">
-                            <a href="../minigames/super-hjk-run.html">Super HJK Run</a>
-                            <a href="../minigames/electro-recovery.html">Electro Recovery</a>
-                        </div>
-                    </li>
-                    <li><a href="../gallery/index.html">ギャラリー</a></li> <!-- 🆕 追加 -->
-                </ul>
-        </nav>
-    </header>
+    <!-- Header -->
+    <div id="header"></div>
 
-    <div class="hero-section">
-        <h1 class="hero-title">
-            <i class="fas fa-users me-3"></i>役職一覧
-        </h1>
-    </div>
-
-    <div class="search-section">
-        <div class="search-box">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="役職名で検索...">
+    <!-- Hero Section -->
+    <section class="uchu-section">
+        <div class="uchu-section-header">
+            <h1 class="uchu-section-title">
+                <i class="fas fa-users"></i> ROLES
+            </h1>
+            <p class="uchu-section-subtitle">
+                クルーメイト、インポスター、ニュートラルなど全役職を網羅
+            </p>
         </div>
 
-        <div class="filter-section">
-            <div class="filter-label"><i class="fas fa-users me-2"></i>陣営</div>
-            <div class="team-filter">
-                <button class="team-btn active" data-team="all">すべて</button>
-                <button class="team-btn" data-team="クルーメイト">クルーメイト</button>
-                <button class="team-btn" data-team="インポスター">インポスター</button>
-                <button class="team-btn" data-team="ニュートラル">ニュートラル</button>
-                <button class="team-btn" data-team="モディファイア">モディファイア</button>
-                <button class="team-btn" data-team="ゴースト">ゴースト</button>
+        <!-- Search and Filters -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="役職名で検索...">
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-label">
+                    <i class="fas fa-users"></i> 陣営フィルター
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn team-btn active" data-team="all">すべて</button>
+                    <button class="filter-btn team-btn" data-team="クルーメイト">クルーメイト</button>
+                    <button class="filter-btn team-btn" data-team="インポスター">インポスター</button>
+                    <button class="filter-btn team-btn" data-team="ニュートラル">ニュートラル</button>
+                    <button class="filter-btn team-btn" data-team="モディファイア">モディファイア</button>
+                    <button class="filter-btn team-btn" data-team="ゴースト">ゴースト</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-label">
+                    <i class="fas fa-book"></i> 出典元フィルター
+                </div>
+                <div class="filter-buttons" id="fromContainer">
+                    <!-- 出典フィルターはJSで生成 -->
+                </div>
             </div>
         </div>
 
-        <div class="filter-section">
-            <div class="filter-label"><i class="fas fa-book me-2"></i>出典元</div>
-            <div class="from-filter" id="fromContainer">
-                <!-- 出典フィルターはJSで生成 -->
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid roles-container">
-        <div class="row" id="rolesContainer">
+        <!-- Roles Grid -->
+        <div class="roles-grid" id="rolesContainer">
             <!-- 役職カードはJavaScriptで動的に生成 -->
         </div>
-    </div>
 
-    <div class="no-results" id="noResults" style="display: none;">
-        <i class="fas fa-search-minus fa-3x mb-3"></i>
-        <p>該当する役職が見つかりませんでした。</p>
-    </div>
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-search-minus"></i>
+            <p>該当する役職が見つかりませんでした</p>
+        </div>
+    </section>
 
-    <div class="overlay" id="overlay">
-        <div class="overlay-content">
-            <div id="overlayContent"></div>
+    <!-- Role Modal -->
+    <div class="role-modal" id="roleModal">
+        <div class="modal-content" id="modalContent">
+            <!-- モーダル内容はJavaScriptで動的に生成 -->
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <div id="footer"></div>
+
     <script src="roleMain.js"></script>
-    <footer>
-        <p><strong>UchuAddon</strong></p>
-        <p>© 2026 UchuAddonWiki</p>
-    </footer>    
+    <script>
+        // Load header and footer
+        fetch('../components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header').innerHTML = data;
+            });
+
+        fetch('../components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            });
+
+        // Override showRoleDetails to use new modal
+        function showRoleDetails(role) {
+            const modal = document.getElementById('roleModal');
+            const content = document.getElementById('modalContent');
+            
+            const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
+            const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+            const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : 'Ghost'}.png`;
+            
+            let abilitiesHTML = '';
+            if (role.abilities && role.abilities.length > 0) {
+                const abilitiesItems = role.abilities.map(ability => `
+                    <div class="ability-item">
+                        <div class="ability-button-container">
+                            <img src="../resource/rolebutton/${ability.button}" 
+                                 alt="${ability.name}" 
+                                 class="ability-button"
+                                 onerror="this.src='../resource/rolebutton/NoImage.png'">
+                        </div>
+                        <div class="ability-content">
+                            <div class="ability-name">${ability.name}</div>
+                            <div class="ability-description">${ability.description}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                abilitiesHTML = `
+                    <div class="abilities-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-bolt"></i> 固有能力
+                        </h3>
+                        ${abilitiesItems}
+                    </div>
+                `;
+            }
+            
+            const teamClass = role.team === 'クルーメイト' ? 'crew' : 
+                             role.team === 'インポスター' ? 'impostor' :
+                             role.team === 'ニュートラル' ? 'neutral' :
+                             role.team === 'モディファイア' ? 'modifier' : 'ghost';
+            
+            content.innerHTML = `
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <img id="modal-icon" src="${iconPath}" alt="${role.name}"
+                             onerror="this.src='${fallbackIcon}'">
+                    </div>
+                    <div class="modal-header-content">
+                        <h2 class="modal-title" style="color: ${roleColor};">${role.name}</h2>
+                        ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}
+                        <div class="role-badges">
+                            <span class="role-badge badge-${teamClass}">${role.team}</span>
+                            ${role.from ? `<span class="role-badge" style="background: rgba(74, 144, 226, 0.2); color: var(--uchu-accent); border-color: var(--uchu-accent);">${role.from}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-description">${role.description}</div>
+                
+                ${abilitiesHTML}
+                
+                ${role.tips ? `
+                    <div class="abilities-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-lightbulb"></i> 豆知識
+                        </h3>
+                        <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid var(--uchu-warning); padding: var(--space-lg); border-radius: var(--radius-md); color: var(--uchu-text-secondary);">
+                            ${role.tips}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="text-align: center; margin-top: var(--space-2xl);">
+                    <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
+                        <i class="fas fa-times"></i> 閉じる
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('roleModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on outside click
+        document.getElementById('roleModal').addEventListener('click', (e) => {
+            if (e.target.id === 'roleModal') {
+                closeModal();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
