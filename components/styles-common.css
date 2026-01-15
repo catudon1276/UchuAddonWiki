@@ -485,25 +485,22 @@ h3 {
 }
 
 @media (max-width: 768px) {
-    .uchu-menu-toggle {
-        display: block;
+    .uchu-header-content {
+        flex-direction: column;
+        gap: var(--space-md);
+        padding: var(--space-md);
     }
     
     .uchu-nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(10, 14, 39, 0.98);
         flex-direction: column;
-        padding: var(--space-lg);
-        border-top: 2px solid var(--uchu-border);
-        box-shadow: var(--shadow-lg);
+        width: 100%;
+        gap: var(--space-xs);
     }
     
-    .uchu-nav-links.active {
-        display: flex;
+    .uchu-nav-link {
+        text-align: center;
+        padding: var(--space-md);
+        font-size: 0.85rem;
     }
     
     .uchu-dropdown-content {
@@ -512,6 +509,7 @@ h3 {
         margin-top: var(--space-sm);
         border-left: 3px solid var(--uchu-accent);
         padding-left: var(--space-md);
+        background: rgba(30, 39, 73, 0.5);
     }
     
     .uchu-dropdown.active .uchu-dropdown-content {

@@ -34,20 +34,117 @@
             line-height: 1.8;
         }
 
+        /* Addon Info - かっこいい注釈スタイル */
         .addon-info {
-            background: rgba(74, 144, 226, 0.1);
-            border-left: 4px solid var(--uchu-primary);
-            padding: var(--space-lg);
-            margin: var(--space-xl) auto;
-            max-width: 800px;
-            border-radius: var(--radius-md);
-            text-align: left;
+            position: relative;
+            padding: var(--space-xl);
+            margin: var(--space-2xl) auto;
+            max-width: 900px;
+            text-align: center;
+            overflow: hidden;
         }
 
-        .addon-info p {
-            color: var(--uchu-text-secondary);
+        .addon-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .addon-info::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .addon-info-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .addon-info-badge {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-lg);
+            background: var(--gradient-accent);
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            margin-bottom: var(--space-md);
+        }
+
+        .addon-info-text {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            color: var(--uchu-text-primary);
             line-height: 1.8;
             margin: 0;
+        }
+
+        .addon-info-highlight {
+            color: var(--uchu-accent);
+            font-weight: 700;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            max-width: 1000px;
+            margin: var(--space-2xl) auto;
+            padding: 0 var(--space-lg);
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xl);
+            background: rgba(30, 39, 73, 0.4);
+            backdrop-filter: var(--blur-glass);
+            border: 2px solid var(--uchu-border);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: 180px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--uchu-accent);
+            box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
+        }
+
+        .action-btn-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .action-btn-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .action-btn-desc {
+            font-size: 0.9rem;
+            color: var(--uchu-text-muted);
+            text-align: center;
         }
 
         /* Credits Section */
@@ -102,104 +199,322 @@
         .credit-card li:last-child {
             border-bottom: none;
         }
+
+        /* Update Log Section */
+        .update-log-section {
+            max-width: 1200px;
+            margin: var(--space-2xl) auto;
+            padding: 0 var(--space-lg);
+        }
+
+        .update-log-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-xl);
+            text-align: center;
+            background: var(--gradient-cosmic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .update-timeline {
+            position: relative;
+            padding-left: var(--space-xl);
+        }
+
+        .update-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .update-item {
+            position: relative;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-lg);
+            background: rgba(30, 39, 73, 0.4);
+            backdrop-filter: var(--blur-glass);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .update-item:hover {
+            border-color: var(--uchu-accent);
+            transform: translateX(10px);
+        }
+
+        .update-item::before {
+            content: '';
+            position: absolute;
+            left: calc(-1 * var(--space-xl) - 6px);
+            top: var(--space-lg);
+            width: 12px;
+            height: 12px;
+            background: var(--uchu-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.3);
+        }
+
+        .update-date {
+            font-size: 0.9rem;
+            color: var(--uchu-accent);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .update-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .update-desc {
+            color: var(--uchu-text-secondary);
+            line-height: 1.6;
+        }
+
+        .update-tags {
+            display: flex;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .update-tag {
+            padding: var(--space-xs) var(--space-sm);
+            background: rgba(74, 144, 226, 0.2);
+            color: var(--uchu-accent);
+            font-size: 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Movie Section */
+        .movie-section {
+            max-width: 1000px;
+            margin: var(--space-2xl) auto;
+        }
+
+        .movie-container {
+            background: rgba(30, 39, 73, 0.4);
+            backdrop-filter: var(--blur-glass);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            transition: all 0.3s ease;
+        }
+
+        .movie-container:hover {
+            border-color: rgba(74, 144, 226, 0.5);
+            box-shadow: var(--shadow-md);
+        }
+
+        .movie-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .movie-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .movie-desc {
+            color: var(--uchu-text-secondary);
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .update-timeline {
+                padding-left: var(--space-lg);
+            }
+
+            .update-item::before {
+                left: calc(-1 * var(--space-lg) - 6px);
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div id="header"></div>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-logo-container">
-            <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon" class="hero-logo">
-        </div>
-        
-        <div class="addon-info">
-            <p><strong>UchuAddon</strong>は、Among Us MOD「Nebula on the Ship」のアドオンです。新しい役職やゲームモードを追加し、より幅広くゲーム体験を提供します。</p>
-        </div>
-    </section>
+    <main>
+        <section class="hero-section">
+            <div class="hero-logo-container">
+                <img src="resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="hero-logo">
+            </div>
+            
+            <div class="addon-info">
+                <div class="addon-info-content">
+                    <div class="addon-info-badge">About UchuAddon</div>
+                    <p class="addon-info-text">
+                        <span class="addon-info-highlight">UchuAddon</span>は、Among Us MOD「Nebula on the Ship」のアドオンです。<br>
+                        新しい役職やゲームモードを追加し、より幅広くゲーム体験を提供します。
+                    </p>
+                </div>
+            </div>
+        </section>
 
-    <!-- Credits Section -->
-    <section class="uchu-section">
-        <div class="uchu-section-header">
+        <section class="action-buttons">
+            <a href="roles/index.html" class="action-btn">
+                <i class="fas fa-users action-btn-icon"></i>
+                <div class="action-btn-title">役職一覧</div>
+                <div class="action-btn-desc">全ての役職を確認</div>
+            </a>
+            <a href="gallery/index.html" class="action-btn">
+                <i class="fas fa-images action-btn-icon"></i>
+                <div class="action-btn-title">ギャラリー</div>
+                <div class="action-btn-desc">素材リソースを閲覧</div>
+            </a>
+            <a href="https://github.com/Dolly1016/Nebula/releases" target="_blank" class="action-btn">
+                <i class="fas fa-download action-btn-icon"></i>
+                <div class="action-btn-title">ダウンロード</div>
+                <div class="action-btn-desc">最新版を入手</div>
+            </a>
+        </section>
+
+        <section class="uchu-section movie-section">
+            <h2 class="uchu-section-title">Movie</h2>
+            <div class="movie-container">
+                <div class="movie-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/ZUwTMQ8izjU" 
+                        title="UchuAddon紹介動画" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p class="movie-desc">UchuAddonの紹介動画です。新しい役職やゲームモードをご覧ください。</p>
+            </div>
+        </section>
+
+        <section class="uchu-section">
             <h2 class="uchu-section-title">Credit</h2>
-        </div>
-        
-        <div class="credits-grid">
-            <div class="credit-card">
-                <h3><i class="fas fa-lightbulb"></i> IDEA</h3>
-                <ul>
-                    <li>ネコうどん</li>
-                </ul>
-            </div>
+            <div class="credits-grid">
+                <div class="credit-card">
+                    <h3><i class="fas fa-lightbulb"></i> IDEA</h3>
+                    <ul>
+                        <li>ネコうどん</li>
+                    </ul>
+                </div>
 
-            <div class="credit-card">
-                <h3><i class="fas fa-code"></i> コード・開発</h3>
-                <ul>
-                    <li>ごま</li>
-                    <li>あらいもん</li>
-                    <li>アンハッピーセット</li>
-                    <li>たこやき</li>
-                </ul>
-            </div>
+                <div class="credit-card">
+                    <h3><i class="fas fa-code"></i> コード・開発</h3>
+                    <ul>
+                        <li>ごま</li>
+                        <li>あらいもん</li>
+                        <li>アンハッピーセット</li>
+                        <li>たこやき</li>
+                    </ul>
+                </div>
 
-            <div class="credit-card">
-                <h3><i class="fas fa-graduation-cap"></i> コード・開発見習い</h3>
-                <ul>
-                    <li>ExNEO</li>
-                    <li>ラムネ</li>
-                </ul>
-            </div>
+                <div class="credit-card">
+                    <h3><i class="fas fa-laptop-code"></i> コード・開発見習い</h3>
+                    <ul>
+                        <li>ExNEO</li>
+                        <li>ラムネ</li>
+                    </ul>
+                </div>
 
-            <div class="credit-card">
-                <h3><i class="fas fa-palette"></i> デザイナー</h3>
-                <ul>
-                    <li>ねこかぼちゃ</li>
-                    <li>momoneco</li>
-                    <li>シート</li>
-                    <li>マカロン</li>
-                    <li>慮医</li>
-                </ul>
-            </div>
+                <div class="credit-card">
+                    <h3><i class="fas fa-palette"></i> デザイナー</h3>
+                    <ul>
+                        <li>ねこかぼちゃ</li>
+                        <li>momoneco</li>
+                        <li>シート</li>
+                        <li>マカロン</li>
+                        <li>慮医</li>
+                    </ul>
+                </div>
 
-            <div class="credit-card">
-                <h3><i class="fas fa-language"></i> 翻訳</h3>
-                <ul>
-                    <li>したにあ（English）</li>
-                    <li>Plana（China）</li>
-                </ul>
-            </div>
+                <div class="credit-card">
+                    <h3><i class="fas fa-language"></i> 翻訳</h3>
+                    <ul>
+                        <li>したにあ（English）</li>
+                        <li>Plana（China）</li>
+                    </ul>
+                </div>
 
-            <div class="credit-card">
-                <h3><i class="fas fa-star"></i> Special Thanks</h3>
-                <ul>
-                    <li>Nebula on the Ship （制作：Dolly）</li>
-                    <li>Super New Roles（代表：ykundesu）</li>
-                    <li>Extreme Roles（制作：Yukieiji）</li>
-                    <li>Town of Host Y（制作：Yumenopai）</li>
-                    <li>Town of Host K（制作：KYMario）</li>
-                    <li>Town of Us（制作：slushiegoose）</li>
-                    <li>The Other Roles（代表：Eisbison）</li>
-                </ul>
+                <div class="credit-card">
+                    <h3><i class="fas fa-star"></i> スペシャルサンクス</h3>
+                    <ul>
+                        <li>Nebula on the Ship</li>
+                        <li>Super New Roles</li>
+                        <li>Extreme Roles</li>
+                        <li>Town of Host</li>
+                        <li>Town of Host Y</li>
+                        <li>Town of Host K</li>
+                        <li>Town of Us</li>
+                        <li>Town of Us-R</li>
+                        <li>The Other Roles</li>
+                        <li>The Other Roles-GM-Haoming</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
+        <section class="update-log-section">
+            <h2 class="update-log-title">Daily</h2>
+            <div class="update-timeline" id="updateTimeline">
+                <!-- 更新ログはJavaScriptで動的に読み込み -->
+            </div>
+        </section>
+    </main>
+
     <div id="footer"></div>
 
     <script>
-        // Load header and footer
-        fetch('components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header').innerHTML = data;
-            });
+        // ヘッダーとフッターを読み込み
+        fetch('components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
+        fetch('components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
 
-        fetch('components/footer.html')
-            .then(response => response.text())
+        // 更新ログを読み込み
+        fetch('daily.json')
+            .then(r => r.json())
             .then(data => {
-                document.getElementById('footer').innerHTML = data;
+                const timeline = document.getElementById('updateTimeline');
+                data.updates.forEach(update => {
+                    const item = document.createElement('div');
+                    item.className = 'update-item';
+                    
+                    const tags = update.tags ? update.tags.map(tag => 
+                        `<span class="update-tag">${tag}</span>`
+                    ).join('') : '';
+                    
+                    item.innerHTML = `
+                        <div class="update-date">${update.date}</div>
+                        <div class="update-title">${update.title}</div>
+                        <div class="update-desc">${update.description}</div>
+                        ${tags ? `<div class="update-tags">${tags}</div>` : ''}
+                    `;
+                    timeline.appendChild(item);
+                });
+            })
+            .catch(err => {
+                console.error('更新ログの読み込みに失敗しました:', err);
             });
     </script>
 </body>
