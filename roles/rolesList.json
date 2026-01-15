@@ -1,18 +1,13 @@
 {
-    "_comment": "yamlフォルダ内のJSONファイル名をリスト化。ファイル追加・削除時にここを更新してください",
+    "_comment": "yamlフォルダ内のJSONファイル名をリスト化",
     "_update_info": "定期的にこのファイルを更新することで、追加・削除された役職が自動反映されます",
     "roles": {
         "crewmate": [
-            "mayor.json",
             "admiral.json"
         ],
-        "impostor": [
-        ],
-        "neutral": [
-        ],
-        "modifier": [
-        ],
-        "ghost": [
-        ]
+        "impostor": [],
+        "neutral": [],
+        "modifier": [],
+        "ghost": []
     }
 }
