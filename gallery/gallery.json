@@ -6,8 +6,8 @@
         "name": "ロゴ・タイトル",
         "description": "UchuAddonの公式ロゴ",
         "images": [
-            "UchuAddonTitleFront.png",
-            "UchuAddonTitleLogo.png"
+            "UchuAddonTitleLogo.png",           
+            "UchuAddonTitleFront.png"
         ]
     },
     "roleimage": {
