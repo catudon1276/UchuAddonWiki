@@ -1,163 +1,29 @@
 <!-- UCHU ADDON - COMMON HEADER -->
 <header class="uchu-header">
-    <nav class="uchu-nav" aria-label="Main Navigation">
+    <nav class="uchu-nav">
         <a href="/UchuAddonWiki/" class="uchu-logo-link">
-            <img src="/UchuAddonWiki/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span class="uchu-logo-fallback" style="display:none; color: white; font-weight: bold; font-size: 1.2rem; letter-spacing: 2px;">UCHU ADDON</span>
+            <img src="/UchuAddonWiki/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
         </a>
         
         <ul class="uchu-nav-links">
-            <li><a href="/UchuAddonWiki/" class="uchu-nav-link" data-path="index">トップ</a></li>
-            <li><a href="/UchuAddonWiki/roles/" class="uchu-nav-link" data-path="roles">役職</a></li>
-            <li><a href="/UchuAddonWiki/gallery/" class="uchu-nav-link" data-path="gallery">ギャラリー</a></li>
+            <li><a href="/UchuAddonWiki/" class="uchu-nav-link">トップ</a></li>
+            <li><a href="/UchuAddonWiki/roles/" class="uchu-nav-link">役職</a></li>
+            <li><a href="/UchuAddonWiki/gallery/" class="uchu-nav-link">ギャラリー</a></li>
         </ul>
     </nav>
 </header>
 
-<style>
-:root {
-    --uchu-primary: #4a90e2;
-    --uchu-bg-glass: rgba(10, 14, 39, 0.9);
-    --uchu-border: rgba(74, 144, 226, 0.4);
-    --uchu-hover: rgba(74, 144, 226, 0.25);
-    --transition-speed: 0.3s;
-}
-
-.uchu-header {
-    background: var(--uchu-bg-glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 2px solid var(--uchu-border);
-    padding: 0.75rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-}
-
-.uchu-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.uchu-logo-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.uchu-logo {
-    height: 52px;
-    width: auto;
-    transition: transform var(--transition-speed) cubic-bezier(0.34, 1.56, 0.64, 1);
-    filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.3));
-}
-
-.uchu-logo-link:hover .uchu-logo {
-    transform: scale(1.08) rotate(-2deg);
-}
-
-.uchu-nav-links {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.uchu-nav-link {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 700;
-    font-family: "Exo 2", "Orbitron", sans-serif; /* 宇宙的なフォントを想定 */
-    padding: 0.6rem 1.2rem;
-    border-radius: 12px;
-    transition: all var(--transition-speed) ease;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-size: 0.85rem;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid transparent;
-}
-
-.uchu-nav-link:hover {
-    background: var(--uchu-hover);
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
-.uchu-nav-link.active {
-    background: rgba(74, 144, 226, 0.3);
-    border-color: var(--uchu-primary);
-    box-shadow: 0 0 15px rgba(74, 144, 226, 0.4);
-}
-
-/* モバイル対応 */
-@media (max-width: 768px) {
-    .uchu-header {
-        padding: 0.5rem 0;
-    }
-    
-    .uchu-nav {
-        flex-direction: row; /* 横並びを維持しつつ調整 */
-        padding: 0 1rem;
-    }
-    
-    .uchu-logo {
-        height: 40px;
-    }
-    
-    .uchu-nav-links {
-        gap: 0.25rem;
-    }
-    
-    .uchu-nav-link {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-}
-
-/* タッチデバイス向けのフィードバック */
-@media (hover: none) {
-    .uchu-nav-link:active {
-        background: var(--uchu-hover);
-        transform: scale(0.95);
-    }
-}
-</style>
-
 <script>
-(function() {
-    const setActiveLink = () => {
-        const currentPath = window.location.pathname;
-        const links = document.querySelectorAll('.uchu-nav-link');
-        
-        links.forEach(link => {
-            const href = link.getAttribute('href');
-            link.classList.remove('active');
-            
-            // トップページの判定
-            if ((currentPath === '/UchuAddonWiki/' || currentPath.endsWith('index.html')) && href === '/UchuAddonWiki/') {
-                link.classList.add('active');
-            } 
-            // サブディレクトリの判定
-            else if (href !== '/UchuAddonWiki/' && currentPath.includes(href)) {
-                link.classList.add('active');
-            }
-        });
-    };
-
-    // 初期実行
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setActiveLink);
-    } else {
-        setActiveLink();
+// Set active nav link
+const currentPath = window.location.pathname;
+document.querySelectorAll('.uchu-nav-link').forEach(link => {
+    const href = link.getAttribute('href');
+    if ((currentPath === '/UchuAddonWiki/' || currentPath === '/UchuAddonWiki/index.html') && href === '/UchuAddonWiki/') {
+        link.classList.add('active');
+    } else if (currentPath.includes('/roles/') && href.includes('/roles/')) {
+        link.classList.add('active');
+    } else if (currentPath.includes('/gallery/') && href.includes('/gallery/')) {
+        link.classList.add('active');
     }
-})();
+});
 </script>

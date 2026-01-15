@@ -185,7 +185,7 @@ h3 {
 }
 
 .uchu-nav-link {
-    color: var(--uchu-text-secondary);
+    color: #ffffff;
     text-decoration: none;
     font-weight: 600;
     font-family: var(--font-heading);
@@ -216,13 +216,13 @@ h3 {
 }
 
 .uchu-nav-link:hover {
-    color: var(--uchu-text-primary);
+    color: #ffffff;
     transform: translateY(-2px);
 }
 
 .uchu-nav-link.active {
     background: var(--gradient-accent);
-    color: var(--uchu-text-primary);
+    color: #ffffff;
     box-shadow: var(--shadow-glow);
 }
 

@@ -551,7 +551,10 @@
                         <img id="modal-detail-icon" src="" alt="${role.name}" style="display:none;">
                     </div>
                     <div class="modal-header-content">
-                        <h2 class="modal-title" style="color: ${roleColor};">${role.name}</h2>
+                        <h2 class="modal-title" style="color: ${roleColor};">
+                            ${role.name}
+                            ${role.english_name ? `<span style="font-size: 0.5em; color: rgba(255, 255, 255, 0.4); font-weight: 400; margin-left: 0.5em;">${role.english_name}</span>` : ''}
+                        </h2>
                         ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}
                         <div class="role-badges">
                             <span class="role-badge badge-${teamClass}">${role.team}</span>
