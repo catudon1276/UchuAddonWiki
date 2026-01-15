@@ -73,7 +73,7 @@
             justify-content: center;
         }
 
-        .filter-btn {
+        .filter-btn, .from-btn {
             padding: var(--space-md) var(--space-xl);
             background: rgba(10, 14, 39, 0.6);
             border: 2px solid var(--uchu-border);
@@ -88,14 +88,14 @@
             letter-spacing: 1px;
         }
 
-        .filter-btn:hover {
+        .filter-btn:hover, .from-btn:hover {
             background: rgba(74, 144, 226, 0.2);
             border-color: var(--uchu-accent);
             color: var(--uchu-text-primary);
             transform: translateY(-2px);
         }
 
-        .filter-btn.active {
+        .filter-btn.active, .from-btn.active {
             background: var(--gradient-accent);
             border-color: var(--uchu-accent);
             color: var(--uchu-text-primary);
@@ -272,30 +272,6 @@
             object-fit: contain;
             opacity: 0.9;
             z-index: 3;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: var(--space-lg);
-            right: var(--space-lg);
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 71, 87, 0.2);
-            border: 2px solid var(--uchu-danger);
-            border-radius: 50%;
-            color: var(--uchu-danger);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--uchu-danger);
-            color: white;
-            transform: rotate(90deg);
         }
 
         .modal-header {
@@ -570,14 +546,9 @@
                 ${characterPath ? `<div class="modal-background-image" style="background-image: url('${characterPath}');"></div>` : ''}
                 ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="modal-from-logo" onerror="this.style.display='none'">` : ''}
                 
-                <button class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                
                 <div class="modal-header" style="position: relative; z-index: 2;">
                     <div class="modal-icon">
-                        <img id="modal-icon" src="${iconPath}" alt="${role.name}"
-                             onerror="this.src='${fallbackIcon}'">
+                        <img id="modal-detail-icon" src="" alt="${role.name}" style="display:none;">
                     </div>
                     <div class="modal-header-content">
                         <h2 class="modal-title" style="color: ${roleColor};">${role.name}</h2>
@@ -612,6 +583,31 @@
                     </button>
                 </div>
             `;
+            
+            // モーダル内のアイコンにも色変換を適用（roleMain.jsのrecolorIcon関数を使用）
+            const modalIconElement = document.getElementById('modal-detail-icon');
+            if (iconPath && typeof recolorIcon === 'function') {
+                recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+                    if (recoloredDataURL) {
+                        modalIconElement.src = recoloredDataURL;
+                        modalIconElement.style.display = 'block';
+                    } else if (fallbackIcon) {
+                        recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
+                            if (fallbackDataURL) {
+                                modalIconElement.src = fallbackDataURL;
+                                modalIconElement.style.display = 'block';
+                            }
+                        });
+                    }
+                });
+            } else {
+                // recolorIcon関数がない場合は元の画像をそのまま表示
+                modalIconElement.src = iconPath;
+                modalIconElement.style.display = 'block';
+                modalIconElement.onerror = function() {
+                    this.src = fallbackIcon;
+                };
+            }
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
