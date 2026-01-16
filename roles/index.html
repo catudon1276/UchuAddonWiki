@@ -237,6 +237,7 @@
 
         .modal-content {
             max-width: 1000px;
+            max-height: 90vh;
             margin: var(--space-2xl) auto;
             background: linear-gradient(135deg, rgba(30, 39, 73, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
             backdrop-filter: var(--blur-glass);
@@ -244,7 +245,27 @@
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
             position: relative;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* スクロールバーのスタイル */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(10, 14, 39, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--uchu-accent);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--uchu-primary);
         }
 
         /* 背景の役職立ち絵 */
@@ -426,9 +447,19 @@
                 border-radius: 0;
             }
 
+            /* 背景立ち絵を下方中央に配置 */
+            .modal-background-image {
+                width: 100%;
+                height: 400px;
+                background-position: bottom center;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
             .modal-header {
                 flex-direction: column;
-                text-align: center;
+                text-align: left;
                 gap: var(--space-md);
                 margin-bottom: var(--space-lg);
             }
@@ -436,7 +467,7 @@
             .modal-icon {
                 width: 80px;
                 height: 80px;
-                margin: 0 auto;
+                margin: 0;
             }
 
             .modal-from-logo {
@@ -449,10 +480,16 @@
 
             .modal-title {
                 font-size: 1.8rem;
+                text-align: left;
             }
 
             .modal-intro {
                 font-size: 1rem;
+                text-align: left;
+            }
+
+            .modal-description {
+                text-align: left;
             }
 
             .ability-item {
