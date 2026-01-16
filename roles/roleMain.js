@@ -145,7 +145,7 @@ async function loadAllRoles() {
         filteredRoles = allRoles;
         
         console.log(`${allRoles.length}個の役職を読み込みました`);
-        console.log(`${secretRoles.length}個のシークレット役職を読み込みました`);
+        console.log(`${secretRoles.length}個の役職を読み込みました`);
     } catch (error) {
         console.error('役職データの読み込みに失敗しました:', error);
         allRoles = [];
@@ -558,19 +558,23 @@ function closeOverlay() {
 
 // シークレット役職詳細を表示
 function showSecretDetails(role) {
+        
     const overlayContent = document.getElementById('overlayContent');
     
     // 画像パス生成
     const iconPath = `../resource/roleicon/Jargonword.png`;
     const thumbnailPath = role.thumbnail ? `../resource/rolepicture/${role.thumbnail}` : '';
-    const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)'; // デフォルトは紫
+    const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)';
     
     // ボタンHTML生成
     let buttonHTML = '';
     if (role.button && role.button.url) {
         buttonHTML = `
-            <div class="text-center mt-3">
-                <a href="${role.button.url}" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="${role.button.url}" 
+                   target="_blank" 
+                   class="btn btn-primary btn-lg" 
+                   style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; padding: 12px 24px;">
                     <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
                 </a>
             </div>
@@ -578,46 +582,56 @@ function showSecretDetails(role) {
     }
     
     overlayContent.innerHTML = `
-        <div class="role-detail-header" style="margin-bottom: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem;">
-                <img id="secret-detail-icon" class="role-detail-icon-large" alt="Secret" style="display:none;">
-                <h2 class="role-detail-name" style="color: ${roleColor}; margin: 0;">
-                    🔐 ${role.name}
-                </h2>
+        <div style="padding: 2rem;">
+            <!-- ヘッダー部分 -->
+            <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
+                <img id="secret-detail-icon" 
+                     style="width: 80px; height: 80px; object-fit: contain; flex-shrink: 0; display: none;" 
+                     alt="Secret">
+                <div style="flex: 1;">
+                    <h2 style="color: ${roleColor}; font-size: 2rem; font-weight: bold; margin: 0 0 1rem 0; line-height: 1.2;">
+                        🔐 ${role.name}
+                    </h2>
+                    <div style="display: inline-block; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; background: ${roleColor}; color: #fff; border: 1px solid ${roleColor};">
+                        SECRET
+                    </div>
+                </div>
             </div>
             
-            <div class="role-badges">
-                <div class="role-team-badge" style="background: ${roleColor}; color: #fff; border-color: ${roleColor};">SECRET</div>
-            </div>
-        </div>
-        
-        <div class="row position-relative" style="z-index: 2;">
-            <div class="col-md-12">
-                <div style="display: grid; grid-template-columns: ${thumbnailPath ? 'auto 1fr' : '1fr'}; gap: 2rem; align-items: start; margin-bottom: 2rem;">
-                    ${thumbnailPath ? `
-                        <div style="flex-shrink: 0;">
-                            <img src="${thumbnailPath}" 
-                                 alt="${role.name}" 
-                                 style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid ${roleColor};"
-                                 onerror="this.style.display='none'">
-                        </div>
-                    ` : ''}
-                    
+            <!-- コンテンツ部分 -->
+            <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: 2rem; align-items: start;">
+                ${thumbnailPath ? `
                     <div>
-                        <div class="alert" style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                            <strong style="color: ${roleColor};">⚠️ 役職</strong><br>
-                            <span style="color: #cbd5e0; font-size: 0.9rem;">この役職は特定のキーワードで検索した場合のみ表示されます。</span>
-                        </div>
-                        
-                        <p class="role-detail-description" style="white-space: pre-wrap; line-height: 1.8; margin-bottom: 1rem;">${role.description}</p>
-                        
-                        ${buttonHTML}
+                        <img src="${thumbnailPath}" 
+                             alt="${role.name}" 
+                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid ${roleColor}; display: block;"
+                             onerror="this.parentElement.style.display='none'">
                     </div>
+                ` : ''}
+                
+                <div>
+                    <!-- 警告ボックス -->
+                    <div style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <strong style="color: ${roleColor}; font-size: 1rem; display: block; margin-bottom: 0.5rem;">
+                            ⚠️ シークレット役職
+                        </strong>
+                        <span style="color: #cbd5e0; font-size: 0.9rem; line-height: 1.6;">
+                            この役職は特定のキーワードで検索した場合のみ表示されます。
+                        </span>
+                    </div>
+                    
+                    <!-- 説明文 -->
+                    <p style="color: #cbd5e0; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0;">
+                        ${role.description}
+                    </p>
+                    
+                    ${buttonHTML}
                 </div>
             </div>
         </div>
         
-        <div class="text-center mt-4 position-relative" style="z-index: 2;">
+        <!-- 閉じるボタン -->
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
             <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
                 <i class="fas fa-times me-2"></i>閉じる
             </button>
