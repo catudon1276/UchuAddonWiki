@@ -10,6 +10,9 @@
         ],
         "neutral": [],
         "modifier": [],
-        "ghost": []
+        "ghost": [],
+        "secret": [
+            "example_secret.json"
+        ]
     }
 }

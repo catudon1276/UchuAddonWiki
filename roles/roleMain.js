@@ -1,5 +1,6 @@
 // 役職データ管理
 let allRoles = [];
+let secretRoles = []; // シークレット役職
 let filteredRoles = [];
 let activeFilters = {
     search: '',
@@ -13,7 +14,8 @@ const ROLE_FOLDERS = {
     'インポスター': 'impostor',
     'ニュートラル': 'neutral',
     'モディファイア': 'modifier',
-    'ゴースト': 'ghost'
+    'ゴースト': 'ghost',
+    'シークレット': 'secret'
 };
 
 // 出典元のマッピング（表示順）
@@ -110,6 +112,7 @@ async function loadAllRoles() {
         if (!response.ok) {
             console.error('rolesList.json が見つかりません。');
             allRoles = [];
+            secretRoles = [];
             filteredRoles = [];
             return;
         }
@@ -118,25 +121,35 @@ async function loadAllRoles() {
         
         // 各陣営のフォルダから役職を読み込む
         const loadingPromises = [];
+        const secretLoadingPromises = [];
         
         // yamlフォルダ内の各陣営フォルダから読み込み
         for (const [teamName, folderName] of Object.entries(ROLE_FOLDERS)) {
             const roles = rolesList.roles[folderName] || [];
             roles.forEach(fileName => {
-                loadingPromises.push(loadRoleFromJSON(`${YAML_FOLDER}/${folderName}/${fileName}`, teamName));
+                if (folderName === 'secret') {
+                    // シークレット役職は別配列
+                    secretLoadingPromises.push(loadRoleFromJSON(`${YAML_FOLDER}/${folderName}/${fileName}`, teamName));
+                } else {
+                    loadingPromises.push(loadRoleFromJSON(`${YAML_FOLDER}/${folderName}/${fileName}`, teamName));
+                }
             });
         }
         
         const results = await Promise.all(loadingPromises);
+        const secretResults = await Promise.all(secretLoadingPromises);
         
         // 成功した読み込みのみをフィルター
         allRoles = results.filter(role => role !== null);
+        secretRoles = secretResults.filter(role => role !== null);
         filteredRoles = allRoles;
         
         console.log(`${allRoles.length}個の役職を読み込みました`);
+        console.log(`${secretRoles.length}個のシークレット役職を読み込みました`);
     } catch (error) {
         console.error('役職データの読み込みに失敗しました:', error);
         allRoles = [];
+        secretRoles = [];
         filteredRoles = [];
     }
 }
@@ -262,6 +275,12 @@ function renderFromFilters() {
 
 // フィルター処理（複数選択対応）
 function filterAndRender() {
+    // シークレット役職の検索（完全一致）
+    const secretMatches = secretRoles.filter(role => 
+        role.search_keywords && role.search_keywords.includes(activeFilters.search)
+    );
+    
+    // 通常の役職フィルタリング
     filteredRoles = allRoles.filter(role => {
         // 検索フィルター
         if (activeFilters.search) {
@@ -287,6 +306,11 @@ function filterAndRender() {
 
         return true;
     });
+
+    // シークレット役職がマッチした場合は追加
+    if (secretMatches.length > 0) {
+        filteredRoles = [...secretMatches, ...filteredRoles];
+    }
 
     renderRoles();
 }
@@ -363,6 +387,12 @@ function getTeamClass(team) {
 
 // 役職詳細を表示
 function showRoleDetails(role) {
+    // シークレット役職の判定
+    if (role.team === 'SECRET' || role.search_keywords) {
+        showSecretDetails(role);
+        return;
+    }
+    
     const overlayContent = document.getElementById('overlayContent');
     
     // 画像パス生成
@@ -517,3 +547,60 @@ document.addEventListener('keydown', function(e) {
         closeOverlay();
     }
 });
+
+// シークレット役職詳細を表示
+function showSecretDetails(role) {
+    const overlayContent = document.getElementById('overlayContent');
+    
+    // 画像パス生成
+    const iconPath = `../resource/roleicon/Jargonword.png`;
+    const thumbnailPath = role.thumbnail ? `../resource/rolepicture/${role.thumbnail}` : '';
+    const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)'; // デフォルトは紫
+    
+    // ボタンHTML生成
+    let buttonHTML = '';
+    if (role.button && role.button.url) {
+        buttonHTML = `
+            <div style="margin-top: var(--space-xl); text-align: center;">
+                <a href="${role.button.url}" target="_blank" class="uchu-btn uchu-btn-primary" style="display: inline-flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                    <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
+                </a>
+            </div>
+        `;
+    }
+    
+    overlayContent.innerHTML = `
+        <div style="position: relative; z-index: 2;">
+            <div class="modal-header" style="align-items: center; margin-bottom: var(--space-xl);">
+                <img src="${iconPath}" alt="Secret" style="width: 80px; height: 80px; flex-shrink: 0;" onerror="this.style.display='none'">
+                <div style="flex: 1;">
+                    <h2 class="modal-title" style="margin-bottom: 0; color: ${roleColor};">${role.name}</h2>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: var(--space-xl); align-items: start;">
+                ${thumbnailPath ? `
+                    <div style="position: relative;">
+                        <img src="${thumbnailPath}" alt="${role.name}" style="width: 200px; height: 200px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid ${roleColor};" onerror="this.onerror=null; this.src='../resource/rolepicture/Sample.png';">
+                    </div>
+                ` : ''}
+                
+                <div>
+                    <div class="modal-description" style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap;">
+                        ${role.description}
+                    </div>
+                    ${buttonHTML}
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
+            <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
+                <i class="fas fa-times"></i> 閉じる
+            </button>
+        </div>
+    `;
+
+    document.getElementById('overlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}

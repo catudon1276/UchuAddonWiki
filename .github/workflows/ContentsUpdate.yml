@@ -69,7 +69,9 @@ jobs:
             # 統計情報表示
             if [ -f roles/rolesList.json ]; then
               role_count=$(find roles/yaml -name "*.json" | wc -l)
-              echo "   - Total roles: $role_count"
+              secret_count=$(find roles/yaml/secret -name "*.json" 2>/dev/null | wc -l)
+              normal_count=$((role_count - secret_count))
+              echo "   - Total roles: $normal_count (+ $secret_count secret)"
             fi
             
             if [ -f gallery/gallery.json ]; then
