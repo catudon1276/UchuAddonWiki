@@ -6,6 +6,7 @@
     "color": "255, 0, 0",
     "intro": "災いが降り注ぐ",
     "description": "隕石を召喚するインポスターです。",
+    "abilities_title": "宇宙からの厄災",        
     "abilities": [
         {
             "button": "MeteorButton.png",

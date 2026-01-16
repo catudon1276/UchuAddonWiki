@@ -6,6 +6,7 @@
     "color": "61, 88, 179",
     "intro": "絶対権限",
     "description": "提督権限を行使し追放を防ぐクルーメイトです。",
+    "abilities_title": "絶対的提督権限",    
     "abilities": [
         {
             "button": "AdmiralSkillButton.png",
