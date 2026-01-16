@@ -9,7 +9,7 @@
     "abilities": [
         {
             "button": "AdmiralSkillButton.png",
-            "name": "固有能力 絶対的提督権限",
+            "name": "絶対的提督権限",
             "description": "アドミラルは追放を防ぐクルーメイトです。能力を使用した会議は追放を防ぎます。"
         },
         {

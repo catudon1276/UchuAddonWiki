@@ -1,0 +1,23 @@
+{
+    "id": "eclipse",
+    "english_name": "Eclipse",
+    "name": "エクリプス",
+    "team": "インポスター",
+    "color": "255, 0, 0",
+    "intro": "災いが降り注ぐ",
+    "description": "提督権限を行使し追放を防ぐクルーメイトです。",
+    "abilities": [
+        {
+            "button": "AdmiralSkillButton.png",
+            "name": "宇宙からの厄災",
+            "description": "エクリプスは隕石を降らすことが出来るインポスターです。"
+        },
+        {
+            "button": "MeteorAntennaButton.png",
+            "name": "アンテナ設置",
+            "description": "マーク隕石の着弾地点をマークをします。マークをした場所に、隕石を降らせます。<br>マーク地点がないと使用できません"
+        }
+    ],
+    "tips":"エクリプスは隕石を降らせてキルをするインポスターです。<br>隕石は、味方に当たっても問答無用でキルしてしまいます。",
+    "from": "Original"
+}
