@@ -566,8 +566,8 @@ function showSecretDetails(role) {
     let buttonHTML = '';
     if (role.button && role.button.url) {
         buttonHTML = `
-            <div style="margin-top: var(--space-xl); text-align: center;">
-                <a href="${role.button.url}" target="_blank" class="uchu-btn uchu-btn-primary" style="display: inline-flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+            <div class="text-center mt-3">
+                <a href="${role.button.url}" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
                     <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
                 </a>
             </div>
@@ -575,37 +575,64 @@ function showSecretDetails(role) {
     }
     
     overlayContent.innerHTML = `
-        <div style="position: relative; z-index: 2;">
-            <div class="modal-header" style="align-items: center; margin-bottom: var(--space-xl);">
-                <img src="${iconPath}" alt="Secret" style="width: 80px; height: 80px; flex-shrink: 0;" onerror="this.style.display='none'">
-                <div style="flex: 1;">
-                    <h2 class="modal-title" style="margin-bottom: 0; color: ${roleColor};">${role.name}</h2>
-                </div>
+        <div class="role-detail-header" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <img id="secret-detail-icon" class="role-detail-icon-large" alt="Secret" style="display:none;">
+                <h2 class="role-detail-name" style="color: ${roleColor}; margin: 0;">
+                    🔐 ${role.name}
+                </h2>
             </div>
             
-            <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: var(--space-xl); align-items: start;">
-                ${thumbnailPath ? `
-                    <div style="position: relative;">
-                        <img src="${thumbnailPath}" alt="${role.name}" style="width: 200px; height: 200px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid ${roleColor};" onerror="this.onerror=null; this.src='../resource/rolepicture/Sample.png';">
+            <div class="role-badges">
+                <div class="role-team-badge" style="background: ${roleColor}; color: #fff; border-color: ${roleColor};">SECRET</div>
+            </div>
+        </div>
+        
+        <div class="row position-relative" style="z-index: 2;">
+            <div class="col-md-12">
+                <div style="display: grid; grid-template-columns: ${thumbnailPath ? 'auto 1fr' : '1fr'}; gap: 2rem; align-items: start; margin-bottom: 2rem;">
+                    ${thumbnailPath ? `
+                        <div style="flex-shrink: 0;">
+                            <img src="${thumbnailPath}" 
+                                 alt="${role.name}" 
+                                 style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid ${roleColor};"
+                                 onerror="this.style.display='none'">
+                        </div>
+                    ` : ''}
+                    
+                    <div>
+                        <div class="alert" style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                            <strong style="color: ${roleColor};">⚠️ シークレット役職</strong><br>
+                            <span style="color: #cbd5e0; font-size: 0.9rem;">この役職は特定のキーワードで検索した場合のみ表示されます。</span>
+                        </div>
+                        
+                        <p class="role-detail-description" style="white-space: pre-wrap; line-height: 1.8; margin-bottom: 1rem;">${role.description}</p>
+                        
+                        ${buttonHTML}
                     </div>
-                ` : ''}
-                
-                <div>
-                    <div class="modal-description" style="font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap;">
-                        ${role.description}
-                    </div>
-                    ${buttonHTML}
                 </div>
             </div>
         </div>
         
-        <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
-            <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
-                <i class="fas fa-times"></i> 閉じる
+        <div class="text-center mt-4 position-relative" style="z-index: 2;">
+            <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
+                <i class="fas fa-times me-2"></i>閉じる
             </button>
         </div>
     `;
 
+    // Jargonwordアイコンを色変換して表示
+    const secretIconElement = document.getElementById('secret-detail-icon');
+    recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+        if (recoloredDataURL) {
+            secretIconElement.src = recoloredDataURL;
+            secretIconElement.style.display = 'block';
+        } else {
+            // フォールバック：元画像をそのまま表示
+            secretIconElement.src = iconPath;
+            secretIconElement.style.display = 'block';
+        }
+    });
+
     document.getElementById('overlay').style.display = 'block';
-    document.body.style.overflow = 'hidden';
 }
