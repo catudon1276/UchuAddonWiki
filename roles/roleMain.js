@@ -145,7 +145,7 @@ async function loadAllRoles() {
         filteredRoles = allRoles;
         
         console.log(`${allRoles.length}個の役職を読み込みました`);
-        console.log(`${secretRoles.length}個の役職を読み込みました`);
+        console.log(`${secretRoles.length}個のシークレット役職を読み込みました`);
     } catch (error) {
         console.error('役職データの読み込みに失敗しました:', error);
         allRoles = [];
@@ -167,6 +167,11 @@ async function loadRoleFromJSON(filePath, teamName) {
         // teamが指定されていない場合、フォルダ名から自動設定
         if (!role.team) {
             role.team = teamName;
+        }
+        
+        // シークレットフォルダから読み込まれた役職にフラグを追加
+        if (teamName === 'シークレット') {
+            role._isSecret = true;
         }
         
         return role;
@@ -218,7 +223,7 @@ function setupEventListeners() {
         });
     });
     
-    // オーバーレイ外クリックで閉じる（ここに追加）
+    // オーバーレイ外クリックで閉じる
     const overlay = document.getElementById('overlay');
     if (overlay) {
         overlay.addEventListener('click', function(e) {
@@ -228,7 +233,7 @@ function setupEventListeners() {
         });
     }
     
-    // ESCキーでオーバーレイを閉じる（ここに追加）
+    // ESCキーでオーバーレイを閉じる
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeOverlay();
@@ -243,7 +248,7 @@ function renderFromFilters() {
     
     container.innerHTML = '';
     
-    // すべてボタン（地球儀アイコン削除）
+    // すべてボタン
     const allBtn = document.createElement('button');
     allBtn.className = 'from-btn active';
     allBtn.dataset.from = 'all';
@@ -293,7 +298,7 @@ function renderFromFilters() {
 // フィルター処理（複数選択対応）
 function filterAndRender() {
     // シークレット役職の検索（大文字小文字を無視して完全一致）
-    const searchLower = activeFilters.search.trim(); // trimで前後の空白削除
+    const searchLower = activeFilters.search.trim();
     const secretMatches = secretRoles.filter(role => 
         role.search_keywords && role.search_keywords.some(keyword => 
             keyword.toLowerCase() === searchLower.toLowerCase()
@@ -302,6 +307,7 @@ function filterAndRender() {
     
     console.log('🔍 検索キーワード:', searchLower);
     console.log('🔐 シークレットマッチ:', secretMatches.length, '件');
+    
     // 通常の役職フィルタリング
     filteredRoles = allRoles.filter(role => {
         // 検索フィルター
@@ -407,10 +413,22 @@ function getTeamClass(team) {
     }
 }
 
+// シークレット役職かどうか判定するヘルパー関数
+function isSecretRole(role) {
+    return role._isSecret === true ||
+           role.team === 'SECRET' || 
+           role.team === 'シークレット' || 
+           (role.search_keywords && Array.isArray(role.search_keywords) && role.search_keywords.length > 0);
+}
+
 // 役職詳細を表示
 function showRoleDetails(role) {
-    // シークレット役職の判定
-    if (role.team === 'SECRET' || role.search_keywords) {
+    // シークレット役職の判定（複数条件で確実に判定）
+    const isSecret = isSecretRole(role);
+    
+    console.log('📋 showRoleDetails called:', role.name, 'team:', role.team, 'isSecret:', isSecret, '_isSecret:', role._isSecret, 'search_keywords:', role.search_keywords);
+    
+    if (isSecret) {
         showSecretDetails(role);
         return;
     }
