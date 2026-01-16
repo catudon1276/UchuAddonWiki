@@ -208,15 +208,35 @@
         }
 
         .update-log-title {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 900;
             color: var(--uchu-text-primary);
             margin-bottom: var(--space-xl);
             text-align: center;
-            background: var(--gradient-cosmic);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: var(--font-heading);
+        }
+
+        /* すべてのセクションタイトルを統一 */
+        .uchu-section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-xl);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: var(--font-heading);
+        }
+
+        .movie-section .uchu-section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--uchu-text-primary);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .update-timeline {
@@ -247,7 +267,6 @@
 
         .update-item:hover {
             border-color: var(--uchu-accent);
-            transform: translateX(10px);
         }
 
         .update-item::before {
@@ -303,6 +322,32 @@
             margin: var(--space-2xl) auto;
         }
 
+        .movie-carousel-container {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .movie-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-slide {
+            display: none;
+            width: 100%;
+        }
+
+        .movie-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .movie-container {
             background: rgba(30, 39, 73, 0.4);
             backdrop-filter: var(--blur-glass);
@@ -342,6 +387,99 @@
             margin: 0;
         }
 
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(30, 39, 73, 0.8);
+            backdrop-filter: var(--blur-glass);
+            border: 2px solid var(--uchu-border);
+            color: var(--uchu-text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: var(--uchu-accent);
+            border-color: var(--uchu-accent);
+            color: #000;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-prev {
+            left: -60px;
+        }
+
+        .carousel-next {
+            right: -60px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(74, 144, 226, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--uchu-accent);
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        .indicator:hover {
+            background: var(--uchu-accent);
+            opacity: 0.7;
+        }
+
+        /* Load More Button */
+        .load-more-container {
+            text-align: center;
+            margin-top: var(--space-xl);
+        }
+
+        .load-more-btn {
+            padding: var(--space-md) var(--space-2xl);
+            background: rgba(30, 39, 73, 0.6);
+            backdrop-filter: var(--blur-glass);
+            border: 2px solid var(--uchu-border);
+            color: var(--uchu-text-primary);
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .load-more-btn:hover {
+            background: var(--gradient-accent);
+            border-color: var(--uchu-accent);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .load-more-btn i {
+            font-size: 1.2rem;
+        }
+
         @media (max-width: 768px) {
             .action-buttons {
                 grid-template-columns: 1fr;
@@ -353,6 +491,20 @@
 
             .update-item::before {
                 left: calc(-1 * var(--space-lg) - 6px);
+            }
+
+            .carousel-prev {
+                left: -10px;
+            }
+
+            .carousel-next {
+                right: -10px;
+            }
+
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -388,7 +540,7 @@
                 <div class="action-btn-title">ギャラリー</div>
                 <div class="action-btn-desc">素材リソースを閲覧</div>
             </a>
-            <a href="https://github.com/catudon1276/UchuAddon/releases" target="_blank" class="action-btn">
+            <a href="https://github.com/Dolly1016/Nebula/releases" target="_blank" class="action-btn">
                 <i class="fas fa-download action-btn-icon"></i>
                 <div class="action-btn-title">ダウンロード</div>
                 <div class="action-btn-desc">最新版を入手</div>
@@ -397,17 +549,47 @@
 
         <section class="uchu-section movie-section">
             <h2 class="uchu-section-title">Movie</h2>
-            <div class="movie-container">
-                <div class="movie-wrapper">
-                    <iframe 
-                        src="https://www.youtube.com/embed/ZUwTMQ8izjU" 
-                        title="UchuAddon紹介動画" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
-                    </iframe>
+            <div class="movie-carousel-container">
+                <button class="carousel-btn carousel-prev" id="moviePrev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="movie-carousel">
+                    <div class="movie-slide active">
+                        <div class="movie-container">
+                            <div class="movie-wrapper">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/ZUwTMQ8izjU" 
+                                    title="UchuAddon紹介動画" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                            <p class="movie-desc">UchuAddonの紹介動画です。新しい役職やゲームモードをご覧ください。</p>
+                        </div>
+                    </div>
+                    <div class="movie-slide">
+                        <div class="movie-container">
+                            <div class="movie-wrapper">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/ZUwTMQ8izjU" 
+                                    title="UchuAddon紹介動画2" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                            <p class="movie-desc">動画2本目の説明文（仮）</p>
+                        </div>
+                    </div>
                 </div>
-                <p class="movie-desc">UchuAddonの紹介動画です。新しい役職をご覧ください。</p>
+                <button class="carousel-btn carousel-next" id="movieNext">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="carousel-indicators" id="movieIndicators">
+                <span class="indicator active" data-index="0"></span>
+                <span class="indicator" data-index="1"></span>
             </div>
         </section>
 
@@ -474,9 +656,14 @@
         </section>
 
         <section class="update-log-section">
-            <h2 class="update-log-title">Daily</h2>
+            <h2 class="update-log-title">News</h2>
             <div class="update-timeline" id="updateTimeline">
                 <!-- 更新ログはJavaScriptで動的に読み込み -->
+            </div>
+            <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+                <button class="load-more-btn" id="loadMoreBtn">
+                    <i class="fas fa-plus-circle"></i> もっと見る
+                </button>
             </div>
         </section>
     </main>
@@ -488,31 +675,92 @@
         fetch('components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
         fetch('components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
 
-        // 更新ログを読み込み
+        // 動画カルーセル
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.movie-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+        }
+        
+        document.getElementById('moviePrev').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        });
+        
+        document.getElementById('movieNext').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        });
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // ニュース「もっと見る」機能
+        const INITIAL_NEWS_COUNT = 3; // 初期表示件数
+        let allNews = [];
+        let displayedCount = 0;
+
         fetch('daily.json')
             .then(r => r.json())
             .then(data => {
-                const timeline = document.getElementById('updateTimeline');
-                data.updates.forEach(update => {
-                    const item = document.createElement('div');
-                    item.className = 'update-item';
-                    
-                    const tags = update.tags ? update.tags.map(tag => 
-                        `<span class="update-tag">${tag}</span>`
-                    ).join('') : '';
-                    
-                    item.innerHTML = `
-                        <div class="update-date">${update.date}</div>
-                        <div class="update-title">${update.title}</div>
-                        <div class="update-desc">${update.description}</div>
-                        ${tags ? `<div class="update-tags">${tags}</div>` : ''}
-                    `;
-                    timeline.appendChild(item);
-                });
+                allNews = data.updates;
+                displayedCount = Math.min(INITIAL_NEWS_COUNT, allNews.length);
+                renderNews(displayedCount);
+                
+                // 「もっと見る」ボタンの表示/非表示
+                const loadMoreContainer = document.getElementById('loadMoreContainer');
+                if (allNews.length > INITIAL_NEWS_COUNT) {
+                    loadMoreContainer.style.display = 'block';
+                }
             })
             .catch(err => {
-                console.error('更新ログの読み込みに失敗しました:', err);
+                console.error('ニュースの読み込みに失敗しました:', err);
             });
+
+        function renderNews(count) {
+            const timeline = document.getElementById('updateTimeline');
+            timeline.innerHTML = ''; // クリア
+            
+            const newsToShow = allNews.slice(0, count);
+            newsToShow.forEach(update => {
+                const item = document.createElement('div');
+                item.className = 'update-item';
+                
+                const tags = update.tags ? update.tags.map(tag => 
+                    `<span class="update-tag">${tag}</span>`
+                ).join('') : '';
+                
+                item.innerHTML = `
+                    <div class="update-date">${update.date}</div>
+                    <div class="update-title">${update.title}</div>
+                    <div class="update-desc">${update.description}</div>
+                    ${tags ? `<div class="update-tags">${tags}</div>` : ''}
+                `;
+                timeline.appendChild(item);
+            });
+        }
+
+        // 「もっと見る」ボタンのクリックイベント
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            displayedCount = Math.min(displayedCount + 3, allNews.length);
+            renderNews(displayedCount);
+            
+            // 全て表示したらボタンを非表示
+            if (displayedCount >= allNews.length) {
+                document.getElementById('loadMoreContainer').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

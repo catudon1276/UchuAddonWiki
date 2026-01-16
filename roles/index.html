@@ -286,7 +286,6 @@
             height: 120px;
             flex-shrink: 0;
             border-radius: var(--radius-lg);
-            background: rgba(10, 14, 39, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -397,17 +396,73 @@
             opacity: 0.5;
         }
 
+        /* タブレット対応 (768px - 1024px) */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .modal-header {
+                gap: var(--space-lg);
+            }
+
+            .modal-icon {
+                width: 100px;
+                height: 100px;
+            }
+
+            .modal-from-logo {
+                max-width: 120px;
+                max-height: 60px;
+            }
+        }
+
+        /* モバイル対応 (768px以下) */
         @media (max-width: 768px) {
             .roles-grid {
                 grid-template-columns: 1fr;
             }
 
+            .modal-content {
+                padding: var(--space-xl) var(--space-lg);
+                margin: 0;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
             .modal-header {
                 flex-direction: column;
                 text-align: center;
+                gap: var(--space-md);
+                margin-bottom: var(--space-lg);
             }
 
             .modal-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+            }
+
+            .modal-from-logo {
+                position: static;
+                margin: 0 auto var(--space-md);
+                max-width: 100px;
+                max-height: 50px;
+                display: block;
+            }
+
+            .modal-title {
+                font-size: 1.8rem;
+            }
+
+            .modal-intro {
+                font-size: 1rem;
+            }
+
+            .ability-item {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .ability-icon {
+                width: 60px;
+                height: 60px;
                 margin: 0 auto;
             }
         }
@@ -573,7 +628,7 @@
                             <h3 class="section-title">
                                 <i class="fas fa-lightbulb"></i> 豆知識
                             </h3>
-                            <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid var(--uchu-warning); padding: var(--space-lg); border-radius: var(--radius-md); color: var(--uchu-text-secondary);">
+                            <div style="color: var(--uchu-text-secondary); line-height: 1.8; font-size: 1rem;">
                                 ${role.tips}
                             </div>
                         </div>

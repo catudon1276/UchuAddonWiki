@@ -315,7 +315,7 @@
     <div id="header"></div>
 
     <div class="hero-section">
-        <h1 class="hero-title"><i class="fas fa-images me-3"></i> GALLERY</h1>
+        <h1 class="hero-title"><i class="fas fa-images me-3"></i>リソースギャラリー</h1>
         
         <div class="terms-section">
             <h3 class="terms-title"><i class="fas fa-file-contract me-2"></i>ご利用規約</h3>
@@ -375,13 +375,31 @@
 
         fetch('/UchuAddonWiki/gallery/gallery.json').then(r => r.json()).then(data => {
             galleryData = data;
+            
+            // 「すべて」ボタンにイベントを追加
+            const allBtn = document.querySelector('.category-btn[data-category="all"]');
+            if (allBtn) {
+                allBtn.onclick = () => {
+                    currentFilter = 'all';
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    allBtn.classList.add('active');
+                    renderGallery();
+                };
+            }
+            
+            // カテゴリボタンを動的生成
             Object.keys(galleryData).forEach(id => {
                 if (id.startsWith('_')) return;
                 const btn = document.createElement('button');
                 btn.className = 'category-btn';
                 btn.dataset.category = id;
                 btn.textContent = galleryData[id].name;
-                btn.onclick = () => { currentFilter = id; document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderGallery(); };
+                btn.onclick = () => { 
+                    currentFilter = id; 
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+                    btn.classList.add('active'); 
+                    renderGallery(); 
+                };
                 document.getElementById('categoryButtons').appendChild(btn);
             });
             renderGallery();
