@@ -592,6 +592,19 @@
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
             
+            // ★シークレット役職の判定を追加
+            const isSecret = role._isSecret === true ||
+                             role.team === 'SECRET' || 
+                             role.team === 'シークレット' || 
+                             (role.search_keywords && Array.isArray(role.search_keywords) && role.search_keywords.length > 0);
+            
+            console.log('📋 showRoleDetails called:', role.name, 'isSecret:', isSecret);
+            
+            if (isSecret) {
+                showSecretModal(role);
+                return;
+            }
+            
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
             const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
             const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : 'Ghost'}.png`;
@@ -704,6 +717,110 @@
                 };
             }
             
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ★シークレット役職用モーダル表示関数を追加
+        function showSecretModal(role) {
+            console.log('🔐 showSecretModal が呼ばれました:', role);
+            
+            const modal = document.getElementById('roleModal');
+            const content = document.getElementById('modalContent');
+            
+            const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)';
+            const iconPath = `../resource/roleicon/Jargonword.png`;
+            const thumbnailPath = role.thumbnail ? `../resource/rolepicture/${role.thumbnail}` : '';
+            
+            // ボタンHTML生成
+            let buttonHTML = '';
+            if (role.button && role.button.url) {
+                buttonHTML = `
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <a href="${role.button.url}" 
+                           target="_blank" 
+                           class="uchu-btn uchu-btn-primary" 
+                           style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
+                        </a>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = `
+                <div style="padding: 1rem;">
+                    <!-- ヘッダー部分 -->
+                    <div class="modal-header" style="position: relative; z-index: 2;">
+                        <div class="modal-icon">
+                            <img id="secret-modal-icon" src="" alt="Secret" style="display:none;">
+                        </div>
+                        <div class="modal-header-content">
+                            <h2 class="modal-title" style="color: ${roleColor};">
+                                🔐 ${role.name}
+                            </h2>
+                            <div class="role-badges">
+                                <span class="role-badge" style="background: ${roleColor}; color: #fff; border-color: ${roleColor};">SECRET</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- コンテンツ部分 -->
+                    <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: 2rem; align-items: start; position: relative; z-index: 2;">
+                        ${thumbnailPath ? `
+                            <div>
+                                <img src="${thumbnailPath}" 
+                                     alt="${role.name}" 
+                                     style="width: 200px; height: 200px; object-fit: cover; border-radius: var(--radius-lg); border: 3px solid ${roleColor}; display: block;"
+                                     onerror="this.parentElement.style.display='none'">
+                            </div>
+                        ` : ''}
+                        
+                        <div>
+                            <!-- 警告ボックス -->
+                            <div style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                                <strong style="color: ${roleColor}; font-size: 1rem; display: block; margin-bottom: 0.5rem;">
+                                    ⚠️ シークレット役職
+                                </strong>
+                                <span style="color: var(--uchu-text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                                    この役職は特定のキーワードで検索した場合のみ表示されます。
+                                </span>
+                            </div>
+                            
+                            <!-- 説明文 -->
+                            <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0;">
+                                ${role.description}
+                            </p>
+                            
+                            ${buttonHTML}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 閉じるボタン -->
+                <div style="text-align: center; margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--uchu-border); position: relative; z-index: 2;">
+                    <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
+                        <i class="fas fa-times"></i> 閉じる
+                    </button>
+                </div>
+            `;
+
+            // Jargonwordアイコンを色変換して表示
+            const secretIconElement = document.getElementById('secret-modal-icon');
+            if (typeof recolorIcon === 'function') {
+                recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+                    if (recoloredDataURL) {
+                        secretIconElement.src = recoloredDataURL;
+                        secretIconElement.style.display = 'block';
+                    } else {
+                        secretIconElement.src = iconPath;
+                        secretIconElement.style.display = 'block';
+                    }
+                });
+            } else {
+                secretIconElement.src = iconPath;
+                secretIconElement.style.display = 'block';
+            }
+
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
