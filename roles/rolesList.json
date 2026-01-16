@@ -5,7 +5,9 @@
         "crewmate": [
             "admiral.json"
         ],
-        "impostor": [],
+        "impostor": [
+            "eclipse.json"
+        ],
         "neutral": [],
         "modifier": [],
         "ghost": []
