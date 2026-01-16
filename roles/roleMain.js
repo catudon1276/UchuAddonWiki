@@ -558,8 +558,10 @@ function closeOverlay() {
 
 // シークレット役職詳細を表示
 function showSecretDetails(role) {
-        
+    console.log('🔐 showSecretDetails が呼ばれました:', role);    
+
     const overlayContent = document.getElementById('overlayContent');
+    
     
     // 画像パス生成
     const iconPath = `../resource/roleicon/Jargonword.png`;
