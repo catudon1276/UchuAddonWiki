@@ -723,6 +723,7 @@
 
         // ★シークレット役職用モーダル表示関数を追加
         function showSecretModal(role) {
+            console.log('🔐 showSecretModal が呼ばれました:', role);
             
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
@@ -763,20 +764,20 @@
                         </div>
                     </div>
                     
-                    <!-- コンテンツ部分：サムネイルと説明+ボタンを横並び -->
-                    <div style="display: flex; gap: 2rem; align-items: flex-start; position: relative; z-index: 2;">
+                    <!-- コンテンツ部分：サムネイルと説明+ボタンを横並び（1:2比率） -->
+                    <div style="display: flex; gap: 2rem; align-items: center; position: relative; z-index: 2;">
                         ${thumbnailPath ? `
-                            <div style="flex-shrink: 0;">
+                            <div style="flex: 1; display: flex; justify-content: center;">
                                 <img src="${thumbnailPath}" 
                                      alt="${role.name}" 
-                                     style="max-width: 250px; height: auto; object-fit: contain; border-radius: var(--radius-lg); border: 3px solid ${roleColor}; display: block;"
+                                     style="width: 100%; max-width: 280px; height: auto; object-fit: contain; border-radius: var(--radius-lg); border: 3px solid ${roleColor}; display: block;"
                                      onerror="this.parentElement.style.display='none'">
                             </div>
                         ` : ''}
                         
-                        <div style="flex: 1;">
+                        <div style="flex: 2; text-align: center;">
                             <!-- 説明文 -->
-                            <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0;">
+                            <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0 0 1.5rem 0;">
                                 ${role.description}
                             </p>
                             
