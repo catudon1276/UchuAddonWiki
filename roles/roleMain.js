@@ -217,6 +217,23 @@ function setupEventListeners() {
             filterAndRender();
         });
     });
+    
+    // オーバーレイ外クリックで閉じる（ここに追加）
+    const overlay = document.getElementById('overlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOverlay();
+            }
+        });
+    }
+    
+    // ESCキーでオーバーレイを閉じる（ここに追加）
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeOverlay();
+        }
+    });
 }
 
 // 出典フィルターをレンダリング
@@ -539,20 +556,6 @@ function closeOverlay() {
     document.getElementById('overlay').style.display = 'none';
 }
 
-// オーバーレイ外クリックで閉じる
-document.getElementById('overlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeOverlay();
-    }
-});
-
-// ESCキーでオーバーレイを閉じる
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeOverlay();
-    }
-});
-
 // シークレット役職詳細を表示
 function showSecretDetails(role) {
     const overlayContent = document.getElementById('overlayContent');
@@ -602,7 +605,7 @@ function showSecretDetails(role) {
                     
                     <div>
                         <div class="alert" style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                            <strong style="color: ${roleColor};">⚠️ シークレット役職</strong><br>
+                            <strong style="color: ${roleColor};">⚠️ 役職</strong><br>
                             <span style="color: #cbd5e0; font-size: 0.9rem;">この役職は特定のキーワードで検索した場合のみ表示されます。</span>
                         </div>
                         
