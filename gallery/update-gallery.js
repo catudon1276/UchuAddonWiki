@@ -16,10 +16,10 @@ const OUTPUT_FILE = path.join(__dirname, 'gallery.json');
 // 使用するカテゴリのみ定義
 const CATEGORY_CONFIG = {
     'logo': {
-        name: 'ロゴ・タイトル',
+        name: 'タイトル',
         description: 'UchuAddonの公式ロゴ',
         order: 1,
-        fixedFiles: ['UchuAddonTitleFront.png', 'UchuAddonTitleLogo.png']  // 固定ファイル
+        fixedFiles: ['UchuAddonTitleLogo.png','UchuAddonTitleFront.png']  // 固定ファイル
     },
     'roleimage': {
         name: '役職立ち絵',

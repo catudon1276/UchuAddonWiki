@@ -5,15 +5,15 @@
     "team": "インポスター",
     "color": "255, 0, 0",
     "intro": "災いが降り注ぐ",
-    "description": "提督権限を行使し追放を防ぐクルーメイトです。",
+    "description": "隕石を召喚するインポスターです。",
     "abilities": [
         {
-            "button": "AdmiralSkillButton.png",
+            "button": "MeteorButton.png",
             "name": "宇宙からの厄災",
             "description": "エクリプスは隕石を降らすことが出来るインポスターです。"
         },
         {
-            "button": "MeteorAntennaButton.png",
+            "button": "MeteorMark.png",
             "name": "アンテナ設置",
             "description": "マーク隕石の着弾地点をマークをします。マークをした場所に、隕石を降らせます。<br>マーク地点がないと使用できません"
         }
