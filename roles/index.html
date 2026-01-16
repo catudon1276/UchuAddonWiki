@@ -723,7 +723,6 @@
 
         // ★シークレット役職用モーダル表示関数を追加
         function showSecretModal(role) {
-            console.log('🔐 showSecretModal が呼ばれました:', role);
             
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
@@ -736,7 +735,7 @@
             let buttonHTML = '';
             if (role.button && role.button.url) {
                 buttonHTML = `
-                    <div style="text-align: center; margin-top: 1.5rem;">
+                    <div style="margin-top: 1.5rem;">
                         <a href="${role.button.url}" 
                            target="_blank" 
                            class="uchu-btn uchu-btn-primary" 
@@ -756,7 +755,7 @@
                         </div>
                         <div class="modal-header-content">
                             <h2 class="modal-title" style="color: ${roleColor};">
-                                🔐 ${role.name}
+                                ${role.name}
                             </h2>
                             <div class="role-badges">
                                 <span class="role-badge" style="background: ${roleColor}; color: #fff; border-color: ${roleColor};">SECRET</span>
@@ -764,28 +763,18 @@
                         </div>
                     </div>
                     
-                    <!-- コンテンツ部分 -->
-                    <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: 2rem; align-items: start; position: relative; z-index: 2;">
+                    <!-- コンテンツ部分：サムネイルと説明+ボタンを横並び -->
+                    <div style="display: flex; gap: 2rem; align-items: flex-start; position: relative; z-index: 2;">
                         ${thumbnailPath ? `
-                            <div>
+                            <div style="flex-shrink: 0;">
                                 <img src="${thumbnailPath}" 
                                      alt="${role.name}" 
-                                     style="width: 200px; height: 200px; object-fit: cover; border-radius: var(--radius-lg); border: 3px solid ${roleColor}; display: block;"
+                                     style="max-width: 250px; height: auto; object-fit: contain; border-radius: var(--radius-lg); border: 3px solid ${roleColor}; display: block;"
                                      onerror="this.parentElement.style.display='none'">
                             </div>
                         ` : ''}
                         
-                        <div>
-                            <!-- 警告ボックス -->
-                            <div style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <strong style="color: ${roleColor}; font-size: 1rem; display: block; margin-bottom: 0.5rem;">
-                                    ⚠️ シークレット役職
-                                </strong>
-                                <span style="color: var(--uchu-text-secondary); font-size: 0.9rem; line-height: 1.6;">
-                                    この役職は特定のキーワードで検索した場合のみ表示されます。
-                                </span>
-                            </div>
-                            
+                        <div style="flex: 1;">
                             <!-- 説明文 -->
                             <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0;">
                                 ${role.description}
