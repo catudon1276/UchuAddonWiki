@@ -275,11 +275,16 @@ function renderFromFilters() {
 
 // フィルター処理（複数選択対応）
 function filterAndRender() {
-    // シークレット役職の検索（完全一致）
+    // シークレット役職の検索（大文字小文字を無視して完全一致）
+    const searchLower = activeFilters.search.trim(); // trimで前後の空白削除
     const secretMatches = secretRoles.filter(role => 
-        role.search_keywords && role.search_keywords.includes(activeFilters.search)
+        role.search_keywords && role.search_keywords.some(keyword => 
+            keyword.toLowerCase() === searchLower.toLowerCase()
+        )
     );
     
+    console.log('🔍 検索キーワード:', searchLower);
+    console.log('🔐 シークレットマッチ:', secretMatches.length, '件');
     // 通常の役職フィルタリング
     filteredRoles = allRoles.filter(role => {
         // 検索フィルター
