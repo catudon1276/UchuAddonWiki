@@ -436,7 +436,7 @@
             items.forEach((item, idx) => {
                 item.x -= currentRunSpeed * dt;
                 if (dino.x < item.x + item.w && dino.x + dino.w > item.x && dino.y < item.y + item.h && dino.y + dino.h > item.y) {
-                    if (gameState.lives < 1) {
+                    if (gameState.lives < 3) {
                         gameState.lives++;
                         updateLifeDisplay();
                     } else {
@@ -475,7 +475,8 @@
         }
 
         function updateLifeDisplay() {
-            document.getElementById("lifeDisplay").innerText = gameState.lives > 0 ? "❤️" : "💀";
+            const hearts = gameState.lives > 0 ? "❤️".repeat(gameState.lives) : "💀";
+            document.getElementById("lifeDisplay").innerText = hearts;
         }
 
         function draw() {
