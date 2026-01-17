@@ -15,6 +15,7 @@ const ROLE_FOLDERS = {
     'ニュートラル': 'neutral',
     'モディファイア': 'modifier',
     'ゴースト': 'ghost',
+    'パーク': 'perk',
     'シークレット': 'secret'
 };
 
@@ -35,7 +36,8 @@ const TEAM_ICONS = {
     'インポスター': 'Impostor.png',
     'ニュートラル': 'Neutral.png',
     'モディファイア': 'Modifier.png',
-    'ゴースト': 'Ghost.png'
+    'ゴースト': 'Ghost.png',
+    'パーク': 'Perk.png'
 };
 
 // アイコンの色を変換（赤→役職カラー、青→白）
@@ -379,7 +381,14 @@ function renderRoles() {
     filteredRoles.forEach((role, index) => {
         const cardId = `role-card-${index}`;
         const iconElement = document.getElementById(`${cardId}-icon`);
-        const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+        
+        // パークは常にPerk.pngを使用
+        let iconPath;
+        if (role.team === 'パーク') {
+            iconPath = '../resource/roleicon/Perk.png';
+        } else {
+            iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+        }
         const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
         
         if (iconPath) {
@@ -409,6 +418,7 @@ function getTeamClass(team) {
         case 'ニュートラル': return 'neutral';
         case 'モディファイア': return 'modifier';
         case 'ゴースト': return 'ghost';
+        case 'パーク': return 'perk';
         default: return 'neutral';
     }
 }

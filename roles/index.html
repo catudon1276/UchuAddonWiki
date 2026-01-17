@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>役職一覧 - UchuAddonWiki</title>
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">        
+    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">
     <link rel="stylesheet" href="../components/styles-common.css">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -216,6 +216,7 @@
         .badge-neutral { background: #F3A200; color: #000; border-color: #F3A200; }
         .badge-modifier { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
         .badge-ghost { background: #CCCCCC; color: #000; border-color: #CCCCCC; }
+        .badge-perk { background: #9B59B6; color: #fff; border-color: #9B59B6; }
 
         /* Modal/Overlay */
         .role-modal {
@@ -539,6 +540,7 @@
                     <button class="filter-btn team-btn" data-team="ニュートラル">ニュートラル</button>
                     <button class="filter-btn team-btn" data-team="モディファイア">モディファイア</button>
                     <button class="filter-btn team-btn" data-team="ゴースト">ゴースト</button>
+                    <button class="filter-btn team-btn" data-team="パーク">パーク</button>
                 </div>
             </div>
 
@@ -607,8 +609,15 @@
             }
             
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
-            const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
-            const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : 'Ghost'}.png`;
+            
+            // パークは常にPerk.pngを使用
+            let iconPath;
+            if (role.team === 'パーク') {
+                iconPath = '../resource/roleicon/Perk.png';
+            } else {
+                iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
+            }
+            const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : role.team === 'パーク' ? 'Perk' : 'Ghost'}.png`;
             
             // 背景画像（役職立ち絵）
             const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
@@ -651,7 +660,8 @@
             const teamClass = role.team === 'クルーメイト' ? 'crew' : 
                              role.team === 'インポスター' ? 'impostor' :
                              role.team === 'ニュートラル' ? 'neutral' :
-                             role.team === 'モディファイア' ? 'modifier' : 'ghost';
+                             role.team === 'モディファイア' ? 'modifier' :
+                             role.team === 'パーク' ? 'perk' : 'ghost';
             
             content.innerHTML = `
                 ${characterPath ? `<div class="modal-background-image" style="background-image: url('${characterPath}');"></div>` : ''}

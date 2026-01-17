@@ -13,7 +13,7 @@ const YAML_DIR = path.join(__dirname, 'yaml');
 const OUTPUT_FILE = path.join(__dirname, 'rolesList.json');
 
 // 陣営フォルダ（順番も定義）
-const TEAM_FOLDERS = ['crewmate', 'impostor', 'neutral', 'modifier', 'ghost', 'secret'];
+const TEAM_FOLDERS = ['crewmate', 'impostor', 'neutral', 'modifier', 'ghost', 'perk', 'secret'];
 
 /**
  * 指定フォルダ内のJSONファイルを取得
