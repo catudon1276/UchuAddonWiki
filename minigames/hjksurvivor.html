@@ -2,11 +2,13 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ひじきサバイバー</title>
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">            
     <style>
-        body { background: #222; color: white; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #222; color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; overflow-y: auto; }
         #game-container { position: relative; }
+        #title { margin: 5px 0; }
         canvas { border: none; image-rendering: pixelated; background: #333; width: 432px; height: 432px; }
         #minimap { position: absolute; top: 0px; right: 0px; width: 100px; height: 100px; background: rgba(0, 0, 0, 0.7); border: 2px solid #888; }
         .ui-container { margin-top: 10px; padding: 15px; background: rgba(0, 0, 0, 0.8); border-radius: 10px; text-align: center; width: 420px; }
@@ -17,26 +19,32 @@
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); border: 4px solid #fff; padding: 25px; text-align: center; border-radius: 15px; z-index: 100; min-width: 200px; }
         .hidden { display: none; }
         button { padding: 8px 15px; font-size: 16px; cursor: pointer; background: #444; color: white; border: 1px solid #666; margin: 5px; border-radius: 5px; }
-        .wiki-link { margin-top: 20px; text-align: center; }
+        .wiki-link { margin: 10px 0; text-align: center; }
         .wiki-link a { display: inline-block; padding: 10px 20px; background: #555; color: white; text-decoration: none; border-radius: 5px; border: 1px solid #777; font-size: 14px; transition: background 0.3s; }
         .wiki-link a:hover { background: #666; }
         
         /* スマホ操作ボタン */
-        .mobile-controls { display: none; margin-top: 15px; }
-        .control-container { display: flex; justify-content: center; align-items: center; gap: 40px; }
-        .dpad { display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px 60px; gap: 5px; }
-        .action-buttons { display: flex; flex-direction: column; gap: 10px; }
-        .control-btn { width: 60px; height: 60px; font-size: 24px; background: rgba(68, 68, 68, 0.8); border: 2px solid #888; border-radius: 10px; color: white; cursor: pointer; user-select: none; touch-action: manipulation; }
+        .mobile-controls { display: none; margin: 10px 0; }
+        .control-container { display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .dpad { display: grid; grid-template-columns: 50px 50px 50px; grid-template-rows: 50px 50px 50px; gap: 3px; }
+        .action-buttons { display: flex; flex-direction: column; gap: 8px; }
+        .control-btn { width: 50px; height: 50px; font-size: 20px; background: rgba(68, 68, 68, 0.8); border: 2px solid #888; border-radius: 10px; color: white; cursor: pointer; user-select: none; touch-action: manipulation; }
         .control-btn:active { background: rgba(100, 100, 100, 0.9); transform: scale(0.95); }
-        .control-btn.action { width: 100px; height: 100px; font-size: 18px; background: rgba(0, 150, 255, 0.8); font-weight: bold; }
+        .control-btn.action { width: 85px; height: 85px; font-size: 16px; background: rgba(0, 150, 255, 0.8); font-weight: bold; }
         .control-btn.action:active { background: rgba(0, 180, 255, 0.9); }
-        .control-btn.skill { width: 100px; height: 60px; font-size: 16px; background: rgba(255, 200, 0, 0.8); font-weight: bold; }
+        .control-btn.skill { width: 85px; height: 50px; font-size: 14px; background: rgba(255, 200, 0, 0.8); font-weight: bold; }
         .control-btn.skill:active { background: rgba(255, 220, 50, 0.9); }
         
         @media (max-width: 768px), (pointer: coarse) {
+            body { padding: 5px; }
+            #title { font-size: 18px; margin: 5px 0; padding: 10px; }
             .mobile-controls { display: block; }
-            canvas { width: 90vw; height: 90vw; max-width: 432px; max-height: 432px; }
-            .ui-container { width: 90vw; max-width: 420px; }
+            canvas { width: min(95vw, 400px) !important; height: min(95vw, 400px) !important; }
+            .ui-container { width: min(95vw, 400px); padding: 10px; margin-top: 5px; font-size: 14px; }
+            #minimap { display: none; }
+            button { padding: 6px 12px; font-size: 14px; margin: 3px; }
+            .wiki-link { margin: 5px 0; }
+            .wiki-link a { padding: 8px 15px; font-size: 13px; }
         }
     </style>
 </head>
