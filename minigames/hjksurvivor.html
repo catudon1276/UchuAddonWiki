@@ -16,6 +16,9 @@
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); border: 4px solid #fff; padding: 25px; text-align: center; border-radius: 15px; z-index: 100; min-width: 200px; }
         .hidden { display: none; }
         button { padding: 8px 15px; font-size: 16px; cursor: pointer; background: #444; color: white; border: 1px solid #666; margin: 5px; border-radius: 5px; }
+        .wiki-link { margin-top: 20px; text-align: center; }
+        .wiki-link a { display: inline-block; padding: 10px 20px; background: #555; color: white; text-decoration: none; border-radius: 5px; border: 1px solid #777; font-size: 14px; transition: background 0.3s; }
+        .wiki-link a:hover { background: #666; }
     </style>
 </head>
 <body>
@@ -23,12 +26,12 @@
     <h2 id="title" class="ui-container">ひじきサバイバー
 <div id="setup">
     必殺技選択<br>
-    <button onclick="startGame(1)">1. ひじき豆</button>
-    <button onclick="startGame(2)">2. 縛り豆</button>
-    <button onclick="startGame(3)">3. 波動砲豆</button>
-    <button onclick="startGame(4)">4. ムービング豆</button>
-    <button onclick="startGame(5)">5. 侍豆</button>
-    <button onclick="startGame(6)">6. スピードブースター豆</button>
+    <button onclick="startGame('ひじき豆')">1. ひじき豆</button>
+    <button onclick="startGame('縛り豆')">2. 縛り豆</button>
+    <button onclick="startGame('波動砲豆')">3. 波動砲豆</button>
+    <button onclick="startGame('ムービング豆')">4. ムービング豆</button>
+    <button onclick="startGame('侍豆')">5. 侍豆</button>
+    <button onclick="startGame('スピードブースター豆')">6. スピードブースター豆</button>
 </div>
 </h2>
 
@@ -42,6 +45,7 @@
             <div id="result-overlay" class="overlay hidden">
                 <h2 style="color:#ff4444;">GAME OVER</h2>
                 <p style="font-size: 32px; font-weight: bold; color: #ffff00; margin: 10px 0;">RANK: <span id="res-rank">-</span></p>
+                <p style="color: #fff; font-size: 16px;">ABILITY: <span id="res-ability">0</span></p>
                 <p>SCORE: <span id="res-score">0</span></p>
                 <p>WAVE: <span id="res-wave">1</span></p>
                 <p>MONEY: $<span id="res-money">0</span></p>
@@ -69,6 +73,10 @@
             <div id="wave-info" style="color: #00ff00; margin-top:8px;">WAVE <span id="wave-num">1</span> | 目標撃破: <span id="kill-target">5</span></div>
             <div id="rest-ui" class="hidden">次まで: <span id="shop-timer">30</span>s <button onclick="toggleShop()" style="background:#ccaa00;color:black;">SHOP</button></div>
         </div>
+    </div>
+
+    <div class="wiki-link">
+        <a href="/UchuAddonWiki/">Wiki に戻る</a>
     </div>
 
 <script>
@@ -166,14 +174,14 @@ canvas.addEventListener('mousedown', () => {
 });
 
 function getRank(s) {
-    if (s >= 25600000) return "ZZZ+";
-    else if (s >= 12800000) return "ZZZ";
-    else if (s >= 6400000) return "ZZ";
-    else if (s >= 3200000) return "Z";
-    else if (s >= 1600000) return "YYY+";
-    else if (s >= 800000) return "YYY";
-    else if (s >= 400000) return "YY";
-    else if (s >= 200000) return "Y";
+    if (s >= 25600000) return "U8";
+    else if (s >= 12800000) return "U7";
+    else if (s >= 6400000) return "U6";
+    else if (s >= 3200000) return "U5";
+    else if (s >= 1600000) return "U4";
+    else if (s >= 800000) return "U3";
+    else if (s >= 400000) return "U2";
+    else if (s >= 200000) return "U";
     else if (s >= 100000) return "XXX+";
     else if (s >= 90000) return "XXX";
     else if (s >= 80000) return "XX";
@@ -233,21 +241,21 @@ function nextWave() {
 
 function useSkill() {
     // 修正：1000未満なら発動しない
-    if(player.abilityType <= 2 || player.skillCool < 1000 || gameState !== 'playing' && gameState !== 'resting') return;
+    if(player.abilityType == 'ひじき豆' ||player.abilityType == '縛り豆' || player.skillCool < 1000 || gameState !== 'playing' && gameState !== 'resting') return;
 
     player.skillCool = 0;
     updateUI();
 
-if (player.abilityType === 3) {
+if (player.abilityType === '波動砲豆') {
         beamActive = 120; // 2秒間
         fixedAngle = player.angle; // 角度を保存
     }
-    else if (player.abilityType === 4) {
+    else if (player.abilityType === 'ムービング豆') {
         player.worldX = mouseWorldX;
         player.worldY = mouseWorldY;
         overlayEffect = { text: "テレポート！", timer: 30, opacity: 1.0, scale: 0.5 };
     } 
-    else if (player.abilityType === 5) {
+    else if (player.abilityType === '侍豆') {
         skillEffect = 20;
         enemies.forEach((en, i) => {
             let dx = player.worldX - en.worldX, dy = player.worldY - en.worldY;
@@ -478,6 +486,7 @@ function enemyKilled(en, i) {
 
 function gameOver() {
     gameState = 'over';
+    document.getElementById('res-ability').innerText = player.abilityType;
     document.getElementById('res-rank').innerText = getRank(player.score);
     document.getElementById('res-score').innerText = player.score;
     document.getElementById('res-wave').innerText = currentWave;
@@ -589,6 +598,8 @@ function loop() {
     requestAnimationFrame(loop);
 }
 </script>
+<div style="text-align: center; margin-top: 10px; color: #888; font-size: 12px;">
+    作：Irm
+</div>
 </body>
 </html>
-作：Irm
