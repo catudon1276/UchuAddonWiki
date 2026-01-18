@@ -19,13 +19,31 @@
         .wiki-link { margin-top: 20px; text-align: center; }
         .wiki-link a { display: inline-block; padding: 10px 20px; background: #555; color: white; text-decoration: none; border-radius: 5px; border: 1px solid #777; font-size: 14px; transition: background 0.3s; }
         .wiki-link a:hover { background: #666; }
+        
+        /* スマホ操作ボタン */
+        .mobile-controls { display: none; margin-top: 15px; }
+        .control-container { display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .dpad { display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px 60px; gap: 5px; }
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .control-btn { width: 60px; height: 60px; font-size: 24px; background: rgba(68, 68, 68, 0.8); border: 2px solid #888; border-radius: 10px; color: white; cursor: pointer; user-select: none; touch-action: manipulation; }
+        .control-btn:active { background: rgba(100, 100, 100, 0.9); transform: scale(0.95); }
+        .control-btn.action { width: 100px; height: 100px; font-size: 18px; background: rgba(0, 150, 255, 0.8); font-weight: bold; }
+        .control-btn.action:active { background: rgba(0, 180, 255, 0.9); }
+        .control-btn.skill { width: 100px; height: 60px; font-size: 16px; background: rgba(255, 200, 0, 0.8); font-weight: bold; }
+        .control-btn.skill:active { background: rgba(255, 220, 50, 0.9); }
+        
+        @media (max-width: 768px), (pointer: coarse) {
+            .mobile-controls { display: block; }
+            canvas { width: 90vw; height: 90vw; max-width: 432px; max-height: 432px; }
+            .ui-container { width: 90vw; max-width: 420px; }
+        }
     </style>
 </head>
 <body>
 
     <h2 id="title" class="ui-container">ひじきサバイバー
 <div id="setup">
-    アビリティ選択<br>
+    必殺技選択<br>
     <button onclick="startGame('ひじき豆')">1. ひじき豆</button>
     <button onclick="startGame('縛り豆')">2. 縛り豆</button>
     <button onclick="startGame('波動砲豆')">3. 波動砲豆</button>
@@ -75,8 +93,32 @@
         </div>
     </div>
 
+    <!-- スマホ用操作ボタン -->
+    <div class="mobile-controls">
+        <div class="control-container">
+            <!-- 左側：十字キー -->
+            <div class="dpad">
+                <div></div>
+                <button class="control-btn" id="btn-up">↑</button>
+                <div></div>
+                <button class="control-btn" id="btn-left">←</button>
+                <div></div>
+                <button class="control-btn" id="btn-right">→</button>
+                <div></div>
+                <button class="control-btn" id="btn-down">↓</button>
+                <div></div>
+            </div>
+            
+            <!-- 右側：攻撃・必殺技ボタン -->
+            <div class="action-buttons">
+                <button class="control-btn action" id="btn-attack">攻撃</button>
+                <button class="control-btn skill" id="btn-skill">必殺技</button>
+            </div>
+        </div>
+    </div>
+
     <div class="wiki-link">
-        <a href="/UchuAddonWiki/">Wiki に戻る</a>
+        <a href="/UchuAddonWiki/">📚 Wiki を見る</a>
     </div>
 
 <script>
@@ -88,6 +130,51 @@ const mCtx = mCanvas.getContext('2d');
 
 let spriteSheet = new Image();
 spriteSheet.src = '../resource/minigame/Hjksurvivor.png';
+
+// 画像読み込み失敗時のフォールバック用フラグ
+let useShapeFallback = false;
+
+spriteSheet.onerror = function() {
+    console.log('画像の読み込みに失敗しました。図形で代替表示します。');
+    useShapeFallback = true;
+};
+
+// 図形描画用の関数
+function drawCircle(ctx, x, y, size, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawPlayerShape(ctx, x, y, size) {
+    // プレイヤー（緑の円）
+    ctx.fillStyle = "#00ff00";
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+    // 目
+    ctx.fillStyle = "#000";
+    ctx.fillRect(x + size*0.3, y + size*0.3, size*0.15, size*0.15);
+    ctx.fillRect(x + size*0.55, y + size*0.3, size*0.15, size*0.15);
+}
+
+function drawEnemyShape(ctx, x, y, size, type) {
+    const colors = {
+        'normal': '#4444ff',
+        'speed': '#44ff44',
+        'heavy': '#9370DB',
+        'scout': '#88ccff'
+    };
+    ctx.fillStyle = colors[type] || '#ff4444';
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+    // 敵の目
+    ctx.fillStyle = "#ff0000";
+    ctx.fillRect(x + size*0.3, y + size*0.3, size*0.2, size*0.2);
+    ctx.fillRect(x + size*0.5, y + size*0.3, size*0.2, size*0.2);
+}
 
 let player = { worldX: 0, worldY: 0, hp: 100, maxHp: 100, money: 0, score: 0, moveSpeed: 0.08, weaponRange: 1.2, angle: 0, isAttacking: false, attackFrame: 0, skillCool: 0 };
 let enemies = [], drops = [];
@@ -164,6 +251,84 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
+// スマホ用ボタンのイベントリスナー
+const mobileButtons = {
+    'btn-up': 'w',
+    'btn-down': 's',
+    'btn-left': 'a',
+    'btn-right': 'd'
+};
+
+// 方向ボタンのタッチイベント
+Object.entries(mobileButtons).forEach(([btnId, key]) => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        // タッチイベント
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys[key] = true;
+        }, { passive: false });
+        
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        }, { passive: false });
+        
+        btn.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        }, { passive: false });
+        
+        // マウスイベント（デスクトップでのテスト用）
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            keys[key] = true;
+        });
+        
+        btn.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        });
+        
+        btn.addEventListener('mouseleave', (e) => {
+            keys[key] = false;
+        });
+    }
+});
+
+// 攻撃ボタン
+const attackBtn = document.getElementById('btn-attack');
+if (attackBtn) {
+    attackBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(gameState==='playing' || gameState==='resting'){
+            player.isAttacking=true;
+            player.attackFrame=8;
+        }
+    }, { passive: false });
+    
+    attackBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(gameState==='playing' || gameState==='resting'){
+            player.isAttacking=true;
+            player.attackFrame=8;
+        }
+    });
+}
+
+// スキルボタン
+const skillBtn = document.getElementById('btn-skill');
+if (skillBtn) {
+    skillBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        useSkill();
+    }, { passive: false });
+    
+    skillBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        useSkill();
+    });
+}
 
 
 canvas.addEventListener('mousedown', () => {
@@ -291,7 +456,7 @@ function togglePause(){
 
 function toggleShop() {
 
-    if (player.abilityType === '縛り豆') {
+    if (player.abilityType === 2) {
         overlayEffect = { text: "🙄縛り豆でーすwwwww👈", timer: 60, opacity: 1.0, scale: 0.5 };
         return;
     }
@@ -558,12 +723,22 @@ if (beamActive > 0) {
     enemies.forEach(en => {
         let dx = (CENTER + (en.worldX - player.worldX)) * 16, dy = (CENTER + (en.worldY - player.worldY)) * 16;
         let s = en.type === 'heavy' ? 18 : 14;
-        let sx = SPRITE_POS[en.type] || 32; 
-        ctx.drawImage(spriteSheet, sx, 0, 16, 16, dx + (16-s)/2, dy + (16-s)/2, s, s);
+        
+        if (useShapeFallback) {
+            drawEnemyShape(ctx, dx + (16-s)/2, dy + (16-s)/2, s, en.type);
+        } else {
+            let sx = SPRITE_POS[en.type] || 32; 
+            ctx.drawImage(spriteSheet, sx, 0, 16, 16, dx + (16-s)/2, dy + (16-s)/2, s, s);
+        }
+        
         mCtx.fillStyle = en.color; mCtx.fillRect(50 + en.worldX*0.78, 50 + en.worldY*0.78, 2, 2);
     });
 
-    ctx.drawImage(spriteSheet, SPRITE_POS.hijiki, 0, 16, 16, 64, 64, 16, 16);
+    if (useShapeFallback) {
+        drawPlayerShape(ctx, 64, 64, 16);
+    } else {
+        ctx.drawImage(spriteSheet, SPRITE_POS.hijiki, 0, 16, 16, 64, 64, 16, 16);
+    }
     mCtx.fillStyle = "#00ff00"; mCtx.fillRect(50 + player.worldX*0.78, 50 + player.worldY*0.78, 3, 3);
 
     ctx.save();
