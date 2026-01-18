@@ -1,0 +1,809 @@
+/**
+ * チンチロ スタイルシート
+ */
+
+:root {
+    --color-bg: #2a1810;
+    --color-bg-dark: #1a0f0a;
+    --color-text: #f5f0e8;
+    --color-text-dim: #a09080;
+    --color-gold: #d4af37;
+    --color-gold-dark: #8b7355;
+    --color-red: #c41e3a;
+    --color-green: #228b22;
+    --color-plate: #e8e0d0;
+    --color-plate-shadow: #b0a090;
+    
+    --font-main: 'Hiragino Sans', 'Meiryo', sans-serif;
+    --font-num: 'Georgia', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 背景テクスチャ */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
+        linear-gradient(135deg, #3d2817 0%, #2a1810 50%, #1a0f0a 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* 共通 */
+.hidden {
+    display: none !important;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   タイトル画面
+======================================== */
+#screen-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+}
+
+.title-logo {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--color-gold);
+    text-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.5),
+        0 4px 0 var(--color-gold-dark),
+        0 8px 20px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+}
+
+.title-subtitle {
+    font-size: 1.2rem;
+    color: var(--color-text-dim);
+    margin-bottom: 3rem;
+}
+
+#btn-start {
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-bg-dark);
+    background: linear-gradient(180deg, #f0e68c 0%, var(--color-gold) 50%, #b8860b 100%);
+    border: 3px solid var(--color-gold-dark);
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 0 var(--color-gold-dark),
+        0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+#btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 var(--color-gold-dark),
+        0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+#btn-start:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 var(--color-gold-dark),
+        0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   ゲーム画面
+======================================== */
+#screen-game {
+    display: grid;
+    grid-template-columns: 200px 1fr 250px;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* 役表（左サイドバー） */
+#role-table {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a1a;
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#role-table h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #333;
+    font-size: 1rem;
+}
+
+.role-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.role-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.role-name {
+    font-weight: 500;
+}
+
+.role-multiplier {
+    font-weight: bold;
+    font-family: var(--font-num);
+}
+
+.role-multiplier.positive {
+    color: var(--color-green);
+}
+
+.role-multiplier.negative {
+    color: var(--color-red);
+}
+
+/* ゲームエリア（中央） */
+.game-area {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+/* 皿エリア */
+.plates-container {
+    display: flex;
+    gap: 4rem;
+    align-items: center;
+}
+
+.plate-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.plate-label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-gold);
+}
+
+.plate {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(ellipse at 30% 30%, #ffffff 0%, var(--color-plate) 50%, var(--color-plate-shadow) 100%);
+    border-radius: 50%;
+    box-shadow: 
+        inset 0 -10px 30px rgba(0, 0, 0, 0.2),
+        0 10px 30px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.plate.shonben {
+    opacity: 0.3;
+    transform: scale(0.9);
+}
+
+.plate.shonben::after {
+    content: 'ションベン';
+    position: absolute;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-red);
+}
+
+/* サイコロ */
+.dice-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dice {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: var(--font-num);
+    color: #1a1a1a;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease;
+}
+
+.dice.cursed {
+    background: #2a0a2a;
+    color: #ff00ff;
+    border-color: #ff00ff;
+    animation: cursed-pulse 0.5s infinite;
+}
+
+@keyframes cursed-pulse {
+    0%, 100% { box-shadow: 0 0 5px #ff00ff; }
+    50% { box-shadow: 0 0 20px #ff00ff; }
+}
+
+/* 役表示 */
+.role-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    min-height: 2.5rem;
+}
+
+.role-display.positive {
+    color: var(--color-green);
+    background: rgba(34, 139, 34, 0.2);
+}
+
+.role-display.negative {
+    color: var(--color-red);
+    background: rgba(196, 30, 58, 0.2);
+}
+
+/* ボタンエリア */
+.action-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#btn-roll {
+    padding: 1.5rem 4rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(180deg, #4a90d9 0%, #2a5a9a 100%);
+    border: 3px solid #1a3a6a;
+    border-radius: 12px;
+    box-shadow: 
+        0 4px 0 #1a3a6a,
+        0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+#btn-roll:hover {
+    background: linear-gradient(180deg, #5aa0e9 0%, #3a6aaa 100%);
+}
+
+/* 情報パネル（右サイドバー） */
+.info-panel {
+    grid-column: 3;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--color-gold-dark);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.info-card h4 {
+    color: var(--color-gold);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: var(--font-num);
+    text-align: right;
+}
+
+.info-value.player-money {
+    color: #4ade80;
+}
+
+.info-value.cpu-money {
+    color: #f87171;
+}
+
+/* 賭け金UI */
+#betting-ui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+}
+
+.bet-slider-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+#bet-slider {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #333 0%, var(--color-gold) 100%);
+    border-radius: 10px;
+    outline: none;
+}
+
+#bet-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    background: var(--color-gold);
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.bet-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-gold);
+}
+
+#btn-confirm-bet {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-bg-dark);
+    background: linear-gradient(180deg, #f0e68c 0%, var(--color-gold) 100%);
+    border: 2px solid var(--color-gold-dark);
+    border-radius: 8px;
+}
+
+/* イカサマ選択UI */
+#cheat-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 2rem;
+}
+
+.cheat-panel {
+    background: var(--color-bg);
+    border: 3px solid var(--color-gold);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.cheat-panel h3 {
+    text-align: center;
+    color: var(--color-gold);
+    margin-bottom: 1.5rem;
+}
+
+#cheat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cheat-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid #555;
+    border-radius: 8px;
+    text-align: left;
+    color: var(--color-text);
+}
+
+.cheat-btn:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-gold);
+}
+
+.cheat-btn.attack {
+    border-left: 4px solid var(--color-red);
+}
+
+.cheat-btn.defense {
+    border-left: 4px solid #4ade80;
+}
+
+.cheat-btn.buff {
+    border-left: 4px solid #60a5fa;
+}
+
+.cheat-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.cheat-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+}
+
+.cheat-cost {
+    font-size: 0.9rem;
+    color: var(--color-gold);
+}
+
+#btn-skip-cheat {
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background: transparent;
+    border: 2px solid #666;
+    border-radius: 8px;
+    color: var(--color-text-dim);
+    width: 100%;
+}
+
+/* 振り直しモーダル */
+#retry-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.retry-panel {
+    background: var(--color-bg);
+    border: 3px solid var(--color-gold);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.retry-panel h3 {
+    color: var(--color-gold);
+    margin-bottom: 1rem;
+}
+
+.retry-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.retry-buttons button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+#retry-yes {
+    background: var(--color-gold);
+    color: var(--color-bg-dark);
+    border: none;
+}
+
+#retry-no {
+    background: transparent;
+    color: var(--color-text);
+    border: 2px solid #666;
+}
+
+/* 試合結果 */
+#match-result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+}
+
+.result-content {
+    padding: 2rem 4rem;
+    border-radius: 16px;
+    text-align: center;
+    animation: result-pop 0.3s ease-out;
+}
+
+@keyframes result-pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.result-content.win {
+    background: linear-gradient(135deg, #1a4a1a 0%, #0a2a0a 100%);
+    border: 3px solid #4ade80;
+}
+
+.result-content.win h2 {
+    color: #4ade80;
+    font-size: 3rem;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+}
+
+.result-content.lose {
+    background: linear-gradient(135deg, #4a1a1a 0%, #2a0a0a 100%);
+    border: 3px solid var(--color-red);
+}
+
+.result-content.lose h2 {
+    color: var(--color-red);
+    font-size: 3rem;
+    text-shadow: 0 0 20px rgba(196, 30, 58, 0.5);
+}
+
+.result-detail {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+#btn-next-match {
+    margin-top: 1.5rem;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: var(--color-gold);
+    color: var(--color-bg-dark);
+    border: none;
+    border-radius: 8px;
+}
+
+/* 通知 */
+#notification-container {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.notification {
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    animation: notification-slide 0.3s ease-out;
+}
+
+@keyframes notification-slide {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.notification.player {
+    background: linear-gradient(135deg, #1a4a1a 0%, #0a2a0a 100%);
+    border: 2px solid #4ade80;
+    color: #4ade80;
+}
+
+.notification.cpu {
+    background: linear-gradient(135deg, #4a1a1a 0%, #2a0a0a 100%);
+    border: 2px solid var(--color-red);
+    color: #f87171;
+}
+
+.notification.info {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--color-gold);
+    color: var(--color-gold);
+}
+
+.notification.fade-out {
+    animation: notification-fade 0.3s ease-out forwards;
+}
+
+@keyframes notification-fade {
+    to { transform: translateY(-20px); opacity: 0; }
+}
+
+/* ========================================
+   ゲームオーバー / 勝利画面
+======================================== */
+#screen-gameover,
+#screen-victory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+}
+
+#screen-gameover h1 {
+    font-size: 4rem;
+    color: var(--color-red);
+    text-shadow: 0 0 30px rgba(196, 30, 58, 0.5);
+    margin-bottom: 1rem;
+}
+
+#screen-victory h1 {
+    font-size: 4rem;
+    color: var(--color-gold);
+    text-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.5),
+        0 0 60px rgba(212, 175, 55, 0.3);
+    margin-bottom: 1rem;
+}
+
+.final-stats {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.final-stats .label {
+    color: var(--color-text-dim);
+}
+
+.final-stats .value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: var(--font-num);
+}
+
+#btn-retry {
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-bg-dark);
+    background: linear-gradient(180deg, #f0e68c 0%, var(--color-gold) 100%);
+    border: 3px solid var(--color-gold-dark);
+    border-radius: 8px;
+}
+
+/* ========================================
+   レスポンシブ
+======================================== */
+@media (max-width: 1024px) {
+    #screen-game {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+    }
+    
+    #role-table {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    #role-table h3 {
+        width: 100%;
+    }
+    
+    .role-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .role-item {
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .info-panel {
+        grid-column: 1;
+        grid-row: 2;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .info-card {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .game-area {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    
+    .plates-container {
+        gap: 2rem;
+    }
+    
+    .plate {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .dice {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .title-logo {
+        font-size: 2.5rem;
+    }
+    
+    .plates-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .plate {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .dice {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+    
+    #btn-roll {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+    }
+}
