@@ -349,29 +349,25 @@ canvas.addEventListener('mousedown', () => {
 });
 
 function getRank(s) {
-    if (s >= 102400000) return "U10";
-    else if (s >= 51200000) return "U9";
-    else if (s >= 25600000) return "U8";
-    else if (s >= 12800000) return "U7";
-    else if (s >= 6400000) return "U6";
-    else if (s >= 3200000) return "U5";
-    else if (s >= 1600000) return "U4";
-    else if (s >= 800000) return "U3";
-    else if (s >= 400000) return "U2";
-    else if (s >= 200000) return "U";
-    else if (s >= 100000) return "XXX+";
-    else if (s >= 90000) return "XXX";
-    else if (s >= 80000) return "XX";
-    else if (s >= 70000) return "X";
-    else if (s >= 60000) return "SSS+";
-    else if (s >= 40000) return "SSS";
-    else if (s >= 30000) return "SS";
-    else if (s >= 22500) return "S";
-    else if (s >= 15000) return "A";
-    else if (s >= 7500) return "B";
-    else if (s >= 4500) return "C";
-    else if (s >= 1250) return "D";
-    return "E";
+    if (s < 200000) {
+        if (s >= 100000) return "XXX+";
+        if (s >= 90000)  return "XXX";
+        if (s >= 80000)  return "XX";
+        if (s >= 70000)  return "X";
+        if (s >= 60000)  return "SSS+";
+        if (s >= 40000)  return "SSS";
+        if (s >= 30000)  return "SS";
+        if (s >= 22500)  return "S";
+        if (s >= 15000)  return "A";
+        if (s >= 7500)   return "B";
+        if (s >= 4500)   return "C";
+        if (s >= 1250)   return "D";
+        return "E";
+    }
+    const n = Math.floor(Math.log2(s / 200000)) + 1;
+
+    if (n <= 1) return "U";
+    return "U" + n;
 }
 
 function updateUI() {
