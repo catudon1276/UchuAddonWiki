@@ -83,7 +83,7 @@
                 <h3 style="color: #ffff00;">SHOP</h3>
                 <button id="btn-speed" onclick="buyUpgrade('speed')">速度UP ($50) 残り:<span id="stock-speed">20</span></button>
                 <button id="btn-range" onclick="buyUpgrade('range')">範囲UP ($100) 残り:<span id="stock-range">10</span></button>
-                <button onclick="buyUpgrade('heal')">HP全回復 ($30)</button><br><br>
+                <button onclick="buyUpgrade('heal')">HP全回復 ($75)残り:<span id="stock-heal">25</span></button><br><br>
                 <button onclick="toggleShop()">閉じる</button>
             </div>
         </div>
@@ -238,7 +238,7 @@ function startRestPhase() {
 }
 let lastRank = "E";
 
-let shopStock = { speed: 20, range: 10, heal: 9999 };
+let shopStock = { speed: 20, range: 10, heal: 25 };
 let overlayEffect = { text: "", timer: 0, opacity: 0, scale: 1.0 };
 
 const SPRITE_POS = { hijiki: 64, normal: 32, speed: -0.1, heavy: 48, scout: 16 };
@@ -348,7 +348,9 @@ canvas.addEventListener('mousedown', () => {
 });
 
 function getRank(s) {
-    if (s >= 25600000) return "U8";
+    if (s >= 102400000) return "U10";
+    else if (s >= 51200000) return "U9";
+    else if (s >= 25600000) return "U8";
     else if (s >= 12800000) return "U7";
     else if (s >= 6400000) return "U6";
     else if (s >= 3200000) return "U5";
@@ -465,7 +467,7 @@ function togglePause(){
 
 function toggleShop() {
 
-    if (player.abilityType === 2) {
+    if (player.abilityType === '縛り豆') {
         overlayEffect = { text: "🙄縛り豆でーすwwwww👈", timer: 60, opacity: 1.0, scale: 0.5 };
         return;
     }
@@ -486,7 +488,7 @@ function buyUpgrade(type) {
     if (shopStock[type] <= 0)  return;
     if (type === 'speed' && player.money >= 50) { player.moveSpeed += 0.005; player.money -= 50; shopStock.speed--; }
     else if (type === 'range' && player.money >= 100) { player.weaponRange += 0.1; player.money -= 100; shopStock.range--; }
-    else if (type === 'heal' && player.money >= 30) { player.hp = player.maxHp; player.money -= 30; }
+    else if (type === 'heal' && player.money >= 75) { player.hp = player.maxHp; player.money -= 75; shopStock.heal--; }
     updateUI();
 }
 
