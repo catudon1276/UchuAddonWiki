@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ひじきサバイバー</title>
+    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">            
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #222; color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; overflow-y: auto; }
@@ -54,7 +55,7 @@
 <div id="setup">
     必殺技選択<br>
     <button onclick="startGame('ひじき豆')">1. ひじき豆</button>
-    <button onclick="startGame('縛り豆')">2. 縛り豆</button>
+    <button onclick="startGame('縛り豆')">2. 縛り豆(クリア時スコア2倍)</button>
     <button onclick="startGame('波動砲豆')">3. 波動砲豆</button>
     <button onclick="startGame('ムービング豆')">4. ムービング豆</button>
     <button onclick="startGame('侍豆')">5. 侍豆</button>
@@ -83,7 +84,7 @@
                 <h3 style="color: #ffff00;">SHOP</h3>
                 <button id="btn-speed" onclick="buyUpgrade('speed')">速度UP ($50) 残り:<span id="stock-speed">20</span></button>
                 <button id="btn-range" onclick="buyUpgrade('range')">範囲UP ($100) 残り:<span id="stock-range">10</span></button>
-                <button onclick="buyUpgrade('heal')">HP全回復 ($75)残り:<span id="stock-heal">25</span></button><br><br>
+                <button id="btn-heal" onclick="buyUpgrade('heal')">HP全回復 ($75)残り:<span id="stock-heal">25</span></button><br><br>
                 <button onclick="toggleShop()">閉じる</button>
             </div>
         </div>
@@ -495,8 +496,10 @@ function buyUpgrade(type) {
 function updateShopUI() {
     document.getElementById('stock-speed').innerText = shopStock.speed;
     document.getElementById('stock-range').innerText = shopStock.range;
+    document.getElementById('stock-heal').innerText = shopStock.heal;
     if (shopStock.speed <= 0) document.getElementById('btn-speed').disabled = true;
     if (shopStock.range <= 0) document.getElementById('btn-range').disabled = true;
+    if (shopStock.heal <= 0) document.getElementById('btn-heal').disabled = true;
 }
 
 function update() {
@@ -567,6 +570,7 @@ player.worldY = Math.max(-LIMIT, Math.min(LIMIT, nextY));
     // 敵もマップの端（MAP_LIMIT = 64）で止める
     en.worldX = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldX));
     en.worldY = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldY));
+
 
         if (dist < 0.5) {
     player.hp -= en.power; // ダメージ
@@ -661,6 +665,10 @@ function enemyKilled(en, i) {
 }
 
 function gameOver() {
+    if (player.abilityType === '縛り豆') {
+       player.score = Math.floor(player.score * 2); 
+       updateUI();
+    }
     gameState = 'over';
     document.getElementById('res-ability').innerText = player.abilityType;
     document.getElementById('res-rank').innerText = getRank(player.score);
