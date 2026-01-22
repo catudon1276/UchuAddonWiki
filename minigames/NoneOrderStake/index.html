@@ -89,7 +89,7 @@
         /* Result Dice Areas */
         .result-areas {
             position: absolute;
-            top: 100px;
+            top: 140px; /* 情報バーの下に配置 */
             left: 0;
             right: 0;
             display: flex;
@@ -526,6 +526,9 @@
             
             <!-- Roll Button -->
             <button id="btn-roll" class="btn btn-primary hidden" onclick="rollDice()">サイコロを振る</button>
+            
+            <!-- Reroll Button -->
+            <button id="btn-reroll" class="btn hidden" onclick="rerollDice()">振り直す (残り2回)</button>
             
             <!-- Next Match Button -->
             <button id="btn-next" class="btn hidden" onclick="nextMatch()">次の試合へ</button>

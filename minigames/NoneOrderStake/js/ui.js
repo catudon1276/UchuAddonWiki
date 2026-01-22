@@ -7,6 +7,8 @@ import { CHEATS } from '../data/cheats-data.js';
 
 let game = null;
 let isAnimating = false;
+let rerollCount = 0; // 振り直し回数
+const MAX_REROLLS = 2; // 最大振り直し回数
 
 /**
  * 初期化
@@ -28,6 +30,7 @@ function registerGlobalFunctions() {
     window.confirmBet = confirmBet;
     window.selectCheat = selectCheat;
     window.rollDice = rollDice;
+    window.rerollDice = rerollDice;
     window.nextMatch = nextMatch;
     window.restartGame = restartGame;
 }
@@ -101,11 +104,11 @@ function showCheatSelection() {
     
     cheatList.innerHTML = '';
     
-    availableCheats.forEach(cheat => {
-        const cheatData = CHEATS.find(c => c.id === cheat);
+    availableCheats.forEach(cheatId => {
+        const cheatData = CHEATS[cheatId]; // オブジェクトから直接取得
         if (!cheatData) return;
         
-        const cost = game.calculateCheatCost(cheat);
+        const cost = game.calculateCheatCost(cheatId);
         const canAfford = state.player.money >= cost;
         
         const div = document.createElement('div');
@@ -117,7 +120,7 @@ function showCheatSelection() {
         `;
         
         if (canAfford) {
-            div.onclick = () => selectCheat(cheat);
+            div.onclick = () => selectCheat(cheatId);
         }
         
         cheatList.appendChild(div);
@@ -147,6 +150,7 @@ async function rollDice() {
     isAnimating = true;
     
     document.getElementById('btn-roll').classList.add('hidden');
+    document.getElementById('btn-reroll').classList.add('hidden');
     
     // CPU振る（上から）
     await animateRoll('cpu');
@@ -156,11 +160,40 @@ async function rollDice() {
     await animateRoll('player');
     await sleep(1000);
     
+    // 振り直しボタンを表示（最大2回まで）
+    if (rerollCount < MAX_REROLLS) {
+        document.getElementById('btn-reroll').classList.remove('hidden');
+        const rerollBtn = document.getElementById('btn-reroll');
+        rerollBtn.textContent = `振り直す (残り${MAX_REROLLS - rerollCount}回)`;
+    } else {
+        // 振り直し終了 → 結果確定
+        finalizeRound();
+    }
+    
+    isAnimating = false;
+}
+
+/**
+ * 振り直し
+ */
+window.rerollDice = async function() {
+    if (isAnimating || rerollCount >= MAX_REROLLS) return;
+    rerollCount++;
+    
+    // 結果をリセット
+    resetResultBoxes();
+    
+    // 再度サイコロを振る
+    await rollDice();
+};
+
+/**
+ * ラウンドを確定
+ */
+function finalizeRound() {
     // 結果判定
     game.finalizeMatch();
     showMatchResult();
-    
-    isAnimating = false;
 }
 
 /**
@@ -312,6 +345,10 @@ function showMatchResult() {
  */
 function nextMatch() {
     document.getElementById('btn-next').classList.add('hidden');
+    document.getElementById('btn-reroll').classList.add('hidden');
+    
+    // 振り直しカウントをリセット
+    rerollCount = 0;
     
     // 結果ボックスをリセット
     resetResultBoxes();
