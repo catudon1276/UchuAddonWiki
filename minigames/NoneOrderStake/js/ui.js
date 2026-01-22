@@ -325,7 +325,7 @@ async function rollDice() {
 }
 
 /**
- * サイコロアニメーション
+ * サイコロアニメーション（大きいサイコロ→皿に落ちる演出）
  */
 async function animateRoll(who) {
     const state = game.getState();
@@ -337,21 +337,89 @@ async function animateRoll(who) {
     do {
         result = game.roll(isPlayer, retryCount);
         
-        // アニメーション
-        const diceElements = isPlayer ? elements.dice.playerDice : elements.dice.cpuDice;
-        const frames = generateRollFrames(result.dice, 15, {
-            min: 1,
-            max: state.roleTable === 'nine' ? 9 : 6,
-        });
+        // 大きいサイコロ演出
+        const overlay = document.getElementById('dice-animation-overlay');
+        const rollingDice = [
+            document.getElementById('rolling-dice-0'),
+            document.getElementById('rolling-dice-1'),
+            document.getElementById('rolling-dice-2')
+        ];
         
-        for (const frame of frames) {
-            diceElements.forEach((el, i) => {
-                const val = frame[i];
-                el.textContent = val === 'cursed' ? '?' : val;
-                el.className = `dice ${val === 'cursed' ? 'cursed' : ''}`;
+        if (overlay && rollingDice[0]) {
+            overlay.classList.remove('hidden');
+            
+            // サイコロを?にリセット
+            rollingDice.forEach(d => {
+                d.textContent = '?';
+                d.className = 'rolling-dice';
             });
-            await sleep(50);
+            
+            // 高速で数字を切り替える演出
+            const maxVal = state.roleTable === 'nine' ? 9 : 6;
+            const spinDuration = 1200; // 1.2秒
+            const spinInterval = 60; // 60msごとに更新
+            const spinCount = spinDuration / spinInterval;
+            
+            for (let i = 0; i < spinCount; i++) {
+                // 徐々に遅くなる
+                const slowdown = Math.pow(i / spinCount, 2);
+                const delay = spinInterval + (slowdown * 100);
+                
+                // 最後の数フレームで確定していく
+                const finalFrames = 5;
+                const remainingFrames = spinCount - i;
+                
+                rollingDice.forEach((d, idx) => {
+                    if (remainingFrames <= finalFrames - idx) {
+                        // 確定
+                        const val = result.dice[idx];
+                        d.textContent = val === 'cursed' ? '?' : val;
+                        d.className = `rolling-dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+                    } else {
+                        // ランダム
+                        const randVal = Math.floor(Math.random() * maxVal) + 1;
+                        d.textContent = randVal;
+                        d.className = `rolling-dice ${randVal === 1 ? 'one' : ''}`;
+                    }
+                });
+                
+                await sleep(delay);
+            }
+            
+            // 全部確定表示
+            rollingDice.forEach((d, idx) => {
+                const val = result.dice[idx];
+                d.textContent = val === 'cursed' ? '?' : val;
+                d.className = `rolling-dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+            });
+            
+            await sleep(400);
+            
+            // 落下アニメーション
+            rollingDice.forEach((d, idx) => {
+                setTimeout(() => {
+                    d.classList.add('settling');
+                }, idx * 100);
+            });
+            
+            await sleep(500);
+            
+            // オーバーレイを非表示
+            overlay.classList.add('hidden');
+            
+            // サイコロをリセット
+            rollingDice.forEach(d => {
+                d.classList.remove('settling');
+            });
         }
+        
+        // 皿内のサイコロに結果を反映
+        const diceElements = isPlayer ? elements.dice.playerDice : elements.dice.cpuDice;
+        diceElements.forEach((el, i) => {
+            const val = result.dice[i];
+            el.textContent = val === 'cursed' ? '?' : val;
+            el.className = `dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+        });
         
         // ションベンアニメーション
         if (result.isShonben) {

@@ -3,188 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>チンチロ - UchuAddon</title>
+    <title>None Order Stake - UchuAddon</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- 通知コンテナ -->
-    <div id="notification-container"></div>
-
-    <!-- ========================================
-         タイトル画面
-    ======================================== -->
-    <div id="screen-title" class="screen">
-        <h1 class="title-logo">チンチロ</h1>
-        <p class="title-subtitle">～イカサマ上等～</p>
+    <!-- ゲームコンテナ（16:9ウィンドウ） -->
+    <div class="game-container">
         
-        <div class="rules-summary" style="max-width: 500px; text-align: left; margin-bottom: 2rem; padding: 1rem; background: rgba(0,0,0,0.4); border-radius: 8px; font-size: 0.9rem; line-height: 1.8;">
-            <p><strong style="color: #d4af37;">【ルール】</strong></p>
-            <p>・目標金額 <strong style="color: #4ade80;">100,000円</strong> を達成せよ</p>
-            <p>・全15試合を戦い抜け</p>
-            <p>・所持金が <strong style="color: #f87171;">1,000円未満</strong> で敗北</p>
-            <p>・同点の場合はCPUの勝ち</p>
-            <p style="margin-top: 0.5rem; color: #a09080; font-size: 0.85rem;">※序盤はイカサマ使用不可</p>
+        <!-- 通知コンテナ -->
+        <div id="notification-container"></div>
+
+        <!-- ========================================
+             タイトル画面
+        ======================================== -->
+        <div id="screen-title" class="screen">
+            <h1 class="title-logo">None Order Stake</h1>
+            <p class="title-subtitle">～イカサマ上等～</p>
+            
+            <div class="rules-summary">
+                <p><strong style="color: #d4af37;">【ルール】</strong></p>
+                <p>・目標金額 <strong style="color: #4ade80;">100,000円</strong> を達成せよ</p>
+                <p>・全15試合を戦い抜け</p>
+                <p>・所持金が <strong style="color: #f87171;">1,000円未満</strong> で敗北</p>
+                <p>・同点の場合はCPUの勝ち</p>
+                <p style="margin-top: 0.5rem; color: #a09080; font-size: 0.85em;">※序盤はイカサマ使用不可</p>
+            </div>
+            
+            <button id="btn-start">ゲーム開始</button>
         </div>
-        
-        <button id="btn-start">ゲーム開始</button>
-    </div>
 
-    <!-- ========================================
-         ゲーム画面
-    ======================================== -->
-    <div id="screen-game" class="screen hidden">
-        <!-- 役表（左サイドバー） -->
-        <div id="role-table">
+        <!-- ========================================
+             ゲーム画面
+        ======================================== -->
+        <div id="screen-game" class="screen hidden">
+            <!-- 役表（左サイドバー） -->
+            <div id="role-table">
+                <!-- JSで動的生成 -->
+            </div>
+
+            <!-- ゲームエリア（中央） -->
+            <div class="game-area">
+                <!-- サイコロ演出オーバーレイ -->
+                <div id="dice-animation-overlay" class="hidden">
+                    <div class="rolling-dice-container">
+                        <div class="rolling-dice" id="rolling-dice-0">?</div>
+                        <div class="rolling-dice" id="rolling-dice-1">?</div>
+                        <div class="rolling-dice" id="rolling-dice-2">?</div>
+                    </div>
+                </div>
+
+                <!-- 皿エリア -->
+                <div class="plates-container">
+                    <!-- CPU（親）の皿 -->
+                    <div class="plate-wrapper">
+                        <span class="plate-label">CPU（親）</span>
+                        <div id="cpu-plate" class="plate">
+                            <div class="cpu-dice dice-container">
+                                <div class="dice">?</div>
+                                <div class="dice">?</div>
+                                <div class="dice">?</div>
+                            </div>
+                        </div>
+                        <div id="cpu-role" class="role-display"></div>
+                    </div>
+
+                    <!-- プレイヤーの皿 -->
+                    <div class="plate-wrapper">
+                        <span class="plate-label">あなた</span>
+                        <div id="player-plate" class="plate">
+                            <div class="player-dice dice-container">
+                                <div class="dice">?</div>
+                                <div class="dice">?</div>
+                                <div class="dice">?</div>
+                            </div>
+                        </div>
+                        <div id="player-role" class="role-display"></div>
+                    </div>
+                </div>
+
+                <!-- アクションエリア -->
+                <div class="action-area">
+                    <!-- 賭けUI -->
+                    <div id="betting-ui">
+                        <h3>賭け金を決めろ</h3>
+                        <div class="bet-slider-container">
+                            <input type="range" id="bet-slider" min="100" max="10000" value="1000" step="100">
+                        </div>
+                        <div class="bet-display">
+                            <span id="bet-display">1,000</span>円
+                        </div>
+                        <button id="btn-confirm-bet">決定</button>
+                    </div>
+
+                    <!-- サイコロを振るUI -->
+                    <div id="rolling-ui" class="hidden">
+                        <button id="btn-roll">サイコロを振る</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 情報パネル（右サイドバー） -->
+            <div class="info-panel">
+                <div class="info-card">
+                    <h4>目標金額</h4>
+                    <div class="info-value" style="color: #d4af37;">
+                        <span id="target-money">100,000</span>円
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h4>あなたの所持金</h4>
+                    <div class="info-value player-money">
+                        <span id="player-money">10,000</span>円
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h4>CPUの所持金</h4>
+                    <div class="info-value cpu-money">
+                        <span id="cpu-money">10,000</span>円
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h4>現在の試合</h4>
+                    <div class="info-value">
+                        <span id="current-match">1</span> / <span id="total-matches">15</span>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h4>フェーズ</h4>
+                    <div id="phase-name" class="info-value" style="font-size: 1rem;">通常戦</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- イカサマ選択モーダル -->
+        <div id="cheat-container" class="hidden">
+            <div class="cheat-panel">
+                <h3>イカサマを選択</h3>
+                <div id="cheat-list">
+                    <!-- JSで動的生成 -->
+                </div>
+                <button id="btn-skip-cheat">イカサマしない</button>
+            </div>
+        </div>
+
+        <!-- 振り直しモーダル -->
+        <div id="retry-modal" class="hidden">
+            <div class="retry-panel">
+                <h3>振り直しますか？</h3>
+                <p>残り振り直し回数: <span id="retry-count">2</span>回</p>
+                <div class="retry-buttons">
+                    <button id="retry-yes">振り直す</button>
+                    <button id="retry-no">そのまま</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 試合結果 -->
+        <div id="match-result" class="hidden">
             <!-- JSで動的生成 -->
         </div>
 
-        <!-- ゲームエリア（中央） -->
-        <div class="game-area">
-            <!-- 皿エリア -->
-            <div class="plates-container">
-                <!-- CPU（親）の皿 -->
-                <div class="plate-wrapper">
-                    <span class="plate-label">CPU（親）</span>
-                    <div id="cpu-plate" class="plate">
-                        <div class="cpu-dice dice-container">
-                            <div class="dice">?</div>
-                            <div class="dice">?</div>
-                            <div class="dice">?</div>
-                        </div>
-                    </div>
-                    <div id="cpu-role" class="role-display"></div>
-                </div>
+        <!-- 次の試合ボタン -->
+        <button id="btn-next-match" class="hidden" style="position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 60;">
+            次の試合へ
+        </button>
 
-                <!-- プレイヤーの皿 -->
-                <div class="plate-wrapper">
-                    <span class="plate-label">あなた</span>
-                    <div id="player-plate" class="plate">
-                        <div class="player-dice dice-container">
-                            <div class="dice">?</div>
-                            <div class="dice">?</div>
-                            <div class="dice">?</div>
-                        </div>
-                    </div>
-                    <div id="player-role" class="role-display"></div>
-                </div>
+        <!-- ========================================
+             ゲームオーバー画面
+        ======================================== -->
+        <div id="screen-gameover" class="screen hidden">
+            <h1>GAME OVER</h1>
+            <div class="final-stats">
+                <p class="label">最終所持金</p>
+                <p class="value"><span id="final-money">0</span>円</p>
             </div>
-
-            <!-- アクションエリア -->
-            <div class="action-area">
-                <!-- 賭けUI -->
-                <div id="betting-ui">
-                    <h3 style="color: #d4af37; margin-bottom: 1rem;">賭け金を決めろ</h3>
-                    <div class="bet-slider-container">
-                        <input type="range" id="bet-slider" min="100" max="1000" value="100" step="100">
-                    </div>
-                    <div class="bet-display">
-                        <span id="bet-display">100</span>円
-                    </div>
-                    <button id="btn-confirm-bet">決定</button>
-                </div>
-
-                <!-- サイコロを振るUI -->
-                <div id="rolling-ui" class="hidden">
-                    <button id="btn-roll">サイコロを振る</button>
-                </div>
-            </div>
+            <p style="color: #a09080; margin-bottom: 1.5rem;">目標金額には届かなかった...</p>
+            <button id="btn-retry">リトライ</button>
         </div>
 
-        <!-- 情報パネル（右サイドバー） -->
-        <div class="info-panel">
-            <div class="info-card">
-                <h4>目標金額</h4>
-                <div class="info-value" style="color: #d4af37;">
-                    <span id="target-money">100,000</span>円
-                </div>
+        <!-- ========================================
+             勝利画面
+        ======================================== -->
+        <div id="screen-victory" class="screen hidden">
+            <h1>🎉 VICTORY! 🎉</h1>
+            <div class="final-stats">
+                <p class="label">最終所持金</p>
+                <p class="value" style="color: #4ade80;"><span id="victory-money">0</span>円</p>
             </div>
-            
-            <div class="info-card">
-                <h4>あなたの所持金</h4>
-                <div class="info-value player-money">
-                    <span id="player-money">1,000</span>円
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <h4>CPUの所持金</h4>
-                <div class="info-value cpu-money">
-                    <span id="cpu-money">1,000</span>円
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <h4>現在の試合</h4>
-                <div class="info-value">
-                    <span id="current-match">1</span> / <span id="total-matches">15</span>
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <h4>フェーズ</h4>
-                <div id="phase-name" class="info-value" style="font-size: 1.2rem;">通常戦</div>
-            </div>
+            <p style="color: #d4af37; margin-bottom: 1.5rem;">目標達成！おめでとう！</p>
+            <button id="btn-retry">もう一度</button>
         </div>
-    </div>
 
-    <!-- イカサマ選択モーダル -->
-    <div id="cheat-container" class="hidden">
-        <div class="cheat-panel">
-            <h3>イカサマを選択</h3>
-            <div id="cheat-list">
-                <!-- JSで動的生成 -->
-            </div>
-            <button id="btn-skip-cheat">イカサマしない</button>
-        </div>
-    </div>
-
-    <!-- 振り直しモーダル -->
-    <div id="retry-modal" class="hidden">
-        <div class="retry-panel">
-            <h3>振り直しますか？</h3>
-            <p>残り振り直し回数: <span id="retry-count">2</span>回</p>
-            <div class="retry-buttons">
-                <button id="retry-yes">振り直す</button>
-                <button id="retry-no">そのまま</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 試合結果 -->
-    <div id="match-result" class="hidden">
-        <!-- JSで動的生成 -->
-    </div>
-
-    <!-- 次の試合ボタン -->
-    <button id="btn-next-match" class="hidden" style="position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 60;">
-        次の試合へ
-    </button>
-
-    <!-- ========================================
-         ゲームオーバー画面
-    ======================================== -->
-    <div id="screen-gameover" class="screen hidden">
-        <h1>GAME OVER</h1>
-        <div class="final-stats">
-            <p class="label">最終所持金</p>
-            <p class="value"><span id="final-money">0</span>円</p>
-        </div>
-        <p style="color: #a09080; margin-bottom: 2rem;">目標金額には届かなかった...</p>
-        <button id="btn-retry">リトライ</button>
-    </div>
-
-    <!-- ========================================
-         勝利画面
-    ======================================== -->
-    <div id="screen-victory" class="screen hidden">
-        <h1>🎉 VICTORY! 🎉</h1>
-        <div class="final-stats">
-            <p class="label">最終所持金</p>
-            <p class="value" style="color: #4ade80;"><span id="victory-money">0</span>円</p>
-        </div>
-        <p style="color: #d4af37; margin-bottom: 2rem;">目標達成！おめでとう！</p>
-        <button id="btn-retry">もう一度</button>
-    </div>
+    </div><!-- /.game-container -->
 
     <!-- スクリプト -->
     <script type="module" src="js/main.js"></script>

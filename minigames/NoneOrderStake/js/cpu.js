@@ -103,7 +103,7 @@ const CPU_PATTERNS = {
  */
 export class CPU {
     constructor() {
-        this.money = 1000;
+        this.money = 10000;
         this.pattern = 'random';
         this.phase = 1;
     }
