@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ひじきサバイバー</title>
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">            
+    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">           
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #222; color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; overflow-y: auto; }
@@ -55,7 +55,7 @@
 <div id="setup">
     必殺技選択<br>
     <button onclick="startGame('ひじき豆')">1. ひじき豆</button>
-    <button onclick="startGame('縛り豆')">2. 縛り豆(クリア時スコア2倍)</button>
+    <button onclick="startGame('縛り豆')">2. 縛り豆(クリア時スコア1.5倍)</button>
     <button onclick="startGame('波動砲豆')">3. 波動砲豆</button>
     <button onclick="startGame('ムービング豆')">4. ムービング豆</button>
     <button onclick="startGame('侍豆')">5. 侍豆</button>
@@ -84,7 +84,8 @@
                 <h3 style="color: #ffff00;">SHOP</h3>
                 <button id="btn-speed" onclick="buyUpgrade('speed')">速度UP ($50) 残り:<span id="stock-speed">20</span></button>
                 <button id="btn-range" onclick="buyUpgrade('range')">範囲UP ($100) 残り:<span id="stock-range">10</span></button>
-                <button id="btn-heal" onclick="buyUpgrade('heal')">HP全回復 ($75)残り:<span id="stock-heal">25</span></button><br><br>
+                <button id="btn-heal" onclick="buyUpgrade('heal')">HP全回復 ($60)残り:<span id="stock-heal">5</span></button>
+                <button id="btn-heal25" onclick="buyUpgrade('heal25')">HP25回復 ($15)残り:<span id="stock-heal25">20</span></button><br><br>
                 <button onclick="toggleShop()">閉じる</button>
             </div>
         </div>
@@ -186,7 +187,7 @@ function drawEnemyShape(ctx, x, y, size, type) {
     ctx.fillRect(x + size*0.5, y + size*0.3, size*0.2, size*0.2);
 }
 
-let player = { worldX: 0, worldY: 0, hp: 100, maxHp: 100, money: 0, score: 0, moveSpeed: 0.08, weaponRange: 1.2, angle: 0, isAttacking: false, attackFrame: 0, skillCool: 0 };
+let player = { worldX: 0, worldY: 0, hp: 100, maxHp: 100, money: 0, score: 0, moveSpeed: 0.08, weaponRange: 1.2, angle: 0, isAttacking: false, attackFrame: 0, skillCool: 0, invincibleTimer: 0, isInvincible: false};
 let enemies = [], drops = [];
 let gameState = 'playing', currentWave = 1, killsInTurn = 0, targetKills = 5, shopTimeLeft = 0, keys = {};
 let skillEffect = 0;
@@ -203,6 +204,9 @@ canvas.addEventListener('mousemove', e => {
     
     // その方向の角度を保存
     targetAngle = Math.atan2(my, mx);
+
+    mouseWorldX = player.worldX + (mx / 16);
+    mouseWorldY = player.worldY + (my / 16);
 });
 let fixedAngle = 0; // 波動砲発射時の角度を固定する用
 let targetAngle = 0; // マウスが指している方向（角度）を保存する変数
@@ -238,8 +242,10 @@ function startRestPhase() {
     }, 1000);
 }
 let lastRank = "E";
+let maxEnemies = 20;
+let spawnRateup = 0;
 
-let shopStock = { speed: 20, range: 10, heal: 25 };
+let shopStock = { speed: 20, range: 10, heal: 5, heal25: 20 };
 let overlayEffect = { text: "", timer: 0, opacity: 0, scale: 1.0 };
 
 const SPRITE_POS = { hijiki: 64, normal: 32, speed: -0.1, heavy: 48, scout: 16 };
@@ -410,12 +416,15 @@ function nextWave() {
     overlayEffect = { text: "WAVE " + currentWave + " START!", timer: 60, opacity: 1.0, scale: 0.5 };
     document.getElementById('rest-ui').classList.add('hidden');
     document.getElementById('shop-overlay').classList.add('hidden');
+    maxEnemies += 2;
+    spawnRateup += 0.0025;
+    
 }
 
 function useSkill() {
-    // 修正：1000未満なら発動しない
     if(player.abilityType == 'ひじき豆' ||player.abilityType == '縛り豆' || player.skillCool < 1000 || gameState !== 'playing' && gameState !== 'resting') return;
 
+    player.score += 250;
     player.skillCool = 0;
     updateUI();
 
@@ -439,11 +448,13 @@ if (player.abilityType === '波動砲豆') {
                 killsInTurn++;
                 drops.push({x: en.worldX, y: en.worldY, type: 'coin'});
             }
+    
         });
     }
-    else if (player.abilityType === 6) {
-        player.moveSpeed *= 1.5;
-        setTimeout(() => player.moveSpeed /= 1.5, 5000); // 5秒間加速
+    else if (player.abilityType === 'スピードブースター豆') {
+        let speedboost=(player.moveSpeed * 2) - player.moveSpeed;
+        player.moveSpeed *= 2;
+        setTimeout(() => player.moveSpeed -= speedboost, 5000); // 5秒間加速
     }
 }
 let prevState = gameState;
@@ -483,9 +494,10 @@ function toggleShop() {
 
 function buyUpgrade(type) {
     if (shopStock[type] <= 0)  return;
-    if (type === 'speed' && player.money >= 50) { player.moveSpeed += 0.005; player.money -= 50; shopStock.speed--; }
-    else if (type === 'range' && player.money >= 100) { player.weaponRange += 0.1; player.money -= 100; shopStock.range--; }
-    else if (type === 'heal' && player.money >= 75) { player.hp = player.maxHp; player.money -= 75; shopStock.heal--; }
+    if (type === 'speed' && player.money >= 50) { player.moveSpeed += 0.005; player.money -= 50; shopStock.speed--; player.score += 50;}
+    else if (type === 'range' && player.money >= 100) { player.weaponRange += 0.1; player.money -= 100; shopStock.range--; player.score += 50;}
+    else if (type === 'heal' && player.money >= 60) { player.hp = player.maxHp; player.money -= 60; shopStock.heal--; player.score += 50;}
+    else if (type === 'heal25' && player.money >= 15) { player.hp += 25; player.money -= 15; shopStock.heal25--; player.score += 50;}
     updateUI();
 }
 
@@ -493,9 +505,11 @@ function updateShopUI() {
     document.getElementById('stock-speed').innerText = shopStock.speed;
     document.getElementById('stock-range').innerText = shopStock.range;
     document.getElementById('stock-heal').innerText = shopStock.heal;
+    document.getElementById('stock-heal25').innerText = shopStock.heal25;
     if (shopStock.speed <= 0) document.getElementById('btn-speed').disabled = true;
     if (shopStock.range <= 0) document.getElementById('btn-range').disabled = true;
     if (shopStock.heal <= 0) document.getElementById('btn-heal').disabled = true;
+    if (shopStock.heal25 <= 0) document.getElementById('btn-heal25').disabled = true;
 }
 
 function update() {
@@ -512,6 +526,13 @@ function update() {
         checkBeamCollision();      // 当たり判定を実行
     }
 
+    if (player.invincibleTimer > 0) {
+    player.invincibleTimer--;
+    if (player.invincibleTimer <= 0) {
+        player.isInvincible = false;
+    }
+}
+
 if (beamActive <= 0) {
         let dx = 0, dy = 0;
     if (keys['w'] || keys['arrowup']) dy -= player.moveSpeed;
@@ -525,22 +546,36 @@ let nextX = player.worldX + dx;
     let nextY = player.worldY + dy;
 
 const LIMIT = 64
-player.worldX = Math.max(-LIMIT, Math.min(LIMIT, nextX));
-player.worldY = Math.max(-LIMIT, Math.min(LIMIT, nextY));
-
+if (nextX > LIMIT || nextX < -LIMIT +1){
+    player.worldX -= dx;
+}
+else if (nextY > LIMIT  || nextY < -LIMIT +1 ){
+    player.worldY -= dy;
+}
+else {
+    player.worldX = nextX;
+    player.worldY = nextY;
+}
+    
     // 通常時の向き更新
     player.angle = targetAngle;
+
+    
 }
 
     // --- 敵の生成とアップデート ---
-    let spawnRate = (gameState === 'playing') ? 0.03 : 0.005;
-    if (Math.random() < spawnRate && enemies.length < 20) {
+    spawnRate = (gameState === 'playing') ? 0.03 : 0.005;
+    if(enemies.length >= 20 ){
+    spawnRate = spawnRateup
+    }
+    if (Math.random() < spawnRate && enemies.length < maxEnemies) {
         const types = [
-            { type: 'normal', color: 'blue', hp: 2, speed: 0.015, power: 3, scoreVal: 100 },
+            { type: 'normal', color: 'blue', hp: 2, speed: 0.03, power: 3, scoreVal: 100 },
             { type: 'speed', color: 'green', hp: 0.5, speed: 0.13, power: 1, scoreVal: 150 },
-            { type: 'heavy', color: '#9370DB', hp: 5, speed: 0.008, power: 8, scoreVal: 500 },
-            { type: 'scout', color: 'lightblue', hp: 3, speed: 0.025, power: 5, scoreVal: 200 }
+            { type: 'heavy', color: '#9370DB', hp: 4, speed: 0.01, power: 8, scoreVal: 500 },
+            { type: 'scout', color: 'lightblue', hp: 2, speed: 0.03, power: 5, scoreVal: 250 }
         ];
+        
         let t = types[Math.floor(Math.random() * Math.min(currentWave, 4))];
         let ang = Math.random() * Math.PI * 2;
 
@@ -567,18 +602,33 @@ player.worldY = Math.max(-LIMIT, Math.min(LIMIT, nextY));
     en.worldX = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldX));
     en.worldY = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldY));
 
-
         if (dist < 0.5) {
+            if (!player.isInvincible) {
     player.hp -= en.power; // ダメージ
     updateUI();
 
+    player.invincibleTimer = 5;
+    player.isInvincible = true;
+            }
     // プレイヤーのノックバック処理
     // 敵がいる方向（edx, edy）とは逆方向にプレイヤーを弾き飛ばす
     let knockbackStrength = 0.2; // ノックバックの強さ
-    player.worldX += (edx / dist) * knockbackStrength;
-    player.worldY += (edy / dist) * knockbackStrength;
-    
-    if(player.hp <= 0) gameOver();
+    let nexteX = player.worldX + (edx / dist) * knockbackStrength;
+    let nexteY = player.worldY + (edy / dist) * knockbackStrength;
+
+const LIMIT = 64
+if (nexteX > LIMIT || nexteX < -LIMIT +1){
+    player.worldX -= nexteX - player.worldX;
+}
+else if (nexteY > LIMIT  || nexteY < -LIMIT +1 ){
+    player.worldY -= nexteY - player.worldY;
+}
+else {
+    player.worldX = nexteX;
+    player.worldY = nexteY;
+}
+
+        if(player.hp <= 0) gameOver();
 }
 
         // 敵の個別アップデート (enemies.forEach 内)
@@ -661,8 +711,13 @@ function enemyKilled(en, i) {
 }
 
 function gameOver() {
+    if (player.money > 0)
+    {
+        player.score += player.money;
+        player.money = 0;
+    }
     if (player.abilityType === '縛り豆') {
-       player.score = Math.floor(player.score * 2); 
+       player.score = Math.floor(player.score * 1.5); 
        updateUI();
     }
     gameState = 'over';
@@ -670,7 +725,6 @@ function gameOver() {
     document.getElementById('res-rank').innerText = getRank(player.score);
     document.getElementById('res-score').innerText = player.score;
     document.getElementById('res-wave').innerText = currentWave;
-    document.getElementById('res-money').innerText = player.money;
     document.getElementById('result-overlay').classList.remove('hidden');
 }
 
@@ -693,7 +747,15 @@ function draw() {
         ctx.fillRect(ix * 16 - offX, iy * 16 - offY, 16, 16);
     }
 }
-    
+    if (player.isInvincible && Math.floor(Date.now() / 50) % 2 === 0) {
+    // 100ミリ秒ごとに点滅させる（描画をスキップする）
+} else {
+    if (useShapeFallback) {
+        drawPlayerShape(ctx, 64, 64, 16);
+    } else {
+        ctx.drawImage(spriteSheet, SPRITE_POS.hijiki, 0, 16, 16, 64, 64, 16, 16);
+    }
+}
         // draw関数内のプレイヤー描画の後、ctx.restore()の直前などに追加
 if (beamActive > 0) {
     ctx.save();

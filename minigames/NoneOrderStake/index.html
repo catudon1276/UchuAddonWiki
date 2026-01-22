@@ -5,6 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>None Order Stake - UchuAddon</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* サイコロ演出用スタイル */
+        #dice-canvas-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #dice-canvas-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .dice-bowl-bg {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 75%, #450a0a 100%);
+            box-shadow: 0 0 80px rgba(0,0,0,0.6);
+            border: 4px solid rgba(255,255,255,0.1);
+            z-index: 0;
+        }
+        
+        #diceCanvas {
+            position: relative;
+            z-index: 10;
+        }
+        
+        #dice-result-display {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 8px 0 #1e293b;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+            word-break: break-word;
+        }
+        
+        #dice-result-display.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+        
+        #dice-result-display.shonben {
+            color: #facc15;
+            text-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+        }
+    </style>
 </head>
 <body>
     <!-- ゲームコンテナ（16:9ウィンドウ） -->
@@ -12,6 +79,13 @@
         
         <!-- 通知コンテナ -->
         <div id="notification-container"></div>
+
+        <!-- サイコロ演出用Canvas -->
+        <div id="dice-canvas-container">
+            <div class="dice-bowl-bg" id="dice-bowl-bg"></div>
+            <canvas id="diceCanvas"></canvas>
+            <div id="dice-result-display"></div>
+        </div>
 
         <!-- ========================================
              タイトル画面
@@ -43,15 +117,6 @@
 
             <!-- ゲームエリア（中央） -->
             <div class="game-area">
-                <!-- サイコロ演出オーバーレイ -->
-                <div id="dice-animation-overlay" class="hidden">
-                    <div class="rolling-dice-container">
-                        <div class="rolling-dice" id="rolling-dice-0">?</div>
-                        <div class="rolling-dice" id="rolling-dice-1">?</div>
-                        <div class="rolling-dice" id="rolling-dice-2">?</div>
-                    </div>
-                </div>
-
                 <!-- 皿エリア -->
                 <div class="plates-container">
                     <!-- CPU（親）の皿 -->
@@ -195,12 +260,15 @@
                 <p class="value" style="color: #4ade80;"><span id="victory-money">0</span>円</p>
             </div>
             <p style="color: #d4af37; margin-bottom: 1.5rem;">目標達成！おめでとう！</p>
-            <button id="btn-retry">もう一度</button>
+            <button id="btn-retry-victory">もう一度</button>
         </div>
 
     </div><!-- /.game-container -->
 
-    <!-- スクリプト -->
+    <!-- サイコロシステム統合スクリプト -->
+    <script src="js/dice-roller.js"></script>
+    
+    <!-- ゲームスクリプト -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
