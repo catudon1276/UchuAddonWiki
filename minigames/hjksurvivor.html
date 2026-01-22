@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ひじきサバイバー</title>
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">           
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #222; color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; overflow-y: auto; }
@@ -76,7 +75,6 @@
                 <p style="color: #fff; font-size: 16px;">ABILITY: <span id="res-ability">0</span></p>
                 <p>SCORE: <span id="res-score">0</span></p>
                 <p>WAVE: <span id="res-wave">1</span></p>
-                <p>MONEY: $<span id="res-money">0</span></p>
                 <button onclick="location.reload()">もう一度</button>
             </div>
 
@@ -571,7 +569,7 @@ else {
     if (Math.random() < spawnRate && enemies.length < maxEnemies) {
         const types = [
             { type: 'normal', color: 'blue', hp: 2, speed: 0.03, power: 3, scoreVal: 100 },
-            { type: 'speed', color: 'green', hp: 0.5, speed: 0.13, power: 1, scoreVal: 150 },
+            { type: 'speed', color: 'green', hp: 0.5, speed: 0.13, power: 3, scoreVal: 150 },
             { type: 'heavy', color: '#9370DB', hp: 4, speed: 0.01, power: 8, scoreVal: 500 },
             { type: 'scout', color: 'lightblue', hp: 2, speed: 0.03, power: 5, scoreVal: 250 }
         ];

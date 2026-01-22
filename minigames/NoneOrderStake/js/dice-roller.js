@@ -726,6 +726,25 @@
     }
 
     // ========================================
+    // Canvas表示制御
+    // ========================================
+    function showCanvas() {
+        const container = document.getElementById('canvas-container');
+        if (container) {
+            container.classList.remove('hidden');
+            container.classList.add('active');
+        }
+    }
+
+    function hideCanvas() {
+        const container = document.getElementById('canvas-container');
+        if (container) {
+            container.classList.add('hidden');
+            container.classList.remove('active');
+        }
+    }
+
+    // ========================================
     // グローバルAPIの公開
     // ========================================
     window.DiceRoller = {
@@ -737,6 +756,10 @@
         rollDice,
         rollWithValues,
         rollShonben,
+        
+        // Canvas表示制御
+        showCanvas,
+        hideCanvas,
         
         // 追加ユーティリティ
         init: init,
