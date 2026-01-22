@@ -288,12 +288,59 @@ function updateResultBox(isPlayer, result) {
     // 役を表示
     if (result.isShonben) {
         roleDisplay.textContent = 'ションベン';
-        roleDisplay.style.color = '#facc15';
+        roleDisplay.classList.add('shonben');
     } else {
-        const roleValue = result.role.value ? `(${result.role.value})` : '';
+        const roleValue = result.role.value ? ` (${result.role.value})` : '';
         roleDisplay.textContent = `${result.role.name}${roleValue}`;
-        roleDisplay.style.color = 'white';
+        roleDisplay.classList.remove('shonben');
     }
+    
+    // 中央に大きく表示
+    showCenterResult(result);
+}
+
+/**
+ * 中央に結果を大きく表示
+ */
+function showCenterResult(result) {
+    const centerResult = document.getElementById('center-result');
+    const centerDiceValues = document.getElementById('center-dice-values');
+    const centerRoleName = document.getElementById('center-role-name');
+    
+    // サイコロの目を表示
+    centerDiceValues.innerHTML = '';
+    result.dice.forEach(val => {
+        const span = document.createElement('span');
+        span.className = 'dice-num';
+        if (val === 'cursed') {
+            span.textContent = '?';
+            span.classList.add('cursed');
+        } else {
+            span.textContent = val;
+            if (val === 1) {
+                span.classList.add('one');
+            }
+        }
+        centerDiceValues.appendChild(span);
+    });
+    
+    // 役名を表示
+    if (result.isShonben) {
+        centerRoleName.textContent = 'ションベン';
+        centerRoleName.classList.add('shonben');
+    } else {
+        const roleValue = result.role.value ? ` (${result.role.value})` : '';
+        centerRoleName.textContent = `${result.role.name}${roleValue}`;
+        centerRoleName.classList.remove('shonben');
+    }
+    
+    // 表示
+    centerResult.classList.add('show');
+    
+    // 2秒後に非表示
+    setTimeout(() => {
+        centerResult.classList.remove('show');
+    }, 2000);
 }
 
 /**
@@ -382,7 +429,7 @@ function resetResultBoxes() {
         });
         
         roleDisplay.textContent = '-';
-        roleDisplay.style.color = 'white';
+        roleDisplay.classList.remove('shonben');
     });
 }
 

@@ -152,6 +152,52 @@
             font-weight: 900;
         }
         
+        /* 中央表示エリア（新規追加） */
+        .center-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .center-result.show {
+            opacity: 1;
+        }
+        
+        .center-dice-values {
+            display: flex;
+            gap: 2rem;
+            font-size: 5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 8px 0 #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .center-dice-values .dice-num.one {
+            color: #e11d48;
+        }
+        
+        .center-dice-values .dice-num.cursed {
+            color: #a855f7;
+        }
+        
+        .center-role-name {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        
+        .center-role-name.shonben {
+            color: #facc15;
+        }
+        
         /* Game Info Bar (Top) */
         .game-info {
             position: absolute;
@@ -496,6 +542,16 @@
                 </div>
                 <div class="result-role" id="player-result-role">-</div>
             </div>
+        </div>
+        
+        <!-- 中央表示エリア（新規追加） -->
+        <div class="center-result" id="center-result">
+            <div class="center-dice-values" id="center-dice-values">
+                <span class="dice-num">1</span>
+                <span class="dice-num">3</span>
+                <span class="dice-num">5</span>
+            </div>
+            <div class="center-role-name" id="center-role-name">通常の目</div>
         </div>
         
         <!-- Game Info (Top) -->
