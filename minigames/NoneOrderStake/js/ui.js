@@ -429,10 +429,11 @@ function updateRoleTable() {
     if (!elements.roleTable) return;
     
     const state = game.getState();
-    const roles = state.roleTable === 'nine' ? ROLES_NINE : ROLES_NORMAL;
+    const roleData = state.roleTable === 'nine' ? ROLES_NINE : ROLES_NORMAL;
+    const roles = roleData.roles || [];
     
     elements.roleTable.innerHTML = `
-        <h4 class="role-table-title">${state.roleTable === 'nine' ? '9面ダイス役表' : '通常役表'}</h4>
+        <h4 class="role-table-title">${roleData.name || '通常役表'}</h4>
         <div class="role-table-content">
             ${roles.map(role => `
                 <div class="role-table-item">
@@ -440,6 +441,14 @@ function updateRoleTable() {
                     <span class="role-table-mult">${role.multiplier > 0 ? '+' : ''}${role.multiplier}倍</span>
                 </div>
             `).join('')}
+            <div class="role-table-item">
+                <span class="role-table-name">${roleData.noRole?.name || '役無し'}</span>
+                <span class="role-table-mult">${roleData.noRole?.multiplier || -1}倍</span>
+            </div>
+            <div class="role-table-item">
+                <span class="role-table-name">${roleData.shonben?.name || 'ションベン'}</span>
+                <span class="role-table-mult">${roleData.shonben?.multiplier || -1}倍</span>
+            </div>
         </div>
     `;
 }
