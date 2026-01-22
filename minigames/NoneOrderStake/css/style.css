@@ -261,6 +261,37 @@ button:disabled {
     transition: all 0.3s ease;
 }
 
+/* 役成立時の光るエフェクト（色はCSS変数で制御） */
+.plate.role-flash {
+    animation: plate-role-glow 0.8s ease-out;
+    --flash-color: 212, 175, 55; /* デフォルトはゴールド */
+}
+
+@keyframes plate-role-glow {
+    0% {
+        box-shadow: 
+            inset 0 -15px 40px rgba(0, 0, 0, 0.15),
+            inset 0 5px 20px rgba(255, 255, 255, 0.5),
+            0 15px 40px rgba(0, 0, 0, 0.5);
+    }
+    40% {
+        box-shadow: 
+            inset 0 -15px 40px rgba(var(--flash-color), 0.4),
+            inset 0 5px 40px rgba(var(--flash-color), 0.8),
+            0 0 60px rgba(var(--flash-color), 0.9),
+            0 0 100px rgba(var(--flash-color), 0.5),
+            0 0 140px rgba(var(--flash-color), 0.3);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 
+            inset 0 -15px 40px rgba(0, 0, 0, 0.15),
+            inset 0 5px 20px rgba(255, 255, 255, 0.5),
+            0 15px 40px rgba(0, 0, 0, 0.5);
+        transform: scale(1);
+    }
+}
+
 .plate.shonben {
     opacity: 0.4;
     transform: scale(0.95) rotate(-5deg);
@@ -299,6 +330,32 @@ button:disabled {
     color: #1a1a1a;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     position: relative;
+}
+
+/* 着地バウンドアニメーション */
+.dice.landing {
+    animation: dice-landing-bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes dice-landing-bounce {
+    0% {
+        transform: scale(0.3) translateY(-40px) rotate(-180deg);
+        opacity: 0;
+    }
+    40% {
+        transform: scale(1.2) translateY(0) rotate(-10deg);
+        opacity: 1;
+    }
+    60% {
+        transform: scale(0.9) translateY(-8px) rotate(5deg);
+    }
+    80% {
+        transform: scale(1.05) translateY(0) rotate(-2deg);
+    }
+    100% {
+        transform: scale(1) translateY(0) rotate(0deg);
+        opacity: 1;
+    }
 }
 
 .dice.one {
@@ -341,72 +398,188 @@ button:disabled {
 }
 
 /* ========================================
-   サイコロ演出エリア
+   サイコロ演出エリア（3D回転＋物理演算）
 ======================================== */
 #dice-animation-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 50;
     pointer-events: none;
+    perspective: 1200px;
 }
 
 .rolling-dice-container {
     display: flex;
-    gap: 20px;
+    gap: 30px;
+    transform-style: preserve-3d;
 }
 
 .rolling-dice {
-    width: 100px;
-    height: 100px;
-    background: white;
-    border: 4px solid #222;
-    border-radius: 12px;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%);
+    border: 5px solid #1a1a1a;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
-    font-weight: bold;
+    font-size: 5rem;
+    font-weight: 900;
     font-family: var(--font-num);
     color: #1a1a1a;
     box-shadow: 
-        4px 4px 0 #222,
-        8px 8px 20px rgba(0, 0, 0, 0.5);
-    animation: dice-shake 0.1s infinite;
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        6px 6px 0 rgba(0, 0, 0, 0.4),
+        12px 12px 30px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
     transform-origin: center center;
+    transform-style: preserve-3d;
+    position: relative;
+    animation: dice-spin-3d 0.15s infinite;
+}
+
+.rolling-dice::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 10px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 60%);
+    pointer-events: none;
 }
 
 .rolling-dice.one {
     color: #c41e3a;
+    text-shadow: 0 2px 4px rgba(196, 30, 58, 0.3);
 }
 
-.rolling-dice.settling {
-    animation: dice-drop 0.4s ease-out forwards;
+.rolling-dice.cursed {
+    background: linear-gradient(145deg, #2a0a2a 0%, #1a051a 100%);
+    color: #ff00ff;
+    border-color: #ff00ff;
+    animation: dice-spin-3d 0.15s infinite, cursed-pulse 0.4s infinite;
+    box-shadow: 
+        0 0 20px rgba(255, 0, 255, 0.6),
+        0 0 40px rgba(255, 0, 255, 0.3),
+        inset 0 0 20px rgba(255, 0, 255, 0.2);
 }
 
-@keyframes dice-shake {
-    0% { transform: rotate(-5deg) scale(1); }
-    25% { transform: rotate(5deg) scale(1.02); }
-    50% { transform: rotate(-3deg) scale(0.98); }
-    75% { transform: rotate(3deg) scale(1.01); }
-    100% { transform: rotate(-5deg) scale(1); }
+.rolling-dice.cursed::before {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.3), transparent);
 }
 
-@keyframes dice-drop {
+/* 確定状態（回転停止） */
+.rolling-dice.locked {
+    animation: dice-lock 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 落下アニメーション */
+.rolling-dice.dropping {
+    animation: dice-drop-physics 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 3D回転アニメーション（高速） */
+@keyframes dice-spin-3d {
     0% { 
-        transform: scale(1) translateY(0); 
-        opacity: 1;
+        transform: rotate3d(var(--rot-x, 0.7), var(--rot-y, 0.3), var(--rot-z, 0.2), 0deg) scale(1); 
     }
-    50% {
-        transform: scale(0.6) translateY(50px);
-        opacity: 0.8;
+    25% { 
+        transform: rotate3d(var(--rot-x, 0.7), var(--rot-y, 0.3), var(--rot-z, 0.2), 90deg) scale(1.08); 
+    }
+    50% { 
+        transform: rotate3d(var(--rot-x, 0.7), var(--rot-y, 0.3), var(--rot-z, 0.2), 180deg) scale(1); 
+    }
+    75% { 
+        transform: rotate3d(var(--rot-x, 0.7), var(--rot-y, 0.3), var(--rot-z, 0.2), 270deg) scale(1.08); 
     }
     100% { 
-        transform: scale(0.4) translateY(100px); 
+        transform: rotate3d(var(--rot-x, 0.7), var(--rot-y, 0.3), var(--rot-z, 0.2), 360deg) scale(1); 
+    }
+}
+
+/* 確定時のフラッシュ（強化版） */
+@keyframes dice-lock {
+    0% { 
+        transform: scale(1) rotate3d(0, 0, 0, 0deg); 
+        box-shadow: 
+            0 0 0 2px rgba(255, 255, 255, 0.3),
+            6px 6px 0 rgba(0, 0, 0, 0.4),
+            12px 12px 30px rgba(0, 0, 0, 0.6);
+        filter: brightness(1);
+    }
+    30% { 
+        transform: scale(1.25) rotate3d(1, 1, 0, 15deg); 
+        box-shadow: 
+            0 0 50px rgba(255, 215, 0, 1),
+            0 0 100px rgba(255, 215, 0, 0.6),
+            0 0 150px rgba(255, 215, 0, 0.3),
+            6px 6px 0 rgba(0, 0, 0, 0.4);
+        filter: brightness(1.5);
+    }
+    60% {
+        transform: scale(1.1) rotate3d(1, 1, 0, 5deg); 
+        box-shadow: 
+            0 0 30px rgba(255, 215, 0, 0.8),
+            0 0 60px rgba(255, 215, 0, 0.4),
+            6px 6px 0 rgba(0, 0, 0, 0.4);
+        filter: brightness(1.2);
+    }
+    100% { 
+        transform: scale(1) rotate3d(0, 0, 0, 0deg); 
+        box-shadow: 
+            0 0 0 2px rgba(255, 255, 255, 0.3),
+            6px 6px 0 rgba(0, 0, 0, 0.4),
+            12px 12px 30px rgba(0, 0, 0, 0.6);
+        filter: brightness(1);
+    }
+}
+
+/* 物理的な落下＋バウンド */
+@keyframes dice-drop-physics {
+    0% { 
+        transform: scale(1) translateY(0) rotate3d(0, 0, 0, 0deg); 
+        opacity: 1;
+    }
+    30% {
+        transform: scale(0.7) translateY(80px) rotate3d(1, 1, 0, 180deg);
+        opacity: 0.9;
+    }
+    45% {
+        /* 1回目のバウンド */
+        transform: scale(0.5) translateY(150px) rotate3d(1, 1, 0, 270deg);
+        opacity: 0.7;
+    }
+    55% {
+        /* バウンドで少し戻る */
+        transform: scale(0.45) translateY(135px) rotate3d(1, 1, 0, 300deg);
+        opacity: 0.6;
+    }
+    70% {
+        /* 2回目のバウンド（小） */
+        transform: scale(0.4) translateY(160px) rotate3d(1, 1, 0, 350deg);
+        opacity: 0.4;
+    }
+    80% {
+        /* 微小バウンド */
+        transform: scale(0.38) translateY(155px) rotate3d(1, 1, 0, 360deg);
+        opacity: 0.2;
+    }
+    100% { 
+        transform: scale(0.35) translateY(170px) rotate3d(0, 0, 0, 0deg); 
         opacity: 0;
+    }
+}
+
+/* 謎生物のパルス効果 */
+@keyframes cursed-pulse {
+    0%, 100% { 
+        filter: brightness(1) drop-shadow(0 0 10px #ff00ff);
+    }
+    50% { 
+        filter: brightness(1.3) drop-shadow(0 0 25px #ff00ff);
     }
 }
 

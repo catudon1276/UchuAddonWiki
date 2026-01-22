@@ -325,7 +325,7 @@ async function rollDice() {
 }
 
 /**
- * サイコロアニメーション（大きいサイコロ→皿に落ちる演出）
+ * サイコロアニメーション（3D回転→確定フラッシュ→物理落下）
  */
 async function animateRoll(who) {
     const state = game.getState();
@@ -348,78 +348,122 @@ async function animateRoll(who) {
         if (overlay && rollingDice[0]) {
             overlay.classList.remove('hidden');
             
-            // サイコロを?にリセット
-            rollingDice.forEach(d => {
+            // サイコロをリセット + ランダムな回転軸を設定
+            rollingDice.forEach((d, idx) => {
                 d.textContent = '?';
                 d.className = 'rolling-dice';
+                d.style.animation = ''; // アニメーションリセット
+                d.dataset.locked = ''; // ロックフラグリセット
+                
+                // ★各サイコロに固有の回転軸を設定（CSS変数で制御）
+                const rotX = 0.3 + Math.random() * 0.7;
+                const rotY = 0.2 + Math.random() * 0.8;
+                const rotZ = 0.1 + Math.random() * 0.5;
+                d.style.setProperty('--rot-x', rotX);
+                d.style.setProperty('--rot-y', rotY);
+                d.style.setProperty('--rot-z', rotZ);
             });
             
-            // 高速で数字を切り替える演出
+            // ★改善版：段階的急減速 + 長めの演出時間
             const maxVal = state.roleTable === 'nine' ? 9 : 6;
-            const spinDuration = 1200; // 1.2秒
-            const spinInterval = 60; // 60msごとに更新
-            const spinCount = spinDuration / spinInterval;
+            const totalDuration = 2200; // 2.2秒（体感を重視）
+            const baseInterval = 30; // 30ms基準（滑らか）
+            const slowdownPower = 4.0; // 減速の強さ（急激）
             
-            for (let i = 0; i < spinCount; i++) {
-                // 徐々に遅くなる
-                const slowdown = Math.pow(i / spinCount, 2);
-                const delay = spinInterval + (slowdown * 100);
+            let elapsed = 0;
+            
+            while (elapsed < totalDuration) {
+                const progress = elapsed / totalDuration;
+                // イージング関数：最初は超高速、後半は超スロー
+                const easedProgress = 1 - Math.pow(1 - progress, slowdownPower);
+                const currentInterval = baseInterval + (easedProgress * 200); // 最大230msまで遅延
                 
-                // 最後の数フレームで確定していく
-                const finalFrames = 5;
-                const remainingFrames = spinCount - i;
+                // 確定タイミング（最後の800msで順次確定、間隔を広く）
+                const timeToEnd = totalDuration - elapsed;
+                const confirmThresholds = [800, 500, 250]; // 各サイコロの確定タイミング（ms）
                 
                 rollingDice.forEach((d, idx) => {
-                    if (remainingFrames <= finalFrames - idx) {
-                        // 確定
-                        const val = result.dice[idx];
-                        d.textContent = val === 'cursed' ? '?' : val;
-                        d.className = `rolling-dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+                    if (timeToEnd <= confirmThresholds[idx]) {
+                        // ★確定状態（1回だけlockedクラス追加）
+                        if (!d.dataset.locked) {
+                            const val = result.dice[idx];
+                            d.textContent = val === 'cursed' ? '?' : val;
+                            const isOne = val === 1;
+                            const isCursed = val === 'cursed';
+                            d.className = `rolling-dice locked ${isOne ? 'one' : ''} ${isCursed ? 'cursed' : ''}`;
+                            d.dataset.locked = 'true';
+                        }
                     } else {
-                        // ランダム
+                        // ランダム回転中
                         const randVal = Math.floor(Math.random() * maxVal) + 1;
                         d.textContent = randVal;
                         d.className = `rolling-dice ${randVal === 1 ? 'one' : ''}`;
                     }
                 });
                 
-                await sleep(delay);
+                await sleep(currentInterval);
+                elapsed += currentInterval;
             }
             
-            // 全部確定表示
+            // 全サイコロ確定表示（念のため）
             rollingDice.forEach((d, idx) => {
                 const val = result.dice[idx];
                 d.textContent = val === 'cursed' ? '?' : val;
-                d.className = `rolling-dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+                d.className = `rolling-dice locked ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
             });
             
-            await sleep(400);
+            // 確定後の間
+            await sleep(500);
             
-            // 落下アニメーション
+            // 物理的な落下アニメーション（順次）
             rollingDice.forEach((d, idx) => {
                 setTimeout(() => {
-                    d.classList.add('settling');
-                }, idx * 100);
+                    d.classList.remove('locked');
+                    d.classList.add('dropping');
+                }, idx * 150); // 0ms, 150ms, 300ms
             });
             
-            await sleep(500);
+            // 落下完了まで待機
+            await sleep(900);
             
             // オーバーレイを非表示
             overlay.classList.add('hidden');
             
             // サイコロをリセット
             rollingDice.forEach(d => {
-                d.classList.remove('settling');
+                d.className = 'rolling-dice';
+                d.style.animation = '';
             });
         }
         
-        // 皿内のサイコロに結果を反映
+        // 皿内のサイコロに結果を反映（バウンド演出強化）
         const diceElements = isPlayer ? elements.dice.playerDice : elements.dice.cpuDice;
         diceElements.forEach((el, i) => {
             const val = result.dice[i];
-            el.textContent = val === 'cursed' ? '?' : val;
-            el.className = `dice ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+            
+            // 初期状態：透明 + 小さく
+            el.style.opacity = '0';
+            el.style.transform = 'scale(0.3) translateY(-20px)';
+            el.classList.remove('landing'); // 前回のアニメーションをクリア
+            
+            // 順次表示（着地バウンドアニメーション）
+            setTimeout(() => {
+                el.textContent = val === 'cursed' ? '?' : val;
+                el.className = `dice landing ${val === 1 ? 'one' : ''} ${val === 'cursed' ? 'cursed' : ''}`;
+                
+                // バウンドアニメーションはCSSで制御
+                el.style.transition = 'none'; // CSS animationに任せる
+                el.style.opacity = '1';
+                el.style.transform = 'scale(1) translateY(0)';
+                
+                // アニメーション終了後にlandingクラスを削除
+                setTimeout(() => {
+                    el.classList.remove('landing');
+                }, 600);
+            }, i * 150 + 100); // 150ms間隔 + 初期遅延100ms
         });
+        
+        await sleep(500);
         
         // ションベンアニメーション
         if (result.isShonben) {
@@ -431,9 +475,28 @@ async function animateRoll(who) {
         
         // 役表示
         const roleEl = isPlayer ? elements.roles.player : elements.roles.cpu;
+        const plate = isPlayer ? elements.plates.player : elements.plates.cpu;
+        
         if (roleEl) {
             roleEl.textContent = `${result.role.name}${result.role.value ? `(${result.role.value})` : ''}`;
             roleEl.className = `role-display ${result.role.multiplier >= 0 ? 'positive' : 'negative'}`;
+            
+            // ★役成立時に皿を光らせる（CSS animationベース）
+            if (result.role.multiplier !== 0 && plate) {
+                plate.classList.add('role-flash');
+                
+                // 役の倍率に応じて光の色を変える
+                if (result.role.multiplier > 0) {
+                    plate.style.setProperty('--flash-color', '212, 175, 55'); // ゴールド
+                } else {
+                    plate.style.setProperty('--flash-color', '196, 30, 58'); // 赤
+                }
+                
+                // アニメーション終了後にクラスを削除
+                setTimeout(() => {
+                    plate.classList.remove('role-flash');
+                }, 800);
+            }
         }
         
         // 振り直し判定（CPU）
