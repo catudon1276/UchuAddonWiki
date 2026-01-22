@@ -15,6 +15,21 @@ export function initUI() {
     game = createGame();
     setupDiceRollerCallbacks();
     setupBetSlider();
+    
+    // グローバル関数を登録
+    registerGlobalFunctions();
+}
+
+/**
+ * グローバル関数を登録
+ */
+function registerGlobalFunctions() {
+    window.startGame = startGame;
+    window.confirmBet = confirmBet;
+    window.selectCheat = selectCheat;
+    window.rollDice = rollDice;
+    window.nextMatch = nextMatch;
+    window.restartGame = restartGame;
 }
 
 /**
@@ -43,7 +58,7 @@ function setupBetSlider() {
 /**
  * ゲーム開始
  */
-window.startGame = function() {
+function startGame() {
     game.reset();
     game.startBetting();
     
@@ -53,12 +68,12 @@ window.startGame = function() {
     document.getElementById('bet-ui').classList.remove('hidden');
     
     updateUI();
-};
+}
 
 /**
  * 賭け金確定
  */
-window.confirmBet = function() {
+function confirmBet() {
     const slider = document.getElementById('bet-slider');
     const amount = parseInt(slider.value);
     
@@ -74,7 +89,7 @@ window.confirmBet = function() {
         game.selectCheat(null);
         document.getElementById('btn-roll').classList.remove('hidden');
     }
-};
+}
 
 /**
  * イカサマ選択UI表示
@@ -114,7 +129,7 @@ function showCheatSelection() {
 /**
  * イカサマ選択
  */
-window.selectCheat = function(cheatId) {
+function selectCheat(cheatId) {
     document.getElementById('cheat-modal').classList.add('hidden');
     
     // ゲームロジック側でイカサマを選択（CPUも含む）
@@ -122,12 +137,12 @@ window.selectCheat = function(cheatId) {
     
     // サイコロを振るボタンを表示
     document.getElementById('btn-roll').classList.remove('hidden');
-};
+}
 
 /**
  * サイコロを振る
  */
-window.rollDice = async function() {
+async function rollDice() {
     if (isAnimating) return;
     isAnimating = true;
     
@@ -146,7 +161,7 @@ window.rollDice = async function() {
     showMatchResult();
     
     isAnimating = false;
-};
+}
 
 /**
  * サイコロアニメーション
@@ -251,7 +266,7 @@ function showMatchResult() {
 /**
  * 次の試合へ
  */
-window.nextMatch = function() {
+function nextMatch() {
     document.getElementById('btn-next').classList.add('hidden');
     
     const canContinue = game.nextMatch();
@@ -266,7 +281,7 @@ window.nextMatch = function() {
         updateUI();
         document.getElementById('bet-ui').classList.remove('hidden');
     }
-};
+}
 
 /**
  * ゲームオーバー表示
@@ -291,11 +306,11 @@ function showVictory() {
 /**
  * リスタート
  */
-window.restartGame = function() {
+function restartGame() {
     document.getElementById('screen-gameover').classList.add('hidden');
     document.getElementById('screen-victory').classList.add('hidden');
     document.getElementById('screen-title').classList.remove('hidden');
-};
+}
 
 /**
  * UI更新
