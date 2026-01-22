@@ -267,6 +267,8 @@ class Dice {
     }
 
     draw() {
+        ctx.globalAlpha = 1.0; // 最初に確実にリセット
+        
         if (!this.isStopped || !this.isShonben) {
             const shadowDist = Math.min(this.z + 10, 40);
             const sScale = 1 + (shadowDist / 100);
@@ -279,6 +281,7 @@ class Dice {
             ctx.roundRect(-DICE_SIZE/2 + 4, -DICE_SIZE/2 + 4, DICE_SIZE, DICE_SIZE, 12);
             ctx.fill();
             ctx.restore();
+            ctx.globalAlpha = 1.0; // 影描画後に再度リセット
         }
 
         ctx.save();
@@ -293,7 +296,7 @@ class Dice {
         this.drawDiceFace(this.displayValue);
         ctx.restore();
 
-        ctx.globalAlpha = 1.0;
+        ctx.globalAlpha = 1.0; // 最後にも確実にリセット
     }
 
     drawDiceFace(val) {

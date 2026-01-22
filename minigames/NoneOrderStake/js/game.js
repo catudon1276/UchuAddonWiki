@@ -370,11 +370,11 @@ export class Game {
         // CPUの所持金も同期
         this.cpuInstance.money = this.state.cpu.money;
         
-        // 次ターンペナルティ設定
-        if (this.state.playerRole.nextTurnPenalty) {
+        // 次ターンペナルティ設定（nullチェック追加）
+        if (this.state.playerRole && this.state.playerRole.nextTurnPenalty) {
             this.state.player.nextTurnPenalty = true;
         }
-        if (this.state.cpuRole.nextTurnPenalty) {
+        if (this.state.cpuRole && this.state.cpuRole.nextTurnPenalty) {
             this.state.cpu.nextTurnPenalty = true;
         }
         

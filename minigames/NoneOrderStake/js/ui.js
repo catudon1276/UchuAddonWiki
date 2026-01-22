@@ -169,6 +169,11 @@ async function rollDice() {
 async function animateRoll(who) {
     const isPlayer = who === 'player';
     
+    // Canvasを表示
+    if (window.DiceRoller) {
+        window.DiceRoller.showCanvas();
+    }
+    
     // ゲームロジックからサイコロの目を取得
     const result = game.roll(isPlayer, 0);
     
@@ -192,11 +197,11 @@ async function animateRoll(who) {
             
             resultDisplay.classList.add('show');
             
+            // 結果ボックスに表示
+            updateResultBox(isPlayer, result);
+            
             setTimeout(() => {
                 resultDisplay.classList.remove('show');
-                if (window.DiceRoller) {
-                    window.DiceRoller.hideCanvas();
-                }
                 resolve();
             }, 2000);
         };
@@ -216,6 +221,45 @@ async function animateRoll(who) {
         game.getState().playerRole = result.role;
     } else {
         game.getState().cpuRole = result.role;
+    }
+}
+
+/**
+ * 結果ボックスを更新
+ */
+function updateResultBox(isPlayer, result) {
+    const prefix = isPlayer ? 'player' : 'cpu';
+    const diceContainer = document.getElementById(`${prefix}-result-dice`);
+    const roleDisplay = document.getElementById(`${prefix}-result-role`);
+    
+    // サイコロの目を表示
+    const diceElements = diceContainer.querySelectorAll('.result-dice');
+    result.dice.forEach((val, i) => {
+        if (diceElements[i]) {
+            if (val === 'cursed') {
+                diceElements[i].textContent = '?';
+                diceElements[i].classList.add('cursed');
+                diceElements[i].classList.remove('one');
+            } else {
+                diceElements[i].textContent = val;
+                diceElements[i].classList.remove('cursed');
+                if (val === 1) {
+                    diceElements[i].classList.add('one');
+                } else {
+                    diceElements[i].classList.remove('one');
+                }
+            }
+        }
+    });
+    
+    // 役を表示
+    if (result.isShonben) {
+        roleDisplay.textContent = 'ションベン';
+        roleDisplay.style.color = '#facc15';
+    } else {
+        const roleValue = result.role.value ? `(${result.role.value})` : '';
+        roleDisplay.textContent = `${result.role.name}${roleValue}`;
+        roleDisplay.style.color = 'white';
     }
 }
 
@@ -269,6 +313,9 @@ function showMatchResult() {
 function nextMatch() {
     document.getElementById('btn-next').classList.add('hidden');
     
+    // 結果ボックスをリセット
+    resetResultBoxes();
+    
     const canContinue = game.nextMatch();
     
     if (!canContinue) {
@@ -281,6 +328,25 @@ function nextMatch() {
         updateUI();
         document.getElementById('bet-ui').classList.remove('hidden');
     }
+}
+
+/**
+ * 結果ボックスをリセット
+ */
+function resetResultBoxes() {
+    ['player', 'cpu'].forEach(prefix => {
+        const diceContainer = document.getElementById(`${prefix}-result-dice`);
+        const roleDisplay = document.getElementById(`${prefix}-result-role`);
+        
+        const diceElements = diceContainer.querySelectorAll('.result-dice');
+        diceElements.forEach(dice => {
+            dice.textContent = '?';
+            dice.classList.remove('one', 'cursed');
+        });
+        
+        roleDisplay.textContent = '-';
+        roleDisplay.style.color = 'white';
+    });
 }
 
 /**
