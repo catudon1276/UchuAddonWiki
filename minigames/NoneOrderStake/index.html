@@ -2,273 +2,464 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>None Order Stake - UchuAddon</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        /* サイコロ演出用スタイル */
-        #dice-canvas-container {
+        @font-face {
+            font-family: 'TamanegiKaisho';
+            src: url('css/tamanegi_kaisho_v1_0_2.ttf') format('truetype');
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #0f172a; 
+            font-family: 'TamanegiKaisho', 'sans-serif';
+        }
+        
+        /* Canvas Container */
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .bowl-bg {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 75%, #450a0a 100%);
+            box-shadow: 0 0 80px rgba(0,0,0,0.6);
+            z-index: 0;
+            border: 4px solid rgba(255,255,255,0.1);
+        }
+        
+        canvas { 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        /* UI Overlay */
+        #ui {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            padding: 2.5rem;
+            z-index: 20;
+        }
+        
+        /* Result Display (Top Center) */
+        #result-display {
+            font-size: 3rem; 
+            font-weight: 900; 
+            color: white;
+            text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 8px 0 #1e293b;
+            opacity: 0; 
+            transform: scale(0.5) translateY(-20px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            word-break: break-word;
+            text-align: center;
+        }
+        
+        #result-display.show { 
+            opacity: 1; 
+            transform: scale(1) translateY(0); 
+        }
+        
+        #result-display.shonben { 
+            color: #facc15; 
+            text-shadow: 0 0 20px rgba(250, 204, 21, 0.5); 
+        }
+        
+        /* Game Info Bar (Top) */
+        .game-info {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            pointer-events: none;
+            z-index: 25;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+        }
+        
+        .info-value.money-player { color: #4ade80; }
+        .info-value.money-cpu { color: #f87171; }
+        .info-value.target { color: #fbbf24; }
+        
+        /* Action Buttons (Bottom) */
+        .action-bar {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            pointer-events: auto;
+            z-index: 25;
+        }
+        
+        .btn {
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: white;
+            color: #0f172a;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'TamanegiKaisho', 'sans-serif';
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #cbd5e1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #cbd5e1;
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #cbd5e1;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 0 #1e40af;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 6px 0 #1e40af;
+        }
+        
+        .btn-primary:active {
+            box-shadow: 0 2px 0 #1e40af;
+        }
+        
+        /* Bet Slider */
+        .bet-control {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            min-width: 400px;
+        }
+        
+        .bet-label {
+            font-size: 1.25rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .bet-slider {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .bet-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+        
+        /* Screens */
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.98);
+            z-index: 100;
+            padding: 2rem;
+        }
+        
+        .screen.hidden {
+            display: none;
+        }
+        
+        .title-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        .title-subtitle {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            margin-bottom: 2rem;
+        }
+        
+        .rules-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .rules-box p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Cheat Selection */
+        .cheat-modal {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+        }
+        
+        .cheat-panel {
+            background: rgba(15, 23, 42, 0.98);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .cheat-title {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .cheat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cheat-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .cheat-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .cheat-name {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cheat-desc {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cheat-cost {
+            font-size: 1rem;
+            color: #f87171;
+            font-weight: 900;
+        }
+        
+        .cheat-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Result Message */
+        .result-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            pointer-events: none;
-            z-index: 50;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 2rem 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            z-index: 60;
             opacity: 0;
             transition: opacity 0.3s;
         }
         
-        #dice-canvas-container.active {
+        .result-message.show {
             opacity: 1;
-            pointer-events: auto;
         }
         
-        .dice-bowl-bg {
-            position: absolute;
-            width: 480px;
-            height: 480px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 75%, #450a0a 100%);
-            box-shadow: 0 0 80px rgba(0,0,0,0.6);
-            border: 4px solid rgba(255,255,255,0.1);
-            z-index: 0;
-        }
-        
-        #diceCanvas {
-            position: relative;
-            z-index: 10;
-        }
-        
-        #dice-result-display {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 4rem;
+        .result-winner {
+            font-size: 3rem;
             font-weight: 900;
-            color: white;
-            text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 8px 0 #1e293b;
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 20;
-            pointer-events: none;
-            max-width: 90%;
-            text-align: center;
-            word-break: break-word;
+            margin-bottom: 1rem;
         }
         
-        #dice-result-display.show {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
+        .result-winner.player { color: #4ade80; }
+        .result-winner.cpu { color: #f87171; }
+        .result-winner.draw { color: #94a3b8; }
+        
+        .result-detail {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
         }
         
-        #dice-result-display.shonben {
-            color: #facc15;
-            text-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <!-- ゲームコンテナ（16:9ウィンドウ） -->
-    <div class="game-container">
+
+    <!-- Title Screen -->
+    <div id="screen-title" class="screen">
+        <h1 class="title-logo">None Order Stake</h1>
+        <p class="title-subtitle">～イカサマ上等～</p>
         
-        <!-- 通知コンテナ -->
-        <div id="notification-container"></div>
-
-        <!-- サイコロ演出用Canvas -->
-        <div id="dice-canvas-container">
-            <div class="dice-bowl-bg" id="dice-bowl-bg"></div>
-            <canvas id="diceCanvas"></canvas>
-            <div id="dice-result-display"></div>
+        <div class="rules-box">
+            <p><strong style="color: #fbbf24;">【ルール】</strong></p>
+            <p>・目標金額 <strong style="color: #4ade80;">100,000円</strong> を達成せよ</p>
+            <p>・全15試合を戦い抜け</p>
+            <p>・所持金が <strong style="color: #f87171;">1,000円未満</strong> で敗北</p>
+            <p>・同点の場合はCPUの勝ち</p>
+            <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.9em;">※序盤はイカサマ使用不可</p>
         </div>
+        
+        <button class="btn btn-primary" onclick="startGame()">ゲーム開始</button>
+    </div>
 
-        <!-- ========================================
-             タイトル画面
-        ======================================== -->
-        <div id="screen-title" class="screen">
-            <h1 class="title-logo">None Order Stake</h1>
-            <p class="title-subtitle">～イカサマ上等～</p>
+    <!-- Game Over Screen -->
+    <div id="screen-gameover" class="screen hidden">
+        <h1 style="font-size: 4rem; color: #f87171; margin-bottom: 2rem;">GAME OVER</h1>
+        <p style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 1rem;">最終所持金</p>
+        <p style="font-size: 3rem; font-weight: 900; color: white; margin-bottom: 2rem;">
+            <span id="final-money">0</span>円
+        </p>
+        <button class="btn" onclick="restartGame()">リトライ</button>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="screen-victory" class="screen hidden">
+        <h1 style="font-size: 4rem; color: #4ade80; margin-bottom: 2rem;">🎉 VICTORY! 🎉</h1>
+        <p style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 1rem;">最終所持金</p>
+        <p style="font-size: 3rem; font-weight: 900; color: #4ade80; margin-bottom: 2rem;">
+            <span id="victory-money">0</span>円
+        </p>
+        <button class="btn btn-primary" onclick="restartGame()">もう一度</button>
+    </div>
+
+    <!-- Main Game Area -->
+    <div id="canvas-container" class="hidden">
+        <div class="bowl-bg" id="bowl-bg"></div>
+        <canvas id="diceCanvas"></canvas>
+        
+        <!-- UI Overlay -->
+        <div id="ui">
+            <!-- Result Display (Top Center) -->
+            <div id="result-display"></div>
+        </div>
+        
+        <!-- Game Info (Top) -->
+        <div class="game-info">
+            <div class="info-item">
+                <div class="info-label">プレイヤー</div>
+                <div class="info-value money-player"><span id="player-money">10,000</span>円</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">試合</div>
+                <div class="info-value"><span id="current-match">1</span>/15</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">CPU</div>
+                <div class="info-value money-cpu"><span id="cpu-money">10,000</span>円</div>
+            </div>
+        </div>
+        
+        <!-- Action Bar (Bottom) -->
+        <div class="action-bar">
+            <!-- Bet Control -->
+            <div id="bet-ui" class="bet-control hidden">
+                <div class="bet-label">賭け金を決めろ</div>
+                <input type="range" id="bet-slider" class="bet-slider" min="100" max="10000" value="1000" step="100">
+                <div class="bet-value"><span id="bet-display">1,000</span>円</div>
+                <button class="btn btn-primary" onclick="confirmBet()">決定</button>
+            </div>
             
-            <div class="rules-summary">
-                <p><strong style="color: #d4af37;">【ルール】</strong></p>
-                <p>・目標金額 <strong style="color: #4ade80;">100,000円</strong> を達成せよ</p>
-                <p>・全15試合を戦い抜け</p>
-                <p>・所持金が <strong style="color: #f87171;">1,000円未満</strong> で敗北</p>
-                <p>・同点の場合はCPUの勝ち</p>
-                <p style="margin-top: 0.5rem; color: #a09080; font-size: 0.85em;">※序盤はイカサマ使用不可</p>
-            </div>
+            <!-- Roll Button -->
+            <button id="btn-roll" class="btn btn-primary hidden" onclick="rollDice()">サイコロを振る</button>
             
-            <button id="btn-start">ゲーム開始</button>
+            <!-- Next Match Button -->
+            <button id="btn-next" class="btn hidden" onclick="nextMatch()">次の試合へ</button>
         </div>
-
-        <!-- ========================================
-             ゲーム画面
-        ======================================== -->
-        <div id="screen-game" class="screen hidden">
-            <!-- 役表（左サイドバー） -->
-            <div id="role-table">
-                <!-- JSで動的生成 -->
-            </div>
-
-            <!-- ゲームエリア（中央） -->
-            <div class="game-area">
-                <!-- 皿エリア -->
-                <div class="plates-container">
-                    <!-- CPU（親）の皿 -->
-                    <div class="plate-wrapper">
-                        <span class="plate-label">CPU（親）</span>
-                        <div id="cpu-plate" class="plate">
-                            <div class="cpu-dice dice-container">
-                                <div class="dice">?</div>
-                                <div class="dice">?</div>
-                                <div class="dice">?</div>
-                            </div>
-                        </div>
-                        <div id="cpu-role" class="role-display"></div>
-                    </div>
-
-                    <!-- プレイヤーの皿 -->
-                    <div class="plate-wrapper">
-                        <span class="plate-label">あなた</span>
-                        <div id="player-plate" class="plate">
-                            <div class="player-dice dice-container">
-                                <div class="dice">?</div>
-                                <div class="dice">?</div>
-                                <div class="dice">?</div>
-                            </div>
-                        </div>
-                        <div id="player-role" class="role-display"></div>
-                    </div>
-                </div>
-
-                <!-- アクションエリア -->
-                <div class="action-area">
-                    <!-- 賭けUI -->
-                    <div id="betting-ui">
-                        <h3>賭け金を決めろ</h3>
-                        <div class="bet-slider-container">
-                            <input type="range" id="bet-slider" min="100" max="10000" value="1000" step="100">
-                        </div>
-                        <div class="bet-display">
-                            <span id="bet-display">1,000</span>円
-                        </div>
-                        <button id="btn-confirm-bet">決定</button>
-                    </div>
-
-                    <!-- サイコロを振るUI -->
-                    <div id="rolling-ui" class="hidden">
-                        <button id="btn-roll">サイコロを振る</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 情報パネル（右サイドバー） -->
-            <div class="info-panel">
-                <div class="info-card">
-                    <h4>目標金額</h4>
-                    <div class="info-value" style="color: #d4af37;">
-                        <span id="target-money">100,000</span>円
-                    </div>
-                </div>
-                
-                <div class="info-card">
-                    <h4>あなたの所持金</h4>
-                    <div class="info-value player-money">
-                        <span id="player-money">10,000</span>円
-                    </div>
-                </div>
-                
-                <div class="info-card">
-                    <h4>CPUの所持金</h4>
-                    <div class="info-value cpu-money">
-                        <span id="cpu-money">10,000</span>円
-                    </div>
-                </div>
-                
-                <div class="info-card">
-                    <h4>現在の試合</h4>
-                    <div class="info-value">
-                        <span id="current-match">1</span> / <span id="total-matches">15</span>
-                    </div>
-                </div>
-                
-                <div class="info-card">
-                    <h4>フェーズ</h4>
-                    <div id="phase-name" class="info-value" style="font-size: 1rem;">通常戦</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- イカサマ選択モーダル -->
-        <div id="cheat-container" class="hidden">
+        
+        <!-- Cheat Selection Modal -->
+        <div id="cheat-modal" class="cheat-modal hidden">
             <div class="cheat-panel">
-                <h3>イカサマを選択</h3>
-                <div id="cheat-list">
-                    <!-- JSで動的生成 -->
+                <h2 class="cheat-title">イカサマを選択</h2>
+                <div id="cheat-list" class="cheat-list">
+                    <!-- Generated by JS -->
                 </div>
-                <button id="btn-skip-cheat">イカサマしない</button>
+                <button class="btn" onclick="selectCheat(null)">イカサマしない</button>
             </div>
         </div>
-
-        <!-- 振り直しモーダル -->
-        <div id="retry-modal" class="hidden">
-            <div class="retry-panel">
-                <h3>振り直しますか？</h3>
-                <p>残り振り直し回数: <span id="retry-count">2</span>回</p>
-                <div class="retry-buttons">
-                    <button id="retry-yes">振り直す</button>
-                    <button id="retry-no">そのまま</button>
-                </div>
-            </div>
+        
+        <!-- Result Message -->
+        <div id="result-message" class="result-message hidden">
+            <div class="result-winner" id="result-winner">プレイヤーの勝ち</div>
+            <div class="result-detail" id="result-detail">+1,000円</div>
         </div>
+    </div>
 
-        <!-- 試合結果 -->
-        <div id="match-result" class="hidden">
-            <!-- JSで動的生成 -->
-        </div>
-
-        <!-- 次の試合ボタン -->
-        <button id="btn-next-match" class="hidden" style="position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 60;">
-            次の試合へ
-        </button>
-
-        <!-- ========================================
-             ゲームオーバー画面
-        ======================================== -->
-        <div id="screen-gameover" class="screen hidden">
-            <h1>GAME OVER</h1>
-            <div class="final-stats">
-                <p class="label">最終所持金</p>
-                <p class="value"><span id="final-money">0</span>円</p>
-            </div>
-            <p style="color: #a09080; margin-bottom: 1.5rem;">目標金額には届かなかった...</p>
-            <button id="btn-retry">リトライ</button>
-        </div>
-
-        <!-- ========================================
-             勝利画面
-        ======================================== -->
-        <div id="screen-victory" class="screen hidden">
-            <h1>🎉 VICTORY! 🎉</h1>
-            <div class="final-stats">
-                <p class="label">最終所持金</p>
-                <p class="value" style="color: #4ade80;"><span id="victory-money">0</span>円</p>
-            </div>
-            <p style="color: #d4af37; margin-bottom: 1.5rem;">目標達成！おめでとう！</p>
-            <button id="btn-retry-victory">もう一度</button>
-        </div>
-
-    </div><!-- /.game-container -->
-
-    <!-- サイコロシステム統合スクリプト -->
+    <!-- Scripts -->
     <script src="js/dice-roller.js"></script>
-    
-    <!-- ゲームスクリプト -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>

@@ -1,82 +1,20 @@
 /**
- * UI制御モジュール - Dice Roller統合版
+ * UI制御モジュール - Dice.htmlベース完全版
  */
 
 import { createGame } from './game.js';
-import { CHEATS, getAvailableCheats } from '../data/cheats-data.js';
-import { ROLES_NORMAL } from '../data/roles-normal.js';
-import { ROLES_NINE } from '../data/roles-nine.js';
+import { CHEATS } from '../data/cheats-data.js';
 
 let game = null;
 let isAnimating = false;
-
-// DOM要素キャッシュ
-const elements = {};
 
 /**
  * 初期化
  */
 export function initUI() {
-    cacheElements();
     game = createGame();
-    setupEventListeners();
     setupDiceRollerCallbacks();
-    showScreen('title');
-}
-
-/**
- * DOM要素をキャッシュ
- */
-function cacheElements() {
-    elements.screens = {
-        title: document.getElementById('screen-title'),
-        game: document.getElementById('screen-game'),
-        gameover: document.getElementById('screen-gameover'),
-        victory: document.getElementById('screen-victory'),
-    };
-    
-    elements.ui = {
-        playerMoney: document.getElementById('player-money'),
-        cpuMoney: document.getElementById('cpu-money'),
-        targetMoney: document.getElementById('target-money'),
-        currentMatch: document.getElementById('current-match'),
-        totalMatches: document.getElementById('total-matches'),
-        phaseName: document.getElementById('phase-name'),
-        betSlider: document.getElementById('bet-slider'),
-        betDisplay: document.getElementById('bet-display'),
-    };
-    
-    elements.plates = {
-        player: document.getElementById('player-plate'),
-        cpu: document.getElementById('cpu-plate'),
-    };
-    
-    elements.roles = {
-        player: document.getElementById('player-role'),
-        cpu: document.getElementById('cpu-role'),
-    };
-    
-    elements.cheats = {
-        container: document.getElementById('cheat-container'),
-        list: document.getElementById('cheat-list'),
-    };
-    
-    elements.buttons = {
-        start: document.getElementById('btn-start'),
-        roll: document.getElementById('btn-roll'),
-        confirmBet: document.getElementById('btn-confirm-bet'),
-        skipCheat: document.getElementById('btn-skip-cheat'),
-        nextMatch: document.getElementById('btn-next-match'),
-        retry: document.querySelectorAll('#btn-retry'),
-        retryVictory: document.getElementById('btn-retry-victory'),
-    };
-    
-    elements.roleTable = document.getElementById('role-table');
-    
-    elements.dice = {
-        playerDice: Array.from(document.querySelectorAll('.player-dice .dice')),
-        cpuDice: Array.from(document.querySelectorAll('.cpu-dice .dice')),
-    };
+    setupBetSlider();
 }
 
 /**
@@ -84,199 +22,136 @@ function cacheElements() {
  */
 function setupDiceRollerCallbacks() {
     window.onDiceRollComplete = (results, isShonben) => {
-        // サイコロ演出完了後の処理
         console.log('Dice roll complete:', results, 'Shonben:', isShonben);
     };
 }
 
 /**
- * イベントリスナー設定
+ * ベットスライダー設定
  */
-function setupEventListeners() {
-    elements.buttons.start?.addEventListener('click', startGame);
-    elements.ui.betSlider?.addEventListener('input', updateBetDisplay);
-    elements.buttons.confirmBet?.addEventListener('click', confirmBet);
-    elements.buttons.skipCheat?.addEventListener('click', () => selectCheat(null));
-    elements.buttons.roll?.addEventListener('click', rollDice);
-    elements.buttons.nextMatch?.addEventListener('click', nextMatch);
-    elements.buttons.retry?.forEach(btn => {
-        btn.addEventListener('click', () => {
-            game.reset();
-            startGame();
+function setupBetSlider() {
+    const slider = document.getElementById('bet-slider');
+    const display = document.getElementById('bet-display');
+    
+    if (slider && display) {
+        slider.addEventListener('input', () => {
+            display.textContent = parseInt(slider.value).toLocaleString();
         });
-    });
-    elements.buttons.retryVictory?.addEventListener('click', () => {
-        game.reset();
-        startGame();
-    });
-}
-
-/**
- * 画面表示切り替え
- */
-function showScreen(screenName) {
-    Object.values(elements.screens).forEach(screen => {
-        screen?.classList.add('hidden');
-    });
-    elements.screens[screenName]?.classList.remove('hidden');
+    }
 }
 
 /**
  * ゲーム開始
  */
-function startGame() {
+window.startGame = function() {
     game.reset();
     game.startBetting();
+    
+    // 画面切り替え
+    document.getElementById('screen-title').classList.add('hidden');
+    document.getElementById('canvas-container').classList.remove('hidden');
+    document.getElementById('bet-ui').classList.remove('hidden');
+    
     updateUI();
-    updateRoleTable();
-    showScreen('game');
-    
-    // ベットUI表示
-    document.getElementById('betting-ui')?.classList.remove('hidden');
-    document.getElementById('rolling-ui')?.classList.add('hidden');
-}
-
-/**
- * UI更新
- */
-function updateUI() {
-    const state = game.getState();
-    
-    // 所持金
-    if (elements.ui.playerMoney) {
-        elements.ui.playerMoney.textContent = state.player.money.toLocaleString();
-    }
-    if (elements.ui.cpuMoney) {
-        elements.ui.cpuMoney.textContent = state.cpu.money.toLocaleString();
-    }
-    
-    // 試合数
-    if (elements.ui.currentMatch) {
-        elements.ui.currentMatch.textContent = state.currentMatch;
-    }
-    if (elements.ui.totalMatches) {
-        elements.ui.totalMatches.textContent = state.totalMatches;
-    }
-    
-    // フェーズ
-    const phase = game.getCurrentPhase();
-    if (elements.ui.phaseName) {
-        elements.ui.phaseName.textContent = phase.name;
-    }
-    
-    // ベットスライダーの最大値
-    if (elements.ui.betSlider) {
-        elements.ui.betSlider.max = state.player.money;
-        const currentBet = Math.min(parseInt(elements.ui.betSlider.value), state.player.money);
-        elements.ui.betSlider.value = currentBet;
-        updateBetDisplay();
-    }
-}
-
-/**
- * 賭け金表示更新
- */
-function updateBetDisplay() {
-    const value = parseInt(elements.ui.betSlider?.value || 1000);
-    if (elements.ui.betDisplay) {
-        elements.ui.betDisplay.textContent = value.toLocaleString();
-    }
-}
+};
 
 /**
  * 賭け金確定
  */
-function confirmBet() {
-    const amount = parseInt(elements.ui.betSlider?.value || 1000);
+window.confirmBet = function() {
+    const slider = document.getElementById('bet-slider');
+    const amount = parseInt(slider.value);
+    
     game.setBet(amount);
+    document.getElementById('bet-ui').classList.add('hidden');
     
     // イカサマ選択へ
-    const availableCheats = game.getAvailableCheatsForPlayer();
-    if (availableCheats.length > 0) {
-        showCheatSelection(availableCheats);
+    const phase = game.getCurrentPhase();
+    if (phase.cheatLevel > 0) {
+        showCheatSelection();
     } else {
-        selectCheat(null);
+        // イカサマなしで直接サイコロ振りへ
+        game.selectCheat(null);
+        document.getElementById('btn-roll').classList.remove('hidden');
     }
-    
-    document.getElementById('betting-ui')?.classList.add('hidden');
-}
+};
 
 /**
  * イカサマ選択UI表示
  */
-function showCheatSelection(cheats) {
-    elements.cheats.container?.classList.remove('hidden');
+function showCheatSelection() {
+    const availableCheats = game.getAvailableCheatsForPlayer();
+    const cheatList = document.getElementById('cheat-list');
+    const state = game.getState();
     
-    if (elements.cheats.list) {
-        elements.cheats.list.innerHTML = '';
+    cheatList.innerHTML = '';
+    
+    availableCheats.forEach(cheat => {
+        const cheatData = CHEATS.find(c => c.id === cheat);
+        if (!cheatData) return;
         
-        cheats.forEach(cheat => {
-            const cost = game.calculateCheatCost(cheat.id);
-            const canAfford = game.getState().player.money >= cost;
-            
-            const button = document.createElement('button');
-            button.className = `cheat-option ${!canAfford ? 'disabled' : ''}`;
-            button.disabled = !canAfford;
-            
-            button.innerHTML = `
-                <div class="cheat-name">${cheat.name}</div>
-                <div class="cheat-desc">${cheat.description}</div>
-                <div class="cheat-cost">${cost.toLocaleString()}円</div>
-            `;
-            
-            button.addEventListener('click', () => selectCheat(cheat.id));
-            elements.cheats.list.appendChild(button);
-        });
-    }
+        const cost = game.calculateCheatCost(cheat);
+        const canAfford = state.player.money >= cost;
+        
+        const div = document.createElement('div');
+        div.className = `cheat-option ${!canAfford ? 'disabled' : ''}`;
+        div.innerHTML = `
+            <div class="cheat-name">${cheatData.name}</div>
+            <div class="cheat-desc">${cheatData.description}</div>
+            <div class="cheat-cost">${cost.toLocaleString()}円</div>
+        `;
+        
+        if (canAfford) {
+            div.onclick = () => selectCheat(cheat);
+        }
+        
+        cheatList.appendChild(div);
+    });
+    
+    document.getElementById('cheat-modal').classList.remove('hidden');
 }
 
 /**
  * イカサマ選択
  */
-function selectCheat(cheatId) {
-    elements.cheats.container?.classList.add('hidden');
+window.selectCheat = function(cheatId) {
+    document.getElementById('cheat-modal').classList.add('hidden');
     
-    if (cheatId) {
-        game.selectCheat(cheatId);
-        showNotification(`イカサマ使用: ${CHEATS.find(c => c.id === cheatId).name}`);
-    }
+    // ゲームロジック側でイカサマを選択（CPUも含む）
+    game.selectCheat(cheatId);
     
-    // CPU選択
-    game.cpuSelectCheat();
-    
-    // サイコロUI表示
-    document.getElementById('rolling-ui')?.classList.remove('hidden');
-}
+    // サイコロを振るボタンを表示
+    document.getElementById('btn-roll').classList.remove('hidden');
+};
 
 /**
  * サイコロを振る
  */
-async function rollDice() {
+window.rollDice = async function() {
     if (isAnimating) return;
     isAnimating = true;
     
-    elements.buttons.roll?.classList.add('hidden');
+    document.getElementById('btn-roll').classList.add('hidden');
     
     // CPU振る（上から）
     await animateRoll('cpu');
-    await sleep(500);
+    await sleep(1000);
     
     // プレイヤー振る（下から）
     await animateRoll('player');
-    await sleep(500);
+    await sleep(1000);
     
     // 結果判定
     game.finalizeMatch();
     showMatchResult();
     
     isAnimating = false;
-}
+};
 
 /**
- * サイコロアニメーション（Dice Roller統合版）
+ * サイコロアニメーション
  */
 async function animateRoll(who) {
-    const state = game.getState();
     const isPlayer = who === 'player';
     
     // ゲームロジックからサイコロの目を取得
@@ -285,62 +160,34 @@ async function animateRoll(who) {
     // DiceRollerを使用して演出
     const direction = isPlayer ? 'bottom' : 'top';
     
-    // 皿内のサイコロを一時的に非表示
-    const diceElements = isPlayer ? elements.dice.playerDice : elements.dice.cpuDice;
-    diceElements.forEach(d => d.style.opacity = '0');
-    
-    // Dice Roller呼び出し
     return new Promise((resolve) => {
         window.onDiceRollComplete = (results, isShonben) => {
-            // サイコロ演出完了
+            // 結果を画面上部に表示
+            const resultDisplay = document.getElementById('result-display');
+            
+            if (isShonben || result.isShonben) {
+                resultDisplay.textContent = 'ションベン！';
+                resultDisplay.classList.add('shonben');
+            } else {
+                const roleName = result.role.name;
+                const roleValue = result.role.value ? `(${result.role.value})` : '';
+                resultDisplay.textContent = `${isPlayer ? 'あなた' : 'CPU'}: ${roleName}${roleValue}`;
+                resultDisplay.classList.remove('shonben');
+            }
+            
+            resultDisplay.classList.add('show');
+            
             setTimeout(() => {
-                // 皿内のサイコロに結果を反映
-                diceElements.forEach((dice, i) => {
-                    const val = result.dice[i];
-                    dice.textContent = val === 'cursed' ? '?' : val;
-                    dice.style.opacity = '1';
-                    
-                    if (val === 'cursed') {
-                        dice.classList.add('cursed');
-                    } else {
-                        dice.classList.remove('cursed');
-                    }
-                });
-                
-                // 役表示
-                const plate = isPlayer ? elements.plates.player : elements.plates.cpu;
-                const roleEl = isPlayer ? elements.roles.player : elements.roles.cpu;
-                
-                if (roleEl) {
-                    roleEl.textContent = `${result.role.name}${result.role.value ? `(${result.role.value})` : ''}`;
-                    roleEl.className = `role-display ${result.role.multiplier >= 0 ? 'positive' : 'negative'}`;
-                    
-                    if (result.role.multiplier !== 0 && plate) {
-                        plate.classList.add('role-flash');
-                        setTimeout(() => {
-                            plate.classList.remove('role-flash');
-                        }, 800);
-                    }
+                resultDisplay.classList.remove('show');
+                if (window.DiceRoller) {
+                    window.DiceRoller.hideCanvas();
                 }
-                
-                // ションベンチェック
-                if (isShonben && result.isShonben) {
-                    showNotification(isPlayer ? 'プレイヤーがションベン！' : 'CPUがションベン！', 'warning');
-                }
-                
-                // Canvas非表示
-                setTimeout(() => {
-                    if (window.DiceRoller) {
-                        window.DiceRoller.hideCanvas();
-                    }
-                    resolve();
-                }, 1000);
-            }, 500);
+                resolve();
+            }, 2000);
         };
         
         // サイコロの目を指定して振る
         if (window.DiceRoller) {
-            // 謎生物対応：cursedの場合は1に変換
             const values = result.dice.map(d => d === 'cursed' ? 1 : d);
             window.DiceRoller.rollWithValues(direction, values);
         } else {
@@ -349,6 +196,7 @@ async function animateRoll(who) {
         }
     });
     
+    // 役を保存
     if (isPlayer) {
         game.getState().playerRole = result.role;
     } else {
@@ -361,32 +209,50 @@ async function animateRoll(who) {
  */
 function showMatchResult() {
     const state = game.getState();
+    const resultMessage = document.getElementById('result-message');
+    const resultWinner = document.getElementById('result-winner');
+    const resultDetail = document.getElementById('result-detail');
+    
+    // 勝者判定
+    let winnerText = '';
+    let winnerClass = '';
+    let detailText = '';
+    
+    if (state.winner === 'player') {
+        winnerText = 'あなたの勝ち！';
+        winnerClass = 'player';
+        detailText = `+${state.payoutMultiplier * state.betAmount}円`;
+    } else if (state.winner === 'cpu') {
+        winnerText = 'CPUの勝ち';
+        winnerClass = 'cpu';
+        detailText = `-${state.betAmount}円`;
+    } else {
+        winnerText = '引き分け';
+        winnerClass = 'draw';
+        detailText = `±0円（同点はCPUの勝ち）`;
+    }
+    
+    resultWinner.textContent = winnerText;
+    resultWinner.className = `result-winner ${winnerClass}`;
+    resultDetail.textContent = detailText;
+    
+    resultMessage.classList.add('show');
+    
+    // UI更新
     updateUI();
     
+    // 次の試合ボタンを表示
     setTimeout(() => {
-        elements.buttons.nextMatch?.classList.remove('hidden');
-    }, 1000);
+        resultMessage.classList.remove('show');
+        document.getElementById('btn-next').classList.remove('hidden');
+    }, 2000);
 }
 
 /**
  * 次の試合へ
  */
-function nextMatch() {
-    elements.buttons.nextMatch?.classList.add('hidden');
-    
-    // 役表示をクリア
-    if (elements.roles.player) elements.roles.player.textContent = '';
-    if (elements.roles.cpu) elements.roles.cpu.textContent = '';
-    
-    // サイコロをリセット
-    elements.dice.playerDice.forEach(d => {
-        d.textContent = '?';
-        d.classList.remove('cursed');
-    });
-    elements.dice.cpuDice.forEach(d => {
-        d.textContent = '?';
-        d.classList.remove('cursed');
-    });
+window.nextMatch = function() {
+    document.getElementById('btn-next').classList.add('hidden');
     
     const canContinue = game.nextMatch();
     
@@ -398,11 +264,9 @@ function nextMatch() {
         }
     } else {
         updateUI();
-        updateRoleTable();
-        document.getElementById('betting-ui')?.classList.remove('hidden');
-        document.getElementById('rolling-ui')?.classList.add('hidden');
+        document.getElementById('bet-ui').classList.remove('hidden');
     }
-}
+};
 
 /**
  * ゲームオーバー表示
@@ -410,7 +274,8 @@ function nextMatch() {
 function showGameOver() {
     const state = game.getState();
     document.getElementById('final-money').textContent = state.player.money.toLocaleString();
-    showScreen('gameover');
+    document.getElementById('canvas-container').classList.add('hidden');
+    document.getElementById('screen-gameover').classList.remove('hidden');
 }
 
 /**
@@ -419,55 +284,39 @@ function showGameOver() {
 function showVictory() {
     const state = game.getState();
     document.getElementById('victory-money').textContent = state.player.money.toLocaleString();
-    showScreen('victory');
+    document.getElementById('canvas-container').classList.add('hidden');
+    document.getElementById('screen-victory').classList.remove('hidden');
 }
 
 /**
- * 役表更新
+ * リスタート
  */
-function updateRoleTable() {
-    if (!elements.roleTable) return;
-    
+window.restartGame = function() {
+    document.getElementById('screen-gameover').classList.add('hidden');
+    document.getElementById('screen-victory').classList.add('hidden');
+    document.getElementById('screen-title').classList.remove('hidden');
+};
+
+/**
+ * UI更新
+ */
+function updateUI() {
     const state = game.getState();
-    const roleData = state.roleTable === 'nine' ? ROLES_NINE : ROLES_NORMAL;
-    const roles = roleData.roles || [];
     
-    elements.roleTable.innerHTML = `
-        <h4 class="role-table-title">${roleData.name || '通常役表'}</h4>
-        <div class="role-table-content">
-            ${roles.map(role => `
-                <div class="role-table-item">
-                    <span class="role-table-name">${role.name}</span>
-                    <span class="role-table-mult">${role.multiplier > 0 ? '+' : ''}${role.multiplier}倍</span>
-                </div>
-            `).join('')}
-            <div class="role-table-item">
-                <span class="role-table-name">${roleData.noRole?.name || '役無し'}</span>
-                <span class="role-table-mult">${roleData.noRole?.multiplier || -1}倍</span>
-            </div>
-            <div class="role-table-item">
-                <span class="role-table-name">${roleData.shonben?.name || 'ションベン'}</span>
-                <span class="role-table-mult">${roleData.shonben?.multiplier || -1}倍</span>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * 通知表示
- */
-function showNotification(message, type = 'info') {
-    const container = document.getElementById('notification-container');
-    if (!container) return;
+    // 所持金
+    document.getElementById('player-money').textContent = state.player.money.toLocaleString();
+    document.getElementById('cpu-money').textContent = state.cpu.money.toLocaleString();
     
-    const notif = document.createElement('div');
-    notif.className = `notification ${type}`;
-    notif.textContent = message;
-    container.appendChild(notif);
+    // 試合数
+    document.getElementById('current-match').textContent = state.currentMatch;
     
-    setTimeout(() => {
-        notif.remove();
-    }, 3000);
+    // ベットスライダーの最大値
+    const slider = document.getElementById('bet-slider');
+    if (slider) {
+        slider.max = state.player.money;
+        slider.value = Math.min(parseInt(slider.value), state.player.money);
+        document.getElementById('bet-display').textContent = parseInt(slider.value).toLocaleString();
+    }
 }
 
 /**
