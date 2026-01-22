@@ -12,9 +12,9 @@ import { createCPU } from './cpu.js';
  * フェーズ定義
  */
 const PHASES = [
-    { id: 1, name: '通常戦', matches: 3, cpuCheat: false, cheatLevel: 0 },
-    { id: 2, name: 'イカサマ解禁', matches: 2, cpuCheat: false, cheatLevel: 2 },
-    { id: 3, name: 'CPU反撃', matches: 5, cpuCheat: true, cheatLevel: 2 },
+    { id: 1, name: '通常戦', matches: 1, cpuCheat: false, cheatLevel: 0 },
+    { id: 2, name: 'イカサマ解禁', matches: 3, cpuCheat: false, cheatLevel: 2 },
+    { id: 3, name: 'CPU反撃', matches: 6, cpuCheat: true, cheatLevel: 2 },
     { id: 4, name: '最終決戦', matches: 5, cpuCheat: true, cheatLevel: 4 },
 ];
 
@@ -33,7 +33,7 @@ export class Game {
         this.state = {
             // プレイヤー状態
             player: {
-                money: 1000,
+                money: 10000,
                 forceShonben: false,
                 diceWeight: null,
                 weightStrength: 0,
@@ -48,7 +48,7 @@ export class Game {
             
             // CPU状態
             cpu: {
-                money: 1000,
+                money: 10000,
                 forceShonben: false,
                 diceWeight: null,
                 weightStrength: 0,

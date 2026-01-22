@@ -1,30 +1,30 @@
 /**
- * None Order Stake - 完全新規デザイン
- * コンセプト: モダンダークUI + 3D立体サイコロ + 木目背景
+ * None Order Stake - 和風モダンデザイン
+ * コンセプト: 墨色×金箔 + 3D立体サイコロ
  */
 
 :root {
-    /* カラーパレット */
-    --bg-wood: #3d2817; /* 木目調の茶色（あとで画像に差し替え） */
-    --bg-overlay: rgba(0, 0, 0, 0.7);
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --accent-gold: #ffd700;
-    --accent-cyan: #00ffff;
-    --accent-red: #ff1744;
-    --accent-green: #00e676;
+    /* 和風カラーパレット */
+    --bg-wood: #2c1810;
+    --text-primary: #f5f5dc;
+    --text-secondary: #9a8a7a;
+    --accent-gold: #d4af37;
+    --accent-cyan: #5ba3a3;
+    --accent-red: #d32f2f;
+    --accent-green: #7cb342;
+    --ink-dark: #1a1a1a;
+    --paper-white: #f8f5ed;
     
     /* UI要素 */
-    --panel-bg: rgba(20, 20, 20, 0.95);
-    --panel-border: rgba(255, 255, 255, 0.1);
-    --button-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --button-danger: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --panel-bg: rgba(26, 26, 26, 0.95);
+    --panel-border: rgba(212, 175, 55, 0.3);
+    --button-primary: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
     
     /* サイズ */
     --game-width: min(1400px, 95vw);
     --game-height: min(788px, 90vh);
-    --dice-size: 60px; /* 皿内の3Dサイコロサイズ */
-    --big-dice-size: 140px; /* 演出用の大きいサイコロ */
+    --dice-size: 60px;
+    --big-dice-size: 140px;
 }
 
 /* ========================================
@@ -38,7 +38,7 @@
 
 html, body {
     height: 100%;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Noto Sans JP', 'Yu Gothic', 'Hiragino Sans', sans-serif;
     overflow: hidden;
 }
 
@@ -61,7 +61,8 @@ body {
     background: var(--bg-wood);
     border-radius: 20px;
     box-shadow: 
-        0 0 0 2px rgba(255, 215, 0, 0.3),
+        0 0 0 3px var(--accent-gold),
+        0 0 0 6px rgba(212, 175, 55, 0.3),
         0 20px 80px rgba(0, 0, 0, 0.9);
     position: relative;
     overflow: hidden;
@@ -82,7 +83,7 @@ body {
    タイトル画面
 ======================================== */
 #screen-title {
-    background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(20,20,20,0.95) 100%);
+    background: radial-gradient(ellipse at center, rgba(26,26,26,0.95) 0%, rgba(0,0,0,0.98) 100%);
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -92,25 +93,41 @@ body {
 .title-logo {
     font-size: clamp(3rem, 8vw, 5rem);
     font-weight: 900;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-    animation: title-glow 3s ease-in-out infinite;
+    color: var(--accent-gold);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+    position: relative;
+    text-shadow: 
+        2px 2px 0 rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(212, 175, 55, 0.5);
 }
 
-@keyframes title-glow {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5)); }
-    50% { filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8)); }
+.title-logo::before,
+.title-logo::after {
+    content: '◆';
+    position: absolute;
+    color: var(--accent-gold);
+    opacity: 0.7;
+    font-size: 0.4em;
+}
+
+.title-logo::before {
+    left: -0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.title-logo::after {
+    right: -0.8em;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .title-subtitle {
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     color: var(--text-secondary);
     margin-bottom: 3rem;
+    letter-spacing: 0.3em;
 }
 
 .rules-summary {
@@ -125,32 +142,24 @@ body {
     line-height: 2;
 }
 
-.rules-summary strong {
-    font-weight: 700;
-}
-
 #btn-start {
     padding: 1.2rem 4rem;
     font-size: clamp(1.2rem, 3vw, 1.6rem);
     font-weight: 700;
-    color: #fff;
+    color: var(--ink-dark);
     background: var(--button-primary);
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
 }
 
 #btn-start:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
-}
-
-#btn-start:active {
-    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.6);
 }
 
 /* ========================================
@@ -158,10 +167,11 @@ body {
 ======================================== */
 #screen-game {
     display: grid;
-    grid-template-columns: 200px 1fr 250px;
+    grid-template-columns: 200px 1fr;
     gap: 1rem;
     padding: 1rem;
-    background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(20,20,20,0.9) 100%);
+    background: radial-gradient(ellipse at center, rgba(26,26,26,0.92) 0%, rgba(0,0,0,0.95) 100%);
+    position: relative;
 }
 
 /* ========================================
@@ -182,8 +192,7 @@ body {
     color: var(--accent-gold);
     margin-bottom: 0.8rem;
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
 }
 
 .role-item {
@@ -199,8 +208,8 @@ body {
 }
 
 .role-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-left-color: var(--accent-cyan);
+    background: rgba(212, 175, 55, 0.1);
+    border-left-color: var(--accent-gold);
 }
 
 .role-name {
@@ -220,6 +229,55 @@ body {
 
 .role-multiplier.negative {
     color: var(--accent-red);
+}
+
+/* ========================================
+   右下コンパクト情報パネル
+======================================== */
+.info-panel {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: var(--panel-bg);
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    padding: 1.2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    min-width: 220px;
+    z-index: 10;
+}
+
+.info-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-card h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.info-value {
+    font-size: 1.4rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.info-value.player-money {
+    color: var(--accent-green);
+}
+
+.info-value.target-money {
+    color: var(--accent-gold);
 }
 
 /* ========================================
@@ -252,20 +310,19 @@ body {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
 /* 皿（3Dステージ） */
 .plate {
     width: 220px;
     height: 220px;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
     border-radius: 50%;
-    border: 2px solid rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(212, 175, 55, 0.4);
     box-shadow: 
-        inset 0 -20px 60px rgba(0, 0, 0, 0.6),
+        inset 0 -20px 60px rgba(0, 0, 0, 0.7),
         0 10px 40px rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
@@ -282,14 +339,14 @@ body {
 @keyframes plate-glow {
     0%, 100% {
         box-shadow: 
-            inset 0 -20px 60px rgba(0, 0, 0, 0.6),
+            inset 0 -20px 60px rgba(0, 0, 0, 0.7),
             0 10px 40px rgba(0, 0, 0, 0.8);
     }
     50% {
         box-shadow: 
-            inset 0 -20px 60px rgba(255, 215, 0, 0.4),
-            0 0 80px rgba(255, 215, 0, 0.8),
-            0 0 120px rgba(255, 215, 0, 0.4);
+            inset 0 -20px 60px rgba(212, 175, 55, 0.5),
+            0 0 80px rgba(212, 175, 55, 0.9),
+            0 0 120px rgba(212, 175, 55, 0.5);
         transform: scale(1.05);
     }
 }
@@ -304,7 +361,6 @@ body {
     transform-style: preserve-3d;
 }
 
-/* 3Dサイコロ本体 */
 .dice {
     width: var(--dice-size);
     height: var(--dice-size);
@@ -319,7 +375,6 @@ body {
     50% { transform: rotateX(-25deg) rotateY(35deg); }
 }
 
-/* サイコロの各面 */
 .dice-face {
     position: absolute;
     width: var(--dice-size);
@@ -339,7 +394,6 @@ body {
     backface-visibility: hidden;
 }
 
-/* 各面の配置（3D空間） */
 .dice-face.front  { transform: rotateY(0deg) translateZ(calc(var(--dice-size) / 2)); }
 .dice-face.back   { transform: rotateY(180deg) translateZ(calc(var(--dice-size) / 2)); }
 .dice-face.right  { transform: rotateY(90deg) translateZ(calc(var(--dice-size) / 2)); }
@@ -347,13 +401,11 @@ body {
 .dice-face.top    { transform: rotateX(90deg) translateZ(calc(var(--dice-size) / 2)); }
 .dice-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--dice-size) / 2)); }
 
-/* 1の目は赤色 */
 .dice-face.one {
-    color: #ff1744;
-    text-shadow: 0 2px 4px rgba(255, 23, 68, 0.4);
+    color: #d32f2f;
+    text-shadow: 0 2px 4px rgba(211, 47, 47, 0.4);
 }
 
-/* 謎生物 */
 .dice-face.cursed {
     background: linear-gradient(145deg, #2a0a2a 0%, #1a051a 100%);
     color: #ff00ff;
@@ -367,7 +419,6 @@ body {
     50% { filter: brightness(1.5); }
 }
 
-/* 着地バウンドアニメーション */
 .dice.landing {
     animation: dice-land 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -405,20 +456,20 @@ body {
 
 .role-display.positive {
     color: var(--accent-green);
-    background: rgba(0, 230, 118, 0.1);
+    background: rgba(124, 179, 66, 0.1);
     border-color: var(--accent-green);
-    box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 0 20px rgba(124, 179, 66, 0.3);
 }
 
 .role-display.negative {
     color: var(--accent-red);
-    background: rgba(255, 23, 68, 0.1);
+    background: rgba(211, 47, 47, 0.1);
     border-color: var(--accent-red);
-    box-shadow: 0 0 20px rgba(255, 23, 68, 0.3);
+    box-shadow: 0 0 20px rgba(211, 47, 47, 0.3);
 }
 
 /* ========================================
-   演出用大サイコロ（3D）
+   演出用大サイコロ（3D立体落下）
 ======================================== */
 #dice-animation-overlay {
     position: absolute;
@@ -438,7 +489,6 @@ body {
     transform-style: preserve-3d;
 }
 
-/* 大きいサイコロ */
 .rolling-dice {
     width: var(--big-dice-size);
     height: var(--big-dice-size);
@@ -456,7 +506,6 @@ body {
     }
 }
 
-/* 確定状態 */
 .rolling-dice.locked {
     animation: big-dice-lock 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
@@ -468,35 +517,71 @@ body {
     }
     40% {
         transform: rotate3d(1, 1, 0, 15deg) scale(1.3);
-        filter: brightness(1.8) drop-shadow(0 0 50px rgba(255, 215, 0, 1));
+        filter: brightness(1.8) drop-shadow(0 0 50px rgba(212, 175, 55, 1));
     }
     100% {
         transform: rotate3d(0, 0, 0, 0deg) scale(1);
-        filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+        filter: brightness(1) drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
     }
 }
 
-/* 落下アニメーション */
+/* 立体的な落下アニメーション */
 .rolling-dice.dropping {
-    animation: big-dice-drop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation: big-dice-drop 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 @keyframes big-dice-drop {
     0% {
-        transform: scale(1) translateY(0) rotate3d(0, 0, 0, 0deg);
+        transform: scale(1) translateY(0) translateZ(0) 
+                   rotateX(var(--final-rot-x, 0deg)) 
+                   rotateY(var(--final-rot-y, 0deg)) 
+                   rotateZ(0deg);
         opacity: 1;
     }
-    50% {
-        transform: scale(0.6) translateY(100px) rotate3d(1, 1, 0, 180deg);
-        opacity: 0.8;
+    20% {
+        transform: scale(0.9) translateY(60px) translateZ(-30px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 90deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 120deg)) 
+                   rotateZ(45deg);
+        opacity: 0.98;
+    }
+    40% {
+        transform: scale(0.75) translateY(120px) translateZ(-60px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 180deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 240deg)) 
+                   rotateZ(90deg);
+        opacity: 0.9;
+    }
+    60% {
+        transform: scale(0.6) translateY(170px) translateZ(-85px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 270deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 360deg)) 
+                   rotateZ(135deg);
+        opacity: 0.75;
+    }
+    80% {
+        transform: scale(0.45) translateY(210px) translateZ(-105px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 360deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 480deg)) 
+                   rotateZ(180deg);
+        opacity: 0.5;
+    }
+    95% {
+        transform: scale(0.35) translateY(245px) translateZ(-120px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 405deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 540deg)) 
+                   rotateZ(210deg);
+        opacity: 0.2;
     }
     100% {
-        transform: scale(0.3) translateY(200px) rotate3d(1, 1, 0, 360deg);
+        transform: scale(0.25) translateY(280px) translateZ(-140px)
+                   rotateX(calc(var(--final-rot-x, 0deg) + 450deg)) 
+                   rotateY(calc(var(--final-rot-y, 0deg) + 600deg)) 
+                   rotateZ(225deg);
         opacity: 0;
     }
 }
 
-/* 大サイコロの各面 */
 .rolling-dice-face {
     position: absolute;
     width: var(--big-dice-size);
@@ -524,8 +609,8 @@ body {
 .rolling-dice-face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--big-dice-size) / 2)); }
 
 .rolling-dice-face.one {
-    color: #ff1744;
-    text-shadow: 0 4px 8px rgba(255, 23, 68, 0.6);
+    color: #d32f2f;
+    text-shadow: 0 4px 8px rgba(211, 47, 47, 0.6);
 }
 
 .rolling-dice-face.cursed {
@@ -561,8 +646,7 @@ body {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
 }
 
 .bet-slider-container {
@@ -589,7 +673,7 @@ body {
     border: 3px solid #fff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.6);
 }
 
 .bet-display {
@@ -597,78 +681,26 @@ body {
     font-weight: 900;
     color: var(--accent-gold);
     font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
 }
 
 #btn-confirm-bet, #btn-roll {
     padding: 1rem 3rem;
     font-size: 1.2rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--ink-dark);
     background: var(--button-primary);
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+    letter-spacing: 0.2em;
 }
 
 #btn-confirm-bet:hover, #btn-roll:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 28px rgba(102, 126, 234, 0.6);
-}
-
-#btn-confirm-bet:active, #btn-roll:active {
-    transform: translateY(-2px);
-}
-
-/* ========================================
-   情報パネル（右サイドバー）
-======================================== */
-.info-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background: var(--panel-bg);
-    border-radius: 12px;
-    border: 1px solid var(--panel-border);
-    padding: 1rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-}
-
-.info-card {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 1rem;
-    border-left: 3px solid var(--accent-cyan);
-}
-
-.info-card h4 {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-}
-
-.info-value {
-    font-size: 1.8rem;
-    font-weight: 900;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-}
-
-.info-value.player-money {
-    color: var(--accent-green);
-    text-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
-}
-
-.info-value.cpu-money {
-    color: var(--accent-red);
-    text-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+    box-shadow: 0 10px 28px rgba(212, 175, 55, 0.6);
 }
 
 /* ========================================
@@ -694,7 +726,7 @@ body {
     width: 100%;
     max-height: 80%;
     overflow-y: auto;
-    box-shadow: 0 0 60px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
 }
 
 .cheat-panel h3 {
@@ -703,8 +735,7 @@ body {
     font-weight: 700;
     color: var(--accent-gold);
     margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
 }
 
 #cheat-list {
@@ -728,8 +759,8 @@ body {
 }
 
 .cheat-btn:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-cyan);
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--accent-gold);
     transform: translateX(4px);
 }
 
@@ -778,10 +809,10 @@ body {
 }
 
 /* ========================================
-   試合結果 / ゲームオーバー / 勝利画面
+   ゲームオーバー / 勝利画面
 ======================================== */
 #screen-gameover, #screen-victory {
-    background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(20,20,20,0.98) 100%);
+    background: radial-gradient(ellipse at center, rgba(26,26,26,0.95) 0%, rgba(0,0,0,0.98) 100%);
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -792,18 +823,15 @@ body {
     font-size: clamp(3rem, 10vw, 5rem);
     font-weight: 900;
     color: var(--accent-red);
-    text-shadow: 0 0 40px rgba(255, 23, 68, 0.8);
+    text-shadow: 0 0 40px rgba(211, 47, 47, 0.8);
     margin-bottom: 2rem;
 }
 
 #screen-victory h1 {
     font-size: clamp(3rem, 10vw, 5rem);
     font-weight: 900;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+    color: var(--accent-gold);
+    text-shadow: 0 0 60px rgba(212, 175, 55, 0.8);
     margin-bottom: 2rem;
 }
 
@@ -827,20 +855,19 @@ body {
     padding: 1.2rem 4rem;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--ink-dark);
     background: var(--button-primary);
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+    letter-spacing: 0.2em;
 }
 
 #btn-retry:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.6);
 }
 
 /* ========================================
@@ -893,7 +920,7 @@ body {
 ======================================== */
 @media (max-width: 1200px) {
     #screen-game {
-        grid-template-columns: 180px 1fr 220px;
+        grid-template-columns: 180px 1fr;
         gap: 0.8rem;
         padding: 0.8rem;
     }
@@ -911,7 +938,7 @@ body {
 @media (max-width: 900px) {
     #screen-game {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto 1fr;
     }
     
     #role-table {
@@ -920,12 +947,8 @@ body {
     }
     
     .info-panel {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .info-card {
-        flex: 1;
-        min-width: 120px;
+        bottom: 1rem;
+        right: 1rem;
+        min-width: 180px;
     }
 }
