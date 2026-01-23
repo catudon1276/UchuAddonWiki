@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Dice Roller - API版</title>
+    <!--
+    ========================================
+    🎮 公開API関数リファレンス
+    ========================================
+    
+    【基本設定】
+    
+    1. setBowl(enabled)
+       皿の表示/非表示を設定
+       - enabled: true=皿あり, false=皿なし（全部落ちる）
+       例: setBowl(false);
+    
+    2. setDiceFaces(faces)
+       サイコロの面数を設定
+       - faces: 面数（3, 6, 10, 20など任意の数）
+       例: setDiceFaces(10);  // 10面ダイス
+    
+    3. setDiceLabels(labels)
+       サイコロにカスタム文字を設定（画像対応予定）
+       - labels: 文字の配列、またはnullで数字に戻す
+       例: setDiceLabels(['H','A','G','V','B','C']);
+       例: setDiceLabels(null);  // 数字に戻す
+       
+       ※ 配列の長さ = 面数 が推奨
+       ※ 7文字以上も対応可能（例: 10文字配列 + 10面ダイス）
+    
+    4. setDiceSpriteSheet(urlOrConfig, frameWidth, frameHeight, frames, direction)
+       スプライトシート画像を設定
+       - urlOrConfig: 画像URLまたは設定オブジェクト
+       - frameWidth: 1コマの幅（URL指定時）
+       - frameHeight: 1コマの高さ（URL指定時）
+       - frames: コマ数（URL指定時）
+       - direction: 'vertical'（縦）または'horizontal'（横）、デフォルト='vertical'
+       
+       簡易形式:
+       例: setDiceSpriteSheet('dice.png', 60, 60, 6);  // 60x360の縦並び
+       例: setDiceSpriteSheet('dice.png', 60, 60, 6, 'horizontal');  // 360x60の横並び
+       
+       オブジェクト形式:
+       例: setDiceSpriteSheet({
+             url: 'dice.png',
+             frameWidth: 60,
+             frameHeight: 60,
+             frames: 6,
+             direction: 'vertical'
+           });
+       
+       クリア:
+       例: setDiceSpriteSheet(null);  // スプライトシートを解除
+    
+    5. setDiceCount(count)
+       サイコロの数を設定
+       - count: サイコロの個数
+       例: setDiceCount(5);
+    
+    【サイコロを振る】
+    
+    6. rollDice(direction)
+       通常のランダム振り
+       - direction: 'bottom', 'top', 'left', 'right'
+       例: rollDice('bottom');
+    
+    7. rollWithValues(direction, values)
+       指定した目でサイコロを振る
+       - direction: 'bottom', 'top', 'left', 'right'
+       - values: 出したい目の配列 [3, 5, 2]
+       例: rollWithValues('bottom', [1, 4, 6]);
+       
+       ※ カスタム文字使用時も数字で指定
+       　 例: ['H','A','G','V','B','C']の場合
+       　     [1, 4, 6] = H, V, C
+       ※ 【重要】皿なし時は指定値より優先してションベンになります
+    
+    8. rollShonben(direction)
+       強制ションベン（ランダムで1〜3個が落ちる）
+       - direction: 'bottom', 'top', 'left', 'right'
+       例: rollShonben('right');
+    
+    ========================================
+    使用例
+    ========================================
+    
+    // 例1: H,A,G,V,B,Cの6面ダイスを3個、皿なしで振る
+    setDiceLabels(['H','A','G','V','B','C']);
+    setDiceCount(3);
+    setBowl(false);
+    rollDice('bottom');
+    
+    // 例2: 特定の目を出す（H, V, C）
+    rollWithValues('bottom', [1, 4, 6]);
+    
+    // 例3: 10面ダイスを5個
+    setDiceFaces(10);
+    setDiceCount(5);
+    rollDice('top');
+    
+    // 例4: スプライトシートを使用（60x360の縦並び画像）
+    setDiceSpriteSheet('images/dice-sprite.png', 60, 60, 6);
+    rollDice('bottom');
+    
+    // 例5: スプライトシートを解除して数字に戻す
+    setDiceSpriteSheet(null);
+    setDiceLabels(null);
+    setDiceFaces(6);
+    setDiceCount(3);
+    
+    // 例6: 皿なしモード（指定値より優先）
+    setBowl(false);
+    rollWithValues('bottom', [6, 6, 6]);  // 指定しても全部落ちる
+    
+    ========================================
+    -->
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0f172a; font-family: 'sans-serif'; }
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .bowl-bg {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 75%, #450a0a 100%);
+            box-shadow: 0 0 80px rgba(0,0,0,0.6);
+            z-index: 0;
+            border: 4px solid rgba(255,255,255,0.1);
+        }
+        canvas { position: relative; z-index: 10; }
+        #ui {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+            padding: 2.5rem;
+            z-index: 20;
+        }
+        #result-display {
+            font-size: 5rem; font-weight: 900; color: white;
+            text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 8px 0 #1e293b;
+            opacity: 0; transform: scale(0.5) translateY(-20px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            word-break: break-word;
+        }
+        #result-display.show { opacity: 1; transform: scale(1) translateY(0); }
+        #result-display.shonben { color: #facc15; text-shadow: 0 0 20px rgba(250, 204, 21, 0.5); }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container">
+        <div class="bowl-bg" id="bowl-bg"></div>
+        <canvas id="diceCanvas"></canvas>
+        
+        <div id="ui">
+            <div id="result-display"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // 🎮 ゲーム状態
+        // ========================================
+        let gameState = {
+            diceCount: 3,
+            diceFaces: 6,
+            diceLabels: null,  // null = 数字, ['H','A','G'] = カスタム文字
+            diceSpriteSheet: null,  // スプライトシート設定
+            bowlEnabled: true,
+            bowlRadius: 220,
+            bowlSafeRadius: 180,
+            shonbenChance: 0.15,
+            shonbenMinDice: 1,
+            shonbenMaxDice: 3,
+            diceSize: 48,
+            normalVariance: 20,
+            fixedVariance: 5
+        };
+        
+        let DICE_SIZE = gameState.diceSize;
+        let RADIUS = gameState.bowlRadius;
+        let SAFE_RADIUS = gameState.bowlSafeRadius;
+        let NORMAL_VARIANCE = gameState.normalVariance;
+        let FIXED_VARIANCE = gameState.fixedVariance;
+        let SHONBEN_CHANCE = gameState.shonbenChance;
+
+        // スプライトシート画像の管理
+        let spriteImage = null;
+        let spriteImageLoaded = false;
+
+        // ========================================
+        // 🔧 公開API関数
+        // ========================================
+        
+        /**
+         * 皿の表示/非表示を設定
+         * @param {boolean} enabled - true=皿あり, false=皿なし
+         */
+        function setBowl(enabled) {
+            gameState.bowlEnabled = enabled;
+            const bowlElement = document.getElementById('bowl-bg');
+            bowlElement.style.display = enabled ? 'block' : 'none';
+        }
+        
+        /**
+         * サイコロの面数を設定
+         * @param {number} faces - 面数（3, 6, 10, 20など）
+         */
+        function setDiceFaces(faces) {
+            gameState.diceFaces = faces;
+        }
+        
+        /**
+         * サイコロにカスタム文字を設定
+         * @param {Array|null} labels - 文字の配列 ['H','A','G'] または null（数字に戻す）
+         */
+        function setDiceLabels(labels) {
+            gameState.diceLabels = labels;
+        }
+        
+        /**
+         * スプライトシートを設定
+         * @param {string|Object} urlOrConfig - 画像URLまたは設定オブジェクト
+         * @param {number} frameWidth - 1コマの幅（URL指定時）
+         * @param {number} frameHeight - 1コマの高さ（URL指定時）
+         * @param {number} frames - コマ数（URL指定時）
+         * @param {string} direction - 'vertical'（縦）または'horizontal'（横）、デフォルト='vertical'
+         */
+        function setDiceSpriteSheet(urlOrConfig, frameWidth, frameHeight, frames, direction = 'vertical') {
+            if (urlOrConfig === null) {
+                // スプライトシートをクリア
+                gameState.diceSpriteSheet = null;
+                spriteImage = null;
+                spriteImageLoaded = false;
+                return;
+            }
+            
+            let config;
+            if (typeof urlOrConfig === 'string') {
+                // 簡易形式: setDiceSpriteSheet('url', 60, 60, 6)
+                config = {
+                    url: urlOrConfig,
+                    frameWidth: frameWidth,
+                    frameHeight: frameHeight,
+                    frames: frames,
+                    direction: direction
+                };
+            } else {
+                // オブジェクト形式
+                config = {
+                    url: urlOrConfig.url,
+                    frameWidth: urlOrConfig.frameWidth,
+                    frameHeight: urlOrConfig.frameHeight,
+                    frames: urlOrConfig.frames,
+                    direction: urlOrConfig.direction || 'vertical'
+                };
+            }
+            
+            gameState.diceSpriteSheet = config;
+            
+            // 画像を読み込む
+            spriteImage = new Image();
+            spriteImageLoaded = false;
+            spriteImage.onload = () => {
+                spriteImageLoaded = true;
+                console.log('✅ スプライトシート読み込み完了:', config.url);
+            };
+            spriteImage.onerror = () => {
+                console.error('❌ スプライトシート読み込み失敗:', config.url);
+                gameState.diceSpriteSheet = null;
+                spriteImage = null;
+            };
+            spriteImage.src = config.url;
+        }
+        
+        /**
+         * サイコロの数を設定
+         * @param {number} count - サイコロの数
+         */
+        function setDiceCount(count) {
+            if (isRolling) return;
+            gameState.diceCount = count;
+            resetDices();
+        }
+        
+        /**
+         * 指定した目でサイコロを振る
+         * @param {string} direction - 'bottom', 'top', 'left', 'right'
+         * @param {Array} values - 出したい目の配列 [3, 5, 2]
+         */
+        function rollWithValues(direction, values) {
+            if (isRolling) return;
+            isRolling = true;
+            shonbenRoute = false;
+            shonbenDiceIds = [];
+            
+            resultDisplay.classList.remove('show', 'shonben');
+            
+            dices.forEach((d, i) => {
+                const targetValue = values[i] || null;
+                d.roll(direction, false, targetValue, false);
+            });
+            
+            startResultCheck();
+        }
+        
+        /**
+         * 通常のサイコロ振り（ランダム）
+         * @param {string} direction - 'bottom', 'top', 'left', 'right'
+         */
+        function rollDice(direction) {
+            startRoll(direction, 'normal');
+        }
+        
+        /**
+         * 強制ションベン
+         * @param {string} direction - 'bottom', 'top', 'left', 'right'
+         */
+        function rollShonben(direction) {
+            startRoll(direction, 'force-shonben');
+        }
+
+        // ========================================
+        // 内部関数
+        // ========================================
+        
+        function startResultCheck() {
+            const checkStatus = setInterval(() => {
+                if (dices.every(d => d.isStopped)) {
+                    clearInterval(checkStatus);
+                    
+                    const shonbenOccurred = dices.some(d => d.isShonben);
+                    
+                    if (shonbenOccurred) {
+                        setTimeout(() => {
+                            resultDisplay.textContent = "ションベン";
+                            resultDisplay.classList.add('show', 'shonben');
+                            isRolling = false;
+                        }, 500);
+                    } else {
+                        const res = dices.map(d => {
+                            if (gameState.diceLabels && d.displayValue >= 1 && d.displayValue <= gameState.diceLabels.length) {
+                                return gameState.diceLabels[d.displayValue - 1];
+                            }
+                            return d.displayValue;
+                        });
+                        resultDisplay.textContent = res.join(" ");
+                        resultDisplay.classList.add('show');
+                        isRolling = false;
+                    }
+                }
+            }, 100);
+        }
+
+        let dices = [];
+        let isRolling = false;
+        let shonbenRoute = false;
+        let shonbenDiceIds = [];
+
+        const canvas = document.getElementById('diceCanvas');
+        const ctx = canvas.getContext('2d');
+        const resultDisplay = document.getElementById('result-display');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // ========================================
+        // Diceクラス定義
+        // ========================================
+        class Dice {
+            constructor(id) {
+                this.id = id;
+                this.reset();
+            }
+
+            reset() {
+                this.x = canvas.width / 2;
+                this.y = canvas.height + 200;
+                this.z = 0;
+                this.vx = 0; this.vy = 0; this.vz = 0;
+                this.gravity = 0.8;
+                this.displayValue = 1;
+                this.targetValue = null; 
+                this.angle = 0; this.vAngle = 0;
+                this.isStopped = true;
+                this.isValueFixed = false;
+                this.isShonben = false;
+                this.fallScale = 1.0;
+                this.opacity = 1.0;
+                this.shakeAmount = 0;
+                this.shuffleTimer = 0;
+            }
+
+            roll(direction = 'bottom', forceShonben = false, forceValue = null, isShonbenTarget = false) {
+                this.isStopped = false;
+                this.isValueFixed = false;
+                this.isShonben = false;
+                this.fallScale = 1.0;
+                this.opacity = 1.0;
+                
+                // 皿なし時は強制的にションベン対象にする（最優先）
+                if (!gameState.bowlEnabled) {
+                    isShonbenTarget = true;
+                    forceValue = null;  // 指定値を無視
+                }
+                
+                this.targetValue = forceValue;
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                let targetX, targetY;
+                
+                if (forceShonben || isShonbenTarget) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const r = RADIUS + 50 + Math.random() * 100;
+                    targetX = centerX + Math.cos(angle) * r;
+                    targetY = centerY + Math.sin(angle) * r;
+                } else {
+                    const variance = (forceValue !== null) ? FIXED_VARIANCE : NORMAL_VARIANCE;
+                    const angle = Math.random() * Math.PI * 2;
+                    const r = Math.pow(Math.random(), 2.0) * variance;
+                    targetX = centerX + Math.cos(angle) * r;
+                    targetY = centerY + Math.sin(angle) * r;
+                }
+                
+                let startX, startY, baseVx, baseVy;
+                const throwDistance = 420;
+                
+                switch(direction) {
+                    case 'top':
+                        startX = centerX + (Math.random() - 0.5) * 60;
+                        startY = centerY - throwDistance;
+                        baseVx = (targetX - startX) / 35;
+                        baseVy = (targetY - startY) / 35 + 2;
+                        break;
+                    case 'left':
+                        startX = centerX - throwDistance;
+                        startY = centerY + (Math.random() - 0.5) * 60;
+                        baseVx = (targetX - startX) / 35 + 2;
+                        baseVy = (targetY - startY) / 35;
+                        break;
+                    case 'right':
+                        startX = centerX + throwDistance;
+                        startY = centerY + (Math.random() - 0.5) * 60;
+                        baseVx = (targetX - startX) / 35 - 2;
+                        baseVy = (targetY - startY) / 35;
+                        break;
+                    case 'bottom':
+                    default:
+                        startX = centerX + (Math.random() - 0.5) * 60;
+                        startY = centerY + throwDistance;
+                        baseVx = (targetX - startX) / 35;
+                        baseVy = (targetY - startY) / 35 - 2;
+                        break;
+                }
+                
+                this.x = startX;
+                this.y = startY;
+
+                if (forceShonben || isShonbenTarget) {
+                    this.z = 80;
+                    this.vx = baseVx + (Math.random() - 0.5) * 3;
+                    this.vy = baseVy + (Math.random() - 0.5) * 3;
+                    this.vz = 4 + Math.random() * 2; 
+                    this.vAngle = (Math.random() - 0.5) * 4;
+                    this.gravity = 0.6;
+                } else {
+                    this.z = 200; 
+                    this.vx = baseVx + (Math.random() - 0.5) * 0.5;
+                    this.vy = baseVy + (Math.random() - 0.5) * 0.5;
+                    this.vz = 3.5 + Math.random() * 1.5;
+                    this.vAngle = (Math.random() - 0.5) * 2;
+                    this.gravity = 0.75;
+                }
+                
+                this.shuffleTimer = 0;
+            }
+
+            update() {
+                if (this.isStopped) return;
+
+                this.x += this.vx;
+                this.y += this.vy;
+                this.z += this.vz;
+                this.vz -= this.gravity; 
+
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const dx = this.x - centerX;
+                const dy = this.y - centerY;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (this.z <= 0) {
+                    this.z = 0;
+                    
+                    const isShonbenDice = shonbenDiceIds.includes(this.id);
+                    if (dist > RADIUS || isShonbenDice) {
+                        if (!this.isShonben) {
+                            this.isShonben = true;
+                            this.vz = 0;
+                            this.vx *= 1.2;
+                            this.vy = 8;
+                            this.gravity = 0.3;
+                        }
+                    } else {
+                        if (!this.isValueFixed) {
+                            this.isValueFixed = true;
+                            this.displayValue = this.targetValue || (Math.floor(Math.random() * gameState.diceFaces) + 1);
+                            this.shakeAmount = 15;
+                        }
+                        this.vz *= -0.25;
+                        this.vx *= 0.6;
+                        this.vy *= 0.6;
+                        this.vAngle *= 0.5;
+                    }
+                }
+
+                if (this.isShonben) {
+                    this.vy += 0.3;
+                    this.fallScale *= 0.985;
+                    this.opacity *= 0.97;
+                    if (this.y > canvas.height + 100 || this.opacity < 0.05) {
+                        this.isStopped = true;
+                    }
+                }
+
+                if (!this.isValueFixed) {
+                    this.angle += this.vAngle;
+                    this.shuffleTimer++;
+                    if (this.shuffleTimer % 4 === 0) {
+                        this.displayValue = Math.floor(Math.random() * gameState.diceFaces) + 1;
+                    }
+                } else {
+                    this.angle *= 0.9; 
+                }
+
+                if (!this.isShonben && this.z < 80) {
+                    const wallDist = dist;
+                    const safeRadius = RADIUS - DICE_SIZE;
+                    
+                    if (wallDist > safeRadius) {
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        
+                        const dot = this.vx * nx + this.vy * ny;
+                        if (dot > 0) {
+                            this.vx -= 2.5 * dot * nx;
+                            this.vy -= 2.5 * dot * ny;
+                            
+                            this.vx *= 0.65;
+                            this.vy *= 0.65;
+                            
+                            const pushForce = (wallDist - safeRadius) * 0.15;
+                            this.vx -= nx * pushForce;
+                            this.vy -= ny * pushForce;
+                            
+                            if (wallDist > RADIUS - DICE_SIZE/2) {
+                                const overlap = wallDist - (RADIUS - DICE_SIZE/2);
+                                this.x -= nx * overlap;
+                                this.y -= ny * overlap;
+                            }
+                        }
+                    }
+                }
+
+                dices.forEach(other => {
+                    if (other === this || other.isStopped || other.isShonben) return;
+                    const dx_d = this.x - other.x;
+                    const dy_d = this.y - other.y;
+                    const d2 = dx_d*dx_d + dy_d*dy_d;
+                    const minDist = DICE_SIZE * 0.9;
+                    if (d2 < minDist * minDist && Math.abs(this.z - other.z) < 25) {
+                        const d = Math.sqrt(d2) || 1;
+                        const nx = dx_d / d;
+                        const ny = dy_d / d;
+                        const pushForce = 0.5;
+                        this.vx += nx * pushForce;
+                        this.vy += ny * pushForce;
+                        other.vx -= nx * pushForce;
+                        other.vy -= ny * pushForce;
+                        
+                        const overlap = minDist - d;
+                        this.x += nx * overlap * 0.5;
+                        this.y += ny * overlap * 0.5;
+                        other.x -= nx * overlap * 0.5;
+                        other.y -= ny * overlap * 0.5;
+                    }
+                });
+
+                if (!this.isShonben && this.isValueFixed) {
+                    const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                    if (speed < 0.15 && this.z < 1) {
+                        this.vx = 0;
+                        this.vy = 0;
+                        this.vz = 0;
+                        this.z = 0;
+                        this.isStopped = true;
+                    }
+                }
+            }
+
+            draw() {
+                if (this.opacity <= 0) return;
+                ctx.globalAlpha = this.opacity;
+
+                if (!this.isShonben) {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    const sScale = (1 + this.z / 200) * this.fallScale;
+                    ctx.scale(sScale, sScale);
+                    ctx.fillStyle = "rgba(0,0,0,0.15)";
+                    ctx.beginPath();
+                    ctx.roundRect(-DICE_SIZE/2 + 4, -DICE_SIZE/2 + 4, DICE_SIZE, DICE_SIZE, 12);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                ctx.save();
+                ctx.translate(this.x, this.y - this.z);
+                if (this.shakeAmount > 0) {
+                    ctx.translate((Math.random()-0.5)*this.shakeAmount, (Math.random()-0.5)*this.shakeAmount);
+                    this.shakeAmount *= 0.85;
+                }
+                ctx.rotate(this.angle);
+                const drawScale = (1 + this.z / 300) * this.fallScale;
+                ctx.scale(drawScale, drawScale);
+                this.drawDiceFace(this.displayValue);
+                ctx.restore();
+
+                ctx.globalAlpha = 1.0;
+            }
+
+            drawDiceFace(val) {
+                const s = DICE_SIZE;
+                const r = 10;
+                
+                ctx.fillStyle = "#cbd5e1";
+                ctx.beginPath();
+                ctx.roundRect(-s/2, -s/2 + 5, s, s, r);
+                ctx.fill();
+                
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.roundRect(-s/2, -s/2, s, s, r);
+                ctx.fill();
+                
+                this.drawNumber(val);
+            }
+
+            drawNumber(val) {
+                const s = DICE_SIZE;
+                
+                // スプライトシートが設定されている場合
+                if (gameState.diceSpriteSheet && spriteImageLoaded && spriteImage) {
+                    const config = gameState.diceSpriteSheet;
+                    const frameIndex = val - 1;  // 1始まりを0始まりに変換
+                    
+                    if (frameIndex >= 0 && frameIndex < config.frames) {
+                        let sx, sy;
+                        if (config.direction === 'horizontal') {
+                            // 横並び
+                            sx = frameIndex * config.frameWidth;
+                            sy = 0;
+                        } else {
+                            // 縦並び（デフォルト）
+                            sx = 0;
+                            sy = frameIndex * config.frameHeight;
+                        }
+                        
+                        // スプライトシートから切り取って描画
+                        ctx.drawImage(
+                            spriteImage,
+                            sx, sy, config.frameWidth, config.frameHeight,  // ソース（切り取り）
+                            -s/2, -s/2, s, s  // 描画先
+                        );
+                        return;
+                    }
+                }
+                
+                // カスタム文字またはデフォルトの数字描画
+                ctx.fillStyle = val === 1 ? "#e11d48" : "#1e293b";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                let displayText = val;
+                if (gameState.diceLabels && val >= 1 && val <= gameState.diceLabels.length) {
+                    displayText = gameState.diceLabels[val - 1];
+                }
+                
+                ctx.font = `bold ${s * 0.7}px 'Arial'`;
+                ctx.fillText(displayText, 0, 0);
+            }
+        }
+
+        // ========================================
+        // 初期化
+        // ========================================
+        
+        const bowlElement = document.getElementById('bowl-bg');
+        setBowl(gameState.bowlEnabled);
+        bowlElement.style.width = gameState.bowlRadius * 2 + 'px';
+        bowlElement.style.height = gameState.bowlRadius * 2 + 'px';
+
+        resultDisplay.textContent = Array(gameState.diceCount).fill('?').join(' ');
+
+        function resetDices() {
+            dices = [];
+            for (let i = 0; i < gameState.diceCount; i++) {
+                dices.push(new Dice(i));
+            }
+            resultDisplay.textContent = Array(gameState.diceCount).fill('?').join(' ');
+            resultDisplay.classList.remove('show', 'shonben');
+        }
+
+        for (let i = 0; i < gameState.diceCount; i++) {
+            dices.push(new Dice(i));
+        }
+
+        function startRoll(direction, mode = 'normal') {
+            if (isRolling) return;
+            isRolling = true;
+            shonbenRoute = false;
+            shonbenDiceIds = [];
+            
+            resultDisplay.classList.remove('show', 'shonben');
+            
+            let targetValues = new Array(gameState.diceCount).fill(null);
+            
+            if (mode === 'force-shonben') {
+                shonbenRoute = true;
+                const minCount = Math.min(gameState.shonbenMinDice, gameState.diceCount);
+                const maxCount = Math.min(gameState.shonbenMaxDice, gameState.diceCount);
+                const shonbenCount = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
+                
+                const allIds = dices.map((_, i) => i);
+                for (let i = allIds.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allIds[i], allIds[j]] = [allIds[j], allIds[i]];
+                }
+                shonbenDiceIds = allIds.slice(0, shonbenCount);
+            } else if (mode === 'force-pin') {
+                targetValues = new Array(gameState.diceCount).fill(1);
+            } else {
+                if (!gameState.bowlEnabled) {
+                    shonbenRoute = true;
+                    shonbenDiceIds = dices.map((_, i) => i);
+                } else {
+                    if (Math.random() < SHONBEN_CHANCE) {
+                        shonbenRoute = true;
+                        const minCount = Math.min(gameState.shonbenMinDice, gameState.diceCount);
+                        const maxCount = Math.min(gameState.shonbenMaxDice, gameState.diceCount);
+                        const shonbenCount = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
+                        
+                        const allIds = dices.map((_, i) => i);
+                        for (let i = allIds.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [allIds[i], allIds[j]] = [allIds[j], allIds[i]];
+                        }
+                        shonbenDiceIds = allIds.slice(0, shonbenCount);
+                    }
+                }
+            }
+
+            dices.forEach((d, i) => {
+                const isShonbenTarget = shonbenDiceIds.includes(i);
+                d.roll(direction, (mode === 'force-shonben'), targetValues[i], isShonbenTarget);
+            });
+
+            const checkStatus = setInterval(() => {
+                if (dices.every(d => d.isStopped)) {
+                    clearInterval(checkStatus);
+                    
+                    const shonbenOccurred = dices.some(d => d.isShonben);
+                    
+                    if (shonbenOccurred) {
+                        setTimeout(() => {
+                            resultDisplay.textContent = "ションベン";
+                            resultDisplay.classList.add('show', 'shonben');
+                            isRolling = false;
+                        }, 500);
+                    } else {
+                        const res = dices.map(d => {
+                            if (gameState.diceLabels && d.displayValue >= 1 && d.displayValue <= gameState.diceLabels.length) {
+                                return gameState.diceLabels[d.displayValue - 1];
+                            }
+                            return d.displayValue;
+                        });
+                        resultDisplay.textContent = res.join(" ");
+                        resultDisplay.classList.add('show');
+                        isRolling = false;
+                    }
+                }
+            }, 100);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const sortedDices = [...dices].sort((a, b) => a.z - b.z);
+            dices.forEach(d => d.update());
+            sortedDices.forEach(d => d.draw());
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // ========================================
+        // コンソールでAPIを使えるようにグローバルに公開
+        // ========================================
+        window.DiceRoller = {
+            setBowl,
+            setDiceFaces,
+            setDiceLabels,
+            setDiceSpriteSheet,
+            setDiceCount,
+            rollDice,
+            rollWithValues,
+            rollShonben
+        };
+
+        console.log('🎲 Dice Roller API loaded!');
+        console.log('使用例: DiceRoller.rollDice("bottom")');
+        console.log('スプライトシート: DiceRoller.setDiceSpriteSheet("dice.png", 60, 60, 6)');
+        console.log('詳細: HTMLコメント参照');
+    </script>
+</body>
+</html>

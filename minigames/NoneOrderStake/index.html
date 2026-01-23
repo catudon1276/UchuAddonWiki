@@ -2,614 +2,426 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>None Order Stake - UchuAddon</title>
-    <style>
-        @font-face {
-            font-family: 'TamanegiKaisho';
-            src: url('css/tamanegi_kaisho_v1_0_2.ttf') format('truetype');
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: #0f172a; 
-            font-family: 'TamanegiKaisho', 'sans-serif';
-        }
-        
-        /* Canvas Container */
-        #canvas-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .bowl-bg {
-            position: absolute;
-            width: 480px;
-            height: 480px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 75%, #450a0a 100%);
-            box-shadow: 0 0 80px rgba(0,0,0,0.6);
-            z-index: 0;
-            border: 4px solid rgba(255,255,255,0.1);
-        }
-        
-        canvas { 
-            position: relative; 
-            z-index: 10; 
-        }
-        
-        /* UI Overlay */
-        #ui {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-start; 
-            align-items: center;
-            padding: 2.5rem;
-            z-index: 20;
-        }
-        
-        /* Result Display (Top Center) */
-        #result-display {
-            font-size: 3rem; 
-            font-weight: 900; 
-            color: white;
-            text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 8px 0 #1e293b;
-            opacity: 0; 
-            transform: scale(0.5) translateY(-20px);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 90%;
-            word-break: break-word;
-            text-align: center;
-        }
-        
-        #result-display.show { 
-            opacity: 1; 
-            transform: scale(1) translateY(0); 
-        }
-        
-        #result-display.shonben { 
-            color: #facc15; 
-            text-shadow: 0 0 20px rgba(250, 204, 21, 0.5); 
-        }
-        
-        /* Result Dice Areas */
-        .result-areas {
-            position: absolute;
-            top: 140px; /* 情報バーの下に配置 */
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 2rem;
-            z-index: 15;
-            pointer-events: none;
-        }
-        
-        .result-box {
-            width: 320px;
-            height: 180px;
-            background: rgba(59, 130, 246, 0.3);
-            border: 3px solid rgba(59, 130, 246, 0.6);
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .result-box-label {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 0.5rem;
-        }
-        
-        .result-dice-display {
-            display: flex;
-            gap: 0.75rem;
-        }
-        
-        .result-dice {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 900;
-            color: #1e293b;
-            box-shadow: 0 4px 0 #cbd5e1;
-        }
-        
-        .result-dice.one {
-            color: #e11d48;
-        }
-        
-        .result-dice.cursed {
-            background: linear-gradient(135deg, #8b5cf6, #ec4899);
-            color: white;
-        }
-        
-        .result-role {
-            font-size: 1rem;
-            color: white;
-            font-weight: 900;
-        }
-        
-        /* 中央表示エリア（新規追加） */
-        .center-result {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 30;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        
-        .center-result.show {
-            opacity: 1;
-        }
-        
-        .center-dice-values {
-            display: flex;
-            gap: 2rem;
-            font-size: 5rem;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 8px 0 #1e293b;
-            margin-bottom: 1rem;
-        }
-        
-        .center-dice-values .dice-num.one {
-            color: #e11d48;
-        }
-        
-        .center-dice-values .dice-num.cursed {
-            color: #a855f7;
-        }
-        
-        .center-role-name {
-            font-size: 2rem;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-        }
-        
-        .center-role-name.shonben {
-            color: #facc15;
-        }
-        
-        /* Game Info Bar (Top) */
-        .game-info {
-            position: absolute;
-            top: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 2rem;
-            background: rgba(15, 23, 42, 0.9);
-            padding: 1rem 2rem;
-            border-radius: 1rem;
-            pointer-events: none;
-            z-index: 25;
-        }
-        
-        .info-item {
-            text-align: center;
-        }
-        
-        .info-label {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-bottom: 0.25rem;
-        }
-        
-        .info-value {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: white;
-        }
-        
-        .info-value.money-player { color: #4ade80; }
-        .info-value.money-cpu { color: #f87171; }
-        .info-value.target { color: #fbbf24; }
-        
-        /* Action Buttons (Bottom) */
-        .action-bar {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            pointer-events: auto;
-            z-index: 25;
-        }
-        
-        .btn {
-            padding: 1rem 3rem;
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: white;
-            color: #0f172a;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-family: 'TamanegiKaisho', 'sans-serif';
-            transition: all 0.2s;
-            box-shadow: 0 4px 0 #cbd5e1;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #cbd5e1;
-        }
-        
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #cbd5e1;
-        }
-        
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-            box-shadow: 0 4px 0 #1e40af;
-        }
-        
-        .btn-primary:hover {
-            box-shadow: 0 6px 0 #1e40af;
-        }
-        
-        .btn-primary:active {
-            box-shadow: 0 2px 0 #1e40af;
-        }
-        
-        /* Bet Slider */
-        .bet-control {
-            background: rgba(15, 23, 42, 0.95);
-            padding: 1.5rem 2rem;
-            border-radius: 1rem;
-            text-align: center;
-            min-width: 400px;
-        }
-        
-        .bet-label {
-            font-size: 1.25rem;
-            color: white;
-            margin-bottom: 1rem;
-        }
-        
-        .bet-slider {
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        
-        .bet-value {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #fbbf24;
-            margin-bottom: 1rem;
-        }
-        
-        /* Screens */
-        .screen {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.98);
-            z-index: 100;
-            padding: 2rem;
-        }
-        
-        .screen.hidden {
-            display: none;
-        }
-        
-        .title-logo {
-            font-size: 4rem;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
-            margin-bottom: 1rem;
-        }
-        
-        .title-subtitle {
-            font-size: 1.5rem;
-            color: #fbbf24;
-            margin-bottom: 2rem;
-        }
-        
-        .rules-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-        
-        .rules-box p {
-            color: #cbd5e1;
-            line-height: 1.8;
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Cheat Selection */
-        .cheat-modal {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 50;
-        }
-        
-        .cheat-panel {
-            background: rgba(15, 23, 42, 0.98);
-            padding: 2rem;
-            border-radius: 1rem;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .cheat-title {
-            font-size: 2rem;
-            color: white;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .cheat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .cheat-option {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .cheat-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #3b82f6;
-        }
-        
-        .cheat-name {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: #fbbf24;
-            margin-bottom: 0.5rem;
-        }
-        
-        .cheat-desc {
-            font-size: 0.9rem;
-            color: #cbd5e1;
-            margin-bottom: 0.5rem;
-        }
-        
-        .cheat-cost {
-            font-size: 1rem;
-            color: #f87171;
-            font-weight: 900;
-        }
-        
-        .cheat-option.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* Result Message */
-        .result-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(15, 23, 42, 0.95);
-            padding: 2rem 3rem;
-            border-radius: 1rem;
-            text-align: center;
-            z-index: 60;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .result-message.show {
-            opacity: 1;
-        }
-        
-        .result-winner {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-        }
-        
-        .result-winner.player { color: #4ade80; }
-        .result-winner.cpu { color: #f87171; }
-        .result-winner.draw { color: #94a3b8; }
-        
-        .result-detail {
-            font-size: 1.25rem;
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Night Of Schemes - イカサマ上等チンチロ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <!-- Title Screen -->
-    <div id="screen-title" class="screen">
-        <h1 class="title-logo">None Order Stake</h1>
-        <p class="title-subtitle">～イカサマ上等～</p>
-        
-        <div class="rules-box">
-            <p><strong style="color: #fbbf24;">【ルール】</strong></p>
-            <p>・目標金額 <strong style="color: #4ade80;">100,000円</strong> を達成せよ</p>
-            <p>・全15試合を戦い抜け</p>
-            <p>・所持金が <strong style="color: #f87171;">1,000円未満</strong> で敗北</p>
-            <p>・同点の場合はCPUの勝ち</p>
-            <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.9em;">※序盤はイカサマ使用不可</p>
-        </div>
-        
-        <button class="btn btn-primary" onclick="startGame()">ゲーム開始</button>
-    </div>
-
-    <!-- Game Over Screen -->
-    <div id="screen-gameover" class="screen hidden">
-        <h1 style="font-size: 4rem; color: #f87171; margin-bottom: 2rem;">GAME OVER</h1>
-        <p style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 1rem;">最終所持金</p>
-        <p style="font-size: 3rem; font-weight: 900; color: white; margin-bottom: 2rem;">
-            <span id="final-money">0</span>円
-        </p>
-        <button class="btn" onclick="restartGame()">リトライ</button>
-    </div>
-
-    <!-- Victory Screen -->
-    <div id="screen-victory" class="screen hidden">
-        <h1 style="font-size: 4rem; color: #4ade80; margin-bottom: 2rem;">🎉 VICTORY! 🎉</h1>
-        <p style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 1rem;">最終所持金</p>
-        <p style="font-size: 3rem; font-weight: 900; color: #4ade80; margin-bottom: 2rem;">
-            <span id="victory-money">0</span>円
-        </p>
-        <button class="btn btn-primary" onclick="restartGame()">もう一度</button>
-    </div>
-
-    <!-- Main Game Area -->
-    <div id="canvas-container" class="hidden">
-        <div class="bowl-bg" id="bowl-bg"></div>
-        <canvas id="diceCanvas"></canvas>
-        
-        <!-- UI Overlay -->
-        <div id="ui">
-            <!-- Result Display (Top Center) -->
-            <div id="result-display"></div>
-        </div>
-        
-        <!-- Result Dice Areas -->
-        <div class="result-areas">
-            <!-- CPU Result -->
-            <div class="result-box">
-                <div class="result-box-label">CPU</div>
-                <div class="result-dice-display" id="cpu-result-dice">
-                    <div class="result-dice">?</div>
-                    <div class="result-dice">?</div>
-                    <div class="result-dice">?</div>
-                </div>
-                <div class="result-role" id="cpu-result-role">-</div>
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen">
+        <div class="title-container">
+            <h1 class="title-logo">Night Of Schemes</h1>
+            <p class="title-subtitle">～イカサマ上等～</p>
+            
+            <div class="rules-box">
+                <p class="rules-title">【ルール】</p>
+                <p>・目標金額 <span class="text-green-400 font-bold">¥100,000</span> を達成せよ</p>
+                <p>・全15試合を戦い抜け</p>
+                <p>・所持金が <span class="text-red-400 font-bold">¥100未満</span> で敗北</p>
+                <p>・同点の場合はCPUの勝ち</p>
+                <p class="text-sm text-slate-400 mt-2">※カードを駆使してイカサマで勝て！</p>
             </div>
             
-            <!-- Player Result -->
-            <div class="result-box">
-                <div class="result-box-label">あなた</div>
-                <div class="result-dice-display" id="player-result-dice">
-                    <div class="result-dice">?</div>
-                    <div class="result-dice">?</div>
-                    <div class="result-dice">?</div>
+            <div class="title-buttons">
+                <button class="btn btn-primary" onclick="startCpuGame()">CPU対戦</button>
+                <button class="btn btn-secondary" onclick="startOnlineGame()" disabled>
+                    オンライン対戦<span class="btn-sub">（開発中）</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="screen hidden">
+        <header class="game-header">
+            <div class="header-left">
+                <button id="rank-toggle" class="rank-toggle-btn">役表</button>
+            </div>
+            <div class="header-center">
+                <div class="match-info">
+                    <span class="match-label">試合</span>
+                    <span id="match-display" class="match-value">1/15</span>
                 </div>
-                <div class="result-role" id="player-result-role">-</div>
+                <div class="mode-info">
+                    <span id="mode-display" class="mode-value">通常賽</span>
+                </div>
             </div>
+            <div class="header-right">
+                <button id="card-draw-button" class="draw-btn" onclick="drawCard()">カードを引く</button>
+            </div>
+        </header>
+
+        <main class="game-main">
+            <!-- CPU情報 -->
+            <div id="cpu-box" class="player-box cpu-box">
+                <div class="box-header">
+                    <div class="player-avatar cpu">CPU</div>
+                    <div class="player-name">CPU</div>
+                </div>
+                <div class="box-stats">
+                    <div class="stat-item"><span class="stat-label">所持金</span><span id="cpu-money" class="stat-value money">¥9,999,999</span></div>
+                    <div class="stat-item"><span class="stat-label">掛け金</span><span id="cpu-bet" class="stat-value bet">¥0</span></div>
+                </div>
+                <div id="cpu-dice" class="dice-display"><div class="dice-slot">?</div><div class="dice-slot">?</div><div class="dice-slot">?</div></div>
+                <div id="cpu-cards" class="card-backs"></div>
+            </div>
+
+            <!-- 中央エリア -->
+            <div class="center-area">
+                <div id="vfx-stage" class="vfx-stage"></div>
+                <div id="bowl-area" class="bowl-area">
+                    <div class="bowl-bg"></div>
+                    <canvas id="dice-canvas"></canvas>
+                </div>
+                <div class="action-area">
+                    <button id="action-button" class="btn btn-action hidden">サイコロを振る</button>
+                    <button id="skip-reroll-btn" class="btn btn-secondary hidden">これで勝負</button>
+                </div>
+            </div>
+
+            <!-- プレイヤー情報 -->
+            <div id="player-box" class="player-box player-box-self">
+                <div class="box-header">
+                    <div class="player-avatar you">YOU</div>
+                    <div class="player-name">あなた</div>
+                </div>
+                <div class="box-stats">
+                    <div class="stat-item"><span class="stat-label">所持金</span><span id="player-money" class="stat-value money">¥10,000</span></div>
+                    <div class="stat-item"><span class="stat-label">掛け金</span><span id="player-bet" class="stat-value bet">¥0</span></div>
+                </div>
+                <div id="player-dice" class="dice-display"><div class="dice-slot">?</div><div class="dice-slot">?</div><div class="dice-slot">?</div></div>
+            </div>
+            <div id="player-cards" class="hand-area"></div>
+        </main>
+
+        <!-- 役表パネル -->
+        <aside id="rank-panel" class="rank-panel">
+            <div class="rank-panel-header"><h2 class="rank-panel-title">役表</h2><button onclick="document.getElementById('rank-panel').classList.remove('open')" class="close-btn">×</button></div>
+            <div id="dice-type-label" class="dice-type-label">通常賽</div>
+            <div id="rank-list" class="rank-list"></div>
+            <div class="rank-info"><p id="info-text"><span class="text-yellow-500 font-bold">◆</span> 黄色がその役の「目」です。</p></div>
+        </aside>
+        <div id="rank-overlay" class="rank-overlay" onclick="document.getElementById('rank-panel').classList.remove('open')"></div>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="screen hidden">
+        <div class="result-container">
+            <h1 id="result-title" class="result-title victory">🎉 VICTORY! 🎉</h1>
+            <p class="result-label">最終所持金</p>
+            <p id="result-money" class="result-money">¥100,000</p>
+            <button class="btn btn-primary" onclick="restartGame()">タイトルへ</button>
         </div>
-        
-        <!-- 中央表示エリア（新規追加） -->
-        <div class="center-result" id="center-result">
-            <div class="center-dice-values" id="center-dice-values">
-                <span class="dice-num">1</span>
-                <span class="dice-num">3</span>
-                <span class="dice-num">5</span>
-            </div>
-            <div class="center-role-name" id="center-role-name">通常の目</div>
-        </div>
-        
-        <!-- Game Info (Top) -->
-        <div class="game-info">
-            <div class="info-item">
-                <div class="info-label">プレイヤー</div>
-                <div class="info-value money-player"><span id="player-money">10,000</span>円</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">試合</div>
-                <div class="info-value"><span id="current-match">1</span>/15</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">CPU</div>
-                <div class="info-value money-cpu"><span id="cpu-money">10,000</span>円</div>
-            </div>
-        </div>
-        
-        <!-- Action Bar (Bottom) -->
-        <div class="action-bar">
-            <!-- Bet Control -->
-            <div id="bet-ui" class="bet-control hidden">
-                <div class="bet-label">賭け金を決めろ</div>
+    </div>
+
+    <!-- モーダル: ベッティング -->
+    <div id="bet-modal" class="modal hidden">
+        <div class="modal-content bet-modal-content">
+            <h2 class="modal-title">賭け金を決めろ</h2>
+            <div class="bet-slider-container">
                 <input type="range" id="bet-slider" class="bet-slider" min="100" max="10000" value="1000" step="100">
-                <div class="bet-value"><span id="bet-display">1,000</span>円</div>
-                <button class="btn btn-primary" onclick="confirmBet()">決定</button>
+                <div class="bet-value-display">¥<span id="bet-value">1,000</span></div>
             </div>
-            
-            <!-- Roll Button -->
-            <button id="btn-roll" class="btn btn-primary hidden" onclick="rollDice()">サイコロを振る</button>
-            
-            <!-- Reroll Button -->
-            <button id="btn-reroll" class="btn hidden" onclick="rerollDice()">振り直す (残り2回)</button>
-            
-            <!-- Next Match Button -->
-            <button id="btn-next" class="btn hidden" onclick="nextMatch()">次の試合へ</button>
-        </div>
-        
-        <!-- Cheat Selection Modal -->
-        <div id="cheat-modal" class="cheat-modal hidden">
-            <div class="cheat-panel">
-                <h2 class="cheat-title">イカサマを選択</h2>
-                <div id="cheat-list" class="cheat-list">
-                    <!-- Generated by JS -->
-                </div>
-                <button class="btn" onclick="selectCheat(null)">イカサマしない</button>
-            </div>
-        </div>
-        
-        <!-- Result Message -->
-        <div id="result-message" class="result-message hidden">
-            <div class="result-winner" id="result-winner">プレイヤーの勝ち</div>
-            <div class="result-detail" id="result-detail">+1,000円</div>
+            <button class="btn btn-primary bet-confirm">決定</button>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="js/dice-roller.js"></script>
+    <!-- モーダル: カード使用確認 -->
+    <div id="card-confirm-modal" class="modal hidden">
+        <div class="modal-content card-confirm-content">
+            <h2 id="confirm-card-name" class="modal-title">カード名</h2>
+            <p id="confirm-card-desc" class="card-desc">カードの説明</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="document.getElementById('card-confirm-modal').classList.add('hidden')">キャンセル</button>
+                <button class="btn btn-primary" onclick="confirmCardUse()">使用する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル: 試合結果 -->
+    <div id="match-result-modal" class="modal hidden">
+        <div class="modal-content match-result-content">
+            <h2 id="match-winner" class="match-winner win">WIN!</h2>
+            <div class="match-roles">
+                <div class="role-box"><span class="role-label">あなた</span><span id="match-role-player" class="role-name">ピンゾロ</span></div>
+                <span class="vs">VS</span>
+                <div class="role-box"><span class="role-label">CPU</span><span id="match-role-cpu" class="role-name">シゴロ</span></div>
+            </div>
+            <p id="match-payout" class="match-payout">+¥5,000</p>
+            <button id="next-match-btn" class="btn btn-primary">次の試合へ</button>
+        </div>
+    </div>
+
+    <!-- ダイス物理演算 -->
+    <script>
+        let diceGameState = {
+            diceCount: 3, diceFaces: 6, diceLabels: null, bowlEnabled: true,
+            bowlRadius: 90, bowlSafeRadius: 70, shonbenChance: 0.10,
+            shonbenMinDice: 1, shonbenMaxDice: 3, diceSize: 32, normalVariance: 15, fixedVariance: 5
+        };
+        
+        let DICE_SIZE = diceGameState.diceSize;
+        let RADIUS = diceGameState.bowlRadius;
+        let SAFE_RADIUS = diceGameState.bowlSafeRadius;
+        let SHONBEN_CHANCE = diceGameState.shonbenChance;
+
+        let diceCanvas, diceCtx;
+        let dices = [];
+        let isRolling = false;
+        let shonbenRoute = false;
+        let shonbenDiceIds = [];
+
+        function setBowl(enabled) {
+            diceGameState.bowlEnabled = enabled;
+            const bowlEl = document.querySelector('.bowl-bg');
+            if (bowlEl) bowlEl.style.display = enabled ? 'block' : 'none';
+        }
+        function setDiceFaces(faces) { diceGameState.diceFaces = faces; }
+        function setDiceLabels(labels) { diceGameState.diceLabels = labels; }
+        function setDiceCount(count) { if (!isRolling) { diceGameState.diceCount = count; resetDices(); } }
+        function rollDice(direction) { startRoll(direction, 'normal'); }
+        function rollWithValues(direction, values) {
+            if (isRolling) return;
+            isRolling = true; shonbenRoute = false; shonbenDiceIds = [];
+            dices.forEach((d, i) => d.roll(direction, false, values[i] || null, false));
+            checkRollComplete();
+        }
+        function rollShonben(direction) { startRoll(direction, 'force-shonben'); }
+
+        function startRoll(direction, mode = 'normal') {
+            if (isRolling) return;
+            isRolling = true; shonbenRoute = false; shonbenDiceIds = [];
+            let targetValues = new Array(diceGameState.diceCount).fill(null);
+            
+            if (mode === 'force-shonben') {
+                shonbenRoute = true;
+                const minC = Math.min(diceGameState.shonbenMinDice, diceGameState.diceCount);
+                const maxC = Math.min(diceGameState.shonbenMaxDice, diceGameState.diceCount);
+                const cnt = Math.floor(Math.random() * (maxC - minC + 1)) + minC;
+                const ids = dices.map((_, i) => i);
+                for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+                shonbenDiceIds = ids.slice(0, cnt);
+            } else if (!diceGameState.bowlEnabled) {
+                shonbenRoute = true;
+                shonbenDiceIds = dices.map((_, i) => i);
+            } else if (Math.random() < SHONBEN_CHANCE) {
+                shonbenRoute = true;
+                const minC = Math.min(diceGameState.shonbenMinDice, diceGameState.diceCount);
+                const maxC = Math.min(diceGameState.shonbenMaxDice, diceGameState.diceCount);
+                const cnt = Math.floor(Math.random() * (maxC - minC + 1)) + minC;
+                const ids = dices.map((_, i) => i);
+                for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+                shonbenDiceIds = ids.slice(0, cnt);
+            }
+
+            dices.forEach((d, i) => d.roll(direction, mode === 'force-shonben', targetValues[i], shonbenDiceIds.includes(i)));
+            checkRollComplete();
+        }
+
+        function checkRollComplete() {
+            const check = setInterval(() => {
+                if (dices.every(d => d.isStopped)) {
+                    clearInterval(check);
+                    const shonben = dices.some(d => d.isShonben);
+                    const results = dices.map(d => d.displayValue);
+                    isRolling = false;
+                    if (typeof window.onDiceRollComplete === 'function') window.onDiceRollComplete(results, shonben);
+                }
+            }, 100);
+        }
+
+        function resetDices() {
+            dices = [];
+            for (let i = 0; i < diceGameState.diceCount; i++) dices.push(new Dice(i));
+        }
+
+        class Dice {
+            constructor(id) { this.id = id; this.reset(); }
+            reset() {
+                this.x = 0; this.y = 0; this.z = 0; this.vx = 0; this.vy = 0; this.vz = 0;
+                this.angle = 0; this.va = 0; this.displayValue = Math.floor(Math.random() * diceGameState.diceFaces) + 1;
+                this.targetValue = null; this.isValueFixed = false; this.isStopped = true;
+                this.isShonben = false; this.shakeAmount = 0; this.fallScale = 1; this.opacity = 1;
+            }
+            roll(direction, forceShonben = false, targetValue = null, isShonbenTarget = false) {
+                this.isStopped = false; this.isShonben = false; this.isValueFixed = false;
+                this.targetValue = targetValue; this.fallScale = 1; this.opacity = 1;
+                const centerX = diceCanvas.width / 2, centerY = diceCanvas.height / 2;
+                let startX, startY, baseVx, baseVy;
+                switch(direction) {
+                    case 'top': startX = centerX + (Math.random() - 0.5) * 60; startY = -30; baseVx = (Math.random() - 0.5) * 2; baseVy = 6 + Math.random() * 3; break;
+                    case 'bottom': startX = centerX + (Math.random() - 0.5) * 60; startY = diceCanvas.height + 30; baseVx = (Math.random() - 0.5) * 2; baseVy = -(6 + Math.random() * 3); break;
+                    case 'left': startX = -30; startY = centerY + (Math.random() - 0.5) * 60; baseVx = 6 + Math.random() * 3; baseVy = (Math.random() - 0.5) * 2; break;
+                    case 'right': startX = diceCanvas.width + 30; startY = centerY + (Math.random() - 0.5) * 60; baseVx = -(6 + Math.random() * 3); baseVy = (Math.random() - 0.5) * 2; break;
+                    default: startX = centerX; startY = diceCanvas.height + 30; baseVx = 0; baseVy = -8;
+                }
+                this.x = startX; this.y = startY; this.z = 100;
+                this.vx = baseVx + (Math.random() - 0.5) * 2; this.vy = baseVy + (Math.random() - 0.5) * 2; this.vz = -1.5;
+                this.angle = Math.random() * Math.PI * 2; this.va = (Math.random() - 0.5) * 0.3;
+                if (isShonbenTarget && !targetValue) { const a = Math.random() * Math.PI * 2; this.vx += Math.cos(a) * 4; this.vy += Math.sin(a) * 4; }
+                if (targetValue) setTimeout(() => { this.displayValue = targetValue; this.isValueFixed = true; }, 200);
+            }
+            update() {
+                if (this.isStopped) return;
+                this.x += this.vx; this.y += this.vy; this.z += this.vz; this.angle += this.va;
+                if (this.z <= 0 && !this.isValueFixed && !this.targetValue) this.displayValue = Math.floor(Math.random() * diceGameState.diceFaces) + 1;
+                if (this.z <= 0) {
+                    this.z = 0; this.vz = -this.vz * 0.3; this.vx *= 0.8; this.vy *= 0.8; this.va *= 0.6; this.shakeAmount = 4;
+                    if (!this.isValueFixed && this.targetValue) { this.displayValue = this.targetValue; this.isValueFixed = true; }
+                }
+                const centerX = diceCanvas.width / 2, centerY = diceCanvas.height / 2;
+                if (diceGameState.bowlEnabled) {
+                    const dx = this.x - centerX, dy = this.y - centerY, dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > RADIUS + 30 && !this.isShonben) { this.isShonben = true; this.opacity = 0.5; }
+                    if (!this.isShonben && dist > SAFE_RADIUS) {
+                        const nx = dx / dist, ny = dy / dist;
+                        this.vx *= 0.6; this.vy *= 0.6;
+                        const pf = (dist - SAFE_RADIUS) * 0.12;
+                        this.vx -= nx * pf; this.vy -= ny * pf;
+                        if (dist > RADIUS - DICE_SIZE / 2) { const o = dist - (RADIUS - DICE_SIZE / 2); this.x -= nx * o; this.y -= ny * o; }
+                    }
+                }
+                dices.forEach(other => {
+                    if (other === this || other.isStopped || other.isShonben) return;
+                    const ddx = this.x - other.x, ddy = this.y - other.y, d2 = ddx * ddx + ddy * ddy, minD = DICE_SIZE * 0.85;
+                    if (d2 < minD * minD && Math.abs(this.z - other.z) < 20) {
+                        const d = Math.sqrt(d2) || 1, nx = ddx / d, ny = ddy / d, pf = 0.4;
+                        this.vx += nx * pf; this.vy += ny * pf; other.vx -= nx * pf; other.vy -= ny * pf;
+                    }
+                });
+                if (!this.isShonben && this.isValueFixed) {
+                    const spd = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                    if (spd < 0.1 && this.z < 1) { this.vx = 0; this.vy = 0; this.vz = 0; this.z = 0; this.isStopped = true; }
+                }
+                if (this.isShonben) { this.fallScale *= 0.97; this.opacity *= 0.96; if (this.opacity < 0.08) this.isStopped = true; }
+            }
+            draw() {
+                if (this.opacity <= 0) return;
+                diceCtx.globalAlpha = this.opacity;
+                if (!this.isShonben) {
+                    diceCtx.save(); diceCtx.translate(this.x, this.y);
+                    const ss = (1 + this.z / 150) * this.fallScale; diceCtx.scale(ss, ss);
+                    diceCtx.fillStyle = "rgba(0,0,0,0.12)"; diceCtx.beginPath(); diceCtx.roundRect(-DICE_SIZE/2 + 3, -DICE_SIZE/2 + 3, DICE_SIZE, DICE_SIZE, 8); diceCtx.fill();
+                    diceCtx.restore();
+                }
+                diceCtx.save(); diceCtx.translate(this.x, this.y - this.z);
+                if (this.shakeAmount > 0) { diceCtx.translate((Math.random()-0.5)*this.shakeAmount, (Math.random()-0.5)*this.shakeAmount); this.shakeAmount *= 0.8; }
+                diceCtx.rotate(this.angle);
+                const ds = (1 + this.z / 200) * this.fallScale; diceCtx.scale(ds, ds);
+                this.drawDiceFace(this.displayValue);
+                diceCtx.restore();
+                diceCtx.globalAlpha = 1.0;
+            }
+            drawDiceFace(val) {
+                const s = DICE_SIZE, r = 6;
+                diceCtx.fillStyle = "#cbd5e1"; diceCtx.beginPath(); diceCtx.roundRect(-s/2, -s/2 + 3, s, s, r); diceCtx.fill();
+                diceCtx.fillStyle = "#ffffff"; diceCtx.beginPath(); diceCtx.roundRect(-s/2, -s/2, s, s, r); diceCtx.fill();
+                diceCtx.fillStyle = val === 1 ? "#e11d48" : "#1e293b";
+                diceCtx.textAlign = "center"; diceCtx.textBaseline = "middle";
+                diceCtx.font = `bold ${s * 0.6}px 'Arial'`; diceCtx.fillText(val, 0, 0);
+            }
+        }
+
+        function animateDice() {
+            if (!diceCtx) return;
+            diceCtx.clearRect(0, 0, diceCanvas.width, diceCanvas.height);
+            const sorted = [...dices].sort((a, b) => a.z - b.z);
+            dices.forEach(d => d.update());
+            sorted.forEach(d => d.draw());
+            requestAnimationFrame(animateDice);
+        }
+
+        function initDiceCanvas() {
+            diceCanvas = document.getElementById('dice-canvas');
+            if (!diceCanvas) return;
+            diceCtx = diceCanvas.getContext('2d');
+            const ba = document.getElementById('bowl-area');
+            if (ba) { const r = ba.getBoundingClientRect(); diceCanvas.width = r.width; diceCanvas.height = r.height; }
+            else { diceCanvas.width = 200; diceCanvas.height = 200; }
+            resetDices();
+            animateDice();
+        }
+
+        window.DiceRoller = { setBowl, setDiceFaces, setDiceLabels, setDiceCount, rollDice, rollWithValues, rollShonben, isRolling: () => isRolling };
+        document.addEventListener('DOMContentLoaded', initDiceCanvas);
+    </script>
+
+    <!-- VFX演出 -->
+    <script>
+        class MatchVFX {
+            constructor(stageId) { this.stage = document.getElementById(stageId); }
+            reset() { if (this.stage) { this.stage.innerHTML = ''; this.stage.className = 'vfx-stage'; } }
+            triggerShake() { if (this.stage) { this.stage.classList.remove('shake'); void this.stage.offsetWidth; this.stage.classList.add('shake'); } }
+            triggerFlash() { const f = document.createElement('div'); f.className = 'vfx-flash active'; this.stage?.appendChild(f); setTimeout(() => f.remove(), 400); }
+            calcFontSize(text, baseSize = 4, minSize = 1.5) { const len = text.length; if (len <= 2) return `${baseSize}rem`; if (len <= 4) return `${baseSize * 0.7}rem`; if (len <= 6) return `${baseSize * 0.5}rem`; return `${Math.max(minSize, baseSize * (2.5 / len))}rem`; }
+            async playPattern1(beforeText, afterText) {
+                this.reset(); if (!this.stage) return;
+                const c = document.createElement('div'); c.className = 'vfx-p1-container';
+                const t1 = document.createElement('div'); t1.className = 'vfx-p1-turn-text'; t1.innerText = beforeText; t1.style.fontSize = this.calcFontSize(beforeText, 3);
+                const sl = document.createElement('div'); sl.className = 'vfx-slash-line';
+                const t2 = document.createElement('div'); t2.className = 'vfx-p1-final-text'; t2.innerText = afterText; t2.style.fontSize = this.calcFontSize(afterText, 5);
+                c.appendChild(t1); c.appendChild(sl); c.appendChild(t2); this.stage.appendChild(c);
+                await this._wait(200); t1.classList.add('active'); await this._wait(800);
+                sl.classList.add('animate'); t1.classList.add('slash-hit'); this.triggerShake(); this.triggerFlash();
+                await this._wait(200); t1.classList.remove('slash-hit'); t1.classList.add('dissolve');
+                await this._wait(500); t2.classList.add('animate'); setTimeout(() => { this.triggerShake(); this.triggerFlash(); }, 50);
+                await this._wait(1500); this.reset();
+            }
+            async playPattern2(text) {
+                this.reset(); if (!this.stage) return;
+                const c = document.createElement('div'); c.className = 'vfx-impact-container'; this.stage.appendChild(c);
+                const fSize = this.calcFontSize(text, 4, 1);
+                for (let ch of text.split('')) { const el = document.createElement('div'); el.className = 'vfx-char'; el.innerText = ch; el.style.fontSize = fSize; c.appendChild(el); await this._wait(80); el.classList.add('animate'); this.triggerShake(); }
+                await this._wait(400); this.triggerFlash(); await this._wait(1000); this.reset();
+            }
+            async playPattern3(beforeText, afterText) {
+                this.reset(); if (!this.stage) return;
+                const c = document.createElement('div'); c.className = 'vfx-push-container';
+                const fSize = this.calcFontSize(beforeText.length > afterText.length ? beforeText : afterText, 4);
+                const t1 = document.createElement('div'); t1.className = 'vfx-push-text'; t1.innerText = beforeText; t1.style.fontSize = fSize;
+                const t2 = document.createElement('div'); t2.className = 'vfx-push-text in-initial'; t2.innerText = afterText; t2.style.fontSize = fSize;
+                c.appendChild(t1); c.appendChild(t2); this.stage.appendChild(c);
+                await this._wait(100); t1.classList.add('visible'); await this._wait(1000);
+                t1.classList.add('out'); t2.classList.remove('in-initial'); t2.classList.add('in-active');
+                setTimeout(() => this.triggerShake(), 500);
+                await this._wait(1500); this.reset();
+            }
+            _wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+        }
+        window.MatchVFX = MatchVFX;
+    </script>
+
+    <!-- 役表システム -->
+    <script>
+        const RankSystem = {
+            currentDiceName: "通常賽", infoMessage: `<span class="text-yellow-500 font-bold">◆</span> 黄色がその役の「目」です。`, ranks: [],
+            clear() { this.ranks = []; },
+            addSection(label) { this.ranks.push({ type: 'label', text: label }); },
+            addRank(name, mult, dice, targetIndex = -1, isSpecial = false) { this.ranks.push({ type: 'rank', name, mult, dice, t: targetIndex, isSpecial }); },
+            setDiceName(name) { this.currentDiceName = name; const el = document.getElementById('dice-type-label'); if(el) el.innerText = name; },
+            setInfoText(html) { this.infoMessage = html; const el = document.getElementById('info-text'); if(el) el.innerHTML = html; },
+            render() {
+                const list = document.getElementById('rank-list'); if (!list) return;
+                list.innerHTML = this.ranks.map(r => {
+                    if (r.type === 'label') return `<div class="rank-section-label"><span>${r.text}</span></div>`;
+                    let dHtml;
+                    if (r.isSpecial) dHtml = `<div class="rank-die dim">?</div><div class="rank-die dim">?</div><div class="rank-die dim">?</div>`;
+                    else dHtml = r.dice.map((d, i) => { const isRed = (d === 1 && r.t !== i); const isTarget = (r.t === i); return `<div class="rank-die ${isTarget ? 'target' : ''} ${isRed ? 'red' : ''}">${d}</div>`; }).join('');
+                    const multDisplay = r.mult > 0 ? `x${r.mult}` : `x${r.mult}`;
+                    const multClass = r.mult < 0 ? 'negative' : '';
+                    return `<div class="rank-item"><div class="rank-dice-container">${dHtml}</div><div class="rank-info"><div class="rank-name">${r.name}</div><div class="rank-mult ${multClass}">${multDisplay}</div></div></div>`;
+                }).join('');
+                this.setDiceName(this.currentDiceName); this.setInfoText(this.infoMessage);
+            }
+        };
+        window.RankSystem = RankSystem;
+    </script>
+
     <script type="module" src="js/main.js"></script>
 </body>
 </html>

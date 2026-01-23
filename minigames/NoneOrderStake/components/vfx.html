@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Start VFX - API Ready</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Noto Serif JP', serif;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        #vfx-stage {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- Common Parts --- */
+        .flash {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff; opacity: 0; z-index: 100; pointer-events: none;
+        }
+        .flash.active { animation: flash-anim 0.4s ease-out forwards; }
+        @keyframes flash-anim { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        .shake { animation: screen-shake 0.2s ease-in-out; }
+        @keyframes screen-shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-8px, 8px); }
+            50% { transform: translate(8px, -8px); }
+            75% { transform: translate(-8px, -8px); }
+        }
+
+        /* --- Pattern 1 Styles --- */
+        .p1-container {
+            position: relative; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .slash-line {
+            position: absolute; width: 150%; height: 6px; background: #fff;
+            transform: rotate(-20deg) scaleX(0); opacity: 0; z-index: 15;
+            box-shadow: 0 0 30px #fff, 0 0 10px #fff;
+        }
+        .slash-line.animate { animation: slash-action 0.3s cubic-bezier(0.2, 0, 0, 1) forwards; }
+        @keyframes slash-action {
+            0% { transform: rotate(-20deg) scaleX(0); opacity: 1; }
+            40% { transform: rotate(-20deg) scaleX(1); opacity: 1; }
+            100% { transform: rotate(-20deg) scaleX(1.2) translateY(-20px); opacity: 0; filter: blur(5px); }
+        }
+        .p1-turn-text {
+            color: #fff; opacity: 0; z-index: 10;
+            transition: opacity 0.2s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+        .p1-turn-text.active { opacity: 1; transform: scale(1); }
+        .p1-turn-text.slash-hit { animation: slash-vibrate 0.1s infinite; }
+        @keyframes slash-vibrate {
+            0% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            100% { transform: translate(1px, -1px); }
+        }
+        .p1-turn-text.dissolve { animation: dissolve-anim 0.4s ease-in forwards; }
+        @keyframes dissolve-anim {
+            0% { opacity: 1; filter: blur(0) brightness(2); transform: scale(1); }
+            100% { opacity: 0; filter: blur(30px) brightness(5); transform: scale(1.2) rotate(2deg); }
+        }
+        .p1-final-text {
+            position: absolute; color: #fff; font-weight: 900;
+            opacity: 0; z-index: 20; white-space: nowrap;
+            text-shadow: 0 0 40px rgba(255,255,255,0.8);
+        }
+        .p1-final-text.animate { animation: shrink-impact 0.45s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+        @keyframes shrink-impact {
+            0% { transform: scale(8); opacity: 0; filter: blur(40px) brightness(4); }
+            100% { transform: scale(1); opacity: 1; filter: blur(0) brightness(1); }
+        }
+
+        /* --- Pattern 2 Styles --- */
+        .impact-container { display: flex; gap: 1rem; z-index: 10; position: relative; align-items: center; justify-content: center; height: 100%; }
+        .char {
+            color: #fff; font-weight: 900; opacity: 0;
+            display: inline-block; transform: scale(3); filter: blur(20px);
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }
+        .char.animate { animation: char-slam 0.25s cubic-bezier(0.2, 0, 0, 1) forwards; }
+        @keyframes char-slam {
+            0% { transform: scale(4); opacity: 0; filter: blur(20px); }
+            100% { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+        .char-burst-layer {
+            position: absolute; font-weight: 900; color: transparent;
+            -webkit-text-stroke: 5px #fff; opacity: 0; pointer-events: none;
+        }
+        .char-burst-layer.animate { animation: burst-out 0.6s cubic-bezier(0.1, 0.6, 0.2, 1) forwards; }
+        @keyframes burst-out {
+            0% { transform: scale(1); opacity: 1; filter: brightness(2) blur(0); }
+            100% { transform: scale(3); opacity: 0; filter: blur(20px) brightness(1); }
+        }
+
+        /* --- Pattern 3 Styles --- */
+        .push-container {
+            position: relative; 
+            width: 100%; 
+            height: 12rem; /* 24remから12remに修正：文字サイズ10remに対してギリギリの高さ */
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .push-text {
+            color: #fff; font-weight: 900; position: absolute;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.8s;
+            white-space: nowrap; opacity: 0; z-index: 15;
+        }
+        .push-text.visible { opacity: 1; }
+        .push-text.out { transform: translateY(-160%); opacity: 1; }
+        .push-text.in-initial { transform: translateY(160%); opacity: 1; }
+        .push-text.in-active { transform: translateY(0); opacity: 1; }
+        
+        .blur-explosion {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: 900; color: rgba(255, 255, 255, 0.7);
+            opacity: 0; z-index: 5; pointer-events: none; filter: blur(10px);
+            white-space: nowrap;
+        }
+        .blur-explosion.animate { animation: blur-pop 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+        @keyframes blur-pop {
+            0% { transform: scale(1); opacity: 0; filter: blur(10px); }
+            20% { opacity: 1; }
+            100% { transform: scale(3.5); opacity: 0; filter: blur(120px); }
+        }
+
+        /* --- UI --- */
+        .ui { position: fixed; bottom: 40px; display: flex; gap: 15px; z-index: 1000; }
+        button {
+            padding: 12px 25px; background: rgba(255, 255, 255, 0.1); color: #fff;
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; cursor: pointer;
+            backdrop-filter: blur(10px); transition: all 0.3s; font-size: 0.85rem; font-weight: bold;
+        }
+        button:hover { background: #fff; color: #000; transform: translateY(-3px); }
+        .btn-label { display: block; font-size: 0.65rem; opacity: 0.7; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <div id="vfx-stage"></div>
+
+    <div class="ui">
+        <button onclick="vfx.playPattern1('一巡目', 'いざ、勝負！')">
+            <span class="btn-label">演出 1</span>斬撃・縮小
+        </button>
+        <button onclick="vfx.playPattern2('国士無双十三面待ち')">
+            <span class="btn-label">演出 2</span>インパクト強調
+        </button>
+        <button onclick="vfx.playPattern3('通常賽', '天球賽')">
+            <span class="btn-label">演出 3</span>押し出しブラー
+        </button>
+    </div>
+
+    <script>
+        /**
+         * ==========================================
+         * MatchVFX クラス - 使い方ガイド
+         * ==========================================
+         * * 1. インスタンスの作成:
+         * const vfx = new MatchVFX('element-id');
+         * * 2. 演出の実行 (すべて async 関数です):
+         * * A) 斬撃演出
+         * await vfx.playPattern1('演出前の文字', '演出後の文字');
+         * * B) インパクト演出 (一文字ずつ叩きつける)
+         * await vfx.playPattern2('表示したい文字列');
+         * * C) 押し出し演出 (領域内で文字がスライド入れ替え)
+         * await vfx.playPattern3('消える文字', '現れる文字');
+         * * ==========================================
+         */
+        class MatchVFX {
+            constructor(stageId) {
+                this.stage = document.getElementById(stageId);
+            }
+
+            // ステージの初期化（実行中の演出をクリア）
+            reset() {
+                this.stage.innerHTML = '';
+                this.stage.className = '';
+            }
+
+            // 画面揺れエフェクト
+            triggerShake() {
+                this.stage.classList.remove('shake');
+                void this.stage.offsetWidth; 
+                this.stage.classList.add('shake');
+            }
+
+            // ホワイトフラッシュエフェクト
+            triggerFlash() {
+                const flash = document.createElement('div');
+                flash.className = 'flash active';
+                this.stage.appendChild(flash);
+                setTimeout(() => flash.remove(), 400);
+            }
+
+            // 文字数に応じたフォントサイズ計算（レスポンシブ対応）
+            calcFontSize(text, baseSize = 10, minSize = 3) {
+                const len = text.length;
+                if (len <= 2) return `${baseSize}rem`;
+                if (len <= 4) return `${baseSize * 0.7}rem`;
+                if (len <= 6) return `${baseSize * 0.5}rem`;
+                return `${Math.max(minSize, baseSize * (2.5 / len))}rem`;
+            }
+
+            /**
+             * 演出1: 斬撃・縮小
+             * 文字を斬り裂き、新しい文字を縮小させて叩きつける演出。
+             */
+            async playPattern1(beforeText, afterText) {
+                this.reset();
+                const container = document.createElement('div');
+                container.className = 'p1-container';
+                
+                const nText = document.createElement('div');
+                nText.className = 'p1-turn-text';
+                nText.innerText = beforeText;
+                nText.style.fontSize = this.calcFontSize(beforeText, 8); 
+
+                const slash = document.createElement('div');
+                slash.className = 'slash-line';
+
+                const finalEl = document.createElement('div');
+                finalEl.className = 'p1-final-text';
+                finalEl.innerText = afterText;
+                finalEl.style.fontSize = this.calcFontSize(afterText, 11);
+
+                container.appendChild(nText);
+                container.appendChild(slash);
+                container.appendChild(finalEl);
+                this.stage.appendChild(container);
+
+                await this._wait(200);
+                nText.classList.add('active');
+                await this._wait(1000);
+
+                slash.classList.add('animate');
+                nText.classList.add('slash-hit');
+                this.triggerShake();
+                this.triggerFlash();
+
+                await this._wait(200);
+                nText.classList.remove('slash-hit');
+                nText.classList.add('dissolve');
+
+                await this._wait(600);
+                finalEl.classList.add('animate');
+                setTimeout(() => {
+                    this.triggerShake();
+                    this.triggerFlash();
+                }, 50);
+            }
+
+            /**
+             * 演出2: インパクト強調
+             * 一文字ずつ叩きつけるように表示し、最後に残像ブラーを発生させる演出。
+             */
+            async playPattern2(text) {
+                this.reset();
+                const chars = text.split('');
+                const container = document.createElement('div');
+                container.className = 'impact-container';
+                this.stage.appendChild(container);
+
+                const fSize = this.calcFontSize(text, 10, 2);
+
+                const charElements = [];
+                for (let char of chars) {
+                    const charEl = document.createElement('div');
+                    charEl.className = 'char';
+                    charEl.innerText = char;
+                    charEl.style.fontSize = fSize;
+                    container.appendChild(charEl);
+                    charElements.push(charEl);
+                    
+                    await this._wait(200); 
+                    charEl.classList.add('animate');
+                    this.triggerShake();
+                }
+
+                await this._wait(600);
+                this.triggerFlash();
+                this.triggerShake();
+                
+                charElements.forEach(el => {
+                    const burst = document.createElement('div');
+                    burst.className = 'char-burst-layer animate';
+                    burst.innerText = el.innerText;
+                    burst.style.fontSize = fSize; 
+                    
+                    burst.style.position = 'absolute';
+                    burst.style.left = `${el.offsetLeft}px`;
+                    burst.style.top = `${el.offsetTop}px`;
+                    container.appendChild(burst);
+                });
+            }
+
+            /**
+             * 演出3: 押し出しブラー
+             * 矩形領域内で文字を上下にスライドさせて入れ替える演出。
+             * 領域外（クリッピング）に出た瞬間に文字が見えなくなります。
+             */
+            async playPattern3(beforeText, afterText) {
+                this.reset();
+                const container = document.createElement('div');
+                container.className = 'push-container';
+                
+                const fontSize = this.calcFontSize(beforeText.length > afterText.length ? beforeText : afterText, 10);
+
+                const beforeEl = document.createElement('div');
+                beforeEl.className = 'push-text'; 
+                beforeEl.innerText = beforeText;
+                beforeEl.style.fontSize = fontSize;
+                
+                const afterEl = document.createElement('div');
+                afterEl.className = 'push-text in-initial'; 
+                afterEl.innerText = afterText;
+                afterEl.style.fontSize = fontSize;
+
+                const explosion = document.createElement('div');
+                explosion.className = 'blur-explosion';
+                explosion.innerText = afterText;
+                explosion.style.fontSize = fontSize;
+
+                container.appendChild(explosion);
+                container.appendChild(beforeEl);
+                container.appendChild(afterEl);
+                this.stage.appendChild(container);
+
+                await this._wait(100);
+                beforeEl.classList.add('visible');
+                await this._wait(1500);
+
+                beforeEl.classList.add('out');
+                afterEl.classList.remove('in-initial');
+                afterEl.classList.add('in-active');
+
+                setTimeout(() => {
+                    explosion.classList.add('animate');
+                    this.triggerShake();
+                    afterEl.style.textShadow = '0 0 100px #fff, 0 0 40px #fff';
+                    setTimeout(() => {
+                        afterEl.style.textShadow = '0 0 30px rgba(255,255,255,0.6)';
+                    }, 800);
+                }, 500); 
+            }
+
+            _wait(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // 初期化とデモの実行
+        const vfx = new MatchVFX('vfx-stage');
+        window.onload = () => vfx.playPattern1('一巡目', 'いざ、勝負！');
+    </script>
+</body>
+</html>
