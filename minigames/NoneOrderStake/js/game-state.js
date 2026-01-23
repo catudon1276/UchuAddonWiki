@@ -3,8 +3,8 @@
  * CPU対戦・オンライン対戦の両方に対応
  */
 
-import { CARDS, CARD_COLORS, createDeck, calculateCardCost } from '../data/cards.js';
-import { judgeRole, compareRoles, getRoleTable } from '../data/roles.js';
+import { CARDS, CARD_COLORS, createDeck, calculateCardCost } from './cards.js';
+import { judgeRole, compareRoles, getRoleTable } from './roles.js';
 
 // ===========================================
 // ゲーム設定

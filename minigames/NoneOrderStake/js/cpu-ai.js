@@ -3,7 +3,7 @@
  * プレイヤーの傾向を学習し、対抗策を選択する
  */
 
-import { CARDS, getCardsByColor } from '../data/cards.js';
+import { CARDS, getCardsByColor } from './cards.js';
 
 // ===========================================
 // AI行動パターン
