@@ -1,439 +1,432 @@
-/**
- * UI管理モジュール
- * ゲーム画面の表示・操作を管理
- */
+// ==========================================
+// UI Manager - ui.js
+// ==========================================
 
-import { CARD_COLORS, CARDS } from '../data/cards.js';
-import { getRoleTable } from '../data/roles.js';
+const UI = (() => {
+    // DOM要素キャッシュ
+    const el = {};
 
-// ===========================================
-// UI状態
-// ===========================================
-let uiState = {
-    currentScreen: 'title', // 'title' | 'game' | 'result'
-    isAnimating: false,
-    selectedCard: null
-};
-
-// ===========================================
-// DOM要素キャッシュ
-// ===========================================
-let elements = {};
-
-// ===========================================
-// 初期化
-// ===========================================
-export function initUI() {
-    cacheElements();
-    setupEventListeners();
-    showScreen('title');
-}
-
-function cacheElements() {
-    elements = {
+    function cacheElements() {
         // 画面
-        titleScreen: document.getElementById('title-screen'),
-        gameScreen: document.getElementById('game-screen'),
-        resultScreen: document.getElementById('result-screen'),
-        
-        // ゲーム情報
-        matchDisplay: document.getElementById('match-display'),
-        modeDisplay: document.getElementById('mode-display'),
-        
-        // プレイヤー情報
-        playerMoney: document.getElementById('player-money'),
-        playerBet: document.getElementById('player-bet'),
-        playerDice: document.getElementById('player-dice'),
-        playerCards: document.getElementById('player-cards'),
-        playerBox: document.getElementById('player-box'),
-        
-        // CPU情報
-        cpuMoney: document.getElementById('cpu-money'),
-        cpuBet: document.getElementById('cpu-bet'),
-        cpuDice: document.getElementById('cpu-dice'),
-        cpuCards: document.getElementById('cpu-cards'),
-        cpuBox: document.getElementById('cpu-box'),
-        
-        // 中央エリア
-        bowlArea: document.getElementById('bowl-area'),
-        diceCanvas: document.getElementById('dice-canvas'),
-        vfxStage: document.getElementById('vfx-stage'),
-        
-        // ボタン
-        actionButton: document.getElementById('action-button'),
-        cardDrawButton: document.getElementById('card-draw-button'),
-        
+        el.titleScreen = document.getElementById('title-screen');
+        el.gameScreen = document.getElementById('game-screen');
+        el.resultScreen = document.getElementById('result-screen');
+
+        // ヘッダー
+        el.rankBtn = document.getElementById('rank-btn');
+        el.drawBtn = document.getElementById('draw-btn');
+        el.matchNum = document.getElementById('match-num');
+        el.diceMode = document.getElementById('dice-mode');
+
+        // プレイヤー
+        el.playerBox = document.getElementById('player-box');
+        el.playerMoney = document.getElementById('player-money');
+        el.playerBet = document.getElementById('player-bet');
+        el.playerDice = document.getElementById('player-dice');
+        el.playerRole = document.getElementById('player-role');
+        el.playerHand = document.getElementById('player-hand');
+
+        // CPU
+        el.cpuBox = document.getElementById('cpu-box');
+        el.cpuMoney = document.getElementById('cpu-money');
+        el.cpuBet = document.getElementById('cpu-bet');
+        el.cpuDice = document.getElementById('cpu-dice');
+        el.cpuRole = document.getElementById('cpu-role');
+        el.cpuHand = document.getElementById('cpu-hand');
+
+        // 中央
+        el.deckCount = document.getElementById('deck-count');
+        el.actionBtn = document.getElementById('action-btn');
+        el.skipBtn = document.getElementById('skip-btn');
+        el.vfxStage = document.getElementById('vfx-stage');
+
+        // 役表
+        el.rankPanel = document.getElementById('rank-panel');
+        el.rankOverlay = document.getElementById('rank-overlay');
+        el.rankClose = document.getElementById('rank-close');
+        el.rankMode = document.getElementById('rank-mode');
+        el.rankList = document.getElementById('rank-list');
+
         // モーダル
-        betModal: document.getElementById('bet-modal'),
-        betSlider: document.getElementById('bet-slider'),
-        betValue: document.getElementById('bet-value'),
-        
-        cardModal: document.getElementById('card-modal'),
-        cardList: document.getElementById('card-list'),
-        
-        // 役表パネル
-        rankPanel: document.getElementById('rank-panel'),
-        rankToggle: document.getElementById('rank-toggle'),
-        
-        // 結果
-        resultTitle: document.getElementById('result-title'),
-        resultMoney: document.getElementById('result-money')
-    };
-}
+        el.betModal = document.getElementById('bet-modal');
+        el.betSlider = document.getElementById('bet-slider');
+        el.betValue = document.getElementById('bet-value');
+        el.betConfirm = document.getElementById('bet-confirm');
 
-function setupEventListeners() {
-    // ベットスライダー
-    elements.betSlider?.addEventListener('input', (e) => {
-        elements.betValue.textContent = parseInt(e.target.value).toLocaleString();
-    });
-    
-    // 役表トグル
-    elements.rankToggle?.addEventListener('click', toggleRankPanel);
-}
+        el.cardModal = document.getElementById('card-modal');
+        el.cardModalIcon = document.getElementById('card-modal-icon');
+        el.cardModalTitle = document.getElementById('card-modal-title');
+        el.cardModalDesc = document.getElementById('card-modal-desc');
+        el.cardUseBtn = document.getElementById('card-use-btn');
+        el.cardCancelBtn = document.getElementById('card-cancel-btn');
 
-// ===========================================
-// 画面切り替え
-// ===========================================
-export function showScreen(screenName) {
-    uiState.currentScreen = screenName;
-    
-    elements.titleScreen?.classList.toggle('hidden', screenName !== 'title');
-    elements.gameScreen?.classList.toggle('hidden', screenName !== 'game');
-    elements.resultScreen?.classList.toggle('hidden', screenName !== 'result');
-}
+        el.matchModal = document.getElementById('match-modal');
+        el.matchResultTitle = document.getElementById('match-result-title');
+        el.matchPlayerRole = document.getElementById('match-player-role');
+        el.matchCpuRole = document.getElementById('match-cpu-role');
+        el.matchPayout = document.getElementById('match-payout');
+        el.nextMatchBtn = document.getElementById('next-match-btn');
 
-// ===========================================
-// ゲーム情報更新
-// ===========================================
-export function updateGameInfo(gameState) {
-    const state = gameState.getState();
-    
-    // 試合数
-    if (elements.matchDisplay) {
-        elements.matchDisplay.textContent = `${state.currentMatch}/${state.totalMatches}`;
-    }
-    
-    // モード表示
-    if (elements.modeDisplay) {
-        const roleTable = getRoleTable(state.diceMode);
-        elements.modeDisplay.textContent = roleTable.name;
-    }
-}
+        // クイックビュー
+        el.quickView = document.getElementById('quick-view');
+        el.quickTitle = document.getElementById('quick-title');
+        el.quickDesc = document.getElementById('quick-desc');
 
-// ===========================================
-// プレイヤー情報更新
-// ===========================================
-export function updatePlayerInfo(player, elementPrefix) {
-    const moneyEl = elements[`${elementPrefix}Money`];
-    const betEl = elements[`${elementPrefix}Bet`];
-    const diceEl = elements[`${elementPrefix}Dice`];
-    const cardsEl = elements[`${elementPrefix}Cards`];
-    
-    if (moneyEl) {
-        moneyEl.textContent = `¥${player.money.toLocaleString()}`;
+        // 結果画面
+        el.resultTitle = document.getElementById('result-title');
+        el.resultMoney = document.getElementById('result-money');
+        el.restartBtn = document.getElementById('restart-btn');
+        el.startCpuBtn = document.getElementById('start-cpu-btn');
     }
-    
-    if (betEl) {
-        betEl.textContent = `¥${player.currentBet.toLocaleString()}`;
-    }
-    
-    if (diceEl) {
-        updateDiceDisplay(diceEl, player.currentDice);
-    }
-    
-    if (cardsEl && elementPrefix === 'player') {
-        updateHandDisplay(cardsEl, player.hand);
-    } else if (cardsEl) {
-        updateCardBackDisplay(cardsEl, player.hand.length);
-    }
-}
 
-function updateDiceDisplay(container, dice) {
-    const slots = container.querySelectorAll('.dice-slot');
-    dice.forEach((val, i) => {
-        if (slots[i]) {
-            slots[i].textContent = val === 0 ? '?' : val;
-            slots[i].classList.toggle('one', val === 1);
+    // 画面切り替え
+    function showScreen(name) {
+        el.titleScreen.classList.add('hidden');
+        el.gameScreen.classList.add('hidden');
+        el.resultScreen.classList.add('hidden');
+        if (name === 'title') el.titleScreen.classList.remove('hidden');
+        if (name === 'game') el.gameScreen.classList.remove('hidden');
+        if (name === 'result') el.resultScreen.classList.remove('hidden');
+    }
+
+    // 所持金・掛け金更新
+    function updateMoney() {
+        el.playerMoney.textContent = '¥' + Game.state.player.money.toLocaleString();
+        el.playerBet.textContent = '¥' + Game.state.player.bet.toLocaleString();
+        el.cpuBet.textContent = '¥' + Game.state.cpu.bet.toLocaleString();
+    }
+
+    // ダイス表示更新
+    function updateDice(target, values) {
+        const container = target === 'player' ? el.playerDice : el.cpuDice;
+        const dice = container.querySelectorAll('.die');
+        values.forEach((v, i) => {
+            if (dice[i]) {
+                dice[i].textContent = v || '?';
+                dice[i].classList.toggle('one', v === 1);
+            }
+        });
+    }
+
+    // 役表示更新
+    function updateRole(target, role) {
+        const elem = target === 'player' ? el.playerRole : el.cpuRole;
+        elem.textContent = role ? role.name : '-';
+    }
+
+    // 試合番号更新
+    function updateMatch() {
+        el.matchNum.textContent = `${Game.state.match}/${Game.CONFIG.maxMatches}`;
+    }
+
+    // ダイスモード更新
+    function updateDiceMode() {
+        el.diceMode.textContent = Game.state.diceMode === 'nine' ? '九面賽' : '通常賽';
+        el.rankMode.textContent = Game.state.diceMode === 'nine' ? '九面賽' : '通常賽';
+    }
+
+    // デッキ枚数更新
+    function updateDeckCount() {
+        el.deckCount.textContent = cardGame.getDeckCount();
+    }
+
+    // アクティブプレイヤー表示
+    function setActivePlayer(target) {
+        el.playerBox.classList.toggle('active', target === 'player');
+        el.cpuBox.classList.toggle('active', target === 'cpu');
+    }
+
+    // アクションボタン
+    function showActionBtn(text, onClick) {
+        el.actionBtn.textContent = text;
+        el.actionBtn.classList.remove('hidden');
+        el.actionBtn.onclick = onClick;
+    }
+
+    function hideActionBtn() {
+        el.actionBtn.classList.add('hidden');
+    }
+
+    function showSkipBtn(text, onClick) {
+        el.skipBtn.textContent = text;
+        el.skipBtn.classList.remove('hidden');
+        el.skipBtn.onclick = onClick;
+    }
+
+    function hideSkipBtn() {
+        el.skipBtn.classList.add('hidden');
+    }
+
+    // ===== 手札レンダリング =====
+    function renderPlayerHand() {
+        el.playerHand.innerHTML = '';
+        const hand = cardGame.getHand('player');
+        hand.forEach((card, index) => {
+            const cardEl = createCardElement(card, index);
+            el.playerHand.appendChild(cardEl);
+        });
+    }
+
+    function renderCpuHand() {
+        el.cpuHand.innerHTML = '';
+        const count = cardGame.getHandCount('opponent');
+        for (let i = 0; i < count; i++) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card';
+            cardEl.innerHTML = '<div class="card-back"></div>';
+            el.cpuHand.appendChild(cardEl);
         }
-    });
-}
+    }
 
-function updateHandDisplay(container, hand) {
-    container.innerHTML = '';
-    
-    hand.forEach((card, index) => {
-        const cardEl = createCardElement(card, index);
-        container.appendChild(cardEl);
-    });
-    
-    // 手札の配置を調整（扇状）
-    layoutCards(container);
-}
-
-function updateCardBackDisplay(container, count) {
-    container.innerHTML = '';
-    
-    for (let i = 0; i < count; i++) {
+    function createCardElement(card, index) {
         const cardEl = document.createElement('div');
-        cardEl.className = 'card-back';
-        container.appendChild(cardEl);
+        cardEl.className = 'card';
+        cardEl.dataset.index = index;
+        cardEl.dataset.title = card.title;
+        cardEl.dataset.desc = card.description;
+
+        const front = document.createElement('div');
+        front.className = `card-front ${card.color || 'blue'}`;
+
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = card.title;
+        front.appendChild(title);
+
+        cardEl.appendChild(front);
+
+        // クリック → モーダル表示
+        cardEl.addEventListener('click', () => showCardModal(card, index));
+
+        // ホバー → クイックビュー
+        cardEl.addEventListener('mouseenter', (e) => showQuickView(e, card));
+        cardEl.addEventListener('mousemove', (e) => moveQuickView(e));
+        cardEl.addEventListener('mouseleave', hideQuickView);
+
+        return cardEl;
     }
-    
-    layoutCards(container);
-}
 
-function createCardElement(card, index) {
-    const colors = CARD_COLORS[card.color];
-    
-    const cardEl = document.createElement('div');
-    cardEl.className = 'card-hand';
-    cardEl.dataset.index = index;
-    cardEl.dataset.cardId = card.id;
-    cardEl.style.setProperty('--card-color-1', colors.gradient[0]);
-    cardEl.style.setProperty('--card-color-2', colors.gradient[1]);
-    
-    cardEl.innerHTML = `
-        <div class="card-inner">
-            <div class="card-front">
-                <div class="card-name">${card.name}</div>
-                <div class="card-desc">${card.description}</div>
-            </div>
-            <div class="card-back-face"></div>
-        </div>
-    `;
-    
-    cardEl.addEventListener('click', () => onCardClick(index, card));
-    
-    return cardEl;
-}
-
-function layoutCards(container) {
-    const cards = container.querySelectorAll('.card-hand, .card-back');
-    const count = cards.length;
-    
-    if (count === 0) return;
-    
-    const baseRotation = -15;
-    const rotationStep = 30 / Math.max(1, count - 1);
-    
-    cards.forEach((card, i) => {
-        const rotation = baseRotation + (rotationStep * i);
-        const translateY = Math.abs(rotation) * 0.5;
-        card.style.transform = `rotate(${rotation}deg) translateY(${translateY}px)`;
-        card.style.zIndex = i;
-    });
-}
-
-// ===========================================
-// カード操作
-// ===========================================
-function onCardClick(index, card) {
-    if (uiState.isAnimating) return;
-    
-    uiState.selectedCard = { index, card };
-    
-    // カード使用確認モーダル表示
-    showCardConfirm(card);
-}
-
-function showCardConfirm(card) {
-    // カード詳細を表示し、使用するか確認
-    const modal = document.getElementById('card-confirm-modal');
-    if (modal) {
-        document.getElementById('confirm-card-name').textContent = card.name;
-        document.getElementById('confirm-card-desc').textContent = card.description;
-        modal.classList.remove('hidden');
+    // ===== クイックビュー =====
+    function showQuickView(e, card) {
+        el.quickTitle.textContent = card.title;
+        el.quickDesc.textContent = card.description;
+        el.quickView.style.display = 'block';
+        moveQuickView(e);
     }
-}
 
-// ===========================================
-// ベッティング
-// ===========================================
-export function showBetModal(maxBet, onConfirm) {
-    if (!elements.betModal) return;
-    
-    elements.betSlider.max = maxBet;
-    elements.betSlider.value = Math.min(1000, maxBet);
-    elements.betValue.textContent = parseInt(elements.betSlider.value).toLocaleString();
-    
-    elements.betModal.classList.remove('hidden');
-    
-    // 確定ボタン
-    const confirmBtn = elements.betModal.querySelector('.bet-confirm');
-    confirmBtn.onclick = () => {
-        const amount = parseInt(elements.betSlider.value);
-        elements.betModal.classList.add('hidden');
-        onConfirm(amount);
+    function moveQuickView(e) {
+        const container = document.querySelector('.game-container');
+        const rect = container.getBoundingClientRect();
+        let x = e.clientX - rect.left + 15;
+        let y = e.clientY - rect.top - 80;
+
+        // 画面外対応
+        if (x + 180 > rect.width) x = e.clientX - rect.left - 195;
+        if (y < 0) y = 10;
+
+        el.quickView.style.left = x + 'px';
+        el.quickView.style.top = y + 'px';
+    }
+
+    function hideQuickView() {
+        el.quickView.style.display = 'none';
+    }
+
+    // ===== カードモーダル =====
+    let selectedCardIndex = -1;
+    let selectedCard = null;
+
+    function showCardModal(card, index) {
+        selectedCard = card;
+        selectedCardIndex = index;
+
+        // アイコン
+        const iconInfo = cardGame.getCardIcon(card);
+        el.cardModalIcon.innerHTML = '';
+        if (iconInfo.url) {
+            const img = document.createElement('img');
+            img.src = iconInfo.url;
+            img.onerror = () => { el.cardModalIcon.textContent = '?'; };
+            el.cardModalIcon.appendChild(img);
+        } else {
+            el.cardModalIcon.textContent = iconInfo.slug || '?';
+            el.cardModalIcon.style.fontSize = '2rem';
+            el.cardModalIcon.style.color = '#fbbf24';
+        }
+
+        el.cardModalTitle.textContent = card.title;
+        el.cardModalDesc.textContent = card.description;
+        el.cardModal.classList.remove('hidden');
+    }
+
+    function hideCardModal() {
+        el.cardModal.classList.add('hidden');
+        selectedCardIndex = -1;
+        selectedCard = null;
+    }
+
+    function getSelectedCard() {
+        return { card: selectedCard, index: selectedCardIndex };
+    }
+
+    // ===== ベットモーダル =====
+    function showBetModal(maxBet, onConfirm) {
+        el.betSlider.max = maxBet;
+        el.betSlider.value = Math.min(1000, maxBet);
+        el.betValue.textContent = parseInt(el.betSlider.value).toLocaleString();
+        el.betModal.classList.remove('hidden');
+
+        el.betSlider.oninput = () => {
+            el.betValue.textContent = parseInt(el.betSlider.value).toLocaleString();
+        };
+
+        el.betConfirm.onclick = () => {
+            const amount = parseInt(el.betSlider.value);
+            el.betModal.classList.add('hidden');
+            onConfirm(amount);
+        };
+    }
+
+    // ===== 試合結果モーダル =====
+    function showMatchResult(result, payout, onNext) {
+        el.matchResultTitle.textContent = result === 'win' ? 'WIN!' : result === 'lose' ? 'LOSE...' : 'DRAW';
+        el.matchResultTitle.className = 'match-winner ' + result;
+
+        el.matchPlayerRole.textContent = Game.state.player.role?.name || '-';
+        el.matchCpuRole.textContent = Game.state.cpu.role?.name || '-';
+
+        const sign = payout >= 0 ? '+' : '';
+        el.matchPayout.textContent = `${sign}¥${Math.abs(payout).toLocaleString()}`;
+        el.matchPayout.style.color = payout >= 0 ? '#22c55e' : '#ef4444';
+
+        el.matchModal.classList.remove('hidden');
+        el.nextMatchBtn.onclick = () => {
+            el.matchModal.classList.add('hidden');
+            onNext();
+        };
+    }
+
+    // ===== 役表パネル =====
+    function toggleRankPanel() {
+        el.rankPanel.classList.toggle('open');
+    }
+
+    function renderRankList() {
+        const roles = Game.state.diceMode === 'nine' ? Game.ROLES_NINE : Game.ROLES_NORMAL;
+        el.rankList.innerHTML = '';
+
+        // セクション: 勝ち役
+        addRankSection('勝ち役');
+        roles.filter(r => r.mult > 0).forEach(r => addRankItem(r));
+
+        // セクション: 負け役
+        addRankSection('負け役');
+        roles.filter(r => r.mult <= 0).forEach(r => addRankItem(r));
+    }
+
+    function addRankSection(label) {
+        const section = document.createElement('div');
+        section.className = 'rank-section';
+        section.textContent = label;
+        el.rankList.appendChild(section);
+    }
+
+    function addRankItem(role) {
+        const item = document.createElement('div');
+        item.className = 'rank-item';
+
+        // ダイス表示（サンプル）
+        const diceDiv = document.createElement('div');
+        diceDiv.className = 'rank-dice';
+        const sample = getSampleDice(role);
+        sample.forEach((v, i) => {
+            const die = document.createElement('div');
+            die.className = 'rank-die';
+            if (role.me === v) die.classList.add('target');
+            if (v === 1 && role.me !== 1) die.classList.add('red');
+            die.textContent = v;
+            diceDiv.appendChild(die);
+        });
+
+        const name = document.createElement('span');
+        name.className = 'rank-name';
+        name.textContent = role.name;
+
+        const mult = document.createElement('span');
+        mult.className = 'rank-mult' + (role.mult < 0 ? ' neg' : '');
+        mult.textContent = 'x' + role.mult;
+
+        item.appendChild(diceDiv);
+        item.appendChild(name);
+        item.appendChild(mult);
+        el.rankList.appendChild(item);
+    }
+
+    function getSampleDice(role) {
+        // 役に対応するサンプルダイス
+        if (role.name === 'ピンゾロ') return [1, 1, 1];
+        if (role.name === 'アラシ') return [2, 2, 2];
+        if (role.name === 'シゴロ') return [4, 5, 6];
+        if (role.name === 'ヒフミ') return [1, 2, 3];
+        if (role.me) return [role.me, role.me, role.me === 6 ? 5 : 6];
+        if (role.name === '天翔') return [9, 9, 9];
+        if (role.name === '極嵐') return [7, 7, 7];
+        if (role.name === '聖嵐') return [5, 5, 5];
+        if (role.name === '平嵐') return [3, 3, 3];
+        if (role.name === '上座') return [5, 5, 7];
+        if (role.name === '下座') return [2, 2, 4];
+        if (role.name === '逆落') return [1, 2, 3];
+        return [1, 3, 5];
+    }
+
+    // ===== ゲーム結果画面 =====
+    function showResult(type) {
+        el.resultTitle.textContent = type === 'victory' ? '🎉 VICTORY! 🎉' : '💀 DEFEAT 💀';
+        el.resultTitle.className = 'result-title ' + type;
+        el.resultMoney.textContent = '¥' + Game.state.player.money.toLocaleString();
+        showScreen('result');
+    }
+
+    // ===== 初期化 =====
+    function init() {
+        cacheElements();
+
+        // イベントリスナー
+        el.rankBtn.addEventListener('click', toggleRankPanel);
+        el.rankClose.addEventListener('click', toggleRankPanel);
+        el.rankOverlay.addEventListener('click', toggleRankPanel);
+        el.cardCancelBtn.addEventListener('click', hideCardModal);
+
+        renderRankList();
+        updateDeckCount();
+    }
+
+    return {
+        init,
+        el,
+        showScreen,
+        updateMoney,
+        updateDice,
+        updateRole,
+        updateMatch,
+        updateDiceMode,
+        updateDeckCount,
+        setActivePlayer,
+        showActionBtn,
+        hideActionBtn,
+        showSkipBtn,
+        hideSkipBtn,
+        renderPlayerHand,
+        renderCpuHand,
+        showCardModal,
+        hideCardModal,
+        getSelectedCard,
+        showBetModal,
+        showMatchResult,
+        toggleRankPanel,
+        renderRankList,
+        showResult
     };
-}
+})();
 
-export function hideBetModal() {
-    elements.betModal?.classList.add('hidden');
-}
-
-// ===========================================
-// 役表パネル
-// ===========================================
-export function toggleRankPanel() {
-    elements.rankPanel?.classList.toggle('open');
-}
-
-export function updateRankPanel(mode = 'normal') {
-    const roleTable = getRoleTable(mode);
-    
-    // RankSystemを使用して役表を更新
-    if (window.RankSystem) {
-        window.RankSystem.clear();
-        window.RankSystem.setDiceName(roleTable.name);
-        
-        // 役物
-        window.RankSystem.addSection('役物');
-        roleTable.roles
-            .filter(r => r.multiplier >= 2)
-            .forEach(r => {
-                window.RankSystem.addRank(
-                    r.name,
-                    r.multiplier,
-                    r.display,
-                    r.targetIndex ?? -1,
-                    r.isSpecial ?? false
-                );
-            });
-        
-        // 通常
-        window.RankSystem.addSection('通常');
-        roleTable.roles
-            .filter(r => r.multiplier === 1)
-            .forEach(r => {
-                window.RankSystem.addRank(
-                    r.name,
-                    r.multiplier,
-                    r.display,
-                    r.targetIndex ?? -1
-                );
-            });
-        
-        // 凶役
-        window.RankSystem.addSection('凶役・特殊');
-        roleTable.roles
-            .filter(r => r.multiplier < 0)
-            .forEach(r => {
-                window.RankSystem.addRank(
-                    r.name,
-                    r.multiplier,
-                    r.display,
-                    -1
-                );
-            });
-        window.RankSystem.addRank(
-            roleTable.noRole.name,
-            roleTable.noRole.multiplier,
-            roleTable.noRole.display,
-            -1
-        );
-        window.RankSystem.addRank(
-            roleTable.shonben.name,
-            roleTable.shonben.multiplier,
-            roleTable.shonben.display,
-            -1,
-            true
-        );
-        
-        window.RankSystem.render();
-    }
-}
-
-// ===========================================
-// アクションボタン
-// ===========================================
-export function setActionButton(text, onClick, disabled = false) {
-    if (!elements.actionButton) return;
-    
-    elements.actionButton.textContent = text;
-    elements.actionButton.disabled = disabled;
-    elements.actionButton.onclick = onClick;
-}
-
-export function hideActionButton() {
-    elements.actionButton?.classList.add('hidden');
-}
-
-export function showActionButton() {
-    elements.actionButton?.classList.remove('hidden');
-}
-
-// ===========================================
-// 結果表示
-// ===========================================
-export function showMatchResult(result, onNext) {
-    const modal = document.getElementById('match-result-modal');
-    if (!modal) return;
-    
-    const winnerText = result.winner === 'player' ? 'WIN!' : 'LOSE...';
-    const winnerClass = result.winner === 'player' ? 'win' : 'lose';
-    const payoutText = result.winner === 'player' 
-        ? `+¥${result.payout.toLocaleString()}`
-        : `-¥${result.payout.toLocaleString()}`;
-    
-    document.getElementById('match-winner').textContent = winnerText;
-    document.getElementById('match-winner').className = `match-winner ${winnerClass}`;
-    document.getElementById('match-payout').textContent = payoutText;
-    document.getElementById('match-role-player').textContent = result.playerRole.name;
-    document.getElementById('match-role-cpu').textContent = result.cpuRole.name;
-    
-    modal.classList.remove('hidden');
-    
-    document.getElementById('next-match-btn').onclick = () => {
-        modal.classList.add('hidden');
-        onNext();
-    };
-}
-
-export function showGameResult(result, finalMoney, onRestart) {
-    showScreen('result');
-    
-    const isVictory = result === 'victory';
-    
-    if (elements.resultTitle) {
-        elements.resultTitle.textContent = isVictory ? '🎉 VICTORY! 🎉' : 'GAME OVER';
-        elements.resultTitle.className = isVictory ? 'victory' : 'defeat';
-    }
-    
-    if (elements.resultMoney) {
-        elements.resultMoney.textContent = `¥${finalMoney.toLocaleString()}`;
-    }
-    
-    document.getElementById('restart-btn').onclick = onRestart;
-}
-
-// ===========================================
-// アニメーション状態
-// ===========================================
-export function setAnimating(isAnimating) {
-    uiState.isAnimating = isAnimating;
-}
-
-export function isAnimating() {
-    return uiState.isAnimating;
-}
-
-// ===========================================
-// プレイヤーボックスの強調
-// ===========================================
-export function setActivePlayer(playerId) {
-    elements.playerBox?.classList.toggle('is-active', playerId === 'player');
-    elements.cpuBox?.classList.toggle('is-active', playerId === 'cpu');
-}
-
-// ===========================================
-// ユーティリティ
-// ===========================================
-export function flashElement(element, className = 'flash', duration = 300) {
-    element.classList.add(className);
-    setTimeout(() => element.classList.remove(className), duration);
-}
-
-export function shakeElement(element, duration = 200) {
-    element.classList.add('shake');
-    setTimeout(() => element.classList.remove('shake'), duration);
-}
+window.UI = UI;
