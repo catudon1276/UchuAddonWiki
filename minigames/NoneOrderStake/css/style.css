@@ -1,707 +1,845 @@
-/* Night Of Schemes - Style */
-:root {
-    --bg-dark: #0a0e1a;
-    --bg-card: #151a2a;
-    --bg-panel: #1a1f2e;
-    --text-primary: #f0f4f8;
-    --text-muted: #7a8599;
-    --gold: #fbbf24;
-    --red: #ef4444;
-    --green: #22c55e;
-    --blue: #3b82f6;
-    --card-red: linear-gradient(135deg, #dc2626, #991b1b);
-    --card-blue: linear-gradient(135deg, #2563eb, #1e40af);
-    --card-green: linear-gradient(135deg, #16a34a, #166534);
-    --card-yellow: linear-gradient(135deg, #eab308, #a16207);
-    --card-black: linear-gradient(135deg, #374151, #1f2937);
+/* ==========================================
+   Night Of Schemes - 新レイアウト CSS
+   enemy_info_box.html スタイル適用
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --bg-panel: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #64748b;
+    --accent-gold: #fbbf24;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+    --accent-blue: #3b82f6;
+    --active-glow: rgba(251, 191, 36, 0.6);
+    
+    /* カード裏面デフォルト色 */
+    --default-card-color-1: #1e3a8a;
+    --default-card-color-2: #1e1b4b;
+}
 
 body {
-    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #000;
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-/* 16:9 コンテナ */
-.game-container {
-    width: min(100vw, 177.78vh);
-    height: min(100vh, 56.25vw);
-    max-width: 1280px;
-    max-height: 720px;
     background: var(--bg-dark);
-    position: relative;
-    overflow: hidden;
+    color: var(--text-primary);
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* スクリーン */
+/* ==========================================
+   Game Container
+   ========================================== */
+.game-container {
+    width: 100%;
+    max-width: 960px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
 .screen {
-    position: absolute;
-    inset: 0;
+    width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
-.hidden { display: none !important; }
 
-/* 色ヘルパー */
-.gold { color: var(--gold); }
-.red { color: var(--red); }
-.green { color: var(--green); }
-
-/* ===== タイトル画面 ===== */
-#title-screen {
-    background: radial-gradient(ellipse at center, var(--bg-panel) 0%, var(--bg-dark) 100%);
-    justify-content: center;
-    align-items: center;
+.screen.hidden {
+    display: none !important;
 }
 
-.title-content { text-align: center; }
+/* ==========================================
+   Title Screen
+   ========================================== */
+.title-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+}
 
 .title-logo {
-    font-family: 'Noto Serif JP', serif;
-    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-size: 2.5rem;
     font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
-    margin-bottom: 0.25rem;
+    color: var(--accent-gold);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    margin-bottom: 0.5rem;
 }
 
 .title-subtitle {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
 }
 
 .rules-box {
-    background: rgba(26, 31, 46, 0.8);
-    border: 1px solid rgba(251, 191, 36, 0.2);
-    border-radius: 0.5rem;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
     text-align: left;
-    font-size: 0.85rem;
-    line-height: 1.6;
+    max-width: 320px;
 }
 
 .rules-title {
-    color: var(--gold);
-    font-weight: 700;
-    margin-bottom: 0.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--accent-gold);
 }
 
-/* ボタン */
+.rules-box p {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+}
+
+.gold { color: var(--accent-gold); }
+.green { color: var(--accent-green); }
+.red { color: var(--accent-red); }
+
+/* ==========================================
+   Buttons
+   ========================================== */
 .btn {
-    padding: 0.6rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 700;
+    padding: 12px 32px;
     border: none;
-    border-radius: 0.375rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s;
-    display: block;
-    margin: 0.5rem auto;
+    transition: all 0.2s;
 }
 
 .btn-primary {
-    background: var(--gold);
+    background: var(--accent-gold);
     color: #000;
-    box-shadow: 0 3px 0 #b45309;
 }
-.btn-primary:hover { transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(2px); box-shadow: 0 1px 0 #b45309; }
+
+.btn-primary:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+}
 
 .btn-secondary {
     background: var(--bg-panel);
-    color: var(--text-muted);
-    border: 1px solid #334155;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
 }
-.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 .btn-action {
-    background: var(--gold);
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #000;
-    font-size: 0.9rem;
-    padding: 0.5rem 1.25rem;
-    box-shadow: 0 2px 0 #b45309;
+    padding: 14px 48px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
 }
 
 .btn-sub {
-    background: #334155;
+    background: var(--bg-panel);
     color: var(--text-primary);
-    font-size: 0.8rem;
-    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-color);
+    margin-left: 12px;
 }
 
-/* ===== ゲーム画面 ===== */
-#game-screen { background: var(--bg-dark); }
-
-/* ヘッダー */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: rgba(10, 14, 26, 0.95);
-    border-bottom: 1px solid #1e293b;
-    height: 48px;
-    flex-shrink: 0;
+.hidden {
+    display: none !important;
 }
 
-.header-btn {
-    padding: 0.3rem 0.75rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    background: rgba(251, 191, 36, 0.1);
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    border-radius: 0.25rem;
-    cursor: pointer;
-    font-family: inherit;
-}
-.header-btn.blue {
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--blue);
-    border-color: var(--blue);
-}
-
-.header-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.match-label { font-size: 0.7rem; color: var(--text-muted); }
-.match-num { font-size: 1rem; font-weight: 900; }
-.dice-mode {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gold);
-    background: rgba(251, 191, 36, 0.1);
-    padding: 0.15rem 0.5rem;
-    border-radius: 0.2rem;
-}
-
-/* メインエリア（3カラム） */
-.game-main {
-    flex: 1;
-    display: flex;
-    padding: 0.5rem;
-    gap: 0.5rem;
-    overflow: hidden;
-}
-
-/* プレイヤーカラム */
-.player-col {
-    width: 200px;
+/* ==========================================
+   Game Screen Layout
+   ========================================== */
+#game-screen {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    flex-shrink: 0;
+    gap: 16px;
 }
 
-.player-box {
-    background: var(--bg-card);
-    border: 2px solid #2d3548;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.player-box.active {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
-}
-
-.player-label {
-    font-size: 0.7rem;
-    font-weight: 900;
-    color: var(--blue);
-    text-align: center;
-    margin-bottom: 0.25rem;
-}
-.player-label.cpu { color: var(--red); }
-
-.player-stats {
+/* ==========================================
+   上段：情報BOX + 試合情報
+   ========================================== */
+.top-row {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.4rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
 }
 
-.stat {
-    flex: 1;
-    background: rgba(10, 14, 26, 0.5);
-    padding: 0.25rem;
-    border-radius: 0.2rem;
-    text-align: center;
+/* 情報BOX（enemy_info_box.html ベース） */
+.info-box {
+    width: 220px;
+    background: var(--bg-panel);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.stat-label { font-size: 0.55rem; color: var(--text-muted); display: block; }
-.stat-val { font-size: 0.8rem; font-weight: 700; }
-
-/* ダイス表示 */
-.dice-row {
-    display: flex;
-    justify-content: center;
-    gap: 0.3rem;
-    margin-bottom: 0.3rem;
+.info-box.is-active {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 20px var(--active-glow), 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    animation: active-pulse 2s infinite ease-in-out;
 }
 
-.die {
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    color: #1a1f2e;
-    border-radius: 4px;
+@keyframes active-pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--active-glow), 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(251, 191, 36, 0.9), 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+}
+
+.box-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    font-weight: 900;
-    box-shadow: 0 2px 0 #94a3b8;
+    gap: 8px;
+    margin-bottom: 10px;
 }
-.die.one { color: var(--red); }
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #475569;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid #64748b;
+}
+
+.avatar img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    filter: brightness(0) invert(1);
+}
+
+.avatar.cpu {
+    background: #7f1d1d;
+}
+
+.box-name {
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--accent-green);
+}
+
+.box-name.cpu {
+    color: var(--accent-red);
+}
+
+.stats-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.stat-item {
+    flex: 1;
+    background: var(--bg-dark);
+    padding: 4px 2px;
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.stat-item.flash-update {
+    background-color: var(--border-color) !important;
+}
+
+.stat-label {
+    font-size: 8px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 1px;
+}
+
+.stat-value {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--accent-gold);
+}
+
+.stat-value.green { color: var(--accent-green); }
+
+/* ダイス（情報BOX内） */
+.info-box .dice-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.dice-slot {
+    width: 28px;
+    height: 28px;
+    background: #f8fafc;
+    color: #1e293b;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dice-slot.one { color: var(--accent-red); }
 
 .role-display {
     text-align: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--gold);
-    min-height: 1rem;
+    font-size: 12px;
+    color: var(--accent-gold);
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
-/* 手札エリア */
-.hand-area {
-    flex: 1;
+/* 情報BOX内のミニカード列 */
+.card-row-mini {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
     justify-content: center;
-    align-content: flex-start;
-    padding: 0.25rem;
+    align-items: center;
+    padding: 8px 4px;
+    border-top: 1px solid var(--border-color);
+    min-height: 50px;
 }
 
-.cpu-hand .card { transform: none; }
-.cpu-hand .card:hover { transform: none; }
+.card-back-mini {
+    width: 28px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--default-card-color-1) 0%, var(--default-card-color-2) 100%);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 3px;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.4);
+    margin-left: -8px;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
 
-/* カード */
-.card {
-    width: 52px;
-    height: 72px;
-    border-radius: 4px;
+.card-back-mini:first-child { margin-left: 0; }
+
+/* 試合情報（中央） */
+.match-info-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #db2777, #9333ea);
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.match-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+}
+
+.dice-mode {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
+}
+
+/* ==========================================
+   中段：役表 / 皿 / 山札・捨札
+   ========================================== */
+.middle-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 20px 40px;
+    position: relative;
+}
+
+/* 役表ボタン（左端固定） */
+.rank-toggle-btn {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 12px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    transition: transform 0.15s;
+    line-height: 1.4;
+    z-index: 10;
+    transition: background 0.2s;
+}
+
+.rank-toggle-btn:hover {
+    background: #0284c7;
+}
+
+/* 皿エリア */
+.bowl-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bowl {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, #1e3a5f 0%, #1e3a8a 50%, #0f172a 100%);
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    box-shadow: 
+        inset 0 10px 30px rgba(0,0,0,0.5),
+        0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+#dice-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* 山札エリア */
+.deck-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.deck-area:hover {
+    transform: scale(1.05);
+}
+
+.deck-stack {
+    position: relative;
+    width: 50px;
+    height: 70px;
+}
+
+.card-back-stack {
+    position: absolute;
+    width: 50px;
+    height: 70px;
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+}
+
+.card-back-stack:nth-child(1) { top: 0; left: 0; }
+.card-back-stack:nth-child(2) { top: 2px; left: 2px; }
+.card-back-stack:nth-child(3) { top: 4px; left: 4px; }
+
+.deck-label {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ==========================================
+   アクションボタン行
+   ========================================== */
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 0;
+}
+
+/* ==========================================
+   下段：自分の手札カード群
+   ========================================== */
+.bottom-row {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+.player-hand-area {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+/* プレイヤー手札カード（表向き） */
+.card {
+    width: 70px;
+    height: 98px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
 }
 
 .card:hover {
-    transform: translateY(-5px) scale(1.05);
-    z-index: 10;
+    transform: translateY(-12px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.4);
 }
 
 .card-front {
     width: 100%;
     height: 100%;
-    border-radius: 4px;
-    padding: 0.25rem;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    border: 1.5px solid rgba(255,255,255,0.3);
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    border: 2px solid rgba(255,255,255,0.3);
 }
-.card-front.red { background: var(--card-red); }
-.card-front.blue { background: var(--card-blue); }
-.card-front.green { background: var(--card-green); }
-.card-front.yellow { background: var(--card-yellow); }
-.card-front.black { background: var(--card-black); }
+
+.card-front.red { background: linear-gradient(135deg, #dc2626, #991b1b); }
+.card-front.blue { background: linear-gradient(135deg, #2563eb, #1e40af); }
+.card-front.green { background: linear-gradient(135deg, #16a34a, #15803d); }
+.card-front.yellow { background: linear-gradient(135deg, #eab308, #ca8a04); }
+.card-front.black { background: linear-gradient(135deg, #374151, #1f2937); }
 
 .card-title {
-    font-size: 0.5rem;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    line-height: 1.1;
+    word-break: keep-all;
 }
 
 .card-back {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1e3a8a, #1e1b4b);
-    border: 1.5px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--default-card-color-1), var(--default-card-color-2));
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.3);
 }
 
-/* 中央エリア */
-.center-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.bowl-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* 山札 */
-.deck-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.deck-stack {
-    position: relative;
-    width: 52px;
-    height: 72px;
-}
-
-.deck-stack .card-back {
-    position: absolute;
-    width: 52px;
-    height: 72px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.deck-stack .card-back:nth-child(1) { top: 0; left: 0; }
-.deck-stack .card-back:nth-child(2) { top: 2px; left: 2px; }
-.deck-stack .card-back:nth-child(3) { top: 4px; left: 4px; }
-
-.deck-count {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-}
-
-/* 捨て札 */
-.discard-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.discard-stack {
-    width: 52px;
-    height: 72px;
-    border: 2px dashed #334155;
-    border-radius: 4px;
-    position: relative;
-}
-
-.discard-label {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-}
-
-/* 皿 */
-.bowl {
-    width: 180px;
-    height: 180px;
-    position: relative;
-}
-
-.bowl-inner {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle, #b91c1c 0%, #7f1d1d 70%, #450a0a 100%);
-    box-shadow: inset 0 5px 15px rgba(0,0,0,0.5), 0 0 20px rgba(0,0,0,0.4);
-}
-
-#dice-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* アクションエリア */
-.action-area {
-    margin-top: 0.75rem;
-    display: flex;
-    gap: 0.5rem;
-    z-index: 10;
-}
-
-/* VFX */
-.vfx-stage {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 50;
-}
-
-/* ===== 役表パネル ===== */
-.rank-panel {
-    position: absolute;
-    left: 0;
+/* ==========================================
+   役表ドロワー（左からスライド）
+   ========================================== */
+.rank-drawer {
+    position: fixed;
+    left: -320px;
     top: 0;
-    bottom: 0;
-    width: 240px;
+    width: 320px;
+    height: 100vh;
     background: var(--bg-panel);
-    border-right: 2px solid #334155;
-    transform: translateX(-100%);
-    transition: transform 0.25s;
-    z-index: 100;
-    padding: 0.75rem;
+    border-right: 1px solid var(--border-color);
+    z-index: 200;
+    transition: left 0.3s ease;
     overflow-y: auto;
 }
-.rank-panel.open { transform: translateX(0); }
 
-.overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 99;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s;
+.rank-drawer.open {
+    left: 0;
 }
-.rank-panel.open ~ .overlay { opacity: 1; pointer-events: auto; }
 
-.panel-header {
+.drawer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--bg-panel);
 }
-.panel-header h2 { font-size: 1.1rem; color: var(--gold); }
+
+.drawer-header h2 {
+    font-size: 1.2rem;
+}
+
 .close-btn {
-    font-size: 1.25rem;
-    color: var(--text-muted);
     background: none;
     border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
-.rank-mode {
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--gold);
-    background: rgba(251, 191, 36, 0.1);
-    padding: 0.25rem;
-    border-radius: 0.2rem;
-    margin-bottom: 0.5rem;
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 150;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
-.rank-list { font-size: 0.75rem; }
+.drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rank-mode-display {
+    padding: 0.75rem 1rem;
+    background: rgba(251, 191, 36, 0.1);
+    color: var(--accent-gold);
+    text-align: center;
+    font-weight: bold;
+}
+
+.rank-list {
+    padding: 1rem;
+}
 
 .rank-section {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.4rem 0 0.2rem;
-    border-bottom: 1px solid #334155;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 1rem 0 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .rank-item {
     display: flex;
     align-items: center;
-    padding: 0.3rem 0;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
 }
 
 .rank-dice {
     display: flex;
-    gap: 2px;
+    gap: 4px;
 }
 
 .rank-die {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     background: #fff;
     color: #1a1f2e;
-    border-radius: 3px;
-    font-size: 0.7rem;
-    font-weight: 900;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
-.rank-die.target { background: var(--gold); color: #000; }
-.rank-die.red { color: var(--red); }
 
-.rank-name { flex: 1; }
-.rank-mult { font-weight: 900; color: var(--gold); }
-.rank-mult.neg { color: var(--red); }
+.rank-die.red { color: var(--accent-red); }
 
-/* ===== モーダル ===== */
+.rank-name {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.rank-mult {
+    font-weight: bold;
+    color: var(--accent-green);
+}
+
+.rank-mult.neg { color: var(--accent-red); }
+
+/* ==========================================
+   Modals
+   ========================================== */
 .modal {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 300;
 }
+
+.modal.hidden { display: none; }
 
 .modal-box {
     background: var(--bg-panel);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    min-width: 280px;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
     text-align: center;
+    max-width: 90%;
+    width: 320px;
 }
 
-.modal-box h2 {
-    font-size: 1.1rem;
-    color: var(--gold);
-    margin-bottom: 0.75rem;
-}
+.modal-box h2 { margin-bottom: 1.5rem; }
 
-/* ベットモーダル */
+/* Bet Modal */
 #bet-slider {
     width: 100%;
-    margin: 0.5rem 0;
-    accent-color: var(--gold);
+    margin: 1rem 0;
 }
 
 .bet-display {
-    font-size: 1.75rem;
-    font-weight: 900;
-    color: var(--gold);
-    margin-bottom: 0.75rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
 }
 
-/* カードモーダル */
-.card-detail {
-    max-width: 300px;
-}
+/* Card Modal */
+.card-detail { width: 280px; }
 
 .card-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 0.5rem;
-    background: var(--bg-card);
-    border-radius: 0.5rem;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.card-icon img {
-    max-width: 48px;
-    max-height: 48px;
-}
-
-.card-detail p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    line-height: 1.5;
+    font-size: 3rem;
 }
 
 .modal-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 8px;
     justify-content: center;
+    margin-top: 1.5rem;
 }
 
-/* クイックビュー */
-.quick-view {
-    position: absolute;
-    background: var(--bg-panel);
-    border: 1px solid var(--gold);
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    z-index: 150;
-    display: none;
-    pointer-events: none;
-    max-width: 180px;
-}
+/* Match Result Modal */
+.match-result { width: 300px; }
 
-.quick-title {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 0.2rem;
-}
-
-.quick-desc {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    line-height: 1.3;
-}
-
-/* 試合結果 */
-.match-result {
-    min-width: 260px;
-}
-
-.match-winner {
-    font-size: 2rem;
-    font-weight: 900;
-}
-.match-winner.win { color: var(--green); }
-.match-winner.lose { color: var(--red); }
-.match-winner.draw { color: var(--text-muted); }
+.match-winner { font-size: 2rem; }
+.match-winner.win { color: var(--accent-green); }
+.match-winner.lose { color: var(--accent-red); }
 
 .match-roles {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
-    margin: 0.75rem 0;
+    margin: 1rem 0;
 }
 
-.role-item { text-align: center; }
-.role-item .role-label { font-size: 0.65rem; color: var(--text-muted); display: block; }
-.role-item span:last-child { font-size: 0.9rem; font-weight: 700; }
-.vs { color: var(--text-muted); font-weight: 900; }
+.role-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.role-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.vs {
+    font-weight: bold;
+    color: var(--text-secondary);
+}
 
 .match-payout {
-    font-size: 1.25rem;
-    font-weight: 900;
-    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1rem 0;
 }
 
-/* ===== 結果画面 ===== */
-#result-screen {
-    background: radial-gradient(ellipse at center, var(--bg-panel) 0%, var(--bg-dark) 100%);
-    justify-content: center;
+/* ==========================================
+   Quick View (Hover)
+   ========================================== */
+.quick-view {
+    position: fixed;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    max-width: 200px;
+    z-index: 400;
+    display: none;
+    pointer-events: none;
+}
+
+.quick-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.quick-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ==========================================
+   Result Screen
+   ========================================== */
+.result-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
 }
-
-.result-content { text-align: center; }
 
 .result-title {
     font-size: 2.5rem;
-    font-weight: 900;
+    margin-bottom: 1rem;
+}
+
+.result-title.victory { color: var(--accent-gold); }
+.result-title.defeat { color: var(--accent-red); }
+
+.result-label {
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
-.result-title.victory { color: var(--green); }
-.result-title.defeat { color: var(--red); }
 
-.result-label { color: var(--text-muted); }
-.result-money { font-size: 1.75rem; font-weight: 900; margin-bottom: 1.5rem; }
-
-/* ===== レスポンシブ ===== */
-@media (max-width: 900px) {
-    .player-col { width: 150px; }
-    .bowl { width: 140px; height: 140px; }
-    .card { width: 44px; height: 60px; }
-    .deck-stack, .deck-stack .card-back, .discard-stack { width: 44px; height: 60px; }
+.result-money {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    margin-bottom: 2rem;
 }
 
-@media (max-width: 700px) {
-    .player-col { width: 120px; }
-    .bowl { width: 120px; height: 120px; }
-    .card { width: 38px; height: 52px; }
-    .deck-stack, .deck-stack .card-back, .discard-stack { width: 38px; height: 52px; }
-    .card-title { font-size: 0.4rem; }
+/* ==========================================
+   Responsive
+   ========================================== */
+@media (max-width: 768px) {
+    .top-row {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .info-box {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .middle-row {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .bowl {
+        width: 160px;
+        height: 160px;
+    }
 }

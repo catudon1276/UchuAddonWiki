@@ -1,5 +1,6 @@
 /**
  * UI Manager - ui.js
+ * 新レイアウト対応（enemy_info_box.html形式）
  * ES Modules形式
  */
 
@@ -14,34 +15,35 @@ function cacheElements() {
     el.gameScreen = document.getElementById('game-screen');
     el.resultScreen = document.getElementById('result-screen');
 
-    // ヘッダー
-    el.rankBtn = document.getElementById('rank-btn');
-    el.drawBtn = document.getElementById('draw-btn');
-    el.matchNum = document.getElementById('match-num');
-    el.diceMode = document.getElementById('dice-mode');
-
-    // プレイヤー
+    // プレイヤー情報BOX
     el.playerBox = document.getElementById('player-box');
     el.playerMoney = document.getElementById('player-money');
     el.playerBet = document.getElementById('player-bet');
     el.playerDice = document.getElementById('player-dice');
     el.playerRole = document.getElementById('player-role');
-    el.playerHand = document.getElementById('player-hand');
+    el.playerHand = document.getElementById('player-hand'); // 下段の手札エリア
 
-    // CPU
+    // CPU情報BOX
     el.cpuBox = document.getElementById('cpu-box');
     el.cpuMoney = document.getElementById('cpu-money');
     el.cpuBet = document.getElementById('cpu-bet');
     el.cpuDice = document.getElementById('cpu-dice');
     el.cpuRole = document.getElementById('cpu-role');
-    el.cpuHand = document.getElementById('cpu-hand');
+    el.cpuHand = document.getElementById('cpu-hand'); // 情報BOX内のミニカード
 
-    // 中央
+    // 試合情報
+    el.matchNum = document.getElementById('match-num');
+    el.diceMode = document.getElementById('dice-mode');
+
+    // 中央エリア
+    el.deckArea = document.getElementById('deck-area');
     el.deckCount = document.getElementById('deck-count');
+    el.discardArea = document.getElementById('discard-area');
     el.actionBtn = document.getElementById('action-btn');
     el.skipBtn = document.getElementById('skip-btn');
 
-    // 役表
+    // 役表ドロワー
+    el.rankBtn = document.getElementById('rank-btn');
     el.rankPanel = document.getElementById('rank-panel');
     el.rankOverlay = document.getElementById('rank-overlay');
     el.rankClose = document.getElementById('rank-close');
@@ -55,6 +57,7 @@ function cacheElements() {
     el.betConfirm = document.getElementById('bet-confirm');
 
     el.cardModal = document.getElementById('card-modal');
+    el.cardModalIcon = document.getElementById('card-modal-icon');
     el.cardModalTitle = document.getElementById('card-modal-title');
     el.cardModalDesc = document.getElementById('card-modal-desc');
     el.cardUseBtn = document.getElementById('card-use-btn');
@@ -111,32 +114,49 @@ export function updateGameInfo(state) {
 // プレイヤー情報更新
 // ===========================================
 export function updatePlayerInfo(player, playerId) {
-    const prefix = playerId === 'player' ? 'player' : 'cpu';
+    const isPlayer = playerId === 'player';
+    const prefix = isPlayer ? 'player' : 'cpu';
 
-    // 所持金
+    // 所持金（アニメーション付き）
     const moneyEl = el[`${prefix}Money`];
     if (moneyEl) {
+        const parentItem = moneyEl.closest('.stat-item');
         if (playerId === 'cpu' && player.money > 1000000) {
             moneyEl.textContent = '¥∞';
         } else {
             moneyEl.textContent = '¥' + player.money.toLocaleString();
+        }
+        // フラッシュアニメーション
+        if (parentItem) {
+            parentItem.classList.add('flash-update');
+            setTimeout(() => parentItem.classList.remove('flash-update'), 300);
         }
     }
 
     // 掛け金
     const betEl = el[`${prefix}Bet`];
     if (betEl) {
+        const parentItem = betEl.closest('.stat-item');
         betEl.textContent = '¥' + (player.currentBet || 0).toLocaleString();
+        if (parentItem) {
+            parentItem.classList.add('flash-update');
+            setTimeout(() => parentItem.classList.remove('flash-update'), 300);
+        }
     }
 
-    // ダイス
+    // ダイス（情報BOX内）
     const diceEl = el[`${prefix}Dice`];
     if (diceEl) {
-        const dice = diceEl.querySelectorAll('.die');
+        const slots = diceEl.querySelectorAll('.dice-slot');
         player.currentDice?.forEach((v, i) => {
-            if (dice[i]) {
-                dice[i].textContent = v || '?';
-                dice[i].classList.toggle('one', v === 1);
+            if (slots[i]) {
+                // アニメーション
+                slots[i].style.transform = 'scale(1.3) rotate(10deg)';
+                slots[i].textContent = v || '?';
+                slots[i].classList.toggle('one', v === 1);
+                setTimeout(() => {
+                    slots[i].style.transform = 'scale(1) rotate(0deg)';
+                }, 250);
             }
         });
     }
@@ -147,40 +167,42 @@ export function updatePlayerInfo(player, playerId) {
         roleEl.textContent = player.currentRole?.name || '-';
     }
 
-    // 手札
-    renderHand(player, playerId);
+    // 手札レンダリング
+    if (isPlayer) {
+        renderPlayerHand(player);
+    } else {
+        renderCpuHandMini(player);
+    }
 }
 
 // ===========================================
-// 手札レンダリング
+// プレイヤー手札レンダリング（下段・表向き）
+// card.jsのCardGameManagerと連携
 // ===========================================
-// カード使用コールバック（main.jsから設定される）
 let onCardUseCallback = null;
 
 export function setOnCardUse(callback) {
     onCardUseCallback = callback;
 }
 
-function renderHand(player, playerId) {
-    const handEl = el[playerId === 'player' ? 'playerHand' : 'cpuHand'];
-    if (!handEl) return;
+function renderPlayerHand(player) {
+    if (!el.playerHand) return;
+    el.playerHand.innerHTML = '';
 
-    handEl.innerHTML = '';
-
-    if (playerId === 'cpu') {
-        // CPUは裏向き
-        for (let i = 0; i < player.hand.length; i++) {
-            const cardEl = document.createElement('div');
-            cardEl.className = 'card';
-            cardEl.innerHTML = '<div class="card-back"></div>';
-            handEl.appendChild(cardEl);
-        }
-    } else {
-        // プレイヤーは表向き
-        player.hand.forEach((card, index) => {
-            const cardEl = createCardElement(card, index);
-            handEl.appendChild(cardEl);
-        });
+    player.hand.forEach((card, index) => {
+        const cardEl = createCardElement(card, index);
+        el.playerHand.appendChild(cardEl);
+    });
+    
+    // card.jsのカードレイアウト調整を適用（利用可能なら）
+    if (window.cardGame) {
+        // cardGameの手札と同期
+        window.cardGame.playerHand = player.hand.map(c => ({
+            id: c.id,
+            title: c.name,
+            description: c.description,
+            effectId: c.effectId || null
+        }));
     }
 }
 
@@ -188,6 +210,8 @@ function createCardElement(card, index) {
     const cardEl = document.createElement('div');
     cardEl.className = 'card';
     cardEl.dataset.index = index;
+    cardEl.dataset.title = card.name;
+    cardEl.dataset.desc = card.description;
 
     const front = document.createElement('div');
     front.className = `card-front ${card.color || 'blue'}`;
@@ -211,6 +235,20 @@ function createCardElement(card, index) {
 }
 
 // ===========================================
+// CPU手札レンダリング（情報BOX内・裏向きミニカード）
+// ===========================================
+function renderCpuHandMini(player) {
+    if (!el.cpuHand) return;
+    el.cpuHand.innerHTML = '';
+
+    for (let i = 0; i < player.hand.length; i++) {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card-back-mini';
+        el.cpuHand.appendChild(cardEl);
+    }
+}
+
+// ===========================================
 // クイックビュー
 // ===========================================
 function showQuickView(e, card) {
@@ -223,16 +261,11 @@ function showQuickView(e, card) {
 }
 
 function moveQuickView(e) {
-    const container = document.querySelector('.game-container');
-    if (!container || !el.quickView) return;
-
-    const rect = container.getBoundingClientRect();
-    let x = e.clientX - rect.left + 15;
-    let y = e.clientY - rect.top - 80;
-
-    if (x + 180 > rect.width) x = e.clientX - rect.left - 195;
+    if (!el.quickView) return;
+    let x = e.clientX + 15;
+    let y = e.clientY - 80;
+    if (x + 200 > window.innerWidth) x = e.clientX - 215;
     if (y < 0) y = 10;
-
     el.quickView.style.left = x + 'px';
     el.quickView.style.top = y + 'px';
 }
@@ -253,15 +286,13 @@ function showCardModal(card, index) {
 
     if (el.cardModalTitle) el.cardModalTitle.textContent = card.name;
     if (el.cardModalDesc) el.cardModalDesc.textContent = card.description;
+    if (el.cardModalIcon) el.cardModalIcon.textContent = '🎴';
     if (el.cardModal) el.cardModal.classList.remove('hidden');
 
-    // 使用ボタン
     if (el.cardUseBtn) {
         el.cardUseBtn.onclick = () => {
             hideCardModal();
-            if (onCardUseCallback) {
-                onCardUseCallback(index);
-            }
+            if (onCardUseCallback) onCardUseCallback(index);
         };
     }
 }
@@ -321,9 +352,6 @@ export function hideActionButton() {
     if (el.actionBtn) el.actionBtn.classList.add('hidden');
 }
 
-// ===========================================
-// スキップボタン
-// ===========================================
 export function showSkipButton(text, onClick) {
     if (el.skipBtn) {
         el.skipBtn.textContent = text;
@@ -337,24 +365,28 @@ export function hideSkipButton() {
 }
 
 // ===========================================
-// アクティブプレイヤー表示
+// アクティブプレイヤー表示（光らせる）
 // ===========================================
 export function setActivePlayer(target) {
-    el.playerBox?.classList.toggle('active', target === 'player');
-    el.cpuBox?.classList.toggle('active', target === 'cpu');
+    el.playerBox?.classList.toggle('is-active', target === 'player');
+    el.cpuBox?.classList.toggle('is-active', target === 'cpu');
 }
 
 export function setAnimating(isAnimating) {
-    if (el.actionBtn) {
-        el.actionBtn.disabled = isAnimating;
-    }
+    if (el.actionBtn) el.actionBtn.disabled = isAnimating;
 }
 
 // ===========================================
-// 役表パネル
+// 役表ドロワー
 // ===========================================
 export function toggleRankPanel() {
     el.rankPanel?.classList.toggle('open');
+    el.rankOverlay?.classList.toggle('open');
+}
+
+export function closeRankPanel() {
+    el.rankPanel?.classList.remove('open');
+    el.rankOverlay?.classList.remove('open');
 }
 
 export function updateRankPanel(mode) {
@@ -370,11 +402,9 @@ function renderRankList(mode = 'normal') {
     const roleTable = getRoleTable(mode);
     el.rankList.innerHTML = '';
 
-    // 勝ち役
     addRankSection('勝ち役');
     roleTable.roles.filter(r => r.multiplier > 0).forEach(r => addRankItem(r));
 
-    // 負け役
     addRankSection('負け役');
     roleTable.roles.filter(r => r.multiplier <= 0).forEach(r => addRankItem(r));
     addRankItem(roleTable.noRole);
@@ -392,7 +422,6 @@ function addRankItem(role) {
     const item = document.createElement('div');
     item.className = 'rank-item';
 
-    // ダイス表示
     const diceDiv = document.createElement('div');
     diceDiv.className = 'rank-dice';
     (role.display || []).forEach(v => {
@@ -426,12 +455,8 @@ export function showMatchResult(result, onNext) {
         el.matchResultTitle.className = 'match-winner ' + (result.winner === 'player' ? 'win' : 'lose');
     }
 
-    if (el.matchPlayerRole) {
-        el.matchPlayerRole.textContent = result.playerRole?.name || '-';
-    }
-    if (el.matchCpuRole) {
-        el.matchCpuRole.textContent = result.cpuRole?.name || '-';
-    }
+    if (el.matchPlayerRole) el.matchPlayerRole.textContent = result.playerRole?.name || '-';
+    if (el.matchCpuRole) el.matchCpuRole.textContent = result.cpuRole?.name || '-';
 
     if (el.matchPayout) {
         const payout = result.winner === 'player' ? result.payout : -result.payout;
@@ -464,22 +489,7 @@ export function showGameResult(result, money, onRestart) {
 
     showScreen('result');
 
-    if (el.restartBtn) {
-        el.restartBtn.onclick = onRestart;
-    }
-}
-
-// ===========================================
-// ユーティリティ
-// ===========================================
-export function flashElement(element, className) {
-    if (!element) return;
-    element.classList.add(className);
-    setTimeout(() => element.classList.remove(className), 500);
-}
-
-export function getElement(id) {
-    return el[id];
+    if (el.restartBtn) el.restartBtn.onclick = onRestart;
 }
 
 // ===========================================
@@ -488,20 +498,17 @@ export function getElement(id) {
 export function initUI(callbacks = {}) {
     cacheElements();
 
-    // 役表パネル
-    if (el.rankBtn) {
-        el.rankBtn.addEventListener('click', () => toggleRankPanel());
-    }
-    if (el.rankClose) {
-        el.rankClose.addEventListener('click', () => toggleRankPanel());
-    }
-    if (el.rankOverlay) {
-        el.rankOverlay.addEventListener('click', () => toggleRankPanel());
-    }
+    // 役表ドロワー
+    if (el.rankBtn) el.rankBtn.addEventListener('click', () => toggleRankPanel());
+    if (el.rankClose) el.rankClose.addEventListener('click', () => closeRankPanel());
+    if (el.rankOverlay) el.rankOverlay.addEventListener('click', () => closeRankPanel());
 
     // カードモーダル
-    if (el.cardCancelBtn) {
-        el.cardCancelBtn.addEventListener('click', () => hideCardModal());
+    if (el.cardCancelBtn) el.cardCancelBtn.addEventListener('click', () => hideCardModal());
+
+    // 山札クリックでドロー
+    if (el.deckArea && callbacks.onDrawCard) {
+        el.deckArea.addEventListener('click', callbacks.onDrawCard);
     }
 
     // コールバック設定
@@ -511,12 +518,9 @@ export function initUI(callbacks = {}) {
     if (callbacks.onRestart && el.restartBtn) {
         el.restartBtn.addEventListener('click', callbacks.onRestart);
     }
-    if (callbacks.onDrawCard && el.drawBtn) {
-        el.drawBtn.addEventListener('click', callbacks.onDrawCard);
-    }
     if (callbacks.onCardUse) {
         setOnCardUse(callbacks.onCardUse);
     }
 
-    console.log('🎮 UI initialized');
+    console.log('🎮 UI initialized (new layout with info-box)');
 }

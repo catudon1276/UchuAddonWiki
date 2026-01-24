@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- 16:9 ゲームコンテナ -->
     <div class="game-container">
         
         <!-- タイトル画面 -->
@@ -28,85 +27,105 @@
 
         <!-- ゲーム画面 -->
         <div id="game-screen" class="screen hidden">
-            <!-- ヘッダー -->
-            <header class="game-header">
-                <button id="rank-btn" class="header-btn">役表</button>
-                <div class="header-info">
-                    <span class="match-label">試合</span>
-                    <span id="match-num" class="match-num">1/15</span>
-                    <span id="dice-mode" class="dice-mode">通常賽</span>
-                </div>
-                <button id="draw-btn" class="header-btn blue">ドロー</button>
-            </header>
-
-            <!-- メインエリア（3カラム） -->
-            <main class="game-main">
-                <!-- 左: プレイヤー -->
-                <div class="player-col player-side">
-                    <div class="player-box" id="player-box">
-                        <div class="player-label">YOU</div>
-                        <div class="player-stats">
-                            <div class="stat"><span class="stat-label">所持金</span><span id="player-money" class="stat-val green">¥10,000</span></div>
-                            <div class="stat"><span class="stat-label">掛け金</span><span id="player-bet" class="stat-val gold">¥0</span></div>
+            
+            <!-- 上段：プレイヤー情報BOX / 試合情報 / CPU情報BOX -->
+            <div class="top-row">
+                <!-- 自分の情報BOX（左） -->
+                <div id="player-box" class="info-box player-box">
+                    <div class="box-header">
+                        <div class="avatar">
+                            <img src="https://img.icons8.com/material-rounded/96/user.png" alt="YOU" onerror="this.style.display='none'">
                         </div>
-                        <div id="player-dice" class="dice-row">
-                            <div class="die">?</div><div class="die">?</div><div class="die">?</div>
-                        </div>
-                        <div id="player-role" class="role-display">-</div>
+                        <div class="box-name">YOU</div>
                     </div>
-                    <!-- 手札 -->
-                    <div id="player-hand" class="hand-area"></div>
-                </div>
-
-                <!-- 中央: 皿＋山札 -->
-                <div class="center-col">
-                    <div class="bowl-wrapper">
-                        <!-- 山札（皿の左） -->
-                        <div id="deck-area" class="deck-area">
-                            <div class="deck-stack">
-                                <div class="card-back"></div>
-                                <div class="card-back"></div>
-                                <div class="card-back"></div>
-                            </div>
-                            <span id="deck-count" class="deck-count">30</span>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-label">所持金</span>
+                            <div id="player-money" class="stat-value green">¥10,000</div>
                         </div>
-                        <!-- 皿 -->
-                        <div class="bowl">
-                            <div class="bowl-inner"></div>
-                            <canvas id="dice-canvas"></canvas>
-                        </div>
-                        <!-- 捨て札（皿の右） -->
-                        <div id="discard-area" class="discard-area">
-                            <div class="discard-stack"></div>
-                            <span class="discard-label">捨札</span>
+                        <div class="stat-item">
+                            <span class="stat-label">掛け金</span>
+                            <div id="player-bet" class="stat-value gold">¥0</div>
                         </div>
                     </div>
-                    <!-- アクションボタン -->
-                    <div class="action-area">
-                        <button id="action-btn" class="btn btn-action hidden">サイコロを振る</button>
-                        <button id="skip-btn" class="btn btn-sub hidden">確定</button>
+                    <div id="player-dice" class="dice-row">
+                        <div class="dice-slot">?</div>
+                        <div class="dice-slot">?</div>
+                        <div class="dice-slot">?</div>
                     </div>
-                    <!-- VFX -->
-                    <div id="vfx-stage" class="vfx-stage"></div>
+                    <div id="player-role" class="role-display">-</div>
+                    <!-- 情報BOX内のカード（自分は後で手札エリアに表示するのでここは非表示） -->
                 </div>
 
-                <!-- 右: CPU -->
-                <div class="player-col cpu-side">
-                    <div class="player-box" id="cpu-box">
-                        <div class="player-label cpu">CPU</div>
-                        <div class="player-stats">
-                            <div class="stat"><span class="stat-label">所持金</span><span id="cpu-money" class="stat-val green">¥∞</span></div>
-                            <div class="stat"><span class="stat-label">掛け金</span><span id="cpu-bet" class="stat-val gold">¥0</span></div>
-                        </div>
-                        <div id="cpu-dice" class="dice-row">
-                            <div class="die">?</div><div class="die">?</div><div class="die">?</div>
-                        </div>
-                        <div id="cpu-role" class="role-display">-</div>
-                    </div>
-                    <!-- CPU手札（裏向き） -->
-                    <div id="cpu-hand" class="hand-area cpu-hand"></div>
+                <!-- 試合情報（中央） -->
+                <div class="match-info-center">
+                    <div id="match-num" class="match-num">1/15</div>
+                    <div id="dice-mode" class="dice-mode">通常賽</div>
                 </div>
-            </main>
+
+                <!-- CPUの情報BOX（右） -->
+                <div id="cpu-box" class="info-box cpu-box">
+                    <div class="box-header">
+                        <div class="avatar cpu">
+                            <img src="https://img.icons8.com/material-rounded/96/robot.png" alt="CPU" onerror="this.style.display='none'">
+                        </div>
+                        <div class="box-name cpu">CPU</div>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-label">所持金</span>
+                            <div id="cpu-money" class="stat-value">¥∞</div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">掛け金</span>
+                            <div id="cpu-bet" class="stat-value gold">¥0</div>
+                        </div>
+                    </div>
+                    <div id="cpu-dice" class="dice-row">
+                        <div class="dice-slot">?</div>
+                        <div class="dice-slot">?</div>
+                        <div class="dice-slot">?</div>
+                    </div>
+                    <div id="cpu-role" class="role-display">-</div>
+                    <!-- CPUの手札（裏向きカード） -->
+                    <div id="cpu-hand" class="card-row-mini"></div>
+                </div>
+            </div>
+
+            <!-- 中段：役表 / 皿 / 山札・捨札 -->
+            <div class="middle-row">
+                <!-- 役表ボタン（左端） -->
+                <button id="rank-btn" class="rank-toggle-btn">役<br>表</button>
+
+                <!-- 皿エリア（中央） -->
+                <div class="bowl-area">
+                    <div class="bowl">
+                        <canvas id="dice-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- 山札エリア（右側） -->
+                <div id="deck-area" class="deck-area" title="クリックでドロー">
+                    <div class="deck-stack">
+                        <div class="card-back-stack"></div>
+                        <div class="card-back-stack"></div>
+                        <div class="card-back-stack"></div>
+                    </div>
+                    <span id="deck-count" class="deck-label">30</span>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="action-row">
+                <button id="action-btn" class="btn btn-action hidden">サイコロを振る</button>
+                <button id="skip-btn" class="btn btn-sub hidden">確定</button>
+            </div>
+
+            <!-- 下段：自分の手札カード群 -->
+            <div class="bottom-row">
+                <div id="player-hand" class="player-hand-area"></div>
+            </div>
+
         </div>
 
         <!-- 結果画面 -->
@@ -119,16 +138,16 @@
             </div>
         </div>
 
-        <!-- 役表パネル -->
-        <aside id="rank-panel" class="rank-panel">
-            <div class="panel-header">
+        <!-- 役表ドロワー（左からスライド） -->
+        <aside id="rank-panel" class="rank-drawer">
+            <div class="drawer-header">
                 <h2>役表</h2>
                 <button id="rank-close" class="close-btn">×</button>
             </div>
-            <div id="rank-mode" class="rank-mode">通常賽</div>
+            <div id="rank-mode" class="rank-mode-display">通常賽</div>
             <div id="rank-list" class="rank-list"></div>
         </aside>
-        <div id="rank-overlay" class="overlay"></div>
+        <div id="rank-overlay" class="drawer-overlay"></div>
 
         <!-- ベットモーダル -->
         <div id="bet-modal" class="modal hidden">
@@ -140,10 +159,10 @@
             </div>
         </div>
 
-        <!-- カード詳細モーダル（クリックビュー） -->
+        <!-- カード詳細モーダル -->
         <div id="card-modal" class="modal hidden">
             <div class="modal-box card-detail">
-                <div id="card-modal-icon" class="card-icon"></div>
+                <div id="card-modal-icon" class="card-icon">🎴</div>
                 <h2 id="card-modal-title">カード名</h2>
                 <p id="card-modal-desc">説明文</p>
                 <div class="modal-actions">
@@ -164,9 +183,15 @@
             <div class="modal-box match-result">
                 <h2 id="match-result-title" class="match-winner">WIN!</h2>
                 <div class="match-roles">
-                    <div class="role-item"><span class="role-label">YOU</span><span id="match-player-role">-</span></div>
+                    <div class="role-item">
+                        <span class="role-label">YOU</span>
+                        <span id="match-player-role">-</span>
+                    </div>
                     <span class="vs">VS</span>
-                    <div class="role-item"><span class="role-label">CPU</span><span id="match-cpu-role">-</span></div>
+                    <div class="role-item">
+                        <span class="role-label">CPU</span>
+                        <span id="match-cpu-role">-</span>
+                    </div>
                 </div>
                 <p id="match-payout" class="match-payout">+¥0</p>
                 <button id="next-match-btn" class="btn btn-primary">次へ</button>
@@ -174,11 +199,10 @@
         </div>
     </div>
 
-    <!-- 非モジュールスクリプト（グローバルAPI提供） -->
+    <!-- Scripts -->
+    <script src="js/card.js"></script>
     <script src="js/dice.js"></script>
     <script src="js/coin.js"></script>
-    
-    <!-- メインエントリーポイント（ES Modules） -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>

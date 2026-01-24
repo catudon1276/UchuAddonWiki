@@ -1,8 +1,6 @@
 /**
  * Night Of Schemes - メインエントリーポイント
- * チンチロ×イカサマゲーム
- * 
- * ES Modules形式
+ * 縦型レイアウト対応 ES Modules形式
  */
 
 import { createGameState } from './game-state.js';
@@ -161,16 +159,9 @@ async function handleModeChange(mode) {
 async function handleCoinToss(result) {
     // CoinTosser APIを使用してコイントス演出
     if (window.CoinTosser) {
-        // コイン数を設定
         window.CoinTosser.setCoinCount(result.results.length);
-        
-        // 結果を変換（'heads' -> 'H', 'tails' -> 'T'）
         const coinResults = result.results.map(r => r === 'heads' ? 'H' : 'T');
-        
-        // コインを投げる
         window.CoinTosser.tossWithResults('bottom', coinResults);
-        
-        // 完了を待つ
         await waitForCoinStop();
     }
     
@@ -299,7 +290,6 @@ function waitForDiceStop() {
             }
         }, 100);
         
-        // タイムアウト
         setTimeout(() => {
             clearInterval(check);
             resolve();
@@ -316,7 +306,6 @@ function waitForCoinStop() {
             }
         }, 100);
         
-        // タイムアウト
         setTimeout(() => {
             clearInterval(check);
             resolve();
