@@ -1,60 +1,75 @@
 // ==========================================
-// Card Game Manager - card.js
+// Card System - card.js
+// ゲーム統合カード管理 + 高品質描画システム
 // ==========================================
 
+/**
+ * カード管理 + 描画システムの統合
+ */
 class CardGameManager {
     constructor() {
+        // ゲーム状態管理
         this.deck = [];
         this.playerHand = [];
         this.opponentHand = [];
         this.discardPile = [];
         this.cardDefinitions = new Map();
-        this.cardEffects = new Map();  // 効果関数を別管理
+        this.cardEffects = new Map();
+
+        // 描画システム
+        this.rendering = null;
+
+        // イベントシステム
         this.eventListeners = {
             onCardDraw: [],
             onCardUse: [],
             onCardDiscard: [],
             onGameReset: [],
             onDeckEmpty: [],
-            onExtraTurn: []  // 再行動イベント
+            onExtraTurn: [],
+            onRender: []  // 描画完了イベント
         };
-        this.infiniteDeck = true;  // 無限ドロー有効
-        this.autoRefillDeck = [];  // デッキが空になったら補充するカードID
+
+        // ゲーム設定
+        this.infiniteDeck = true;
+        this.autoRefillDeck = [];
         this.cardBackColor = {
-            gradient1: '#1e3a8a',  // デフォルトの青
+            gradient1: '#1e3a8a',
             gradient2: '#1e1b4b'
         };
         this.extraTurns = {
             player: 0,
             opponent: 0
-        };  // 再行動カウンター
+        };
+    }
+
+    // ==========================================
+    // 描画システム初期化
+    // ==========================================
+
+    /**
+     * 描画システムをセット
+     */
+    setRenderingSystem(renderer) {
+        this.rendering = renderer;
+        console.log('🎴 描画システムをセットしました');
     }
 
     // ==========================================
     // 再行動システム
     // ==========================================
 
-    /**
-     * 再行動を付与
-     * @param {string} target - 'player' または 'opponent'
-     * @param {number} count - 付与する再行動回数（デフォルト1）
-     */
     grantExtraTurn(target = 'player', count = 1) {
         if (target === 'player') {
             this.extraTurns.player += count;
         } else if (target === 'opponent') {
             this.extraTurns.opponent += count;
         }
-        
+
         this.triggerEvent('onExtraTurn', { target, count, total: this.extraTurns[target] });
         console.log(`🔄 ${target} に再行動 x${count} を付与しました（合計: ${this.extraTurns[target]}）`);
     }
 
-    /**
-     * 再行動を消費
-     * @param {string} target - 'player' または 'opponent'
-     * @returns {boolean} 再行動が消費できたかどうか
-     */
     useExtraTurn(target = 'player') {
         if (target === 'player' && this.extraTurns.player > 0) {
             this.extraTurns.player--;
@@ -68,19 +83,10 @@ class CardGameManager {
         return false;
     }
 
-    /**
-     * 再行動の残り回数を取得
-     * @param {string} target - 'player' または 'opponent'
-     * @returns {number} 残りの再行動回数
-     */
     getExtraTurns(target = 'player') {
         return target === 'player' ? this.extraTurns.player : this.extraTurns.opponent;
     }
 
-    /**
-     * 再行動をリセット
-     * @param {string} target - 'player', 'opponent', または 'all'
-     */
     resetExtraTurns(target = 'all') {
         if (target === 'player' || target === 'all') {
             this.extraTurns.player = 0;
@@ -91,11 +97,6 @@ class CardGameManager {
         console.log(`🔄 再行動をリセットしました: ${target}`);
     }
 
-    /**
-     * 再行動があるかチェック
-     * @param {string} target - 'player' または 'opponent'
-     * @returns {boolean} 再行動があるかどうか
-     */
     hasExtraTurn(target = 'player') {
         return this.getExtraTurns(target) > 0;
     }
@@ -104,25 +105,17 @@ class CardGameManager {
     // 見た目のカスタマイズ
     // ==========================================
 
-    /**
-     * カード裏面の色を設定
-     * @param {string} color1 - グラデーション開始色（CSSカラー）
-     * @param {string} color2 - グラデーション終了色（CSSカラー、省略時はcolor1）
-     */
     setCardBackColor(color1, color2 = null) {
         this.cardBackColor.gradient1 = color1;
         this.cardBackColor.gradient2 = color2 || color1;
-        
-        // 既存のカード裏面のスタイルを更新
-        this.updateAllCardBacks();
-        
+
+        if (this.rendering) {
+            this.rendering.setCardBackColor(color1, color2);
+        }
+
         console.log(`🎨 カード裏面色を変更: ${color1} → ${this.cardBackColor.gradient2}`);
     }
 
-    /**
-     * プリセット色を設定
-     * @param {string} presetName - プリセット名（'blue', 'red', 'green', 'purple', 'gold', 'black'）
-     */
     setCardBackPreset(presetName) {
         const presets = {
             'blue': { gradient1: '#1e3a8a', gradient2: '#1e1b4b' },
@@ -130,36 +123,18 @@ class CardGameManager {
             'green': { gradient1: '#065f46', gradient2: '#064e3b' },
             'purple': { gradient1: '#6b21a8', gradient2: '#581c87' },
             'gold': { gradient1: '#b45309', gradient2: '#78350f' },
-            'black': { gradient1: '#1f2937', gradient2: '#111827' },
-            'pink': { gradient1: '#be185d', gradient2: '#9f1239' },
-            'orange': { gradient1: '#c2410c', gradient2: '#9a3412' },
-            'teal': { gradient1: '#0f766e', gradient2: '#115e59' },
-            'indigo': { gradient1: '#4338ca', gradient2: '#3730a3' }
+            'black': { gradient1: '#1f2937', gradient2: '#111827' }
         };
 
         if (presets[presetName]) {
             this.cardBackColor = { ...presets[presetName] };
-            this.updateAllCardBacks();
+            if (this.rendering) {
+                this.rendering.setCardBackPreset(presetName);
+            }
             console.log(`🎨 プリセット "${presetName}" を適用しました`);
-        } else {
-            console.warn(`⚠️ プリセット "${presetName}" が見つかりません`);
-            console.log('利用可能なプリセット:', Object.keys(presets).join(', '));
         }
     }
 
-    /**
-     * すべてのカード裏面のスタイルを更新
-     */
-    updateAllCardBacks() {
-        const cardBacks = document.querySelectorAll('.card-back');
-        cardBacks.forEach(back => {
-            back.style.background = `linear-gradient(135deg, ${this.cardBackColor.gradient1} 0%, ${this.cardBackColor.gradient2} 100%)`;
-        });
-    }
-
-    /**
-     * 現在のカード裏面色を取得
-     */
     getCardBackColor() {
         return { ...this.cardBackColor };
     }
@@ -167,29 +142,18 @@ class CardGameManager {
     // ==========================================
     // カード定義の登録
     // ==========================================
-    
-    /**
-     * カードタイプを定義
-     * @param {string} id - カードの一意ID
-     * @param {Object} data - カードデータ {title, description, effectId, iconSlug, iconType}
-     */
+
     defineCard(id, data) {
         this.cardDefinitions.set(id, {
             id: id,
             title: data.title || '???',
             description: data.description || '',
-            effectId: data.effectId || null,  // 効果IDのみを保存
-            iconSlug: data.iconSlug || null,  // Icons8のアイコン名 or ローカルパス
-            iconType: data.iconType || 'icons8'  // 'icons8', 'local', 'text'
+            effectId: data.effectId || null,
+            iconSlug: data.iconSlug || null,
+            iconType: data.iconType || 'icons8'
         });
     }
 
-    /**
-     * カードの説明文と効果を設定（後から変更可能）
-     * @param {string} cardId - カードID
-     * @param {string} description - 新しい説明文
-     * @param {string} effectId - 新しい効果ID（省略時は変更なし）
-     */
     setCardDescription(cardId, description, effectId = null) {
         const card = this.cardDefinitions.get(cardId);
         if (card) {
@@ -203,12 +167,6 @@ class CardGameManager {
         }
     }
 
-    /**
-     * カードのアイコンを設定（後から変更可能）
-     * @param {string} cardId - カードID
-     * @param {string} iconSlug - アイコン名 or パス
-     * @param {string} iconType - 'icons8', 'local', 'text'
-     */
     setCardIcon(cardId, iconSlug, iconType = 'icons8') {
         const card = this.cardDefinitions.get(cardId);
         if (card) {
@@ -220,20 +178,12 @@ class CardGameManager {
         }
     }
 
-    /**
-     * 複数カードの説明文を一括設定
-     * @param {Object} descriptions - {cardId: description} の形式
-     */
     setCardDescriptions(descriptions) {
         Object.entries(descriptions).forEach(([cardId, desc]) => {
             this.setCardDescription(cardId, desc);
         });
     }
 
-    /**
-     * 複数カードの効果を一括設定
-     * @param {Object} effects - {cardId: effectId} の形式
-     */
     setCardEffectIds(effects) {
         Object.entries(effects).forEach(([cardId, effectId]) => {
             const card = this.cardDefinitions.get(cardId);
@@ -243,29 +193,16 @@ class CardGameManager {
         });
     }
 
-    /**
-     * 複数のカードを一括定義
-     * @param {Array} cards - カード定義の配列
-     */
     defineCards(cards) {
         cards.forEach(card => {
             this.defineCard(card.id, card);
         });
     }
 
-    /**
-     * カード効果を登録（外部ファイルから呼び出し可能）
-     * @param {string} effectId - 効果ID
-     * @param {Function} effectFunction - 効果関数
-     */
     registerEffect(effectId, effectFunction) {
         this.cardEffects.set(effectId, effectFunction);
     }
 
-    /**
-     * 複数の効果を一括登録
-     * @param {Object} effects - {effectId: function} の形式
-     */
     registerEffects(effects) {
         Object.entries(effects).forEach(([effectId, func]) => {
             this.registerEffect(effectId, func);
@@ -276,21 +213,13 @@ class CardGameManager {
     // デッキ管理
     // ==========================================
 
-    /**
-     * デッキを初期化
-     * @param {Array} cardIds - カードIDの配列
-     * @param {boolean} infiniteDeck - 無限ドロー有効化
-     */
     initializeDeck(cardIds, infiniteDeck = true) {
         this.deck = cardIds.map(id => this.createCardInstance(id));
-        this.autoRefillDeck = [...cardIds];  // 補充用に保存
+        this.autoRefillDeck = [...cardIds];
         this.infiniteDeck = infiniteDeck;
         this.shuffleDeck();
     }
 
-    /**
-     * カードインスタンスを作成
-     */
     createCardInstance(cardId) {
         const definition = this.cardDefinitions.get(cardId);
         if (!definition) {
@@ -305,9 +234,6 @@ class CardGameManager {
         return { ...definition };
     }
 
-    /**
-     * デッキをシャッフル
-     */
     shuffleDeck() {
         for (let i = this.deck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -315,16 +241,10 @@ class CardGameManager {
         }
     }
 
-    /**
-     * デッキの残り枚数を取得
-     */
     getDeckCount() {
         return this.deck.length;
     }
 
-    /**
-     * デッキを補充
-     */
     refillDeck() {
         if (this.autoRefillDeck.length > 0) {
             this.deck = this.autoRefillDeck.map(id => this.createCardInstance(id));
@@ -337,17 +257,10 @@ class CardGameManager {
     // カード操作
     // ==========================================
 
-    /**
-     * カードをドロー
-     * @param {string} target - 'player' または 'opponent'
-     * @param {number} count - ドロー枚数（デフォルト1枚）
-     * @returns {Array} ドローしたカードの配列
-     */
     drawCard(target = 'player', count = 1) {
         const drawnCards = [];
-        
+
         for (let i = 0; i < count; i++) {
-            // デッキが空の場合
             if (this.deck.length === 0) {
                 if (this.infiniteDeck) {
                     this.refillDeck();
@@ -359,7 +272,7 @@ class CardGameManager {
             }
 
             const card = this.deck.pop();
-            
+
             if (target === 'player') {
                 this.playerHand.push(card);
             } else if (target === 'opponent') {
@@ -373,60 +286,42 @@ class CardGameManager {
         return drawnCards;
     }
 
-    /**
-     * 手札にカードを直接追加
-     * @param {string} target - 'player' または 'opponent'
-     * @param {string} cardId - カードID
-     * @returns {Object} 追加したカード
-     */
     addCardToHand(target = 'player', cardId) {
         const card = this.createCardInstance(cardId);
-        
+
         if (target === 'player') {
             this.playerHand.push(card);
         } else if (target === 'opponent') {
             this.opponentHand.push(card);
         }
-        
+
         return card;
     }
 
-    /**
-     * 手札から特定のカードを削除
-     * @param {string} target - 'player' または 'opponent'
-     * @param {number} index - 削除するカードのインデックス
-     * @param {boolean} addToDiscard - 捨て札に追加するか（デフォルトfalse）
-     * @returns {Object|null} 削除したカード
-     */
     removeCardFromHand(target = 'player', index, addToDiscard = false) {
         const hand = target === 'player' ? this.playerHand : this.opponentHand;
-        
+
         if (index < 0 || index >= hand.length) {
             console.warn('無効なカードインデックス');
             return null;
         }
 
         const card = hand.splice(index, 1)[0];
-        
+
         if (addToDiscard) {
             this.discardPile.push(card);
         }
-        
+
         return card;
     }
 
-    /**
-     * 手札を完全にクリア
-     * @param {string} target - 'player' または 'opponent'
-     * @param {boolean} addToDiscard - 捨て札に追加するか（デフォルトfalse）
-     */
     clearHand(target = 'player', addToDiscard = false) {
         const hand = target === 'player' ? this.playerHand : this.opponentHand;
-        
+
         if (addToDiscard) {
             this.discardPile.push(...hand);
         }
-        
+
         if (target === 'player') {
             this.playerHand = [];
         } else {
@@ -434,15 +329,9 @@ class CardGameManager {
         }
     }
 
-    /**
-     * カードを使用
-     * @param {string} target - 'player' または 'opponent'
-     * @param {number} index - 手札のインデックス
-     * @param {Object} context - 効果関数に渡す追加コンテキスト
-     */
     useCard(target = 'player', index = 0, context = {}) {
         const hand = target === 'player' ? this.playerHand : this.opponentHand;
-        
+
         if (index < 0 || index >= hand.length) {
             console.warn('無効なカードインデックス');
             return null;
@@ -451,7 +340,6 @@ class CardGameManager {
         const card = hand.splice(index, 1)[0];
         this.discardPile.push(card);
 
-        // 効果IDから効果関数を取得して実行
         if (card.effectId && this.cardEffects.has(card.effectId)) {
             const effectFunction = this.cardEffects.get(card.effectId);
             effectFunction(this, { target, card, ...context });
@@ -463,14 +351,9 @@ class CardGameManager {
         return card;
     }
 
-    /**
-     * カードを捨てる
-     * @param {string} target - 'player' または 'opponent'
-     * @param {number} index - 手札のインデックス
-     */
     discardCard(target = 'player', index = 0) {
         const hand = target === 'player' ? this.playerHand : this.opponentHand;
-        
+
         if (index < 0 || index >= hand.length) {
             console.warn('無効なカードインデックス');
             return null;
@@ -483,18 +366,10 @@ class CardGameManager {
         return card;
     }
 
-    /**
-     * 手札を取得
-     * @param {string} target - 'player' または 'opponent'
-     */
     getHand(target = 'player') {
         return target === 'player' ? [...this.playerHand] : [...this.opponentHand];
     }
 
-    /**
-     * 手札の枚数を取得
-     * @param {string} target - 'player' または 'opponent'
-     */
     getHandCount(target = 'player') {
         return target === 'player' ? this.playerHand.length : this.opponentHand.length;
     }
@@ -503,9 +378,6 @@ class CardGameManager {
     // ゲーム管理
     // ==========================================
 
-    /**
-     * ゲームをリセット
-     */
     resetGame() {
         this.deck = [];
         this.playerHand = [];
@@ -519,20 +391,12 @@ class CardGameManager {
     // イベントシステム
     // ==========================================
 
-    /**
-     * イベントリスナーを登録
-     * @param {string} eventName - イベント名
-     * @param {Function} callback - コールバック関数
-     */
     on(eventName, callback) {
         if (this.eventListeners[eventName]) {
             this.eventListeners[eventName].push(callback);
         }
     }
 
-    /**
-     * イベントを発火
-     */
     triggerEvent(eventName, data) {
         if (this.eventListeners[eventName]) {
             this.eventListeners[eventName].forEach(callback => callback(data));
@@ -543,9 +407,6 @@ class CardGameManager {
     // デバッグ用
     // ==========================================
 
-    /**
-     * 現在の状態を出力
-     */
     debugState() {
         console.log('=== Card Game State ===');
         console.log('Deck:', this.deck.length, 'cards');
@@ -556,284 +417,641 @@ class CardGameManager {
 }
 
 // ==========================================
-// グローバルインスタンスの作成
-// ==========================================
-const cardGame = new CardGameManager();
-
-// ==========================================
-// 使用例とサンプルカード定義
-// ==========================================
-
-// サンプルカード定義（効果IDのみを指定）
-cardGame.defineCards([
-    {
-        id: 'heal_potion',
-        title: '回復の薬',
-        description: 'HPを20回復する',
-        effectId: 'heal_20'
-    },
-    {
-        id: 'attack_card',
-        title: '攻撃カード',
-        description: '相手に10ダメージを与える',
-        effectId: 'damage_10'
-    },
-    {
-        id: 'shield',
-        title: 'シールド',
-        description: '次のターン、ダメージを無効化する',
-        effectId: 'shield_effect'
-    },
-    {
-        id: 'draw_card',
-        title: 'ドロー',
-        description: 'カードを2枚引く',
-        effectId: 'draw_2'
-    },
-    {
-        id: 'mystery_card',
-        title: '謎のカード',
-        description: 'ランダムな効果が発動する',
-        effectId: 'random_effect'
-    }
-]);
-
-// サンプル効果関数の登録（これは別ファイルに分離可能）
-cardGame.registerEffects({
-    'heal_20': (game, context) => {
-        console.log('💊 HPを20回復しました！');
-        // ここに実際のHP回復処理を記述
-    },
-    'damage_10': (game, context) => {
-        console.log('⚔️ 相手に10ダメージ！');
-        // ここに実際のダメージ処理を記述
-    },
-    'shield_effect': (game, context) => {
-        console.log('🛡️ シールドを展開しました！');
-        // ここにシールド効果を記述
-    },
-    'draw_2': (game, context) => {
-        console.log('🎴 カードを2枚ドロー！');
-        game.drawCard(context.target, 2);
-    },
-    'random_effect': (game, context) => {
-        const effects = ['heal', 'damage', 'draw'];
-        const random = effects[Math.floor(Math.random() * effects.length)];
-        console.log(`❓ ${random} 効果が発動！`);
-    }
-});
-
-// ==========================================
-// HTML統合用のヘルパー関数
+// カード描画システム - Card Rendering System
 // ==========================================
 
 /**
- * HTMLのカードシステムと統合
+ * 高品質カード描画マネージャー
+ * info-box.htmlのデザイン + アニメーション統合
  */
-function integrateWithHTML() {
-    // onCardUse関数を拡張
-    const originalOnCardUse = window.onCardUse || function() {};
-    
-    window.onCardUse = function(title, description) {
-        // 元の処理を実行
-        originalOnCardUse(title, description);
-        
-        // カードマネージャーの処理を実行
-        const hand = cardGame.getHand('player');
-        const cardIndex = hand.findIndex(c => c.title === title);
-        
-        if (cardIndex >= 0) {
-            cardGame.useCard('player', cardIndex);
-        }
-    };
+class CardRenderingSystem {
+    constructor() {
+        this.playerHandContainer = null;
+        this.cpuHandContainer = null;
+        this.deckContainer = null;
+        this.cardBackColor = {
+            gradient1: '#1e3a8a',
+            gradient2: '#1e1b4b'
+        };
+    }
 
-    // カードドロー時にHTMLに反映（アイコン対応）
-    cardGame.on('onCardDraw', (data) => {
-        if (data.target === 'player' && window.setCardContent) {
-            // 次にクリックされるカードにデータを設定
+    /**
+     * 初期化
+     */
+    init(playerHandSelector, cpuHandSelector = null, deckSelector = null) {
+        this.playerHandContainer = document.querySelector(playerHandSelector);
+        this.cpuHandContainer = cpuHandSelector ? document.querySelector(cpuHandSelector) : null;
+        this.deckContainer = deckSelector ? document.querySelector(deckSelector) : null;
+
+        if (!this.playerHandContainer) {
+            console.warn('⚠️ プレイヤーの手札コンテナが見つかりません:', playerHandSelector);
+        }
+        console.log('🎴 カード描画システムを初期化しました');
+    }
+
+    /**
+     * カード裏面の色を設定（全体）
+     */
+    setCardBackColor(color1, color2 = null) {
+        this.cardBackColor.gradient1 = color1;
+        this.cardBackColor.gradient2 = color2 || color1;
+        console.log(`🎨 カード裏面色を変更: ${color1} → ${this.cardBackColor.gradient2}`);
+    }
+
+    /**
+     * プリセット色を設定
+     */
+    setCardBackPreset(presetName) {
+        const presets = {
+            'blue': { gradient1: '#1e3a8a', gradient2: '#1e1b4b' },
+            'red': { gradient1: '#991b1b', gradient2: '#7f1d1d' },
+            'green': { gradient1: '#065f46', gradient2: '#064e3b' },
+            'purple': { gradient1: '#6b21a8', gradient2: '#581c87' },
+            'gold': { gradient1: '#b45309', gradient2: '#78350f' },
+            'black': { gradient1: '#1f2937', gradient2: '#111827' }
+        };
+
+        if (presets[presetName]) {
+            this.cardBackColor = { ...presets[presetName] };
+            console.log(`🎨 プリセット "${presetName}" を適用しました`);
+        }
+    }
+
+    /**
+     * 手札内のカードレイアウトを更新（リアルなスタッキング）
+     */
+    updateCardLayout(container) {
+        if (!container) return;
+
+        const cards = Array.from(container.querySelectorAll('.card-back-mini:not(.card-exit)'));
+        const count = cards.length;
+
+        if (count === 0) return;
+
+        const containerWidth = container.offsetWidth || 210;
+        const cardWidth = 30;
+
+        let negativeMargin = -10;
+        if (count * (cardWidth + negativeMargin) > containerWidth) {
+            negativeMargin = (containerWidth - cardWidth) / (count - 1) - cardWidth;
+        }
+
+        cards.forEach((card, i) => {
+            card.style.marginLeft = i === 0 ? '0px' : `${negativeMargin}px`;
+            card.style.zIndex = i;
+            card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+    }
+
+    /**
+     * プレイヤー手札のカード配置を更新（画面下部中央基準）
+     */
+    updatePlayerCardLayout() {
+        if (!this.playerHandContainer) return;
+
+        const cards = Array.from(this.playerHandContainer.querySelectorAll('.card:not(.card-exit)'));
+        const count = cards.length;
+
+        if (count === 0) return;
+
+        // 利用可能な幅を取得（余白を考慮）
+        const containerWidth = this.playerHandContainer.offsetWidth || window.innerWidth - 80;
+        const cardWidth = 110;
+        let gap = 35; // カード間隔
+
+        // 手札が幅を超える場合は間隔を自動調整
+        const totalWidth = (count - 1) * gap + cardWidth;
+        if (totalWidth > containerWidth) {
+            gap = Math.max(10, (containerWidth - cardWidth) / (count - 1));
+        }
+
+        // 中心揃えの計算
+        const actualTotalWidth = (count - 1) * gap;
+        const centerOffset = actualTotalWidth / 2;
+
+        cards.forEach((card, index) => {
+            // 中心揃えで配置
+            const offsetX = index * gap - centerOffset;
+            card.style.left = `calc(50% + ${offsetX}px)`;
+            card.style.zIndex = index; // カード番号が大きいほど前面
+        });
+    }
+
+    /**
+     * カードを手札に追加（アニメーション付き）
+     */
+    addCardToContainer(container, color1 = null, color2 = null) {
+        if (!container) return;
+
+        const card = document.createElement('div');
+        card.className = 'card-back-mini card-enter';
+
+        const gradColor1 = color1 || this.cardBackColor.gradient1;
+        const gradColor2 = color2 || this.cardBackColor.gradient2;
+        card.style.background = `linear-gradient(135deg, ${gradColor1} 0%, ${gradColor2} 100%)`;
+        card.style.setProperty('--this-color-1', gradColor1);
+        card.style.setProperty('--this-color-2', gradColor2);
+
+        container.appendChild(card);
+
+        card.offsetHeight;
+
+        this.updateCardLayout(container);
+
+        setTimeout(() => {
+            card.classList.remove('card-enter');
+            card.classList.add('card-ready');
+        }, 50);
+
+        return card;
+    }
+
+    /**
+     * カードを手札から削除（アニメーション付き）
+     */
+    removeCardFromContainer(container, index = -1) {
+        if (!container) return;
+
+        const activeCards = container.querySelectorAll('.card-back-mini:not(.card-exit)');
+        if (activeCards.length === 0) return;
+
+        const targetCard = index >= 0 && index < activeCards.length
+            ? activeCards[index]
+            : activeCards[activeCards.length - 1];
+
+        targetCard.classList.add('card-exit');
+
+        this.updateCardLayout(container);
+
+        setTimeout(() => {
+            if (targetCard.parentNode === container) {
+                container.removeChild(targetCard);
+                this.updateCardLayout(container);
+            }
+        }, 300);
+    }
+
+    /**
+     * CPUの手札にカードを追加
+     */
+    addCPUCard(color1 = null, color2 = null) {
+        if (!this.cpuHandContainer) return;
+        return this.addCardToContainer(this.cpuHandContainer, color1, color2);
+    }
+
+    /**
+     * CPUの手札からカードを削除
+     */
+    removeCPUCard(index = -1) {
+        if (!this.cpuHandContainer) return;
+        this.removeCardFromContainer(this.cpuHandContainer, index);
+    }
+
+    /**
+     * プレイヤーの大型カード（110x154px）を手札に追加
+     * 裏面表示で高品質な背デザイン（色分けあり）
+     */
+    addPlayerCard(cardData, color1 = null, color2 = null, animate = true) {
+        if (!this.playerHandContainer) return;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.index = this.playerHandContainer.children.length;
+        card.dataset.cardId = cardData.id || '';
+        card.dataset.title = cardData.name || cardData.title || '???';
+        card.dataset.desc = cardData.description || '';
+
+        // プレイヤーのカードは裏面表示
+        const back = document.createElement('div');
+
+        // カラークラスを追加（色分け用）
+        const colorClass = cardData.color || 'blue';
+        back.className = `card-back ${colorClass}`;
+
+        card.appendChild(back);
+
+        if (animate) {
+            // 山札から手札へのアニメーション
+            this.animateCardFromDeck(card);
+        } else {
+            // アニメーションなしで直接追加
+            card.className = 'card card-enter';
+            this.playerHandContainer.appendChild(card);
+            card.offsetHeight;
             setTimeout(() => {
-                const drawnCards = document.querySelectorAll('.card.my-card');
-                const lastCard = drawnCards[drawnCards.length - 1];
-                if (lastCard) {
-                    // アイコン情報も含めて設定
-                    const iconInfo = cardGame.getCardIcon(data.card);
-                    window.setCardContent(
-                        lastCard, 
-                        data.card.title, 
-                        data.card.description,
-                        iconInfo.slug,
-                        iconInfo.type
-                    );
+                card.classList.remove('card-enter');
+                card.classList.add('card-ready');
+            }, 50);
+        }
+
+        return card;
+    }
+
+    /**
+     * 山札から手札へのカードアニメーション
+     */
+    animateCardFromDeck(cardEl) {
+        const field = document.getElementById('field');
+        const handBottom = document.getElementById('hand-bottom');
+        const deckArea = document.getElementById('deck-area');
+
+        if (!field || !handBottom || !deckArea) {
+            // フォールバック: アニメーションなしで追加
+            cardEl.className = 'card card-enter';
+            this.playerHandContainer.appendChild(cardEl);
+            cardEl.offsetHeight;
+            setTimeout(() => {
+                cardEl.classList.remove('card-enter');
+                cardEl.classList.add('card-ready');
+                this.updatePlayerCardLayout();
+            }, 50);
+            return;
+        }
+
+        // フィールドに一時追加
+        field.appendChild(cardEl);
+
+        // 山札の位置を取得
+        const deckRect = deckArea.getBoundingClientRect();
+        const fieldRect = field.getBoundingClientRect();
+
+        // 現在の手札の枚数を確認（新しいカードを含まない）
+        const currentHandCount = this.playerHandContainer.querySelectorAll('.card:not(.card-exit)').length;
+        const newCardIndex = currentHandCount; // 新しいカードのインデックス
+        const totalCardsAfterAdd = currentHandCount + 1; // 追加後の総カード数
+
+        // 利用可能な幅を取得（余白を考慮）
+        const containerWidth = this.playerHandContainer.offsetWidth || window.innerWidth - 80;
+        const cardWidth = 110;
+        let gap = 35;
+
+        // 手札が幅を超える場合は間隔を自動調整
+        const totalWidthCheck = (totalCardsAfterAdd - 1) * gap + cardWidth;
+        if (totalWidthCheck > containerWidth) {
+            gap = Math.max(10, (containerWidth - cardWidth) / (totalCardsAfterAdd - 1));
+        }
+
+        // 中心揃えの計算（追加後の状態で）
+        const totalWidth = (totalCardsAfterAdd - 1) * gap;
+        const centerOffset = totalWidth / 2;
+        const offsetX = newCardIndex * gap - centerOffset;
+
+        // 既存のカードの位置を更新（新しいカードが追加されることを考慮）
+        const existingCards = Array.from(this.playerHandContainer.querySelectorAll('.card:not(.card-exit)'));
+        existingCards.forEach((card, index) => {
+            const existingOffsetX = index * gap - centerOffset;
+            card.style.left = `calc(50% + ${existingOffsetX}px)`;
+        });
+
+        // 山札の中心座標（フィールド基準）
+        const deckCenterX = deckRect.left - fieldRect.left + deckRect.width / 2;
+        const deckCenterY = deckRect.top - fieldRect.top + deckRect.height / 2;
+
+        // カードを山札の位置に配置
+        cardEl.style.position = 'absolute';
+        cardEl.style.left = `${deckCenterX - 55}px`; // カードの幅の半分
+        cardEl.style.top = `${deckCenterY - 77}px`;  // カードの高さの半分
+        cardEl.style.zIndex = '5000';
+        cardEl.style.transition = 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)';
+
+        // 強制レイアウト更新
+        cardEl.offsetHeight;
+
+        // 手札コンテナの位置を取得
+        const handContainerRect = this.playerHandContainer.getBoundingClientRect();
+
+        // 目標位置を計算（手札の最終位置）
+        // bottom: 10px, left: calc(50% + offsetX) を絶対座標に変換
+        const targetX = handContainerRect.left - fieldRect.left + handContainerRect.width / 2 + offsetX - 55;
+        const targetY = handContainerRect.bottom - fieldRect.top - 10 - 154;
+
+        // スムーズに手札の位置へ移動
+        requestAnimationFrame(() => {
+            cardEl.style.left = `${targetX}px`;
+            cardEl.style.top = `${targetY}px`;
+
+            // アニメーション終了後、実際の手札コンテナに移動
+            setTimeout(() => {
+                // transitionを一時的に無効化して瞬間移動を防ぐ
+                cardEl.style.transition = 'none';
+
+                if (cardEl.parentNode === field) {
+                    field.removeChild(cardEl);
                 }
-            }, 100);
-        }
-    });
+                this.playerHandContainer.appendChild(cardEl);
 
-    // 初期カード裏面色を適用
-    cardGame.updateAllCardBacks();
-}
+                // スタイルをクリア（leftは残す）
+                cardEl.style.position = '';
+                cardEl.style.top = '';
+                cardEl.style.zIndex = '';
+                cardEl.classList.add('card-ready');
 
-/**
- * カードのアイコン情報を取得
- * @param {Object} card - カードオブジェクト
- * @returns {Object} {slug, type, url}
- */
-cardGame.getCardIcon = function(card) {
-    const iconType = card.iconType || 'icons8';
-    const iconSlug = card.iconSlug || null;
-    
-    let iconUrl = null;
-    let displaySlug = iconSlug;
-    
-    if (!iconSlug) {
-        // アイコンがない場合は文字「?」を返す
-        return { slug: '?', type: 'text', url: null };
-    }
-    
-    switch (iconType) {
-        case 'icons8':
-            iconUrl = `https://img.icons8.com/fluency/100/${iconSlug}.png`;
-            break;
-        case 'local':
-            iconUrl = iconSlug;  // ローカルパスをそのまま使用
-            break;
-        case 'text':
-            // テキストとして表示
-            return { slug: iconSlug, type: 'text', url: null };
-        default:
-            iconUrl = `https://img.icons8.com/fluency/100/${iconSlug}.png`;
-    }
-    
-    return { slug: displaySlug, type: iconType, url: iconUrl };
-};
+                // レイアウトを更新してleftを正しく設定
+                this.updatePlayerCardIndices();
+                this.updatePlayerCardLayout();
 
-/**
- * HTMLのモーダルにアイコンを設定（エラーハンドリング付き）
- */
-function setupModalIconHandling() {
-    const overlayImg = document.getElementById('overlay-img');
-    if (!overlayImg) return;
-    
-    // 画像読み込みエラー時のフォールバック
-    overlayImg.addEventListener('error', function() {
-        console.warn('⚠️ アイコン画像の読み込みに失敗しました。テキストで表示します。');
-        
-        // 画像を非表示にして、代わりにテキストを表示
-        this.style.display = 'none';
-        
-        const imageArea = this.parentElement;
-        let textFallback = imageArea.querySelector('.icon-text-fallback');
-        
-        if (!textFallback) {
-            textFallback = document.createElement('div');
-            textFallback.className = 'icon-text-fallback';
-            textFallback.style.cssText = `
-                font-size: 4rem;
-                font-weight: bold;
-                color: #fbbf24;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100px;
-                height: 100px;
-            `;
-            imageArea.appendChild(textFallback);
-        }
-        
-        textFallback.textContent = '?';
-        textFallback.style.display = 'flex';
-    });
-    
-    // 画像読み込み成功時は画像を表示
-    overlayImg.addEventListener('load', function() {
-        this.style.display = 'block';
-        const textFallback = this.parentElement.querySelector('.icon-text-fallback');
-        if (textFallback) {
-            textFallback.style.display = 'none';
-        }
-    });
-}
-
-/**
- * クイックビュー（ホバー時の簡易表示）を有効化
- * HTMLにクイックビュー要素が存在する場合に使用
- */
-function enableQuickView() {
-    const quickView = document.getElementById('quick-view');
-    if (!quickView) {
-        console.warn('⚠️ クイックビュー要素が見つかりません');
-        return;
+                // 強制レンダリングしてからtransitionを再度有効化
+                cardEl.offsetHeight;
+                cardEl.style.transition = '';
+            }, 650); // transitionが完全に完了してから実行
+        });
     }
 
-    // 全てのカードにホバーイベントを追加
-    document.addEventListener('mouseenter', (e) => {
-        const card = e.target.closest('.card.my-card');
-        if (card && card.dataset.title) {
-            showQuickView(e, card.dataset.title, card.dataset.desc);
-        }
-    }, true);
+    /**
+     * プレイヤー手札からカードを削除
+     */
+    removePlayerCard(index = -1) {
+        if (!this.playerHandContainer) return;
 
-    document.addEventListener('mousemove', (e) => {
-        const card = e.target.closest('.card.my-card');
-        if (card && quickView.style.display === 'flex') {
-            moveQuickView(e);
-        }
-    }, true);
+        const cards = this.playerHandContainer.querySelectorAll('.card:not(.card-exit)');
+        if (cards.length === 0) return;
 
-    document.addEventListener('mouseleave', (e) => {
-        const card = e.target.closest('.card.my-card');
-        if (card) {
-            hideQuickView();
-        }
-    }, true);
+        const targetCard = index >= 0 && index < cards.length
+            ? cards[index]
+            : cards[cards.length - 1];
 
-    function showQuickView(e, title, desc) {
-        const quickTitle = document.getElementById('quick-title');
-        const quickDesc = document.getElementById('quick-desc');
-        if (quickTitle) quickTitle.innerText = title;
-        if (quickDesc) quickDesc.innerText = desc;
-        quickView.style.display = 'flex';
-        moveQuickView(e);
+        targetCard.classList.add('card-exit');
+
+        // 削除前に残りのカードのレイアウトを更新
+        setTimeout(() => {
+            this.updatePlayerCardLayout();
+        }, 50);
+
+        setTimeout(() => {
+            if (targetCard.parentNode === this.playerHandContainer) {
+                this.playerHandContainer.removeChild(targetCard);
+                this.updatePlayerCardIndices();
+                this.updatePlayerCardLayout();
+            }
+        }, 400);
     }
 
-    function moveQuickView(e) {
-        const x = e.clientX + 25;
-        const y = e.clientY - 160;
-        quickView.style.left = `${x}px`;
-        quickView.style.top = `${y}px`;
+    /**
+     * プレイヤーの手札インデックスを更新
+     */
+    updatePlayerCardIndices() {
+        if (!this.playerHandContainer) return;
+
+        Array.from(this.playerHandContainer.querySelectorAll('.card')).forEach((card, index) => {
+            card.dataset.index = index;
+        });
+
+        // インデックス更新後、レイアウトも更新
+        this.updatePlayerCardLayout();
     }
 
-    function hideQuickView() {
-        quickView.style.display = 'none';
+    /**
+     * プレイヤー手札を完全に再レンダリング
+     */
+    renderPlayerHand(cards) {
+        if (!this.playerHandContainer) return;
+
+        this.playerHandContainer.innerHTML = '';
+
+        cards.forEach((card, index) => {
+            this.addPlayerCard(card);
+        });
+    }
+
+    /**
+     * すべての手札をクリア
+     */
+    clearAllHands() {
+        if (this.playerHandContainer) {
+            this.playerHandContainer.innerHTML = '';
+        }
+        if (this.cpuHandContainer) {
+            this.cpuHandContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * プレイヤーの手札数を取得
+     */
+    getPlayerCardCount() {
+        if (!this.playerHandContainer) return 0;
+        return this.playerHandContainer.querySelectorAll('.card:not(.card-exit)').length;
+    }
+
+    /**
+     * CPU の手札数を取得
+     */
+    getCPUCardCount() {
+        if (!this.cpuHandContainer) return 0;
+        return this.cpuHandContainer.querySelectorAll('.card-back-mini:not(.card-exit)').length;
+    }
+
+    /**
+     * デッキの初期化と表示設定
+     */
+    initializeDeckDisplay(deckSelector, initialCardCount = 30) {
+        this.deckContainer = document.querySelector(deckSelector);
+        if (!this.deckContainer) return;
+
+        this.deckContainer.dataset.cardCount = initialCardCount;
+        const deckLabel = this.deckContainer.querySelector('.deck-label');
+        if (deckLabel) {
+            deckLabel.textContent = initialCardCount;
+        }
+        console.log(`🎴 デッキを初期化: ${initialCardCount}枚`);
+    }
+
+    /**
+     * デッキの表示カウントを更新
+     */
+    updateDeckCount(newCount) {
+        if (!this.deckContainer) return;
+
+        this.deckContainer.dataset.cardCount = newCount;
+        const deckLabel = this.deckContainer.querySelector('.deck-label');
+        if (deckLabel) {
+            deckLabel.textContent = newCount;
+        }
+    }
+
+    /**
+     * デッキスタックの再描画
+     */
+    renderDeckStack(count) {
+        if (!this.deckContainer) return;
+
+        const deckStack = this.deckContainer.querySelector('.deck-stack');
+        if (!deckStack) return;
+
+        deckStack.innerHTML = '';
+
+        // 最大3枚まで表示
+        const displayCount = Math.min(count, 3);
+        for (let i = 0; i < displayCount; i++) {
+            const stackCard = document.createElement('div');
+            stackCard.className = 'card-back-stack';
+            deckStack.appendChild(stackCard);
+        }
+    }
+
+    /**
+     * デッキからプレイヤーの手札へカードをドロー（アニメーション付き）
+     */
+    executeDeckCardDraw(callback) {
+        if (!this.deckContainer || !this.playerHandContainer) {
+            if (callback) callback();
+            return;
+        }
+
+        // 新しいカード要素を作成（アニメーション対象）
+        const newCard = document.createElement('div');
+        newCard.className = 'card card-draw';
+        newCard.dataset.index = this.playerHandContainer.children.length;
+        newCard.dataset.title = 'ドロー中...';
+        newCard.dataset.desc = '';
+
+        // カード裏面を作成
+        const back = document.createElement('div');
+        back.className = 'card-back blue';
+        newCard.appendChild(back);
+
+        // アニメーション用の位置を計算
+        const deckRect = this.deckContainer.getBoundingClientRect();
+        const playerHandRect = this.playerHandContainer.getBoundingClientRect();
+
+        const startX = deckRect.left - playerHandRect.left;
+        const startY = deckRect.top - playerHandRect.top;
+
+        newCard.style.setProperty('--start-x', `${startX}px`);
+        newCard.style.setProperty('--start-y', `${startY}px`);
+
+        this.playerHandContainer.appendChild(newCard);
+
+        // アニメーション完了後の処理
+        newCard.addEventListener('animationend', () => {
+            // アニメーション完了後、一時的なカードを削除
+            if (newCard.parentNode === this.playerHandContainer) {
+                this.playerHandContainer.removeChild(newCard);
+            }
+            if (callback) callback();
+        }, { once: true });
+
+        // 強制レイアウト更新（アニメーション開始を保証）
+        newCard.offsetHeight;
+    }
+
+    /**
+     * カード使用演出（プレイヤー手札から削除）
+     */
+    executeCardUseAnimation(cardIndex = -1, callback) {
+        if (!this.playerHandContainer) {
+            if (callback) callback();
+            return;
+        }
+
+        const cards = this.playerHandContainer.querySelectorAll('.card:not(.card-exit):not(.card-use)');
+        if (cards.length === 0) {
+            if (callback) callback();
+            return;
+        }
+
+        const targetCard = cardIndex >= 0 && cardIndex < cards.length
+            ? cards[cardIndex]
+            : cards[cards.length - 1];
+
+        targetCard.classList.add('card-use');
+
+        // 使用開始時に残りのカードのレイアウトを更新
+        setTimeout(() => {
+            this.updatePlayerCardLayout();
+        }, 50);
+
+        // アニメーション完了後にDOMから削除
+        targetCard.addEventListener('animationend', () => {
+            if (targetCard.parentNode === this.playerHandContainer) {
+                this.playerHandContainer.removeChild(targetCard);
+                this.updatePlayerCardIndices();
+                this.updatePlayerCardLayout();
+            }
+            if (callback) callback();
+        }, { once: true });
     }
 }
 
 // ==========================================
-// 初期化処理
+// グローバルインスタンス
 // ==========================================
 
-// ページ読み込み後に統合
+const cardGame = new CardGameManager();
+const cardRenderer = new CardRenderingSystem();
+
+// 描画システムをゲームに統合
+cardGame.setRenderingSystem(cardRenderer);
+
+// ==========================================
+// ゲーム流連動 - Game Flow Integration
+// ==========================================
+
+/**
+ * カード描画との自動連動を設定
+ */
+function setupGameFlowIntegration() {
+    // プレイヤーがカードをドローしたとき
+    cardGame.on('onCardDraw', (data) => {
+        if (data.target === 'player' && cardRenderer.playerHandContainer) {
+            console.log(`🎴 プレイヤーがカードをドロー: ${data.card.title}`);
+            // プレイヤー手札はui.jsで管理されるため、ここでは何もしない
+        } else if (data.target === 'opponent' && cardRenderer.cpuHandContainer) {
+            console.log(`🎴 CPUがカードをドロー`);
+            // 既存のカード数をカウント
+            const currentCount = cardRenderer.cpuHandContainer.querySelectorAll('.card-back-mini:not(.card-exit)').length;
+            const targetCount = cardGame.getHandCount('opponent');
+
+            if (targetCount > currentCount) {
+                cardRenderer.addCPUCard();
+            }
+        }
+    });
+
+    // カードが使用されたとき
+    cardGame.on('onCardUse', (data) => {
+        if (data.target === 'opponent' && cardRenderer.cpuHandContainer) {
+            console.log(`🎴 CPUがカードを使用: ${data.card.title}`);
+            cardRenderer.removeCPUCard();
+        }
+    });
+
+    // カードが捨てられたとき
+    cardGame.on('onCardDiscard', (data) => {
+        if (data.target === 'opponent' && cardRenderer.cpuHandContainer) {
+            console.log(`🎴 CPUがカードを捨てた: ${data.card.title}`);
+            cardRenderer.removeCPUCard();
+        }
+    });
+
+    // ゲームがリセットされたとき
+    cardGame.on('onGameReset', () => {
+        console.log('🔄 ゲームをリセット - カードもクリア');
+        cardRenderer.clearAllHands();
+    });
+
+    console.log('✅ ゲーム流連動を設定しました');
+}
+
+// ==========================================
+// 初期化
+// ==========================================
+
 if (typeof window !== 'undefined') {
     window.cardGame = cardGame;
-    window.integrateWithHTML = integrateWithHTML;
-    window.enableQuickView = enableQuickView;
-    window.setupModalIconHandling = setupModalIconHandling;
-    
-    // DOMが読み込まれたら自動的に統合
+    window.cardRenderer = cardRenderer;
+
+    // DOMが読み込まれたら統合設定を実行
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            integrateWithHTML();
-            enableQuickView();
-            setupModalIconHandling();
+            setupGameFlowIntegration();
         });
     } else {
-        integrateWithHTML();
-        enableQuickView();
-        setupModalIconHandling();
+        setupGameFlowIntegration();
     }
 }
 
 // Node.js環境用のエクスポート
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { CardGameManager, cardGame };
+    module.exports = { CardGameManager, cardGame, CardRenderingSystem, cardRenderer };
 }

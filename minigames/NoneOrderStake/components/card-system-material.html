@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card System - Material</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: transparent; font-family: 'sans-serif'; }
+        #app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 2000px;
+            background: transparent;
+        }
+
+        .field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #deck-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 110px;
+            height: 154px;
+            pointer-events: none;
+        }
+        
+        #deck-area .card {
+            pointer-events: auto;
+            left: 50%;
+            top: 50%;
+            margin-left: -55px;
+            margin-top: -77px;
+        }
+
+        .card {
+            position: absolute;
+            width: 110px;
+            height: 154px;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        
+        .card:hover:not(.drawn) {
+            transform: scale(1.05) translateY(-15px) !important;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        }
+
+        .card.my-card:hover {
+            transform: translate(var(--tw-translate-x), calc(var(--tw-translate-y) - 20px)) scale(1.1) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 5000 !important;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-back::after {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        #quick-view {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: 8000;
+            display: none;
+            flex-direction: column;
+            width: 280px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        #quick-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fbbf24;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            padding-bottom: 4px;
+        }
+
+        #quick-desc {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        #card-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9000;
+            backdrop-filter: blur(10px);
+        }
+        #overlay-content {
+            position: relative;
+            transform: scale(0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+        #card-overlay.active { display: flex; }
+        #card-overlay.active #overlay-content { transform: scale(1); }
+
+        .big-white-card {
+            width: 320px;
+            height: 448px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .big-card-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-top: 10px;
+            margin-bottom: 8px;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .modal-separator {
+            width: 90%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .card-image-area {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-image-area img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .icon-text-fallback {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fbbf24;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+        }
+
+        .big-card-desc-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background: rgba(248, 250, 252, 1);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px dashed #e2e8f0;
+        }
+
+        .big-card-desc {
+            font-size: 1.1rem;
+            color: #475569;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -50px; right: 0;
+            width: 40px; height: 40px;
+            color: white; font-size: 32px;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .use-button {
+            background: #fbbf24;
+            color: #000;
+            font-weight: bold;
+            padding: 12px 60px;
+            border-radius: 9999px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+        }
+        .use-button:hover { transform: scale(1.05); background: #f59e0b; }
+
+        #hand-bottom {
+            position: absolute;
+            bottom: 40px; left: 50%;
+            transform: translateX(-50%);
+            width: 1px; height: 1px;
+            pointer-events: none;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            display: flex; flex-direction: column; gap: 10px; z-index: 1000;
+        }
+        .btn {
+            background: rgba(0,0,0,0.4); color: white;
+            padding: 0.5rem 1rem; border-radius: 4px;
+            font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+        }
+
+        #extra-turn-display {
+            position: absolute;
+            bottom: 120px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #fbbf24;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+            z-index: 1000;
+            border: 2px solid #fbbf24;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="ui-layer">
+            <button id="reset-btn" class="btn">RESET</button>
+            <button onclick="testDraw()" class="btn">ドロー</button>
+            <button onclick="testExtraTurn()" class="btn">再行動</button>
+        </div>
+        
+        <div class="field" id="field">
+            <div id="deck-area"></div>
+        </div>
+        <div id="hand-bottom"></div>
+        
+        <div id="extra-turn-display">🔄 再行動 x<span id="extra-turn-count">0</span></div>
+    </div>
+
+    <div id="quick-view">
+        <div id="quick-title"></div>
+        <div id="quick-desc"></div>
+    </div>
+
+    <div id="card-overlay" onclick="closeOverlay()">
+        <div id="overlay-content" onclick="event.stopPropagation()">
+            <div class="close-btn" onclick="closeOverlay()">×</div>
+            <div class="big-white-card">
+                <div class="big-card-title" id="overlay-title">カードタイトル</div>
+                <div class="modal-separator"></div>
+                
+                <div class="card-image-area">
+                    <img id="overlay-img" src="" alt="Card Icon">
+                    <div class="icon-text-fallback">?</div>
+                </div>
+                
+                <div class="big-card-desc-container">
+                    <div class="big-card-desc" id="overlay-desc">ここに説明文が入ります。</div>
+                </div>
+            </div>
+            <button class="use-button" onclick="handleUseButtonClick()">使用する</button>
+        </div>
+    </div>
+
+    <!-- 外部JSファイルを読み込み（オプション） -->
+    <!-- <script src="card-definitions.js"></script> -->
+    <!-- <script src="card-effects.js"></script> -->
+
+    <script src="card.js"></script>
+    
+    <script>
+        // ==========================================
+        // カード定義とエフェクトは外部から読み込み
+        // ==========================================
+        
+        // デフォルトの空実装
+        if (typeof cardDefinitions === 'undefined') {
+            window.cardDefinitions = [];
+        }
+        
+        if (typeof cardEffects === 'undefined') {
+            window.cardEffects = {};
+        }
+        
+        if (typeof deckPresets === 'undefined') {
+            window.deckPresets = {
+                empty: []
+            };
+        }
+        
+        // カード定義とエフェクトを登録
+        if (cardDefinitions.length > 0) {
+            cardGame.defineCards(cardDefinitions);
+        }
+        
+        if (Object.keys(cardEffects).length > 0) {
+            cardGame.registerEffects(cardEffects);
+        }
+        
+        // ==========================================
+        // UI統合スクリプト
+        // ==========================================
+        
+        const field = document.getElementById('field');
+        const resetBtn = document.getElementById('reset-btn');
+        const overlay = document.getElementById('card-overlay');
+        const quickView = document.getElementById('quick-view');
+        
+        let myDrawnCount = 0;
+        let selectedCardEl = null;
+        let zIndexCounter = 100;
+        let isOverlayOpen = false;
+
+        const DEFAULT_ICON_SLUG = "lemon";
+        const ICONS8_BASE = "https://img.icons8.com/fluency/100/";
+
+        // カードゲームシステムの初期化
+        if (deckPresets.empty) {
+            cardGame.initializeDeck(deckPresets.empty || [], true);
+        }
+        cardGame.setCardBackPreset('blue');
+
+        // 再行動表示の更新
+        cardGame.on('onExtraTurn', (data) => {
+            if (data.target === 'player') {
+                updateExtraTurnDisplay(data.total);
+            }
+        });
+
+        function updateExtraTurnDisplay(count) {
+            const display = document.getElementById('extra-turn-display');
+            const countEl = document.getElementById('extra-turn-count');
+            countEl.textContent = count;
+            display.style.display = count > 0 ? 'block' : 'none';
+        }
+
+        function onCardUse(title, description) {
+            console.log(`カードを使用: ${title}`);
+        }
+
+        function initDeck() {
+            document.getElementById('deck-area').innerHTML = '';
+            myDrawnCount = 0;
+            zIndexCounter = 100;
+            for(let i=0; i<5; i++) { addDeckCard(i); }
+        }
+
+        function addDeckCard(z) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.zIndex = z;
+            card.style.position = 'absolute';
+            card.style.transform = `translate(${(Math.random()-0.5)*10}px, ${(Math.random()-0.5)*10}px)`;
+            card.innerHTML = `<div class="card-face card-back"></div>`;
+
+            card.dataset.title = "???";
+            card.dataset.desc = "クリックしてカードをドロー";
+            card.dataset.icon = DEFAULT_ICON_SLUG;
+            card.dataset.iconType = "icons8";
+
+            card.onmouseenter = (e) => {
+                if (card.classList.contains('my-card') && !isOverlayOpen) {
+                    showQuickView(e, card.dataset.title, card.dataset.desc);
+                }
+            };
+            card.onmousemove = (e) => {
+                if (card.classList.contains('my-card') && !isOverlayOpen) {
+                    moveQuickView(e);
+                }
+            };
+            card.onmouseleave = () => {
+                hideQuickView();
+            };
+
+            card.onclick = (e) => {
+                if (!card.classList.contains('drawn')) {
+                    executeDrawAction('bottom', card);
+                } else if (card.classList.contains('my-card')) {
+                    hideQuickView();
+                    selectedCardEl = card;
+                    showOverlay(card);
+                }
+            };
+
+            document.getElementById('deck-area').appendChild(card);
+            return card;
+        }
+
+        function showQuickView(e, title, desc) {
+            document.getElementById('quick-title').innerText = title;
+            document.getElementById('quick-desc').innerText = desc;
+            quickView.style.display = 'flex';
+            moveQuickView(e);
+        }
+
+        function moveQuickView(e) {
+            quickView.style.left = `${e.clientX + 25}px`;
+            quickView.style.top = `${e.clientY - 160}px`;
+        }
+
+        function hideQuickView() {
+            quickView.style.display = 'none';
+        }
+
+        function setCardContent(cardEl, title, description, iconSlug = DEFAULT_ICON_SLUG, iconType = 'icons8') {
+            if (!cardEl) return;
+            cardEl.dataset.title = title;
+            cardEl.dataset.desc = description;
+            cardEl.dataset.icon = iconSlug;
+            cardEl.dataset.iconType = iconType;
+            if (overlay.classList.contains('active') && selectedCardEl === cardEl) {
+                updateOverlayContent(title, description, iconSlug, iconType);
+            }
+        }
+
+        function executeDrawAction(targetPlayer, cardEl) {
+            if (!cardEl.classList.contains('drawn')) {
+                addDeckCard(0);
+                
+                // カードゲームシステムからカードをドロー
+                const drawnCards = cardGame.drawCard('player', 1);
+                if (drawnCards.length > 0) {
+                    const drawnCard = drawnCards[0];
+                    const iconInfo = cardGame.getCardIcon(drawnCard);
+                    setCardContent(cardEl, drawnCard.title, drawnCard.description, iconInfo.slug, iconInfo.type);
+                }
+            }
+
+            cardEl.classList.add('drawn');
+            zIndexCounter++;
+            cardEl.style.zIndex = zIndexCounter;
+            
+            // deck-areaから削除してfieldに移動
+            if (cardEl.parentElement.id === 'deck-area') {
+                field.appendChild(cardEl);
+            }
+            
+            let targetX = 0, targetY = 0;
+            if (targetPlayer === 'bottom') {
+                cardEl.classList.add('my-card');
+                const anchor = document.getElementById('hand-bottom');
+                const rect = cardEl.getBoundingClientRect();
+                const anchorRect = anchor.getBoundingClientRect();
+                const gap = 35;
+                const stackOffset = (myDrawnCount - 2) * gap;
+                targetX = (anchorRect.left - rect.left) + stackOffset;
+                targetY = (anchorRect.top - rect.top);
+                cardEl.style.setProperty('--tw-translate-x', `${targetX}px`);
+                cardEl.style.setProperty('--tw-translate-y', `${targetY}px`);
+                myDrawnCount++;
+            } else {
+                targetY = -1200;
+                setTimeout(() => cardEl.remove(), 1000);
+            }
+
+            cardEl.style.transform = `translate(0, -50px) scale(1.1)`;
+            setTimeout(() => {
+                cardEl.style.transform = `translate(${targetX}px, ${targetY}px) scale(${targetPlayer === 'bottom' ? 0.9 : 0.6})`;
+                if (targetPlayer !== 'bottom') cardEl.style.opacity = "0";
+            }, 50);
+        }
+
+        function handleUseButtonClick() {
+            if (!selectedCardEl) return;
+            
+            // カードゲームシステムの処理
+            const hand = cardGame.getHand('player');
+            const cardTitle = selectedCardEl.dataset.title;
+            const cardIndex = hand.findIndex(c => c.title === cardTitle);
+            
+            if (cardIndex >= 0) {
+                cardGame.useCard('player', cardIndex);
+            }
+            
+            onCardUse(selectedCardEl.dataset.title, selectedCardEl.dataset.desc);
+            useCard();
+        }
+
+        function useCard() {
+            if (!selectedCardEl) return;
+            const el = selectedCardEl;
+            closeOverlay();
+            
+            el.style.transition = "transform 0.6s ease-in, opacity 0.5s ease-in";
+            el.style.transform = `translate(${el.style.getPropertyValue('--tw-translate-x')}, -800px) scale(0) rotate(10deg)`;
+            el.style.opacity = "0";
+            
+            setTimeout(() => {
+                el.remove();
+                selectedCardEl = null;
+                myDrawnCount--;
+            }, 600);
+        }
+
+        function showOverlay(card) {
+            updateOverlayContent(card.dataset.title, card.dataset.desc, card.dataset.icon, card.dataset.iconType);
+            overlay.classList.add('active');
+            isOverlayOpen = true;
+        }
+
+        function updateOverlayContent(title, desc, iconSlug, iconType = 'icons8') {
+            document.getElementById('overlay-title').innerText = title;
+            document.getElementById('overlay-desc').innerText = desc;
+            
+            const overlayImg = document.getElementById('overlay-img');
+            const textFallback = document.querySelector('.icon-text-fallback');
+            
+            if (!iconSlug || iconSlug === '?' || iconType === 'text') {
+                overlayImg.style.display = 'none';
+                textFallback.textContent = iconSlug || '?';
+                textFallback.style.display = 'flex';
+            } else {
+                let iconUrl = '';
+                if (iconType === 'local') {
+                    iconUrl = iconSlug;
+                } else {
+                    iconUrl = `${ICONS8_BASE}${iconSlug}.png`;
+                }
+                overlayImg.src = iconUrl;
+                overlayImg.style.display = 'block';
+                textFallback.style.display = 'none';
+            }
+        }
+
+        function closeOverlay() {
+            overlay.classList.remove('active');
+            isOverlayOpen = false;
+        }
+
+        // テスト用関数
+        function testDraw() {
+            const deckCards = Array.from(document.querySelectorAll('.card:not(.drawn)'));
+            if (deckCards.length > 0) {
+                executeDrawAction('bottom', deckCards[deckCards.length - 1]);
+            }
+        }
+
+        function testExtraTurn() {
+            cardGame.grantExtraTurn('player', 1);
+        }
+
+        // 画像エラーハンドリング
+        document.getElementById('overlay-img').addEventListener('error', function() {
+            this.style.display = 'none';
+            document.querySelector('.icon-text-fallback').style.display = 'flex';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            cardGame.resetGame();
+            initDeck();
+            updateExtraTurnDisplay(0);
+        });
+
+        initDeck();
+        console.log('🎴 Card System Ready!');
+        console.log('外部JSでカード定義とエフェクトを読み込んでください');
+    </script>
+</body>
+</html>

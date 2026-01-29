@@ -3,7 +3,8 @@
  * プレイヤーの傾向を学習し、対抗策を選択する
  */
 
-import { CARDS, getCardsByColor } from './cards.js';
+import { CARDS, getCardsByColor, canUseCard } from './cards.js';
+import { canAffordCard } from './money-rank.js';
 
 // ===========================================
 // AI行動パターン
@@ -77,18 +78,27 @@ export class CpuAI {
     
     /**
      * カード使用を決定
+     * @returns {object|null} { cardIndex, targetId? } or null
      */
     decideCardUse(gameState, cpuHand) {
         if (cpuHand.length === 0) return null;
-        
+
         const pattern = this.getPattern(gameState.currentMatch, gameState.totalMatches);
-        
+        const cpuMoney = gameState.players.cpu.money;
+
         // カード使用するかどうか
         if (Math.random() > pattern.cardUseChance) return null;
-        
+
+        // 使用可能なカードをフィルタリング（コスト払える＆使用条件満たす）
+        const usableCards = cpuHand.map((card, index) => ({ card, index }))
+            .filter(({ card }) => canAffordCard(cpuMoney, card.rankCost))
+            .filter(({ card }) => !card.canUse || card.canUse(gameState, gameState.players.cpu));
+
+        if (usableCards.length === 0) return null;
+
         // プレイヤーの傾向に基づいてカード選択
         const playerLastCard = this._getMostUsedCardColor();
-        
+
         // カウンター戦略
         let preferredColors = [];
         if (playerLastCard === 'red') {
@@ -99,22 +109,25 @@ export class CpuAI {
             preferredColors = ['red'];
         } else {
             // ランダム
-            preferredColors = ['red', 'blue', 'green'];
+            preferredColors = ['red', 'blue', 'green', 'yellow'];
         }
-        
-        // 終盤は黒カードも検討
-        if (gameState.currentMatch > 10 && Math.random() < 0.3) {
-            preferredColors.push('black');
-        }
-        
+
         // 手札から選択
-        const candidates = cpuHand.filter(card => preferredColors.includes(card.color));
+        const candidates = usableCards.filter(({ card }) => preferredColors.includes(card.color));
+        let selected;
         if (candidates.length > 0) {
-            return candidates[Math.floor(Math.random() * candidates.length)];
+            selected = candidates[Math.floor(Math.random() * candidates.length)];
+        } else {
+            selected = usableCards[Math.floor(Math.random() * usableCards.length)];
         }
-        
-        // なければランダム
-        return cpuHand[Math.floor(Math.random() * cpuHand.length)];
+
+        // ターゲットの決定
+        let targetId = null;
+        if (selected.card.targetType === 'choice' || selected.card.targetType === 'enemy') {
+            targetId = 'player'; // 2人対戦ではプレイヤーが対象
+        }
+
+        return { cardIndex: selected.index, targetId };
     }
     
     /**
@@ -184,17 +197,16 @@ export class CpuAI {
      * CPUの手札を初期化（ゲーム開始時）
      */
     initializeHand(gameState) {
-        // 各色1枚ずつ手札に追加
-        const colors = ['red', 'blue', 'green', 'yellow', 'black'];
+        // ランダムに2枚選択
+        const allCardIds = Object.keys(CARDS);
         const hand = [];
-        
-        colors.forEach(color => {
-            const cards = getCardsByColor(color);
-            if (cards.length > 0) {
-                hand.push({ ...cards[0] });
-            }
-        });
-        
+
+        for (let i = 0; i < 2; i++) {
+            const randomIndex = Math.floor(Math.random() * allCardIds.length);
+            const cardId = allCardIds[randomIndex];
+            hand.push({ ...CARDS[cardId] });
+        }
+
         return hand;
     }
 }
