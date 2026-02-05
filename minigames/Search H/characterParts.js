@@ -161,40 +161,36 @@ function setTargetParts(parts) {
     targetParts = parts;
 }
 
-// ターゲットとは異なるパーツを生成（40%でデフォルト組み合わせ、レベル対応）
-function generateDifferentParts(diffId = 'normal', level = 0, targetIsFullDefault = false, targetDefaultCombo = null) {
+// ターゲットと完全一致するかチェック
+function isSameAsTarget(parts) {
+    if (!targetParts || !parts) return false;
+    return parts.body === targetParts.body &&
+           parts.eye === targetParts.eye &&
+           parts.accessory === targetParts.accessory;
+}
+
+// ターゲットとは異なるパーツを生成（20%でデフォルト組み合わせ、レベル対応）
+function generateDifferentParts(diffId = 'normal', level = 0) {
     if (!targetParts) return generateRandomParts(diffId, level);
 
     const unlocked = getUnlockedPartsForLevel(diffId, level);
     let parts;
+    let attempts = 0;
+    const maxAttempts = 100;
 
-    // 最低1つは異なるパーツにする
+    // ターゲットと異なる組み合わせが生成されるまでループ
     do {
-        // 40%の確率でデフォルト組み合わせを使用
+        attempts++;
+        // 20%の確率でデフォルト組み合わせを使用
         if (Math.random() < DEFAULT_COMBINATION_RATE) {
             const unlockedDefaults = getUnlockedDefaultCombinations(diffId, level);
-            if (unlockedDefaults.length > 0) {
-                // ターゲットが完全なデフォルト組み合わせの場合、同じ組み合わせを除外
-                let availableDefaults = unlockedDefaults;
-                if (targetIsFullDefault && targetDefaultCombo) {
-                    availableDefaults = unlockedDefaults.filter(combo =>
-                        !(combo.body === targetDefaultCombo.body &&
-                          combo.eye === targetDefaultCombo.eye &&
-                          combo.accessory === targetDefaultCombo.accessory)
-                    );
-                }
-                
-                // 利用可能なデフォルト組み合わせがあれば使用、なければランダム生成
-                if (availableDefaults.length > 0) {
-                    parts = { ...availableDefaults[Math.floor(Math.random() * availableDefaults.length)] };
-                } else {
-                    parts = {
-                        body: Math.floor(Math.random() * unlocked.body),
-                        eye: Math.floor(Math.random() * unlocked.eye),
-                        accessory: Math.floor(Math.random() * unlocked.accessory)
-                    };
-                }
+            // ターゲットと同じ組み合わせを除外
+            const availableDefaults = unlockedDefaults.filter(combo => !isSameAsTarget(combo));
+
+            if (availableDefaults.length > 0) {
+                parts = { ...availableDefaults[Math.floor(Math.random() * availableDefaults.length)] };
             } else {
+                // 利用可能なデフォルトがない場合はランダム生成
                 parts = {
                     body: Math.floor(Math.random() * unlocked.body),
                     eye: Math.floor(Math.random() * unlocked.eye),
@@ -202,23 +198,20 @@ function generateDifferentParts(diffId = 'normal', level = 0, targetIsFullDefaul
                 };
             }
         } else {
+            // 80%: 完全ランダム生成
             parts = {
                 body: Math.floor(Math.random() * unlocked.body),
                 eye: Math.floor(Math.random() * unlocked.eye),
                 accessory: Math.floor(Math.random() * unlocked.accessory)
             };
         }
-        // ターゲットと完全一致しないこと
-        // かつ、ターゲットがデフォルト組み合わせの場合、ランダム生成でも同じ組み合わせにならないこと
-    } while (
-        (parts.body === targetParts.body &&
-         parts.eye === targetParts.eye &&
-         parts.accessory === targetParts.accessory) ||
-        (targetIsFullDefault && targetDefaultCombo &&
-         parts.body === targetDefaultCombo.body &&
-         parts.eye === targetDefaultCombo.eye &&
-         parts.accessory === targetDefaultCombo.accessory)
-    );
+    } while (isSameAsTarget(parts) && attempts < maxAttempts);
+
+    // 万が一同じになった場合、強制的に1つ変更
+    if (isSameAsTarget(parts)) {
+        parts.body = (parts.body + 1) % unlocked.body;
+    }
+
     return parts;
 }
 

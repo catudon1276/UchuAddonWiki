@@ -381,18 +381,10 @@ function spawnCharacters() {
     // ランダムで位置を生成（重なり30%以下保証）
     const positions = generateRandomPositions(count, currentWorldSize);
 
-    // ターゲットが完全なデフォルト組み合わせかチェック
-    const targetIsFullDefault = isDefaultCombination(targetParts);
-
     const currentLevel = score + 1;  // 現在のレベル
     for (let i = 0; i < count; i++) {
         const isTarget = (i === 0);
-        const parts = isTarget ? targetParts : generateDifferentParts(
-            diffId, 
-            currentLevel, 
-            targetIsFullDefault, 
-            targetIsFullDefault ? targetParts : null
-        );
+        const parts = isTarget ? targetParts : generateDifferentParts(diffId, currentLevel);
         const char = createCharacterElement(parts, isTarget);
 
         const pos = positions[i];
