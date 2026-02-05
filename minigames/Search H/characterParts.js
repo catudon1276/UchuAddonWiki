@@ -208,12 +208,17 @@ function generateDifferentParts(diffId = 'normal', level = 0, targetIsFullDefaul
                 accessory: Math.floor(Math.random() * unlocked.accessory)
             };
         }
+        // ターゲットと完全一致しないこと
+        // かつ、ターゲットがデフォルト組み合わせの場合、ランダム生成でも同じ組み合わせにならないこと
     } while (
-        parts.body === targetParts.body &&
-        parts.eye === targetParts.eye &&
-        parts.accessory === targetParts.accessory
+        (parts.body === targetParts.body &&
+         parts.eye === targetParts.eye &&
+         parts.accessory === targetParts.accessory) ||
+        (targetIsFullDefault && targetDefaultCombo &&
+         parts.body === targetDefaultCombo.body &&
+         parts.eye === targetDefaultCombo.eye &&
+         parts.accessory === targetDefaultCombo.accessory)
     );
-
     return parts;
 }
 
