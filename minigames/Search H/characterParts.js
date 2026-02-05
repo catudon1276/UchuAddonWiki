@@ -50,6 +50,16 @@ const defaultCombinations = [
 ];
 const DEFAULT_COMBINATION_RATE = 0.2;  // 20%の確率でデフォルト組み合わせを使用
 
+// パーツがデフォルト組み合わせかどうかを判定
+function isDefaultCombination(parts) {
+    if (!parts) return false;
+    return defaultCombinations.some(combo =>
+        combo.body === parts.body &&
+        combo.eye === parts.eye &&
+        combo.accessory === parts.accessory
+    );
+}
+
 // 難易度別の初期解放パーツ数
 const baseUnlockedParts = {
     easy: { body: 3, eye: 2, accessory: 3 },
@@ -152,7 +162,7 @@ function setTargetParts(parts) {
 }
 
 // ターゲットとは異なるパーツを生成（40%でデフォルト組み合わせ、レベル対応）
-function generateDifferentParts(diffId = 'normal', level = 0) {
+function generateDifferentParts(diffId = 'normal', level = 0, targetIsFullDefault = false, targetDefaultCombo = null) {
     if (!targetParts) return generateRandomParts(diffId, level);
 
     const unlocked = getUnlockedPartsForLevel(diffId, level);
@@ -164,7 +174,26 @@ function generateDifferentParts(diffId = 'normal', level = 0) {
         if (Math.random() < DEFAULT_COMBINATION_RATE) {
             const unlockedDefaults = getUnlockedDefaultCombinations(diffId, level);
             if (unlockedDefaults.length > 0) {
-                parts = { ...unlockedDefaults[Math.floor(Math.random() * unlockedDefaults.length)] };
+                // ターゲットが完全なデフォルト組み合わせの場合、同じ組み合わせを除外
+                let availableDefaults = unlockedDefaults;
+                if (targetIsFullDefault && targetDefaultCombo) {
+                    availableDefaults = unlockedDefaults.filter(combo =>
+                        !(combo.body === targetDefaultCombo.body &&
+                          combo.eye === targetDefaultCombo.eye &&
+                          combo.accessory === targetDefaultCombo.accessory)
+                    );
+                }
+                
+                // 利用可能なデフォルト組み合わせがあれば使用、なければランダム生成
+                if (availableDefaults.length > 0) {
+                    parts = { ...availableDefaults[Math.floor(Math.random() * availableDefaults.length)] };
+                } else {
+                    parts = {
+                        body: Math.floor(Math.random() * unlocked.body),
+                        eye: Math.floor(Math.random() * unlocked.eye),
+                        accessory: Math.floor(Math.random() * unlocked.accessory)
+                    };
+                }
             } else {
                 parts = {
                     body: Math.floor(Math.random() * unlocked.body),
