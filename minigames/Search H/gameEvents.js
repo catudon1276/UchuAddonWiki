@@ -57,6 +57,12 @@ const GameEvents = {
         id: 'monochrome',
         name: 'モノクロ',
         description: '画面がモノクロになる'
+    },
+    // ボディ一致：全キャラクターがターゲットと同じボディになる
+    SAME_BODY: {
+        id: 'same_body',
+        name: 'ボディ一致',
+        description: '全キャラクターが同じボディになる'
     }
 };
 
@@ -65,42 +71,46 @@ const eventSettings = {
     easy: {
         narrow_vision_1: { prob: 0.15, unlockLevel: 10 },
         narrow_vision_2: { prob: 0.1, unlockLevel: 20 },
-        narrow_vision_3: { prob: 0.01, unlockLevel: 30 },
+        narrow_vision_3: { prob: 0.01, unlockLevel: 50 },
         all_move_2: { prob: 0.1, unlockLevel: 25 },
         all_move_3: { prob: 0.05, unlockLevel: 35 },
-        all_move_4: { prob: 0.01, unlockLevel: 50 },
-        target_escape: { prob: 0.1, unlockLevel: 25 },
-        monochrome: { prob: 0.01, unlockLevel: 20 }
+        all_move_4: { prob: 0.01, unlockLevel: 100 },
+        target_escape: { prob: 0.04, unlockLevel: 25 },
+        monochrome: { prob: 0.01, unlockLevel: 20 },
+        same_body: { prob: 0.05, unlockLevel: 30 }
     },
     normal: {
         narrow_vision_1: { prob: 0.2, unlockLevel: 5 },
         narrow_vision_2: { prob: 0.15, unlockLevel: 10 },
-        narrow_vision_3: { prob: 0.1, unlockLevel: 20 },
+        narrow_vision_3: { prob: 0.1, unlockLevel: 40 },
         all_move_2: { prob: 0.15, unlockLevel: 15 },
         all_move_3: { prob: 0.1, unlockLevel: 25 },
-        all_move_4: { prob: 0.05, unlockLevel: 40 },
-        target_escape: { prob: 0.2, unlockLevel: 12 },
-        monochrome: { prob: 0.01, unlockLevel: 10 }
+        all_move_4: { prob: 0.05, unlockLevel: 80 },
+        target_escape: { prob: 0.06, unlockLevel: 12 },
+        monochrome: { prob: 0.1, unlockLevel: 10 },
+        same_body: { prob: 0.08, unlockLevel: 20 }
     },
     hard: {
         narrow_vision_1: { prob: 0.25, unlockLevel: 3 },
         narrow_vision_2: { prob: 0.2, unlockLevel: 6 },
-        narrow_vision_3: { prob: 0.01, unlockLevel: 15 },
+        narrow_vision_3: { prob: 0.01, unlockLevel: 30 },
         all_move_2: { prob: 0.2, unlockLevel: 8 },
         all_move_3: { prob: 0.15, unlockLevel: 15 },
-        all_move_4: { prob: 0.1, unlockLevel: 25 },
-        target_escape: { prob: 0.3, unlockLevel: 5 },
-        monochrome: { prob: 0.02, unlockLevel: 5 }
+        all_move_4: { prob: 0.1, unlockLevel: 50 },
+        target_escape: { prob: 0.1, unlockLevel: 5 },
+        monochrome: { prob: 0.2, unlockLevel: 5 },
+        same_body: { prob: 0.1, unlockLevel: 10 }
     },
     nightmare: {
         narrow_vision_1: { prob: 0.3, unlockLevel: 1 },
         narrow_vision_2: { prob: 0.25, unlockLevel: 1 },
-        narrow_vision_3: { prob: 0.1, unlockLevel: 10 },
+        narrow_vision_3: { prob: 0.1, unlockLevel: 20 },
         all_move_2: { prob: 0.3, unlockLevel: 3 },
         all_move_3: { prob: 0.25, unlockLevel: 6 },
-        all_move_4: { prob: 0.15, unlockLevel: 10 },
-        target_escape: { prob: 0.45, unlockLevel: 1 },
-        monochrome: { prob: 0.03, unlockLevel: 2 }
+        all_move_4: { prob: 0.15, unlockLevel: 30 },
+        target_escape: { prob: 0.15, unlockLevel: 1 },
+        monochrome: { prob: 0.3, unlockLevel: 2 },
+        same_body: { prob: 0.15, unlockLevel: 5 }
     }
 };
 
@@ -157,6 +167,25 @@ function rollEvents() {
     const diffId = getDifficultyId();
     const currentLevel = score + 1; // 次のレベル
 
+    // テスト用オーバーライドをチェック
+    if (typeof getTestEventOverride === 'function') {
+        const testOverride = getTestEventOverride();
+        if (testOverride) {
+            // テストイベントを強制設定
+            testOverride.forEach(eventId => {
+                const eventDef = Object.values(GameEvents).find(e => e.id === eventId);
+                if (eventDef) {
+                    activeEvents.push(eventDef);
+                }
+            });
+            // 全移動Lv1は常に追加（基本）
+            if (!activeEvents.some(e => e.id.startsWith('all_move'))) {
+                activeEvents.push(GameEvents.ALL_MOVE_1);
+            }
+            return activeEvents;
+        }
+    }
+
     // 視野狭窄は1つだけ（重いものが優先）
     if (isEventUnlocked('narrow_vision_3', diffId, currentLevel) && Math.random() < getEventProb('narrow_vision_3', diffId)) {
         activeEvents.push(GameEvents.NARROW_VISION_3);
@@ -184,6 +213,9 @@ function rollEvents() {
     }
     if (isEventUnlocked('monochrome', diffId, currentLevel) && Math.random() < getEventProb('monochrome', diffId)) {
         activeEvents.push(GameEvents.MONOCHROME);
+    }
+    if (isEventUnlocked('same_body', diffId, currentLevel) && Math.random() < getEventProb('same_body', diffId)) {
+        activeEvents.push(GameEvents.SAME_BODY);
     }
 
     return activeEvents;
@@ -241,11 +273,11 @@ function clearEvents() {
     applyMonochrome(false);
 }
 
-// モノクロ化適用
+// モノクロ化適用（70%彩度低下＝彩度30%残し）
 function applyMonochrome(enabled) {
     const world = document.getElementById('world');
     if (enabled) {
-        world.style.filter = 'grayscale(100%)';
+        world.style.filter = 'grayscale(90%)';
     } else {
         world.style.filter = '';
     }
@@ -254,6 +286,11 @@ function applyMonochrome(enabled) {
 // イベントがアクティブかチェック
 function isEventActive(eventId) {
     return activeEvents.some(e => e.id === eventId);
+}
+
+// ボディ一致イベントがアクティブかチェック
+function isSameBodyActive() {
+    return isEventActive('same_body');
 }
 
 // 全移動のパラメータ設定（速度: px/frame）

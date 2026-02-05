@@ -382,9 +382,17 @@ function spawnCharacters() {
     const positions = generateRandomPositions(count, currentWorldSize);
 
     const currentLevel = score + 1;  // 現在のレベル
+    const useSameBody = isSameBodyActive();  // ボディ一致イベントチェック
     for (let i = 0; i < count; i++) {
         const isTarget = (i === 0);
-        const parts = isTarget ? targetParts : generateDifferentParts(diffId, currentLevel);
+        let parts;
+        if (isTarget) {
+            parts = targetParts;
+        } else if (useSameBody) {
+            parts = generateDifferentPartsWithSameBody(diffId, currentLevel);
+        } else {
+            parts = generateDifferentParts(diffId, currentLevel);
+        }
         const char = createCharacterElement(parts, isTarget);
 
         const pos = positions[i];
@@ -673,6 +681,39 @@ document.getElementById('back-wiki-btn').onclick = () => {
 window.addEventListener('resize', adjustLayout);
 adjustLayout();
 changeDifficulty(0);
+
+// =====================
+// テスト用ボタン（後で削除）
+// =====================
+let testEventOverride = null;  // テスト用イベント強制設定
+
+document.getElementById('test-monochrome').onclick = () => {
+    testEventOverride = ['monochrome'];
+    alert('次のゲームで「モノクロ」イベントが強制発生します');
+};
+document.getElementById('test-same-body').onclick = () => {
+    testEventOverride = ['same_body'];
+    alert('次のゲームで「ボディ一致」イベントが強制発生します');
+};
+document.getElementById('test-narrow-vision').onclick = () => {
+    testEventOverride = ['narrow_vision_3'];
+    alert('次のゲームで「視野狭窄Lv3」イベントが強制発生します');
+};
+document.getElementById('test-escape').onclick = () => {
+    testEventOverride = ['target_escape'];
+    alert('次のゲームで「逃走」イベントが強制発生します');
+};
+document.getElementById('test-all-move').onclick = () => {
+    testEventOverride = ['all_move_4'];
+    alert('次のゲームで「全移動Lv4」イベントが強制発生します');
+};
+
+// テスト用イベントを取得してリセット
+function getTestEventOverride() {
+    const override = testEventOverride;
+    testEventOverride = null;
+    return override;
+}
 
 // ピンチズーム無効化
 document.addEventListener('gesturestart', (e) => e.preventDefault());

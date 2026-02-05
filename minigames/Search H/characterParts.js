@@ -169,6 +169,33 @@ function isSameAsTarget(parts) {
            parts.accessory === targetParts.accessory;
 }
 
+// ターゲットとは異なるパーツを生成（ボディ一致モード対応）
+function generateDifferentPartsWithSameBody(diffId = 'normal', level = 0) {
+    if (!targetParts) return generateRandomParts(diffId, level);
+
+    const unlocked = getUnlockedPartsForLevel(diffId, level);
+    let parts;
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    // ボディはターゲットと同じ、eye/accessoryのみ変える
+    do {
+        attempts++;
+        parts = {
+            body: targetParts.body,  // ボディは常にターゲットと同じ
+            eye: Math.floor(Math.random() * unlocked.eye),
+            accessory: Math.floor(Math.random() * unlocked.accessory)
+        };
+    } while (isSameAsTarget(parts) && attempts < maxAttempts);
+
+    // 万が一同じになった場合、強制的にeyeを変更
+    if (isSameAsTarget(parts)) {
+        parts.eye = (parts.eye + 1) % unlocked.eye;
+    }
+
+    return parts;
+}
+
 // ターゲットとは異なるパーツを生成（20%でデフォルト組み合わせ、レベル対応）
 function generateDifferentParts(diffId = 'normal', level = 0) {
     if (!targetParts) return generateRandomParts(diffId, level);
