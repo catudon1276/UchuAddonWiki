@@ -247,12 +247,35 @@ function createCharacterElement(parts, isTarget = false) {
 
 // パーツが一致するかチェック
 function isMatchingParts(element) {
-    if (!targetParts) return false;
-    return (
-        parseInt(element.dataset.body) === targetParts.body &&
-        parseInt(element.dataset.eye) === targetParts.eye &&
-        parseInt(element.dataset.accessory) === targetParts.accessory
+    if (!targetParts) {
+        console.log('[DEBUG] targetParts is null!');
+        return false;
+    }
+
+    const clickedBody = parseInt(element.dataset.body);
+    const clickedEye = parseInt(element.dataset.eye);
+    const clickedAccessory = parseInt(element.dataset.accessory);
+
+    console.log('[DEBUG] クリックしたキャラ:', {
+        body: clickedBody,
+        eye: clickedEye,
+        accessory: clickedAccessory
+    });
+    console.log('[DEBUG] ターゲット:', {
+        body: targetParts.body,
+        eye: targetParts.eye,
+        accessory: targetParts.accessory
+    });
+
+    const isMatch = (
+        clickedBody === targetParts.body &&
+        clickedEye === targetParts.eye &&
+        clickedAccessory === targetParts.accessory
     );
+
+    console.log('[DEBUG] 一致判定:', isMatch);
+
+    return isMatch;
 }
 
 // ターゲットプレビューを更新
