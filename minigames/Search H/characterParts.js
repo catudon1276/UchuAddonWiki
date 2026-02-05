@@ -10,17 +10,17 @@ const SPRITE_COLS = 3;
 // パーツ定義
 const CharacterParts = {
     body: {
-        file: 'textures/body.png',
+        file: 'textures/Body.png',
         count: 15,  // 3x5グリッド
         rows: 5
     },
     eye: {
-        file: 'textures/eye.png',
+        file: 'textures/Eye.png',
         count: 8,   // 3x3グリッド - 1
         rows: 3
     },
     accessory: {
-        file: 'textures/accessory.png',
+        file: 'textures/Accessory.png',
         count: 15,  // 3x5グリッド
         rows: 5
     }
