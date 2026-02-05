@@ -35,18 +35,18 @@ const defaultCombinations = [
     { body: 0, eye: 0, accessory: 0 },   // 1-1-1
     { body: 1, eye: 1, accessory: 1 },   // 2-2-2
     { body: 2, eye: 0, accessory: 2 },   // 3-1-3
-    { body: 3, eye: 0, accessory: 3 },   // 4-1-4
-    { body: 4, eye: 0, accessory: 4 },   // 5-1-5
-    { body: 5, eye: 0, accessory: 5 },   // 6-1-6
-    { body: 6, eye: 2, accessory: 6 },   // 7-3-7
-    { body: 7, eye: 0, accessory: 7 },   // 8-1-8
-    { body: 8, eye: 0, accessory: 8 },   // 9-1-9
-    { body: 9, eye: 5, accessory: 9 },   // 10-6-10
-    { body: 10, eye: 7, accessory: 10 }, // 11-8-11
-    { body: 11, eye: 0, accessory: 11 }, // 12-1-12
-    { body: 12, eye: 0, accessory: 12 }, // 13-1-13
-    { body: 13, eye: 0, accessory: 13 }, // 14-1-14
-    { body: 14, eye: 0, accessory: 14 }  // 15-1-15
+    { body: 3, eye: 0, accessory: 1 },   // 4-1-2
+    { body: 4, eye: 0, accessory: 3 },   // 5-1-4
+    { body: 5, eye: 0, accessory: 4 },   // 6-1-5
+    { body: 6, eye: 2, accessory: 5 },   // 7-3-6
+    { body: 7, eye: 0, accessory: 6 },   // 8-1-7
+    { body: 8, eye: 0, accessory: 7 },   // 9-1-8
+    { body: 9, eye: 5, accessory: 8 },   // 10-6-9
+    { body: 10, eye: 7, accessory: 9 },  // 11-8-10
+    { body: 11, eye: 0, accessory: 10 }, // 12-1-11
+    { body: 12, eye: 0, accessory: 11 }, // 13-1-12
+    { body: 13, eye: 0, accessory: 12 }, // 14-1-13
+    { body: 14, eye: 0, accessory: 13 }  // 15-1-14
 ];
 const DEFAULT_COMBINATION_RATE = 0.2;  // 20%の確率でデフォルト組み合わせを使用
 
