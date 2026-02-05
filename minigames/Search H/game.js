@@ -25,10 +25,10 @@ function getWorldSize(level) {
 }
 
 const diffSettings = [
-    { id: 'easy',      name: 'EASY',      desc: 'ミス: 減点なし / 初期: 60秒 / 回復: +15秒', start: 60, penalty: 0,   recovery: 15, color: '#10b981', baseCount: 200, countPerLevel: 20 },
-    { id: 'normal',    name: 'NORMAL',    desc: 'ミス: -5秒 / 初期: 45秒 / 回復: +10秒',    start: 45, penalty: 5,   recovery: 10, color: '#3b82f6', baseCount: 250, countPerLevel: 25 },
-    { id: 'hard',      name: 'HARD',      desc: 'ミス: -10秒 / 初期: 30秒 / 回復: +7秒',   start: 30, penalty: 10,  recovery: 7,  color: '#f59e0b', baseCount: 300, countPerLevel: 30 },
-    { id: 'nightmare', name: 'NIGHTMARE', desc: 'ミス: 即死 / 初期: 30秒 / 回復: +5秒',     start: 30, penalty: 999, recovery: 5,  color: '#ef4444', baseCount: 350, countPerLevel: 35 }
+    { id: 'easy',      name: 'EASY',      desc: 'ミス: 減点なし / 初期: 90秒', start: 90, penalty: 0,   recovery: 15, color: '#10b981', baseCount: 200, countPerLevel: 20 },
+    { id: 'normal',    name: 'NORMAL',    desc: 'ミス: -5秒 / 初期: 60秒',    start: 60, penalty: 5,   recovery: 10, color: '#3b82f6', baseCount: 250, countPerLevel: 25 },
+    { id: 'hard',      name: 'HARD',      desc: 'ミス: -10秒 / 初期: 45秒',   start: 45, penalty: 10,  recovery: 10,  color: '#f59e0b', baseCount: 300, countPerLevel: 30 },
+    { id: 'nightmare', name: 'NIGHTMARE', desc: 'ミス: 即死 / 初期: 30秒',     start: 30, penalty: 999, recovery: 5,  color: '#ef4444', baseCount: 350, countPerLevel: 35 }
 ];
 
 // =====================
