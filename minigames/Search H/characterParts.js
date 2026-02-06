@@ -26,8 +26,25 @@ const CharacterParts = {
     }
 };
 
-// 現在のターゲットパーツ構成
-let targetParts = null;
+// 現在のターゲットパーツ構成（値も難読化して保存）
+let targetParts = null;  // { body: enc, eye: enc, accessory: enc } エンコード済みで保持
+let _obfKey = 0;  // レベルごとに変わる難読化キー
+
+// 難読化キーを生成
+function _newObfKey() {
+    _obfKey = Math.floor(Math.random() * 9000) + 1000;
+    return _obfKey;
+}
+
+// パーツ値をエンコード（dataset・targetParts保存用）
+function _encPart(value) {
+    return (value * 7 + _obfKey) ^ 0x5A;
+}
+
+// パーツ値をデコード（読み取り用）
+function _decPart(encoded) {
+    return ((encoded ^ 0x5A) - _obfKey) / 7;
+}
 
 // デフォルト（高頻出）の組み合わせ（40%の確率で使用）
 // 指定: (body-eye-accessory) 1始まり → 0始まりに変換済み
@@ -156,17 +173,32 @@ function generateRandomParts(diffId = 'normal', level = 0) {
     };
 }
 
-// ターゲットのパーツを設定
+// ターゲットのパーツを設定（エンコードして保存）
 function setTargetParts(parts) {
-    targetParts = parts;
+    targetParts = {
+        body: _encPart(parts.body),
+        eye: _encPart(parts.eye),
+        accessory: _encPart(parts.accessory)
+    };
+}
+
+// ターゲットのパーツをデコードして取得（内部用）
+function _getTargetRaw() {
+    if (!targetParts) return null;
+    return {
+        body: _decPart(targetParts.body),
+        eye: _decPart(targetParts.eye),
+        accessory: _decPart(targetParts.accessory)
+    };
 }
 
 // ターゲットと完全一致するかチェック
 function isSameAsTarget(parts) {
-    if (!targetParts || !parts) return false;
-    return parts.body === targetParts.body &&
-           parts.eye === targetParts.eye &&
-           parts.accessory === targetParts.accessory;
+    const tp = _getTargetRaw();
+    if (!tp || !parts) return false;
+    return parts.body === tp.body &&
+           parts.eye === tp.eye &&
+           parts.accessory === tp.accessory;
 }
 
 // ターゲットとは異なるパーツを生成（ボディ一致モード対応）
@@ -179,10 +211,11 @@ function generateDifferentPartsWithSameBody(diffId = 'normal', level = 0) {
     const maxAttempts = 100;
 
     // ボディはターゲットと同じ、eye/accessoryのみ変える
+    const tp = _getTargetRaw();
     do {
         attempts++;
         parts = {
-            body: targetParts.body,  // ボディは常にターゲットと同じ
+            body: tp.body,  // ボディは常にターゲットと同じ
             eye: Math.floor(Math.random() * unlocked.eye),
             accessory: Math.floor(Math.random() * unlocked.accessory)
         };
@@ -246,14 +279,11 @@ function generateDifferentParts(diffId = 'normal', level = 0) {
 function createCharacterElement(parts, isTarget = false) {
     const container = document.createElement('div');
     container.className = 'character';
-    if (isTarget) {
-        container.dataset.isTarget = 'true';
-    }
 
-    // パーツデータを保存
-    container.dataset.body = parts.body;
-    container.dataset.eye = parts.eye;
-    container.dataset.accessory = parts.accessory;
+    // パーツデータを難読化して保存（レベルごとに変わるキーで変換）
+    container.dataset.b = _encPart(parts.body);
+    container.dataset.e = _encPart(parts.eye);
+    container.dataset.a = _encPart(parts.accessory);
 
     // レイヤー順: body(背面) → eye → accessory(前面)
     const layers = ['body', 'eye', 'accessory'];
@@ -272,16 +302,17 @@ function createCharacterElement(parts, isTarget = false) {
     return container;
 }
 
-// パーツが一致するかチェック
+// パーツが一致するかチェック（難読化対応）
 function isMatchingParts(element) {
-    if (!targetParts) {
+    const tp = _getTargetRaw();
+    if (!tp) {
         console.log('[DEBUG] targetParts is null!');
         return false;
     }
 
-    const clickedBody = parseInt(element.dataset.body);
-    const clickedEye = parseInt(element.dataset.eye);
-    const clickedAccessory = parseInt(element.dataset.accessory);
+    const clickedBody = _decPart(parseInt(element.dataset.b));
+    const clickedEye = _decPart(parseInt(element.dataset.e));
+    const clickedAccessory = _decPart(parseInt(element.dataset.a));
 
     console.log('[DEBUG] クリックしたキャラ:', {
         body: clickedBody,
@@ -289,15 +320,15 @@ function isMatchingParts(element) {
         accessory: clickedAccessory
     });
     console.log('[DEBUG] ターゲット:', {
-        body: targetParts.body,
-        eye: targetParts.eye,
-        accessory: targetParts.accessory
+        body: tp.body,
+        eye: tp.eye,
+        accessory: tp.accessory
     });
 
     const isMatch = (
-        clickedBody === targetParts.body &&
-        clickedEye === targetParts.eye &&
-        clickedAccessory === targetParts.accessory
+        clickedBody === tp.body &&
+        clickedEye === tp.eye &&
+        clickedAccessory === tp.accessory
     );
 
     console.log('[DEBUG] 一致判定:', isMatch);
@@ -307,7 +338,8 @@ function isMatchingParts(element) {
 
 // ターゲットプレビューを更新
 function updateTargetPreview(previewElement) {
-    if (!targetParts || !previewElement) return;
+    const tp = _getTargetRaw();
+    if (!tp || !previewElement) return;
 
     // 既存のコンテンツをクリア
     previewElement.innerHTML = '';
@@ -320,7 +352,7 @@ function updateTargetPreview(previewElement) {
         const partEl = document.createElement('div');
         partEl.className = `preview-part preview-${layer}`;
 
-        const pos = getSpritePosition(layer, targetParts[layer], 'preview');
+        const pos = getSpritePosition(layer, tp[layer], 'preview');
         partEl.style.backgroundImage = `url(${CharacterParts[layer].file})`;
         partEl.style.backgroundPosition = `-${pos.x}px -${pos.y}px`;
 
@@ -330,7 +362,8 @@ function updateTargetPreview(previewElement) {
 
 // スポットライト用ターゲット表示を更新
 function updateSpotlightTarget(spotlightElement) {
-    if (!targetParts || !spotlightElement) return;
+    const tp = _getTargetRaw();
+    if (!tp || !spotlightElement) return;
 
     // 既存のコンテンツをクリア
     spotlightElement.innerHTML = '';
@@ -342,7 +375,7 @@ function updateSpotlightTarget(spotlightElement) {
         const partEl = document.createElement('div');
         partEl.className = `spotlight-part spotlight-${layer}`;
 
-        const pos = getSpritePosition(layer, targetParts[layer], 'spotlight');
+        const pos = getSpritePosition(layer, tp[layer], 'spotlight');
         partEl.style.backgroundImage = `url(${CharacterParts[layer].file})`;
         partEl.style.backgroundPosition = `-${pos.x}px -${pos.y}px`;
 
@@ -352,7 +385,8 @@ function updateSpotlightTarget(spotlightElement) {
 
 // スポットライト用シャドウ表示を更新
 function updateSpotlightShadow(shadowElement) {
-    if (!targetParts || !shadowElement) return;
+    const tp = _getTargetRaw();
+    if (!tp || !shadowElement) return;
 
     // 既存のコンテンツをクリア
     shadowElement.innerHTML = '';
@@ -364,7 +398,7 @@ function updateSpotlightShadow(shadowElement) {
         const partEl = document.createElement('div');
         partEl.className = `shadow-part shadow-${layer}`;
 
-        const pos = getSpritePosition(layer, targetParts[layer], 'spotlight');
+        const pos = getSpritePosition(layer, tp[layer], 'spotlight');
         partEl.style.backgroundImage = `url(${CharacterParts[layer].file})`;
         partEl.style.backgroundPosition = `-${pos.x}px -${pos.y}px`;
 

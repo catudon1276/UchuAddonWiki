@@ -167,25 +167,6 @@ function rollEvents() {
     const diffId = getDifficultyId();
     const currentLevel = score + 1; // 次のレベル
 
-    // テスト用オーバーライドをチェック
-    if (typeof getTestEventOverride === 'function') {
-        const testOverride = getTestEventOverride();
-        if (testOverride) {
-            // テストイベントを強制設定
-            testOverride.forEach(eventId => {
-                const eventDef = Object.values(GameEvents).find(e => e.id === eventId);
-                if (eventDef) {
-                    activeEvents.push(eventDef);
-                }
-            });
-            // 全移動Lv1は常に追加（基本）
-            if (!activeEvents.some(e => e.id.startsWith('all_move'))) {
-                activeEvents.push(GameEvents.ALL_MOVE_1);
-            }
-            return activeEvents;
-        }
-    }
-
     // 視野狭窄は1つだけ（重いものが優先）
     if (isEventUnlocked('narrow_vision_3', diffId, currentLevel) && Math.random() < getEventProb('narrow_vision_3', diffId)) {
         activeEvents.push(GameEvents.NARROW_VISION_3);
