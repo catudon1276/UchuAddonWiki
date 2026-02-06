@@ -87,7 +87,7 @@ const eventSettings = {
         all_move_3: { prob: 0.1, unlockLevel: 25 },
         all_move_4: { prob: 0.05, unlockLevel: 80 },
         target_escape: { prob: 0.06, unlockLevel: 12 },
-        monochrome: { prob: 0.1, unlockLevel: 10 },
+        monochrome: { prob: 0.03, unlockLevel: 10 },
         same_body: { prob: 0.08, unlockLevel: 20 }
     },
     hard: {
@@ -98,7 +98,7 @@ const eventSettings = {
         all_move_3: { prob: 0.15, unlockLevel: 15 },
         all_move_4: { prob: 0.1, unlockLevel: 50 },
         target_escape: { prob: 0.1, unlockLevel: 5 },
-        monochrome: { prob: 0.2, unlockLevel: 5 },
+        monochrome: { prob: 0.05, unlockLevel: 5 },
         same_body: { prob: 0.1, unlockLevel: 10 }
     },
     nightmare: {
@@ -109,7 +109,7 @@ const eventSettings = {
         all_move_3: { prob: 0.25, unlockLevel: 6 },
         all_move_4: { prob: 0.15, unlockLevel: 30 },
         target_escape: { prob: 0.15, unlockLevel: 1 },
-        monochrome: { prob: 0.3, unlockLevel: 2 },
+        monochrome: { prob: 0.08, unlockLevel: 2 },
         same_body: { prob: 0.15, unlockLevel: 5 }
     }
 };
@@ -258,7 +258,7 @@ function clearEvents() {
 function applyMonochrome(enabled) {
     const world = document.getElementById('world');
     if (enabled) {
-        world.style.filter = 'grayscale(90%)';
+        world.style.filter = 'grayscale(70%)';
     } else {
         world.style.filter = '';
     }
