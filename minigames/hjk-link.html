@@ -88,13 +88,15 @@ html,body{height:100%;overflow:hidden;
 .evo-row .ea{color:#555;font-size:8px}
 
 /* ===== Difficulty ===== */
-.diff-row{display:flex;justify-content:center;gap:6px;margin:10px 0 4px}
-.diff-btn{padding:8px 0;flex:1;border:2px solid rgba(80,120,220,.3);border-radius:10px;
-  background:rgba(255,255,255,.03);color:#aaa;font-size:11px;font-weight:700;cursor:pointer;
-  transition:all .15s;letter-spacing:1px}
-.diff-btn:hover{background:rgba(80,120,220,.15);color:#fff}
-.diff-btn.active{background:linear-gradient(135deg,rgba(60,100,220,.3),rgba(120,40,180,.2));
-  color:#fff;border-color:rgba(120,160,255,.6);box-shadow:0 0 12px rgba(80,120,220,.3)}
+.diff-row{display:flex;justify-content:center;align-items:center;gap:0;margin:10px 0 4px}
+.diff-arr{width:44px;height:44px;border:2px solid rgba(80,120,220,.3);border-radius:12px;
+  background:rgba(255,255,255,.03);color:#aaa;font-size:22px;font-weight:900;cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.diff-arr:hover{background:rgba(80,120,220,.15);color:#fff}
+.diff-arr:active{transform:scale(.9)}
+.diff-center{text-align:center;min-width:120px;padding:0 8px}
+.diff-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:2px}
+.diff-sub{font-size:9px;color:#888;margin-top:2px}
 .diff-label{font-size:9px;color:#666;margin-top:2px;text-align:center}
 
 .rr{font-size:56px;font-weight:900;margin:8px 0;line-height:1;letter-spacing:-2px}
@@ -167,13 +169,14 @@ html,body{height:100%;overflow:hidden;
 <div class="mdl">
   <h1>Hjk Link</h1>
   <div class="mdl-sub">SWAP &middot; CHAIN &middot; FEVER</div>
-  <div class="evo-row" id="evoRow"></div>
-  <div class="diff-label">難易度（豆の種類）</div>
+  <div class="diff-label">難易度</div>
   <div class="diff-row">
-    <button class="diff-btn" data-d="0" onclick="setDiff(0)">ひじき級<br><span style="font-size:8px;color:#88cc88">7種</span></button>
-    <button class="diff-btn active" data-d="1" onclick="setDiff(1)">ゆりしぃ級<br><span style="font-size:8px;color:#44ccff">9種</span></button>
-    <button class="diff-btn" data-d="2" onclick="setDiff(2)">ラムネ級<br><span style="font-size:8px;color:#ff8844">11種</span></button>
-    <button class="diff-btn" data-d="3" onclick="setDiff(3)">マッキー級<br><span style="font-size:8px;color:#ff4444">13種</span></button>
+    <button class="diff-arr" id="diffL" onclick="shiftDiff(-1)">⇦</button>
+    <div class="diff-center">
+      <div class="diff-name" id="diffName">ゆりしぃ級</div>
+      <div class="diff-sub" id="diffSub">9種</div>
+    </div>
+    <button class="diff-arr" id="diffR" onclick="shiftDiff(1)">⇨</button>
   </div>
   <button class="mbtn" onclick="G.start()">START</button>
   <a href="/UchuAddonWiki/" class="mbtn sec" style="text-decoration:none;text-align:center;display:block">Wikiへ</a>
@@ -269,16 +272,16 @@ const ALL_CHARS=[
   {si:0, name:'ひじき',      col:'#f5e642',border:'#c4b520',weight:0, pts:0,  isItem:true},
   // Index 1-6: original 6 matchable pieces (strength order)
   {si:4, name:'ゆり豆',      col:'#8899bb',border:'#5a6a88',weight:5, pts:120,skill:'bomb'},
-  {si:11,name:'プラ豆',      col:'#d4c090',border:'#a09060',weight:10,pts:80, skill:'time'},
-  {si:10,name:'タコ豆',      col:'#ddaa22',border:'#aa8800',weight:14,pts:50, skill:'fever'},
-  {si:5, name:'あんハッピ豆', col:'#ff88cc',border:'#cc5599',weight:18,pts:30, skill:null},
-  {si:3, name:'ラムネ豆',    col:'#88ddff',border:'#55aacc',weight:22,pts:15, skill:null},
+  {si:11,name:'プラ豆',      col:'#d4c090',border:'#a09060',weight:10,pts:80, skill:'time8'},
+  {si:10,name:'タコ豆',      col:'#ddaa22',border:'#aa8800',weight:14,pts:50, skill:'fever50'},
+  {si:5, name:'あんハッピ豆', col:'#ff88cc',border:'#cc5599',weight:18,pts:30, skill:'time3'},
+  {si:3, name:'ラムネ豆',    col:'#88ddff',border:'#55aacc',weight:22,pts:15, skill:'fever25'},
   {si:1, name:'ロズ豆',      col:'#6688ff',border:'#3355cc',weight:29,pts:8,  skill:null},
   // Index 7-12: extra pieces for higher difficulties
-  {si:2, name:'モチ豆',      col:'#ff6644',border:'#cc3322',weight:24,pts:12, skill:null},
-  {si:6, name:'ミント豆',    col:'#44dd88',border:'#22aa55',weight:20,pts:18, skill:null},
+  {si:2, name:'モチ豆',      col:'#ff6644',border:'#cc3322',weight:24,pts:12, skill:'bombS'},
+  {si:6, name:'ミント豆',    col:'#44dd88',border:'#22aa55',weight:20,pts:18, skill:'lineH'},
   {si:7, name:'サクラ豆',    col:'#ff99aa',border:'#cc6677',weight:16,pts:25, skill:null},
-  {si:8, name:'カボチャ豆',  col:'#ff8800',border:'#cc6600',weight:12,pts:40, skill:null},
+  {si:8, name:'カボチャ豆',  col:'#ff8800',border:'#cc6600',weight:12,pts:40, skill:'lineV'},
   {si:9, name:'ワサビ豆',    col:'#88ee44',border:'#55bb22',weight:8, pts:60, skill:null},
   {si:12,name:'クロ豆',      col:'#aa88dd',border:'#7755aa',weight:6, pts:90, skill:null},
 ];
@@ -315,14 +318,26 @@ function applyDifficulty(d){
   buildEvo();
 }
 
+const DIFF_COLORS=['#88cc88','#44ccff','#ff8844','#ff4444'];
 function setDiff(d){
   curDiff=d;
-  document.querySelectorAll('.diff-btn').forEach(b=>{
-    b.classList.toggle('active',+b.dataset.d===d);
-  });
   applyDifficulty(d);
+  updateDiffUI();
+}
+function updateDiffUI(){
+  const cfg=DIFF_CFG[curDiff];
+  document.getElementById('diffName').textContent=cfg.label;
+  document.getElementById('diffName').style.color=DIFF_COLORS[curDiff];
+  document.getElementById('diffSub').textContent=TYPES+'種';
+  document.getElementById('diffL').style.visibility=curDiff>0?'visible':'hidden';
+  document.getElementById('diffR').style.visibility=curDiff<DIFF_CFG.length-1?'visible':'hidden';
+}
+function shiftDiff(dir){
+  const nd=curDiff+dir;
+  if(nd>=0&&nd<DIFF_CFG.length)setDiff(nd);
 }
 window.setDiff=setDiff;
+window.shiftDiff=shiftDiff;
 
 const GRAVS=['down','left','right'];
 const GRAV_LABEL={down:'▼ 下',left:'◀ 左',right:'▶ 右'};
@@ -737,6 +752,7 @@ const G={
       // Skills
       for(const[type,pos]of skills){
         const sk=CHARS[type].skill;
+        // bomb: 周囲8マス消去
         if(sk==='bomb'){
           for(const{r,c}of pos){
             for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
@@ -747,9 +763,47 @@ const G={
             }
           }
         }
-        if(sk==='time'){this.timeLeft=Math.min(TOTAL_TIME+DIFF_CFG[curDiff].timeBonus,this.timeLeft+3);
+        // bombS: 小ボム 上下左右のみ(十字1マス)
+        if(sk==='bombS'){
+          for(const{r,c}of pos){
+            for(const[dr,dc]of[[0,1],[0,-1],[1,0],[-1,0]]){
+              const nr=r+dr,nc=c+dc;
+              if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&this.grid[nr][nc]>=PIECE_START){
+                this.grid[nr][nc]=-1;cells[CI(nr,nc)].alpha=0;cells[CI(nr,nc)].scale=0;
+              }
+            }
+          }
+        }
+        // lineH: 横一列消去
+        if(sk==='lineH'){
+          for(const{r}of pos){
+            for(let c2=0;c2<COLS;c2++){
+              if(this.grid[r][c2]>=PIECE_START){
+                this.grid[r][c2]=-1;cells[CI(r,c2)].alpha=0;cells[CI(r,c2)].scale=0;
+              }
+            }
+          }
+        }
+        // lineV: 縦一列消去
+        if(sk==='lineV'){
+          for(const{c}of pos){
+            for(let r2=0;r2<ROWS;r2++){
+              if(this.grid[r2][c]>=PIECE_START){
+                this.grid[r2][c]=-1;cells[CI(r2,c)].alpha=0;cells[CI(r2,c)].scale=0;
+              }
+            }
+          }
+        }
+        // time8: +8秒
+        if(sk==='time8'){this.timeLeft=Math.min(TOTAL_TIME+DIFF_CFG[curDiff].timeBonus,this.timeLeft+8);
+          this.floatSkill('+8s',pos[0].c*CELL+CELL/2,(pos[0].r-1)*CELL)}
+        // time3: +3秒
+        if(sk==='time3'){this.timeLeft=Math.min(TOTAL_TIME+DIFF_CFG[curDiff].timeBonus,this.timeLeft+3);
           this.floatSkill('+3s',pos[0].c*CELL+CELL/2,(pos[0].r-1)*CELL)}
-        if(sk==='fever'){this.fever=Math.min(FEVER_MAX,this.fever+25)}
+        // fever50: フィーバーゲージ+50
+        if(sk==='fever50'){this.fever=Math.min(FEVER_MAX,this.fever+50)}
+        // fever25: フィーバーゲージ+25
+        if(sk==='fever25'){this.fever=Math.min(FEVER_MAX,this.fever+25)}
       }
 
       await this.applyGrav();
@@ -954,6 +1008,7 @@ cvs.addEventListener('pointerleave',()=>{dragR=-1;dragging=false});
 
 function W(ms){return new Promise(r=>setTimeout(r,ms))}
 applyDifficulty(curDiff);
+updateDiffUI();
 })();
 </script>
 </body>
