@@ -26,9 +26,6 @@ html,body{height:100%;overflow:hidden;
   padding:6px 16px;flex-shrink:0;height:48px}
 .top-score{font-size:28px;font-weight:900;color:#fff;
   text-shadow:0 0 12px rgba(255,255,255,.3);font-variant-numeric:tabular-nums}
-.top-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center}
-.top-icon canvas{width:32px;height:32px;image-rendering:auto}
-.top-sub{font-size:14px;font-weight:700;color:#aaa;font-variant-numeric:tabular-nums}
 
 /* ===== Timer + Gravity ===== */
 .info-bar{display:flex;align-items:center;gap:8px;padding:2px 16px;flex-shrink:0;height:24px}
@@ -55,6 +52,17 @@ html,body{height:100%;overflow:hidden;
   padding:2px 0;flex-shrink:0;height:24px}
 .rank-label{font-size:10px;color:#888}
 .rank-val{font-size:16px;font-weight:900}
+
+/* ===== Fever gauge ===== */
+.fever-bar-wrap{padding:0 16px 2px;flex-shrink:0;height:14px;display:flex;align-items:center;gap:6px}
+.fever-lbl{font-size:8px;color:#aa44ff;font-weight:700;min-width:32px}
+.fever-bar{flex:1;height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;
+  border:1px solid rgba(255,0,200,.15)}
+.fever-fill{height:100%;border-radius:3px;transition:width .15s linear;
+  background:linear-gradient(90deg,#aa44ff,#ff44ff);width:0%}
+.fever-fill.full{background:linear-gradient(90deg,#ff44ff,#ffee00)!important;
+  animation:feverGlow .4s infinite alternate}
+@keyframes feverGlow{0%{opacity:.7}100%{opacity:1}}
 
 /* ===== Footer ===== */
 .ftr{display:flex;justify-content:space-between;align-items:center;
@@ -83,10 +91,6 @@ html,body{height:100%;overflow:hidden;
 .mbtn:active{transform:scale(.96)}
 .mbtn.sec{background:rgba(255,255,255,.03);font-size:12px;font-weight:600;letter-spacing:1px;
   border-color:rgba(255,255,255,.1)}
-.evo-row{display:flex;justify-content:center;gap:3px;margin:12px 0;flex-wrap:wrap;align-items:center}
-.evo-row canvas{image-rendering:auto;border-radius:4px}
-.evo-row .ea{color:#555;font-size:8px}
-
 /* ===== Difficulty ===== */
 .diff-row{display:flex;justify-content:center;align-items:center;gap:0;margin:10px 0 4px}
 .diff-arr{width:44px;height:44px;border:2px solid rgba(80,120,220,.3);border-radius:12px;
@@ -159,6 +163,16 @@ html,body{height:100%;overflow:hidden;
   color:#fff;font-size:18px;font-weight:900;cursor:pointer;letter-spacing:2px;margin:6px;transition:all .15s}
 .pause-btn:hover{transform:scale(1.05);background:linear-gradient(135deg,rgba(60,100,220,.45),rgba(120,40,180,.35))}
 .pause-btn:active{transform:scale(.95)}
+
+/* ===== Fever background ===== */
+#app.fever-bg{animation:feverPulse .6s ease-in-out infinite alternate;
+  box-shadow:0 0 60px rgba(255,0,200,.3),inset 0 0 40px rgba(255,0,200,.1)}
+#app.fever-bg .board-frame{border-color:rgba(255,0,200,.8);
+  box-shadow:0 0 40px rgba(255,0,200,.4),inset 0 0 20px rgba(255,0,200,.15)}
+#app.fever-bg .timer-fill{background:linear-gradient(90deg,#ff44ff,#ffee00)!important}
+@keyframes feverPulse{
+  0%{background:linear-gradient(180deg,#200828,#2a0838)}
+  100%{background:linear-gradient(180deg,#300040,#3a0050)}}
 </style>
 </head>
 <body>
@@ -173,8 +187,7 @@ html,body{height:100%;overflow:hidden;
   <div class="diff-row">
     <button class="diff-arr" id="diffL" onclick="shiftDiff(-1)">⇦</button>
     <div class="diff-center">
-      <div class="diff-name" id="diffName">ゆりしぃ級</div>
-      <div class="diff-sub" id="diffSub">9種</div>
+      <div class="diff-name" id="diffName">ひじき級</div>
     </div>
     <button class="diff-arr" id="diffR" onclick="shiftDiff(1)">⇨</button>
   </div>
@@ -201,8 +214,6 @@ html,body{height:100%;overflow:hidden;
 <!-- HUD -->
 <div class="top">
   <div class="top-score" id="uiScore">0</div>
-  <div class="top-icon" id="trophyIcon"></div>
-  <div class="top-sub" id="uiMoves">0</div>
 </div>
 <div class="info-bar">
   <div class="timer-bar"><div class="timer-fill" id="uiTimerFill" style="width:100%"></div></div>
@@ -230,6 +241,11 @@ html,body{height:100%;overflow:hidden;
   <span class="rank-label">RANK</span>
   <span class="rank-val" id="uiRank" style="color:#ffcc00">E</span>
   <span id="uiFever" style="font-size:10px;color:#ff44ff;font-weight:700;margin-left:8px"></span>
+</div>
+<!-- FEVER GAUGE -->
+<div class="fever-bar-wrap">
+  <span class="fever-lbl">FEVER</span>
+  <div class="fever-bar"><div class="fever-fill" id="uiFeverFill"></div></div>
 </div>
 
 <!-- FOOTER -->
@@ -280,10 +296,10 @@ const ALL_CHARS=[
   // Index 7-12: extra pieces for higher difficulties
   {si:2, name:'モチ豆',      col:'#ff6644',border:'#cc3322',weight:24,pts:12, skill:'bombS'},
   {si:6, name:'ミント豆',    col:'#44dd88',border:'#22aa55',weight:20,pts:18, skill:'lineH'},
-  {si:7, name:'サクラ豆',    col:'#ff99aa',border:'#cc6677',weight:16,pts:25, skill:null},
+  {si:7, name:'サクラ豆',    col:'#ff99aa',border:'#cc6677',weight:16,pts:25, skill:'feverExt'},
   {si:8, name:'カボチャ豆',  col:'#ff8800',border:'#cc6600',weight:12,pts:40, skill:'lineV'},
-  {si:9, name:'ワサビ豆',    col:'#88ee44',border:'#55bb22',weight:8, pts:60, skill:null},
-  {si:12,name:'クロ豆',      col:'#aa88dd',border:'#7755aa',weight:6, pts:90, skill:null},
+  {si:9, name:'ワサビ豆',    col:'#88ee44',border:'#55bb22',weight:8, pts:60, skill:'feverAccel'},
+  {si:12,name:'クロ豆',      col:'#aa88dd',border:'#7755aa',weight:6, pts:90, skill:'feverExt'},
 ];
 
 // Difficulty config: [pieceCount(excluding item), label]
@@ -315,7 +331,6 @@ function applyDifficulty(d){
   TYPES=CHARS.length;
   PIECE_WEIGHT=CHARS.slice(PIECE_START).reduce((s,c)=>s+c.weight,0);
   gravInterval=cfg.gravInterval;
-  buildEvo();
 }
 
 const DIFF_COLORS=['#88cc88','#44ccff','#ff8844','#ff4444'];
@@ -328,7 +343,6 @@ function updateDiffUI(){
   const cfg=DIFF_CFG[curDiff];
   document.getElementById('diffName').textContent=cfg.label;
   document.getElementById('diffName').style.color=DIFF_COLORS[curDiff];
-  document.getElementById('diffSub').textContent=TYPES+'種';
   document.getElementById('diffL').style.visibility=curDiff>0?'visible':'hidden';
   document.getElementById('diffR').style.visibility=curDiff<DIFF_CFG.length-1?'visible':'hidden';
 }
@@ -346,7 +360,7 @@ const GRAV_LABEL={down:'▼ 下',left:'◀ 左',right:'▶ 右'};
 const spr=new Image();
 spr.src='../resource/minigame/hjk/Hjks.png';
 let sprOK=false,sW=0,sH=0;
-spr.onload=()=>{sprOK=true;sW=spr.width/3;sH=spr.height/5;applyDifficulty(curDiff);buildTrophy()};
+spr.onload=()=>{sprOK=true;sW=spr.width/3;sH=spr.height/5;applyDifficulty(curDiff)};
 spr.onerror=()=>applyDifficulty(curDiff);
 
 function drawCharTo(c,ci,x,y,w,h){
@@ -354,26 +368,6 @@ function drawCharTo(c,ci,x,y,w,h){
   if(!ch)return;
   if(sprOK){const sc=ch.si%3,sr=Math.floor(ch.si/3);c.drawImage(spr,sc*sW,sr*sH,sW,sH,x,y,w,h)}
   else{c.fillStyle=ch.col;c.fillRect(x+2,y+2,w-4,h-4)}
-}
-
-function buildEvo(){
-  const el=document.getElementById('evoRow');el.innerHTML='';
-  for(let i=0;i<TYPES;i++){
-    const c=document.createElement('canvas');c.width=24;c.height=24;
-    c.style.cssText='width:22px;height:22px;border-radius:3px;border:1px solid '
-      +(i===0?'#ffcc00':'rgba(255,255,255,.1)');
-    const x=c.getContext('2d');drawCharTo(x,i,0,0,24,24);
-    el.appendChild(c);
-    if(i<TYPES-1){const a=document.createElement('span');a.className='ea';a.textContent=i===0?'★':'>';el.appendChild(a)}
-  }
-}
-
-function buildTrophy(){
-  const el=document.getElementById('trophyIcon');el.innerHTML='';
-  const c=document.createElement('canvas');c.width=32;c.height=32;
-  c.style.cssText='width:32px;height:32px';
-  const x=c.getContext('2d');drawCharTo(x,0,0,0,32,32);
-  el.appendChild(c);
 }
 
 // Rank
@@ -511,6 +505,7 @@ const G={
     this.score=0;this.moves=0;this.maxChain=0;this.maxLink=0;
     this.timeLeft=TOTAL_TIME+DIFF_CFG[curDiff].timeBonus;
     this.fever=0;this.feverOn=false;
+    document.getElementById('app').classList.remove('fever-bg');
     this.gravity='down';this.gravTimer=gravInterval;
     this.sel=null;this.busy=false;this.active=true;this.paused=false;
     document.getElementById('pauseOv').classList.add('hidden');
@@ -525,6 +520,7 @@ const G={
   end(){
     this.active=false;clearInterval(this.timerIv);clearInterval(this.gravIv);
     if(this.feverIv)clearInterval(this.feverIv);
+    document.getElementById('app').classList.remove('fever-bg');
     const rk=getRank(this.score);
     const re=document.getElementById('rrRank');
     re.textContent=rk.l;re.style.color=rk.c;re.className='rr'+(rk.r?' rainbow':'');
@@ -548,11 +544,11 @@ const G={
     },100);
   },
   updateTimerUI(){
+    const el=document.getElementById('uiTimerFill');
+    const ts=document.getElementById('uiTimerSec');
     const max=TOTAL_TIME+DIFF_CFG[curDiff].timeBonus;
     const pct=Math.max(0,this.timeLeft/max*100);
-    const el=document.getElementById('uiTimerFill');
     el.style.width=pct+'%';el.classList.toggle('low',this.timeLeft<=10);
-    const ts=document.getElementById('uiTimerSec');
     ts.textContent=Math.ceil(this.timeLeft);
     ts.style.color=this.timeLeft<=10?'#ff4444':'#fff';
   },
@@ -752,7 +748,6 @@ const G={
       // Skills
       for(const[type,pos]of skills){
         const sk=CHARS[type].skill;
-        // bomb: 周囲8マス消去
         if(sk==='bomb'){
           for(const{r,c}of pos){
             for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
@@ -763,7 +758,6 @@ const G={
             }
           }
         }
-        // bombS: 小ボム 上下左右のみ(十字1マス)
         if(sk==='bombS'){
           for(const{r,c}of pos){
             for(const[dr,dc]of[[0,1],[0,-1],[1,0],[-1,0]]){
@@ -774,7 +768,6 @@ const G={
             }
           }
         }
-        // lineH: 横一列消去
         if(sk==='lineH'){
           for(const{r}of pos){
             for(let c2=0;c2<COLS;c2++){
@@ -784,7 +777,6 @@ const G={
             }
           }
         }
-        // lineV: 縦一列消去
         if(sk==='lineV'){
           for(const{c}of pos){
             for(let r2=0;r2<ROWS;r2++){
@@ -794,16 +786,18 @@ const G={
             }
           }
         }
-        // time8: +8秒
         if(sk==='time8'){this.timeLeft=Math.min(TOTAL_TIME+DIFF_CFG[curDiff].timeBonus,this.timeLeft+8);
           this.floatSkill('+8s',pos[0].c*CELL+CELL/2,(pos[0].r-1)*CELL)}
-        // time3: +3秒
         if(sk==='time3'){this.timeLeft=Math.min(TOTAL_TIME+DIFF_CFG[curDiff].timeBonus,this.timeLeft+3);
           this.floatSkill('+3s',pos[0].c*CELL+CELL/2,(pos[0].r-1)*CELL)}
-        // fever50: フィーバーゲージ+50
         if(sk==='fever50'){this.fever=Math.min(FEVER_MAX,this.fever+50)}
-        // fever25: フィーバーゲージ+25
         if(sk==='fever25'){this.fever=Math.min(FEVER_MAX,this.fever+25)}
+        if(sk==='feverAccel'){this.fever=Math.min(FEVER_MAX,this.fever+35)}
+        if(sk==='feverExt'){
+          if(this.feverOn){this.feverEnd+=2000;
+            this.floatSkill('+2s FEVER',pos[0].c*CELL+CELL/2,(pos[0].r-1)*CELL)}
+          else{this.fever=Math.min(FEVER_MAX,this.fever+15)}
+        }
       }
 
       await this.applyGrav();
@@ -875,11 +869,13 @@ const G={
   startFever(){
     this.feverOn=true;this.fever=FEVER_MAX;this.feverEnd=Date.now()+FEVER_DUR;
     this.bigText('FEVER!');
+    document.getElementById('app').classList.add('fever-bg');
     if(navigator.vibrate)navigator.vibrate([40,20,40,20,80]);
     this.feverIv=setInterval(()=>{
       if(this.paused)return;
       const rem=this.feverEnd-Date.now();
-      if(rem<=0){this.feverOn=false;this.fever=0;clearInterval(this.feverIv);this.updateUI()}
+      if(rem<=0){this.feverOn=false;this.fever=0;clearInterval(this.feverIv);
+        document.getElementById('app').classList.remove('fever-bg');this.updateUI()}
       else{this.fever=FEVER_MAX*(rem/FEVER_DUR);this.updateUI()}
     },80);
   },
@@ -892,7 +888,6 @@ const G={
   },
   resume(){
     if(!this.paused)return;
-    // Extend fever end by pause duration
     if(this.feverOn){const d=Date.now()-this.pauseTime;this.feverEnd+=d}
     this.paused=false;
     document.getElementById('pauseOv').classList.add('hidden');
@@ -902,12 +897,13 @@ const G={
     clearInterval(this.timerIv);clearInterval(this.gravIv);
     if(this.feverIv)clearInterval(this.feverIv);
     document.getElementById('pauseOv').classList.add('hidden');
+    document.getElementById('app').classList.remove('fever-bg');
     document.querySelectorAll('.flt,.bigtext,.combo-text').forEach(e=>e.remove());
     document.getElementById('ovStart').classList.remove('hidden');
   },
 
   // ============================================================
-  //  FX — White text, black stroke, big sizes
+  //  FX — White text, black stroke
   // ============================================================
   floatScore(pts,x,y){
     let sz;
@@ -967,10 +963,12 @@ const G={
     const rk=getRank(this.score);
     const re=document.getElementById('uiRank');
     re.textContent=rk.l;re.style.color=rk.c;re.className='rank-val'+(rk.r?' rainbow':'');
-    document.getElementById('uiMoves').textContent=this.moves;
     this.updateTimerUI();this.updateGravUI();
     document.getElementById('uiFever').textContent=
       this.feverOn?'FEVER! ×3':'';
+    const ff=document.getElementById('uiFeverFill');
+    ff.style.width=Math.max(0,Math.min(100,this.fever/FEVER_MAX*100))+'%';
+    ff.classList.toggle('full',this.fever>=FEVER_MAX);
   },
 };
 window.G=G;
