@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -NoProfile -Command \"[System.Reflection.Assembly]::LoadWithPartialName\\(''System.Drawing''\\) | Out-Null; $img = New-Object System.Drawing.Bitmap\\(''C:\\\\Users\\\\Catudon\\\\Documents\\\\GitHub\\\\UchuAddonWiki\\\\resource\\\\minigame\\\\hjk\\\\Hjks.png''\\); Write-Host $img.Width $img.Height; $img.Dispose\\(\\)\")",
+      "Bash(where:*)",
+      "Bash(echo:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nHjk Link ミニゲーム追加\n\nマッチ3スワップパズル（60秒タイムアタック）\n- 難易度選択（ひじき級/ゆりしぃ級/ラムネ級/マッキー級、7〜13種）\n- ひじきアイテム（タップで最多豆を全消去）\n- 時間経過で重力方向が自動変化（回転アニメーション付き）\n- フィーバー/チェイン/リンクボーナスシステム\n- ポーズ機能\n- 白文字＋黒縁取りの演出テキスト\n- Canvas描画、3Dブロック風ビジュアル\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}
