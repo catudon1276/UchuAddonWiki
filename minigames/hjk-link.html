@@ -379,7 +379,7 @@ function getRank(s){
   if(s<400000)return{l:'SSS+',c:'#ff44ff'};if(s<600000)return{l:'X',c:'#ff3333'};
   if(s<900000)return{l:'XX',c:'#ff0000'};
   if(s<1300000)return{l:'XXX',c:'#ff0000'};
-  return{l:'U',c:'#fff',r:1};
+  return{l:'U'+(Math.floor((s-1300000)/500000)+1),c:'#fff',r:1};
 }
 
 // Random piece (not item)

@@ -761,7 +761,7 @@ body { display: flex; align-items: center; justify-content: center; }
     if (s < 600000) return 'X';
     if (s < 850000) return 'XX';
     if (s < 1200000) return 'XXX';
-    return 'U';
+    return 'U' + (Math.floor((s - 1200000) / 500000) + 1);
   }
 
   /* ── Stats Update ── */
