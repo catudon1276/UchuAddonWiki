@@ -372,14 +372,14 @@ function drawCharTo(c,ci,x,y,w,h){
 
 // Rank
 function getRank(s){
-  if(s<800)return{l:'E',c:'#888'};if(s<2000)return{l:'D',c:'#aaa'};
-  if(s<4500)return{l:'C',c:'#88cc88'};if(s<9000)return{l:'B',c:'#44ccff'};
-  if(s<15000)return{l:'A',c:'#00eeff'};if(s<24000)return{l:'S',c:'#ffee00'};
-  if(s<36000)return{l:'SS',c:'#ffaa00'};if(s<52000)return{l:'SSS',c:'#ff66aa'};
-  if(s<72000)return{l:'SSS+',c:'#ff44ff'};if(s<95000)return{l:'X',c:'#ff3333'};
-  if(s<125000)return{l:'XX',c:'#ff0000'};if(s<160000)return{l:'XXX',c:'#ff0000'};
-  if(s<200000)return{l:'XXX+',c:'#ff0000'};if(s<260000)return{l:'U',c:'#fff',r:1};
-  return{l:'U'+Math.floor((s-260000)/80000+2),c:'#fff',r:1};
+  if(s<2000)return{l:'E',c:'#888'};if(s<5000)return{l:'D',c:'#aaa'};
+  if(s<12000)return{l:'C',c:'#88cc88'};if(s<25000)return{l:'B',c:'#44ccff'};
+  if(s<50000)return{l:'A',c:'#00eeff'};if(s<90000)return{l:'S',c:'#ffee00'};
+  if(s<150000)return{l:'SS',c:'#ffaa00'};if(s<250000)return{l:'SSS',c:'#ff66aa'};
+  if(s<400000)return{l:'SSS+',c:'#ff44ff'};if(s<600000)return{l:'X',c:'#ff3333'};
+  if(s<900000)return{l:'XX',c:'#ff0000'};
+  if(s<1300000)return{l:'XXX',c:'#ff0000'};
+  return{l:'U',c:'#fff',r:1};
 }
 
 // Random piece (not item)

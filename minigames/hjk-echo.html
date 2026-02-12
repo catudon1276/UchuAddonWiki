@@ -749,18 +749,19 @@ body { display: flex; align-items: center; justify-content: center; }
 
   /* ── Rank ── */
   function rankOf(s) {
-    if (s < 4000) return 'E';
-    if (s < 9000) return 'D';
-    if (s < 16000) return 'C';
-    if (s < 26000) return 'B';
-    if (s < 38000) return 'A';
-    if (s < 52000) return 'S';
-    if (s < 70000) return 'SS';
-    if (s < 90000) return 'SSS';
-    if (s < 120000) return 'SSS+';
-    if (s < 160000) return 'X';
-    if (s < 220000) return 'XX';
-    return 'XXX';
+    if (s < 3000) return 'E';
+    if (s < 8000) return 'D';
+    if (s < 18000) return 'C';
+    if (s < 35000) return 'B';
+    if (s < 65000) return 'A';
+    if (s < 110000) return 'S';
+    if (s < 180000) return 'SS';
+    if (s < 280000) return 'SSS';
+    if (s < 420000) return 'SSS+';
+    if (s < 600000) return 'X';
+    if (s < 850000) return 'XX';
+    if (s < 1200000) return 'XXX';
+    return 'U';
   }
 
   /* ── Stats Update ── */
