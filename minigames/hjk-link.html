@@ -377,9 +377,10 @@ function getRank(s){
   if(s<50000)return{l:'A',c:'#00eeff'};if(s<90000)return{l:'S',c:'#ffee00'};
   if(s<150000)return{l:'SS',c:'#ffaa00'};if(s<250000)return{l:'SSS',c:'#ff66aa'};
   if(s<400000)return{l:'SSS+',c:'#ff44ff'};if(s<600000)return{l:'X',c:'#ff3333'};
-  if(s<900000)return{l:'XX',c:'#ff0000'};
-  if(s<1300000)return{l:'XXX',c:'#ff0000'};
-  return{l:'U'+(Math.floor((s-1300000)/500000)+1),c:'#fff',r:1};
+  if(s<1500000)return{l:'XX',c:'#ff0000'};
+  if(s<2500000)return{l:'XXX',c:'#ff0000'};
+  if(s<5000000)return{l:'XXX+',c:'#ff0000'};
+  return{l:'U'+(Math.floor((s-5000000)/2000000)+1),c:'#fff',r:1};
 }
 
 // Random piece (not item)

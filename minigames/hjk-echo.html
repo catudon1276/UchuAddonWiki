@@ -759,9 +759,10 @@ body { display: flex; align-items: center; justify-content: center; }
     if (s < 280000) return 'SSS';
     if (s < 420000) return 'SSS+';
     if (s < 600000) return 'X';
-    if (s < 850000) return 'XX';
-    if (s < 1200000) return 'XXX';
-    return 'U' + (Math.floor((s - 1200000) / 500000) + 1);
+    if (s < 1400000) return 'XX';
+    if (s < 2300000) return 'XXX';
+    if (s < 4500000) return 'XXX+';
+    return 'U' + (Math.floor((s - 4500000) / 2000000) + 1);
   }
 
   /* ── Stats Update ── */
