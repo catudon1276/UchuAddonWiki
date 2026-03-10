@@ -21,9 +21,11 @@
             "sonar.json",
             "supervisor.json",
             "trigger.json",
+            "visor.json",
             "waraningyou.json"
         ],
         "impostor": [
+            "commander.json",
             "eclipse.json",
             "eraser.json",
             "harvester.json",
@@ -79,16 +81,6 @@
             "buzzer.json",
             "miracle.json",
             "mist.json"
-        ],
-        "complex": [
-            "nicehawk.json",
-            "evilhawk.json",
-            "nicedecorator.json",
-            "evildecorator.json",
-            "niceobserver.json",
-            "evilobserver.json",
-            "nicesummoner.json",
-            "evilsummoner.json"
         ],
         "perk": [
             "masterkey.json",
