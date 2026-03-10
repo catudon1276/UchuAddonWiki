@@ -1,0 +1,18 @@
+{
+    "id": "loversbreakerU",
+    "english_name": "LoversBreaker",
+    "name": "爆ぜ師",
+    "team": "第三陣営",
+    "color": "235, 0, 192",
+    "intro": "リア充は爆破せよ",
+    "description": "ラバーズを爆破する第三陣営です。",
+    "abilities_title": "固有能力 \"恋の断罪\"",
+    "abilities": [
+        {
+            "button": "ExplosionButton.png",
+            "name": "爆破",
+            "description": "ラバーズを爆破します。爆破エフェクトが発生し、自身にのみSEが再生されます。爆ぜ師はラバーズにアサインされません。"
+        }
+    ],
+    "from": "Original"
+}

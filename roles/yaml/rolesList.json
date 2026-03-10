@@ -1,0 +1,594 @@
+{
+  "crewmate": [
+    {
+      "file": "admiral",
+      "id": "admiralU",
+      "name": "アドミラル",
+      "english_name": "Admiral"
+    },
+    {
+      "file": "alchemist",
+      "id": "alchemistU",
+      "name": "アルケミスト",
+      "english_name": "Alchemist"
+    },
+    {
+      "file": "bakery",
+      "id": "bakeryU",
+      "name": "ベーカリー",
+      "english_name": "Bakery"
+    },
+    {
+      "file": "chicken",
+      "id": "chickenU",
+      "name": "チキン",
+      "english_name": "Chicken"
+    },
+    {
+      "file": "dj",
+      "id": "djU",
+      "name": "DJ",
+      "english_name": "DJ"
+    },
+    {
+      "file": "guardian",
+      "id": "guardianU",
+      "name": "ガーディアン",
+      "english_name": "Guardian"
+    },
+    {
+      "file": "inflict",
+      "id": "inflictU",
+      "name": "インフリクト",
+      "english_name": "Inflict"
+    },
+    {
+      "file": "lighter",
+      "id": "lighterU",
+      "name": "ライター",
+      "english_name": "Lighter"
+    },
+    {
+      "file": "monitor",
+      "id": "monitorU",
+      "name": "モニター",
+      "english_name": "Monitor"
+    },
+    {
+      "file": "niceSummoner",
+      "id": "SummonerU",
+      "name": "サモナー",
+      "english_name": "Summoner"
+    },
+    {
+      "file": "nicedecorator",
+      "id": "niceDecoratorU",
+      "name": "ナイスデコレーター",
+      "english_name": "Nice Decorator"
+    },
+    {
+      "file": "nicehawk",
+      "id": "niceHawkU",
+      "name": "ナイスホーク",
+      "english_name": "Nice Hawk"
+    },
+    {
+      "file": "niceobserver",
+      "id": "niceObserverU",
+      "name": "ナイスオブザーバー",
+      "english_name": "Nice Observer"
+    },
+    {
+      "file": "nimrod",
+      "id": "nimrodU",
+      "name": "ニムロッド",
+      "english_name": "Nimrod"
+    },
+    {
+      "file": "operator",
+      "id": "operatorU",
+      "name": "オペレーター",
+      "english_name": "Operator"
+    },
+    {
+      "file": "polaris",
+      "id": "polarisU",
+      "name": "ポラリス",
+      "english_name": "Polaris"
+    },
+    {
+      "file": "prosecutor",
+      "id": "prosecutorU",
+      "name": "プロセキューター",
+      "english_name": "Prosecutor"
+    },
+    {
+      "file": "shaman",
+      "id": "shamanU",
+      "name": "シャーマン",
+      "english_name": "Shaman"
+    },
+    {
+      "file": "slime",
+      "id": "slimeU",
+      "name": "スライム",
+      "english_name": "Slime"
+    },
+    {
+      "file": "sonar",
+      "id": "sonarU",
+      "name": "ソナー",
+      "english_name": "Sonar"
+    },
+    {
+      "file": "supervisor",
+      "id": "supervisor",
+      "name": "スーパーバイザー",
+      "english_name": "Supervisor"
+    },
+    {
+      "file": "trigger",
+      "id": "triggerU",
+      "name": "トリガー",
+      "english_name": "Trigger"
+    },
+    {
+      "file": "visor",
+      "id": "superVisorU",
+      "name": "バイザー",
+      "english_name": "Visor"
+    },
+    {
+      "file": "waraningyou",
+      "id": "waraningyouU",
+      "name": "わら人形",
+      "english_name": "Waraningyou"
+    }
+  ],
+  "impostor": [
+    {
+      "file": "commander",
+      "id": "commanderU",
+      "name": "コマンダー",
+      "english_name": "Commander"
+    },
+    {
+      "file": "eclipse",
+      "id": "eclipseU",
+      "name": "エクリプス",
+      "english_name": "Eclipse"
+    },
+    {
+      "file": "eraser",
+      "id": "EraserU",
+      "name": "イレイサー",
+      "english_name": "Eraser"
+    },
+    {
+      "file": "evildecorator",
+      "id": "evilDecoratorU",
+      "name": "イビルデコレーター",
+      "english_name": "Evil Decorator"
+    },
+    {
+      "file": "evilhawk",
+      "id": "evilHawkU",
+      "name": "イビルホーク",
+      "english_name": "Evil Hawk"
+    },
+    {
+      "file": "evilobserver",
+      "id": "evilObserverU",
+      "name": "イビルオブザーバー",
+      "english_name": "Evil Observer"
+    },
+    {
+      "file": "evilsummoner",
+      "id": "evilSummonerU",
+      "name": "イビルサモナー",
+      "english_name": "Evil Summoner"
+    },
+    {
+      "file": "harvester",
+      "id": "harvesterU",
+      "name": "ハーヴェスター",
+      "english_name": "Harvester"
+    },
+    {
+      "file": "kunoichi",
+      "id": "kunoichiU",
+      "name": "クノイチ",
+      "english_name": "Kunoichi"
+    },
+    {
+      "file": "magician",
+      "id": "magicianU",
+      "name": "マジシャン",
+      "english_name": "Magician"
+    },
+    {
+      "file": "nekokabocha",
+      "id": "nekokabochaU",
+      "name": "ネコカボチャ",
+      "english_name": "Nekokabocha"
+    },
+    {
+      "file": "proxy",
+      "id": "proxyU",
+      "name": "プロキシ",
+      "english_name": "Proxy"
+    },
+    {
+      "file": "rocket",
+      "id": "rocketU",
+      "name": "ロケット",
+      "english_name": "Rocket"
+    },
+    {
+      "file": "sentinel",
+      "id": "sentinelU",
+      "name": "センチネル",
+      "english_name": "Sentinel"
+    },
+    {
+      "file": "serialkiller",
+      "id": "SerialKillerU",
+      "name": "シリアルキラー",
+      "english_name": "Serial Killer"
+    },
+    {
+      "file": "spectrum",
+      "id": "spectrumU",
+      "name": "スペクトラム",
+      "english_name": "Spectrum"
+    },
+    {
+      "file": "voyager",
+      "id": "voyagerU",
+      "name": "ボイジャー",
+      "english_name": "Voyager"
+    },
+    {
+      "file": "warlock",
+      "id": "warlockU",
+      "name": "ウォーロック",
+      "english_name": "Warlock"
+    },
+    {
+      "file": "witch",
+      "id": "witchU",
+      "name": "ウィッチ",
+      "english_name": "Witch"
+    },
+    {
+      "file": "xinobi",
+      "id": "xinobiU",
+      "name": "シノビ",
+      "english_name": "Xinobi"
+    }
+  ],
+  "neutral": [
+    {
+      "file": "alice",
+      "id": "aliceU",
+      "name": "アリス",
+      "english_name": "Alice"
+    },
+    {
+      "file": "amnesia",
+      "id": "amnesiaU",
+      "name": "アムネシア",
+      "english_name": "Amnesia"
+    },
+    {
+      "file": "anchor",
+      "id": "anchorU",
+      "name": "アンカー",
+      "english_name": "Anchor"
+    },
+    {
+      "file": "epidemic",
+      "id": "epidemicU",
+      "name": "エピデミック",
+      "english_name": "Epidemic"
+    },
+    {
+      "file": "loversbreaker",
+      "id": "loversbreakerU",
+      "name": "爆ぜ師",
+      "english_name": "Lovers Breaker"
+    },
+    {
+      "file": "obolus",
+      "id": "obolusU",
+      "name": "オボルス",
+      "english_name": "Obolus"
+    },
+    {
+      "file": "seed",
+      "id": "seedU",
+      "name": "シード",
+      "english_name": "Seed"
+    },
+    {
+      "file": "tuna",
+      "id": "tunaU",
+      "name": "マグロ",
+      "english_name": "Tuna"
+    }
+  ],
+  "modifier": [
+    {
+      "file": "alert",
+      "id": "alertU",
+      "name": "アラート",
+      "english_name": "Alert"
+    },
+    {
+      "file": "autopsy",
+      "id": "autopsyU",
+      "name": "オートプシー",
+      "english_name": "Autopsy"
+    },
+    {
+      "file": "chickenmodifier",
+      "id": "chickenmodifier",
+      "name": "チキンモディファイア",
+      "english_name": "Chicken Modifier"
+    },
+    {
+      "file": "drunk",
+      "id": "drunkU",
+      "name": "ドランク",
+      "english_name": "Drunk"
+    },
+    {
+      "file": "epidemic",
+      "id": "epidemic",
+      "name": "伝染",
+      "english_name": "Epidemic"
+    },
+    {
+      "file": "express",
+      "id": "expressU",
+      "name": "エクスプレス",
+      "english_name": "Express"
+    },
+    {
+      "file": "guarding",
+      "id": "GuardingU",
+      "name": "ガーディング",
+      "english_name": "Guarding"
+    },
+    {
+      "file": "guts",
+      "id": "gutsU",
+      "name": "ガッツ",
+      "english_name": "Guts"
+    },
+    {
+      "file": "hex",
+      "id": "hexU",
+      "name": "ヘックス",
+      "english_name": "Hex"
+    },
+    {
+      "file": "highlow",
+      "id": "HighLowU",
+      "name": "ハイロー",
+      "english_name": "High Low"
+    },
+    {
+      "file": "hunch",
+      "id": "hunchU",
+      "name": "ハンチ",
+      "english_name": "Hunch"
+    },
+    {
+      "file": "invisible",
+      "id": "invisibleU",
+      "name": "インビジブル",
+      "english_name": "Invisible"
+    },
+    {
+      "file": "miasma",
+      "id": "miasmaU",
+      "name": "ミアズマ",
+      "english_name": "Miasma"
+    },
+    {
+      "file": "moon",
+      "id": "moonU",
+      "name": "ムーン",
+      "english_name": "Moon"
+    },
+    {
+      "file": "radar",
+      "id": "radarU",
+      "name": "レーダー",
+      "english_name": "Radar"
+    },
+    {
+      "file": "resonance",
+      "id": "resonanceU",
+      "name": "レゾナンス",
+      "english_name": "Resonance"
+    },
+    {
+      "file": "scale",
+      "id": "scaleU",
+      "name": "スケール",
+      "english_name": "Scale"
+    },
+    {
+      "file": "spectre.possession",
+      "id": "spectrepossession",
+      "name": "スペクトル・ポゼッション",
+      "english_name": "Spectre Possession"
+    },
+    {
+      "file": "spectrepossession",
+      "id": "spectrePossessionU",
+      "name": "狐憑き",
+      "english_name": "Spectre Possession"
+    },
+    {
+      "file": "star",
+      "id": "StarU",
+      "name": "スター",
+      "english_name": "Star"
+    },
+    {
+      "file": "static",
+      "id": "staticU",
+      "name": "スタティック",
+      "english_name": "Static"
+    },
+    {
+      "file": "timer",
+      "id": "timerU",
+      "name": "タイマー",
+      "english_name": "Timer"
+    },
+    {
+      "file": "tunamodi",
+      "id": "tunamodi",
+      "name": "マグロモディファイア",
+      "english_name": "Tuna Modifier"
+    },
+    {
+      "file": "watching",
+      "id": "watchingU",
+      "name": "ウォッチング",
+      "english_name": "Watching"
+    }
+  ],
+  "ghost": [
+    {
+      "file": "buzzer",
+      "id": "buzzerU",
+      "name": "ブザー",
+      "english_name": "Buzzer"
+    },
+    {
+      "file": "miracle",
+      "id": "miracleU",
+      "name": "ミラクル",
+      "english_name": "Miracle"
+    },
+    {
+      "file": "mist",
+      "id": "mistU",
+      "name": "ミスト",
+      "english_name": "Mist"
+    }
+  ],
+  "complex": [
+    {
+      "file": "evildecorator",
+      "id": "evilDecoratorU",
+      "name": "イビルデコレーター",
+      "english_name": "Evil Decorator"
+    },
+    {
+      "file": "evilhawk",
+      "id": "evilHawkU",
+      "name": "イビルホーク",
+      "english_name": "Evil Hawk"
+    },
+    {
+      "file": "evilobserver",
+      "id": "evilObserverU",
+      "name": "イビルオブザーバー",
+      "english_name": "Evil Observer"
+    },
+    {
+      "file": "evilsummoner",
+      "id": "evilSummonerU",
+      "name": "イビルサモナー",
+      "english_name": "Evil Summoner"
+    },
+    {
+      "file": "nicedecorator",
+      "id": "niceDecoratorU",
+      "name": "ナイスデコレーター",
+      "english_name": "Nice Decorator"
+    },
+    {
+      "file": "nicehawk",
+      "id": "niceHawkU",
+      "name": "ナイスホーク",
+      "english_name": "Nice Hawk"
+    },
+    {
+      "file": "niceobserver",
+      "id": "niceObserverU",
+      "name": "ナイスオブザーバー",
+      "english_name": "Nice Observer"
+    },
+    {
+      "file": "nicesummoner",
+      "id": "SummonerU",
+      "name": "サモナー",
+      "english_name": "Summoner"
+    }
+  ],
+  "perk": [
+    {
+      "file": "masterkey",
+      "id": "masterKeyU",
+      "name": "マスターキー",
+      "english_name": "Master Key"
+    },
+    {
+      "file": "repair",
+      "id": "repairU",
+      "name": "リペア",
+      "english_name": "Repair"
+    },
+    {
+      "file": "storagebox",
+      "id": "storageBoxU",
+      "name": "通行止め",
+      "english_name": "Storage Box"
+    }
+  ],
+  "secret": [
+    {
+      "file": "minigame1",
+      "id": "minigame1",
+      "name": "Super HJK Run",
+      "english_name": ""
+    },
+    {
+      "file": "minigame2",
+      "id": "minigame2",
+      "name": "ELECTRO RECOVERY",
+      "english_name": ""
+    },
+    {
+      "file": "minigame3",
+      "id": "minigame3",
+      "name": "Search H",
+      "english_name": ""
+    },
+    {
+      "file": "minigame4",
+      "id": "minigame4",
+      "name": "Hjk Link",
+      "english_name": ""
+    },
+    {
+      "file": "minigame5",
+      "id": "minigame5",
+      "name": "Hjk Echo",
+      "english_name": ""
+    },
+    {
+      "file": "minigameEx1",
+      "id": "minigameEx1",
+      "name": "ひじきサバイバー",
+      "english_name": ""
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+    "id": "bakeryU",
+    "english_name": "Bakery",
+    "name": "ベーカリー",
+    "team": "クルーメイト",
+    "color": "3, 252, 111",
+    "intro": "今日も平和を届ける",
+    "description": "毎ターンパンを焼くクルーメイトです。",
+    "abilities_title": "渡す",
+    "abilities": [
+        {
+            "button": "passBreadButton.png",
+            "name": "渡す",
+            "description": "近くのプレイヤーにパンを渡します。会議ごとに一定数渡すことができます。"
+        }
+    ],
+    "from": "Original"
+}

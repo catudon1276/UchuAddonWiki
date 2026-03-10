@@ -1,0 +1,10 @@
+{
+    "id": "scaleU",
+    "english_name": "Scale",
+    "name": "スケール",
+    "team": "モディファイア",
+    "color": "115, 107, 107",
+    "intro": "身体への異常現象",
+    "description": "体の大きさが変わります。",
+    "from": "Original"
+}

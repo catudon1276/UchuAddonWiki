@@ -1,0 +1,18 @@
+{
+    "id": "spectrumU",
+    "english_name": "Spectrum",
+    "name": "スペクトラム",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "違法改造",
+    "description": "一部のクルー能力を使うことが出来ます。",
+    "abilities_title": "クルー能力使用",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "クルー能力使用",
+            "description": "一部のクルー役職の能力を使えるインポスターです。"
+        }
+    ],
+    "from": "Original"
+}

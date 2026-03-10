@@ -1,0 +1,48 @@
+{
+    "id": "chickenU",
+    "english_name": "Chicken",
+    "name": "チキン",
+    "team": "クルーメイト",
+    "color": "255, 238, 0",
+    "intro": "あなたは臆病者",
+    "description": "とても臆病で貧弱なクルーメイトです。",
+    "abilities_title": "固有能力 \"貧弱\"",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "貧弱",
+            "description": "とても貧弱ですぐ死んでしまいますが、最後まで生存するとクルーメイトが乗っ取り勝利します。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "挟圧死",
+            "description": "ドアに指を挟み死んでしまいます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "転倒死",
+            "description": "ベントで足をつまづいて死んでしまいます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "転落死",
+            "description": "はしご・ジップラインから転落し死んでしまいます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "落下死",
+            "description": "昇降機から落下し死んでしまいます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "錯乱死",
+            "description": "停電が一定時間続くと、錯乱し死んでしまいます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "恐怖死",
+            "description": "投票を何票か入れられると、狙われると思い込み死んでしまいます。"
+        }
+    ],
+    "from": "Original"
+}

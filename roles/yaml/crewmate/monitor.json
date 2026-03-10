@@ -1,0 +1,23 @@
+{
+    "id": "monitorU",
+    "english_name": "Monitor",
+    "name": "モニター",
+    "team": "クルーメイト",
+    "color": "198, 17, 17",
+    "intro": "万象を瞰る電子妖精",
+    "description": "プロキシと連携するマッドメイトです。",
+    "abilities_title": "固有能力 \"CODE FAIRY\"",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "申請",
+            "description": "プロキシに役職チェンジをリクエストします。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "承認",
+            "description": "リクエストされたプロキシがこのボタンを押すと役職がチェンジされます。"
+        }
+    ],
+    "from": "Original"
+}

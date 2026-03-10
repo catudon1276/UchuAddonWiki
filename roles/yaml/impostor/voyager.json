@@ -1,0 +1,23 @@
+{
+    "id": "voyagerU",
+    "english_name": "Voyager",
+    "name": "ボイジャー",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "時の旅人",
+    "description": "次元を越えるインポスターです。",
+    "abilities_title": "固有能力 \"パラレルダイブ\"",
+    "abilities": [
+        {
+            "button": "DiveButton.png",
+            "name": "潜伏",
+            "description": "新たな次元へ移動します。潜伏中は他プレイヤーの見た目がシャッフルされ、透明化・速度上昇が付与されます。一定時間内に離脱しないと死亡します。"
+        },
+        {
+            "button": "AwayButton.png",
+            "name": "離脱",
+            "description": "次元から離脱します。"
+        }
+    ],
+    "from": "Original"
+}

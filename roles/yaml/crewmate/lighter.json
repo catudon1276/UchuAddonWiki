@@ -1,0 +1,18 @@
+{
+    "id": "lighterU",
+    "english_name": "Lighter",
+    "name": "ライター",
+    "team": "クルーメイト",
+    "color": "219, 203, 55",
+    "intro": "私を照らして",
+    "description": "ライトで視界を広げるクルーメイトです。",
+    "abilities_title": "ライト",
+    "abilities": [
+        {
+            "button": "LightButton.png",
+            "name": "ライト",
+            "description": "一定時間、自身の視野を広げます。停電中も視野を確保することができます。"
+        }
+    ],
+    "from": "The Other Roles"
+}

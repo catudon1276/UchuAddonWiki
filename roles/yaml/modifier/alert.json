@@ -1,0 +1,10 @@
+{
+    "id": "alertU",
+    "english_name": "Alert",
+    "name": "アラート",
+    "team": "モディファイア",
+    "color": "67, 232, 108",
+    "intro": "招集せよ",
+    "description": "ポータブルボタンを持つモディファイアです。",
+    "from": "Original"
+}

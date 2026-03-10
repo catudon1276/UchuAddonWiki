@@ -1,0 +1,10 @@
+{
+    "id": "resonanceU",
+    "english_name": "Resonance",
+    "name": "レゾナンス",
+    "team": "モディファイア",
+    "color": "0, 180, 220",
+    "intro": "虐殺コミュニケート",
+    "description": "味方のインポスターがキルした時フラッシュします。",
+    "from": "Original"
+}

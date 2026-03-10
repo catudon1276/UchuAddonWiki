@@ -1,0 +1,9 @@
+{
+    "id": "masterKeyU",
+    "english_name": "MasterKey",
+    "name": "マスターキー",
+    "team": "パーク",
+    "color": "255, 215, 0",
+    "description": "ドアを即座に開錠します。このパークにはクールダウンがあります。",
+    "from": "Original"
+}

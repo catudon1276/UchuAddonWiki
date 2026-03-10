@@ -1,0 +1,18 @@
+{
+    "id": "EraserU",
+    "english_name": "Eraser",
+    "name": "イレイサー",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "世界が私を忘れて",
+    "description": "プレイヤーの役職を削除するインポスターです。",
+    "abilities_title": "固有能力 \"役職消去プロトコル\"",
+    "abilities": [
+        {
+            "button": "EraseButton.png",
+            "name": "削除",
+            "description": "プレイヤーの役職を消去し、強制的にクルーメイトにします。変更は次の会議後に反映されます。クルーメイト陣営以外の役職を消去した場合、シードになります。"
+        }
+    ],
+    "from": "Original"
+}

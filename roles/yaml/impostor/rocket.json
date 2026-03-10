@@ -1,0 +1,23 @@
+{
+    "id": "rocketU",
+    "english_name": "Rocket",
+    "name": "ロケット",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "大気圏ツアー、ご案内",
+    "description": "プレイヤーをロケットと共に打ち上げるインポスターです。",
+    "abilities_title": "固有能力 \"ロケット発射！\"",
+    "abilities": [
+        {
+            "button": "HoldButton.png",
+            "name": "掴む",
+            "description": "プレイヤーを掴みます。二人目以降を掴む場合はクールタイムが変化します。"
+        },
+        {
+            "button": "LaunchButton.png",
+            "name": "発射",
+            "description": "プレイヤーを発射します。掴んでいるプレイヤーが複数人の場合は全員を発射します。死体が発生しませんが全員に大きな音が聞こえます。"
+        }
+    ],
+    "from": "Super New Roles"
+}

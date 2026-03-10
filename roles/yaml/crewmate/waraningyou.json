@@ -1,0 +1,18 @@
+{
+    "id": "waraningyouU",
+    "english_name": "Waraningyou",
+    "name": "わら人形",
+    "team": "クルーメイト",
+    "color": "163, 149, 112",
+    "intro": "人を呪わば穴二つ",
+    "description": "自身への投票を蓄積するクルーメイトです。",
+    "abilities_title": "呪う",
+    "abilities": [
+        {
+            "button": "CurseButton.png",
+            "name": "呪う",
+            "description": "自身への投票をチャージし、呪うボタンでチャージした票を使えます。自投票はチャージできません。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,0 +1,18 @@
+{
+    "id": "evilHawkU",
+    "english_name": "Evil Hawk",
+    "name": "イビルホーク",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "邪悪な俯瞰者",
+    "description": "視界を広げるインポスターです。",
+    "abilities_title": "ホークアイ",
+    "abilities": [
+        {
+            "button": "HawkButton.png",
+            "name": "ホークアイ",
+            "description": "一定時間、視野が大幅に広がり壁越しに見えます。ホークアイ中移動不可にすることも出来ます。"
+        }
+    ],
+    "from": "Super New Roles"
+}

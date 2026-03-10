@@ -1,0 +1,9 @@
+{
+    "id": "storageBoxU",
+    "english_name": "StorageBox",
+    "name": "通行止め",
+    "team": "パーク",
+    "color": "198, 17, 17",
+    "description": "一定時間、当たり判定のある箱を設置する。このパークにはクールダウンがあり一度のみ使用できる。",
+    "from": "Original"
+}

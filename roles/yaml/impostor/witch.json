@@ -1,0 +1,18 @@
+{
+    "id": "witchU",
+    "english_name": "Witch",
+    "name": "ウィッチ",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "死の詠唱者",
+    "description": "プレイヤーを呪うインポスターです。",
+    "abilities_title": "魔術",
+    "abilities": [
+        {
+            "button": "SpellButton.png",
+            "name": "魔術",
+            "description": "他プレイヤーに魔法をかけます。魔法がつけられたプレイヤーは、会議でウィッチを追放・推察しないと死亡してしまいます。"
+        }
+    ],
+    "from": "The Other Roles"
+}

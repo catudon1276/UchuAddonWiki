@@ -1,0 +1,18 @@
+{
+    "id": "guardianU",
+    "english_name": "Guardian",
+    "name": "ガーディアン",
+    "team": "クルーメイト",
+    "color": "222, 223, 255",
+    "intro": "神の加護",
+    "description": "キルバリアを展開するクルーメイトです。",
+    "abilities_title": "キルバリア",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "キルバリア",
+            "description": "タスクをこなし、キルを防ぐバリアを得ます。バリアはキルを一定回数防ぎます。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,0 +1,18 @@
+{
+    "id": "seedU",
+    "english_name": "Seed",
+    "name": "シード",
+    "team": "第三陣営",
+    "color": "106, 178, 189",
+    "intro": "涙の花",
+    "description": "共生相手と共に勝利する第三陣営です。",
+    "abilities_title": "共生",
+    "abilities": [
+        {
+            "button": "SeedButton.png",
+            "name": "共生",
+            "description": "共生を使った相手が勝利すると追加勝利します。勝利条件はなく、共生して自身が何者か思い出さないといけません。"
+        }
+    ],
+    "from": "Original"
+}

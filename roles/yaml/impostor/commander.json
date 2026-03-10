@@ -1,0 +1,10 @@
+{
+    "id": "commanderU",
+    "english_name": "Commander",
+    "name": "コマンダー",
+    "team": "インポスター",
+    "color": "240, 100, 100",
+    "intro": "指令官",
+    "description": "リーダーとしてインポスターを統率するインポスターです。",
+    "from": "Original"
+}

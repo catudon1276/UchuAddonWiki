@@ -1,0 +1,10 @@
+{
+    "id": "HighLowU",
+    "english_name": "HighLow",
+    "name": "ハイロー",
+    "team": "モディファイア",
+    "color": "194, 198, 110",
+    "intro": "会議は私の気まぐれで",
+    "description": "投票するときに運がいいと票数が増えます。運が悪いと減ります。",
+    "from": "Original"
+}

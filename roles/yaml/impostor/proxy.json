@@ -1,0 +1,18 @@
+{
+    "id": "proxyU",
+    "english_name": "Proxy",
+    "name": "プロキシ",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "境界を跨ぐ結節点",
+    "description": "モニターと連携するインポスターです。",
+    "abilities_title": "固有能力 \"巡れ、電脳連携\"",
+    "abilities": [
+        {
+            "button": "RequestButton.png",
+            "name": "申請",
+            "description": "モニターと役職をチェンジします。"
+        }
+    ],
+    "from": "Original"
+}

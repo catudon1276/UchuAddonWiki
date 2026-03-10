@@ -1,0 +1,23 @@
+{
+    "id": "alchemistU",
+    "english_name": "Alchemist",
+    "name": "アルケミスト",
+    "team": "クルーメイト",
+    "color": "42, 44, 80",
+    "intro": "死への調和",
+    "description": "死体を錬金し、錬金弾を作成するクルーメイトです。",
+    "abilities_title": "錬金",
+    "abilities": [
+        {
+            "button": "AlchemyButton.png",
+            "name": "錬金",
+            "description": "死体を錬金し、錬金弾を作成します。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "錬金弾",
+            "description": "会議中に錬金弾を使用して攻撃します。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,0 +1,19 @@
+{
+    "id": "niceDecoratorU",
+    "english_name": "Nice Decorator",
+    "name": "ナイスデコレーター",
+    "team": "クルーメイト",
+    "color": "253, 187, 22",
+    "intro": "彩りを宿す手",
+    "description": "他の人の役職を変えるクルーメイトです。",
+    "abilities_title": "固有能力 \"デコレーション\"",
+    "abilities": [
+        {
+            "button": "DecorationButtonNice.png",
+            "name": "装飾",
+            "description": "プレイヤーの役職をフィルターの中からランダムに変更することが出来ます。第三陣営やマッドメイトに対して使用すると使用回数を無駄にしてしまいます。"
+        }
+    ],
+    "tips": "フィルターを設定していないと役職を配ることができません。",
+    "from": "Original"
+}

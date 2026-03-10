@@ -1,0 +1,23 @@
+{
+    "id": "sonarU",
+    "english_name": "Sonar",
+    "name": "ソナー",
+    "team": "クルーメイト",
+    "color": "52, 115, 68",
+    "intro": "アンテナを設置せよ",
+    "description": "キルを検知するアンテナを設置します。",
+    "abilities_title": "固有能力 \"アンテナ\"",
+    "abilities": [
+        {
+            "button": "SonarPlaceButton.png",
+            "name": "設置",
+            "description": "アンテナを設置します。設置したアンテナは自分にしか見えません。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "アンテナ",
+            "description": "有効化しているアンテナです。周囲でキルが起こると全プレイヤーにノイズで通知します。一度キルを検知するとアンテナは壊れてしまいます。"
+        }
+    ],
+    "from": "Original"
+}

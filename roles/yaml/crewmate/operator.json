@@ -1,0 +1,18 @@
+{
+    "id": "operatorU",
+    "english_name": "Operator",
+    "name": "オペレーター",
+    "team": "クルーメイト",
+    "color": "107, 242, 154",
+    "intro": "緊急オペレーション",
+    "description": "会議時間を増やすクルーメイトです。",
+    "abilities_title": "オペレート",
+    "abilities": [
+        {
+            "button": "OperateButton.png",
+            "name": "オペレート",
+            "description": "会議時間増加の申請を出し、会議時間を増加させます。"
+        }
+    ],
+    "from": "Original"
+}

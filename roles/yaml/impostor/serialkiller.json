@@ -1,0 +1,18 @@
+{
+    "id": "SerialKillerU",
+    "english_name": "SerialKiller",
+    "name": "シリアルキラー",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "連続殺人鬼",
+    "description": "キルクールダウンが早い変わりに時間で自殺するインポスターです。",
+    "abilities_title": "シリアルキル",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "シリアルキル",
+            "description": "キルクールダウンが早い代わりに、一定時間キルをしないと自殺してしまいます。"
+        }
+    ],
+    "from": "The Other Roles"
+}

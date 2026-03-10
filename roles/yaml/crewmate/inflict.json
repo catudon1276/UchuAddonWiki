@@ -1,0 +1,23 @@
+{
+    "id": "inflictU",
+    "english_name": "Inflict",
+    "name": "インフリクト",
+    "team": "クルーメイト",
+    "color": "200, 255, 0",
+    "intro": "モデル・アサイン",
+    "description": "開発サポート専用のクルーメイトです。",
+    "abilities_title": "開発用能力",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "他者",
+            "description": "他のプレイヤーに能力を付与します。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "自身",
+            "description": "自身に能力を付与します。"
+        }
+    ],
+    "from": "Original"
+}

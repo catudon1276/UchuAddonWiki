@@ -1,0 +1,10 @@
+{
+    "id": "staticU",
+    "english_name": "Static",
+    "name": "スタティック",
+    "team": "モディファイア",
+    "color": "228, 255, 25",
+    "intro": "異常妨害電波",
+    "description": "アドミン・バイタルの情報が正しく表示されません。",
+    "from": "Original"
+}

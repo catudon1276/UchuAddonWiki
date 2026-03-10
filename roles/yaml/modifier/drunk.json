@@ -1,0 +1,10 @@
+{
+    "id": "drunkU",
+    "english_name": "Drunk",
+    "name": "ドランク",
+    "team": "モディファイア",
+    "color": "247, 195, 148",
+    "intro": "昨日は飲みすぎた...",
+    "description": "常に移動方向がおかしくなります。",
+    "from": "Original"
+}

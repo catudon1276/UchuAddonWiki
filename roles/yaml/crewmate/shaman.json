@@ -1,0 +1,23 @@
+{
+    "id": "shamanU",
+    "english_name": "Shaman",
+    "name": "シャーマン",
+    "team": "クルーメイト",
+    "color": "202, 80, 242",
+    "intro": "追憶憑依",
+    "description": "生存してる非クルーメイト数を調べることが出来ます。",
+    "abilities_title": "固有能力 \"英霊の記憶\"",
+    "abilities": [
+        {
+            "button": "NecromancyButton.png",
+            "name": "降霊術",
+            "description": "生存している非クルーメイト数を調べます。指定の部屋でしか使用できず、降霊中に動くと即座にキャンセルされます。結果は会議で届きます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "強化降霊術",
+            "description": "指定数のタスクを終えると、降霊術が強化されます。強化後はどの非クルーメイトが生存しているかまで分かります。"
+        }
+    ],
+    "from": "Original"
+}

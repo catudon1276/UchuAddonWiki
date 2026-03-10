@@ -1,0 +1,28 @@
+{
+    "id": "kunoichiU",
+    "english_name": "Kunoichi",
+    "name": "クノイチ",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "花は散り際こそ美しく",
+    "description": "クナイを投げてキルするインポスターです。",
+    "abilities_title": "固有能力 \"桜花潜影\"",
+    "abilities": [
+        {
+            "button": "KunaiButton.png",
+            "name": "装備",
+            "description": "クナイを装備/収納します。"
+        },
+        {
+            "button": "KunaiThrowButton.png",
+            "name": "クナイ",
+            "description": "装備したクナイを投げます。クナイがプレイヤーに一定回数ヒットすることでキルできます。"
+        },
+        {
+            "button": "KunoichiInvisibilyButton.png",
+            "name": "透明化",
+            "description": "一定時間止まることで透明化します。ボタンを押すか動くことで透明化が解除されます。"
+        }
+    ],
+    "from": "Original"
+}

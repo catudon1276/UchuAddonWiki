@@ -1,0 +1,10 @@
+{
+    "id": "chickenModifierU",
+    "english_name": "ChickenModifier",
+    "name": "チキン",
+    "team": "モディファイア",
+    "color": "255, 238, 0",
+    "intro": "あなたは臆病者",
+    "description": "とても臆病で貧弱なモディファイアです。",
+    "from": "Original"
+}

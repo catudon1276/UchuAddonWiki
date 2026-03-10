@@ -1,0 +1,23 @@
+{
+    "id": "slimeU",
+    "english_name": "Slime",
+    "name": "スライム",
+    "team": "クルーメイト",
+    "color": "36, 255, 12",
+    "intro": "変幻自在",
+    "description": "体を伸縮できるクルーメイトです。",
+    "abilities_title": "固有能力 \"変幻自在の流動\"",
+    "abilities": [
+        {
+            "button": "JumboButton.png",
+            "name": "巨大化",
+            "description": "身体が巨大化します。この時、同時に視界も広がります。"
+        },
+        {
+            "button": "MiniButton.png",
+            "name": "縮小",
+            "description": "身体が縮小します。この時、視界が狭まる代わりに移動速度が上昇します。"
+        }
+    ],
+    "from": "Original"
+}
