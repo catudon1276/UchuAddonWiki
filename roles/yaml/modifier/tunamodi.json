@@ -7,11 +7,11 @@
     "color": "171, 245, 255",
     "intro": "走れ！！",
     "description": "動き続けないと死んでしまいます。",
-    "abilities_title": "マグロ体質",
+    "abilities_title": "回遊",
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "マグロ体質",
+            "name": "回遊",
             "description": "動き続けないと死んでしまいます。"
         }
     ],

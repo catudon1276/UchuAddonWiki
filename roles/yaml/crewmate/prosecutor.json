@@ -7,7 +7,7 @@
     "color": "52, 119, 235",
     "intro": "地獄で会おうぜ",
     "description": "プレイヤーを強制追放します。",
-    "abilities_title": "プロセキュート",
+    "abilities_title": "有罪判決",
     "abilities": [
         {
             "button": "ProsecutorButton.png",

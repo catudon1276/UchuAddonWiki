@@ -7,7 +7,7 @@
     "color": "198, 17, 17",
     "intro": "邪悪な俯瞰者",
     "description": "視界を広げるインポスターです。",
-    "abilities_title": "ホークアイ",
+    "abilities_title": "千里眼",
     "abilities": [
         {
             "button": "HawkButton.png",

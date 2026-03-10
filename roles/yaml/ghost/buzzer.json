@@ -7,10 +7,10 @@
     "color": "198, 17, 17",
     "intro": "幽霊密告",
     "description": "生きているインポスターに通知を送ります。",
-    "abilities_title": "ブザー",
+    "abilities_title": "警戒サイレン",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "BuzzerImage.png",
             "name": "ブザー",
             "description": "インポスターのみに見える通知をその場に出します。"
         }

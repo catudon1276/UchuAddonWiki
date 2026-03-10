@@ -7,11 +7,11 @@
     "color": "135, 135, 135",
     "intro": "未練は黄泉へ還らず",
     "description": "死亡した時、キラーの視野を狭めます。",
-    "abilities_title": "死毒",
+    "abilities_title": "呪い",
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "死毒",
+            "name": "呪い",
             "description": "死亡した時、キラーの視野を狭めます。"
         }
     ],

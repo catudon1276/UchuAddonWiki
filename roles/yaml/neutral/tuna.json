@@ -7,10 +7,10 @@
   "color": "171, 245, 255",
   "intro": "走れ！！",
   "description": "常に動かないと死んでしまう第三陣営です。",
-  "abilities_title": "マグロゲージ",
+  "abilities_title": "回遊",
   "abilities": [
     {
-      "button": "NoImage.png",
+      "button": "TunaGaugeDocuments.png",
       "name": "マグロゲージ",
       "description": "近くに他のプレイヤーがいることでゲージが溜まります。ゲージをMAXにすると勝利します。自殺タイマーが0になると死亡するため、常に動き続ける必要があります。"
     }

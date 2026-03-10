@@ -7,7 +7,7 @@
     "color": "255, 255, 15",
     "intro": "不思議な国に囚われて",
     "description": "キルされると勝利する第三陣営です。",
-    "abilities_title": "キル & 予感",
+    "abilities_title": "チェシャの導き手",
     "abilities": [
         {
             "button": "KillButtonYellow.png",

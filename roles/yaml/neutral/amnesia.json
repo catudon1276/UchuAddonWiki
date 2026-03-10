@@ -7,11 +7,11 @@
     "color": "79, 110, 115",
     "intro": "記憶の抜け殻",
     "description": "通報した死体の役職に変化する第三陣営です。",
-    "abilities_title": "変化",
+    "abilities_title": "忘却",
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "変化",
+            "name": "忘却",
             "description": "通報した死体の役職に変化します。"
         }
     ],

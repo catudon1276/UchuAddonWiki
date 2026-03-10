@@ -4,13 +4,13 @@
     "english_name": "Miracle",
     "name": "ミラクル",
     "team": "ゴースト",
-    "color": "255, 255, 255",
+    "color": "243, 255, 163",
     "intro": "天文確率のキセキ",
     "description": "生きているプレイヤーと自身の役職を交換します。",
     "abilities_title": "ミラクルスワップ",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "MiracleButton.png",
             "name": "スワップ",
             "description": "対象のプレイヤーと、次の会議後役職を交換します。"
         }

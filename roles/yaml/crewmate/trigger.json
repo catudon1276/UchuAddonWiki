@@ -7,15 +7,15 @@
   "color": "227, 227, 227",
   "intro": "銀の銃弾",
   "description": "ベントを解析・移設することが出来ます。",
-  "abilities_title": "ベント操作",
+  "abilities_title": "メカニカル・グレース",
   "abilities": [
     {
-      "button": "NoImage.png",
+      "button": "TriggerAnalysisButton.png",
       "name": "解析",
       "description": "ベントを解析します。解析したベントを誰かが使うと会議で報告を受け取ります。"
     },
     {
-      "button": "NoImage.png",
+      "button": "TriggerDragButton.png",
       "name": "移設",
       "description": "ベントを掴み、移設します。"
     }

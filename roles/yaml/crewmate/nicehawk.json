@@ -7,7 +7,7 @@
     "color": "255, 255, 112",
     "intro": "正義の俯瞰者",
     "description": "視界を広げるクルーメイトです。",
-    "abilities_title": "ホークアイ",
+    "abilities_title": "千里眼",
     "abilities": [
         {
             "button": "HawkButtonNice.png",

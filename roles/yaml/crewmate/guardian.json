@@ -10,7 +10,7 @@
     "abilities_title": "バリア",
     "abilities": [
         {
-            "button": "WitchSpellButton.png",
+            "button": "NoImage.png",
             "name": "バリア展開",
             "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
         }

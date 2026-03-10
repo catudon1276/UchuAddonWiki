@@ -10,12 +10,12 @@
   "abilities_title": "電脳連携",
   "abilities": [
     {
-      "button": "NoImage.png",
+      "button": "ProxyButton.png",
       "name": "申請",
       "description": "プロキシに役職チェンジをリクエストします。"
     },
     {
-      "button": "NoImage.png",
+      "button": "ProxyRequestButton.png",
       "name": "承認",
       "description": "リクエストされたプロキシがこのボタンを押すと役職がチェンジされます。"
     }

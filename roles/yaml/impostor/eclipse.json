@@ -7,7 +7,7 @@
     "color": "198, 17, 17",
     "intro": "災いが降り注ぐ",
     "description": "隕石を召喚するインポスターです。",
-    "abilities_title": "メテオ",
+    "abilities_title": "宇宙からの厄災",
     "abilities": [
         {
             "button": "MeteorMark.png",

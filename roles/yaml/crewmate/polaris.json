@@ -7,7 +7,7 @@
     "color": "130, 178, 255",
     "intro": "蒼天の導星",
     "description": "キルと幻視を使えるクルーメイトです。",
-    "abilities_title": "キル & 幻視",
+    "abilities_title": "導きの青い星",
     "abilities": [
         {
             "button": "KillButtonCyan.png",

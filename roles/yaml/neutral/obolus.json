@@ -7,7 +7,7 @@
     "color": "189, 135, 26",
     "intro": "最後の一撃",
     "description": "インポスターをキルすると勝利します。ただし、キルは1ターンに1度しか行えません。",
-    "abilities_title": "キル",
+    "abilities_title": "暗殺",
     "abilities": [
         {
             "button": "KillButtonOrange.png",

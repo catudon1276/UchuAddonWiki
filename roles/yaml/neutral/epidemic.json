@@ -10,12 +10,12 @@
   "abilities_title": "感染",
   "abilities": [
     {
-      "button": "NoImage.png",
+      "button": "EpidemicInfectButton.png",
       "name": "感染",
       "description": "プレイヤーを感染させます。"
     },
     {
-      "button": "NoImage.png",
+      "button": "EpidemicBreakButton.png",
       "name": "破壊",
       "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
     },

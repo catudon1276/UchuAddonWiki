@@ -7,7 +7,7 @@
     "color": "198, 17, 17",
     "intro": "時の旅人",
     "description": "次元を越えるインポスターです。",
-    "abilities_title": "次元潜伏",
+    "abilities_title": "パラレルダイブ",
     "abilities": [
         {
             "button": "PDiveButton.png",

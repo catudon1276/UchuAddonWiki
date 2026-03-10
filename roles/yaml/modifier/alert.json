@@ -10,7 +10,7 @@
     "abilities_title": "ポータブルボタン",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "EmergencyButton.png",
             "name": "ポータブルボタン",
             "description": "会議ボタンをどこでも使用できます。"
         }

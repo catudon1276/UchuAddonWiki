@@ -7,11 +7,11 @@
   "color": "198, 17, 17",
   "intro": "アンチデバイス",
   "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。",
-  "abilities_title": "センチネル監視",
+  "abilities_title": "デバイス監視",
   "abilities": [
     {
       "button": "NoImage.png",
-      "name": "センチネル監視",
+      "name": "デバイス監視",
       "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。"
     },
     {

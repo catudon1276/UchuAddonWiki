@@ -7,11 +7,11 @@
     "color": "115, 107, 107",
     "intro": "身体への異常現象",
     "description": "体の大きさが変わります。",
-    "abilities_title": "サイズ変化",
+    "abilities_title": "異常現象",
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "サイズ変化",
+            "name": "異常現象",
             "description": "体の大きさが変わります。"
         }
     ],

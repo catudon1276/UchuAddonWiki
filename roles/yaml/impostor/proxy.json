@@ -10,7 +10,7 @@
   "abilities_title": "巡れ、電脳連携",
   "abilities": [
     {
-      "button": "NoImage.png",
+      "button": "ProxyButton.png",
       "name": "申請",
       "description": "モニターと役職をチェンジします。"
     }

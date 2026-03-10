@@ -7,7 +7,7 @@
     "color": "202, 80, 242",
     "intro": "追憶憑依",
     "description": "生存してる非クルーメイト数を調べることが出来ます。",
-    "abilities_title": "降霊術",
+    "abilities_title": "英霊の記憶",
     "abilities": [
         {
             "button": "ShamanNecromancyButton.png",
