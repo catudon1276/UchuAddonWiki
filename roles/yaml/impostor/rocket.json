@@ -1,5 +1,5 @@
 {
-    "id": "rocketU",
+    "id": "rocket",
     "english_name": "Rocket",
     "name": "ロケット",
     "team": "インポスター",
@@ -19,5 +19,5 @@
             "description": "プレイヤーを発射します。掴んでいるプレイヤーが複数人の場合は全員を発射します。死体が発生しませんが全員に大きな音が聞こえます。"
         }
     ],
-    "from": "Super New Roles"
+    "from": "SNR"
 }

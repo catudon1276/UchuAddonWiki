@@ -1,8 +1,8 @@
 {
-    "id": "epidemicU",
+    "id": "epidemic",
     "english_name": "Epidemic",
     "name": "エピデミック",
-    "team": "第三陣営",
+    "team": "ニュートラル",
     "color": "68, 255, 0",
     "intro": "悪意は伝染する",
     "description": "未知のウイルスを感染させる第三陣営です。",

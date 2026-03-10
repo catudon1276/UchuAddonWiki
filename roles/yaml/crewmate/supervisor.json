@@ -1,5 +1,5 @@
 {
-    "id": "superVisorU",
+    "id": "superVisor",
     "english_name": "Supervisor",
     "name": "バイザー",
     "team": "クルーメイト",
@@ -14,5 +14,5 @@
             "description": "どこからでもアドミンを見ることが出来ます。タスクをこなすことでチャージを増やせます。"
         }
     ],
-    "from": "Original"
+    "from": "ExR"
 }

@@ -1,8 +1,8 @@
 {
-    "id": "loversbreakerU",
+    "id": "loversbreaker",
     "english_name": "LoversBreaker",
     "name": "爆ぜ師",
-    "team": "第三陣営",
+    "team": "ニュートラル",
     "color": "235, 0, 192",
     "intro": "リア充は爆破せよ",
     "description": "ラバーズを爆破する第三陣営です。",
@@ -14,5 +14,5 @@
             "description": "ラバーズを爆破します。爆破エフェクトが発生し、自身にのみSEが再生されます。爆ぜ師はラバーズにアサインされません。"
         }
     ],
-    "from": "Original"
+    "from": "SNR"
 }

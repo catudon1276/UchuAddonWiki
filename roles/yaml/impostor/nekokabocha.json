@@ -1,5 +1,5 @@
 {
-    "id": "nekokabochaU",
+    "id": "nekokabocha",
     "english_name": "Nekokabocha",
     "name": "ネコカボチャ",
     "team": "インポスター",
@@ -14,5 +14,5 @@
             "description": "死亡時や追放時にプレイヤーを道連れにします。追放の巻き込みによってインポスターが道連れにされることはありません。"
         }
     ],
-    "from": "Original"
+    "from": "TOR"
 }

@@ -1,5 +1,5 @@
 {
-    "id": "prosecutorU",
+    "id": "prosecutor",
     "english_name": "Prosecutor",
     "name": "プロセキューター",
     "team": "クルーメイト",
@@ -14,5 +14,5 @@
             "description": "使用後、投票したプレイヤーを強制追放します。"
         }
     ],
-    "from": "Original"
+    "from": "TOU"
 }

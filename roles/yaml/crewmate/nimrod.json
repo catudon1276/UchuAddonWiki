@@ -1,5 +1,5 @@
 {
-    "id": "nimrodU",
+    "id": "nimrod",
     "english_name": "Nimrod",
     "name": "ニムロッド",
     "team": "クルーメイト",
@@ -14,5 +14,5 @@
             "description": "会議中に指定したプレイヤーを道連れ追放することが出来ます。能力を使用しても追放されなかった場合、使用回数が減少します。"
         }
     ],
-    "from": "Original"
+    "from": "TOHY"
 }

@@ -1,5 +1,5 @@
 {
-    "id": "SerialKillerU",
+    "id": "SerialKiller",
     "english_name": "SerialKiller",
     "name": "シリアルキラー",
     "team": "インポスター",
@@ -14,5 +14,5 @@
             "description": "キルクールダウンが早い代わりに、一定時間キルをしないと自殺してしまいます。"
         }
     ],
-    "from": "The Other Roles"
+    "from": "TOR"
 }

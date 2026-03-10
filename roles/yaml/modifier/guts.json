@@ -1,10 +1,10 @@
 {
-    "id": "gutsU",
+    "id": "guts",
     "english_name": "Guts",
     "name": "ガッツ",
     "team": "モディファイア",
     "color": "255, 165, 0",
     "intro": "不落の残火",
     "description": "一度のみ吊られても復活します。",
-    "from": "Original"
+    "from": "TOHY"
 }

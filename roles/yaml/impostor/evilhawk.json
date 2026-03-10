@@ -1,4 +1,4 @@
-{
+﻿{
     "id": "evilHawk",
     "english_name": "Evil Hawk",
     "name": "イビルホーク",
@@ -14,5 +14,5 @@
             "description": "一定時間、視野が大幅に広がり壁越しに見えます。ホークアイ中移動不可にすることも出来ます。"
         }
     ],
-    "from": "Super New Roles"
+    "from": "SNR"
 }

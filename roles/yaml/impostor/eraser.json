@@ -1,5 +1,5 @@
 {
-    "id": "EraserU",
+    "id": "Eraser",
     "english_name": "Eraser",
     "name": "イレイサー",
     "team": "インポスター",
@@ -14,5 +14,5 @@
             "description": "プレイヤーの役職を消去し、強制的にクルーメイトにします。変更は次の会議後に反映されます。クルーメイト陣営以外の役職を消去した場合、シードになります。"
         }
     ],
-    "from": "Original"
+    "from": "TOR"
 }

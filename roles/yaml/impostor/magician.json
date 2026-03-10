@@ -1,5 +1,5 @@
 {
-    "id": "magicianU",
+    "id": "magician",
     "english_name": "Magician",
     "name": "マジシャン",
     "team": "インポスター",
@@ -14,5 +14,5 @@
             "description": "プレイヤーの位置をシャッフルします。"
         }
     ],
-    "from": "Original"
+    "from": "ExR"
 }

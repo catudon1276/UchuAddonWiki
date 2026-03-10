@@ -1,5 +1,5 @@
 {
-    "id": "lighterU",
+    "id": "lighter",
     "english_name": "Lighter",
     "name": "ライター",
     "team": "クルーメイト",
@@ -14,5 +14,5 @@
             "description": "一定時間、自身の視野を広げます。停電中も視野を確保することができます。"
         }
     ],
-    "from": "The Other Roles"
+    "from": "TOR"
 }

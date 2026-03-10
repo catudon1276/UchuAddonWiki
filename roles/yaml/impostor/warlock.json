@@ -1,5 +1,5 @@
 {
-    "id": "warlockU",
+    "id": "warlock",
     "english_name": "Warlock",
     "name": "ウォーロック",
     "team": "インポスター",
@@ -19,5 +19,5 @@
             "description": "呪ったプレイヤーの近くに別のプレイヤーがいると有効化されます。使用することで呪ったプレイヤーに近くのプレイヤーのキルを強制させます。"
         }
     ],
-    "from": "The Other Roles"
+    "from": "TOR"
 }

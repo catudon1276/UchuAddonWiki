@@ -1,8 +1,8 @@
 {
-    "id": "obolusU",
+    "id": "obolus",
     "english_name": "Obolus",
     "name": "オボルス",
-    "team": "第三陣営",
+    "team": "ニュートラル",
     "color": "189, 135, 26",
     "intro": "最後の一撃",
     "description": "インポスターをキルすると勝利します。ただし、キルは1ターンに1度しか行えません。",

@@ -1,8 +1,8 @@
 {
-    "id": "aliceU",
+    "id": "alice",
     "english_name": "Alice",
     "name": "アリス",
-    "team": "第三陣営",
+    "team": "ニュートラル",
     "color": "255, 255, 15",
     "intro": "不思議な国に囚われて",
     "description": "キルされると勝利する第三陣営です。",
@@ -19,5 +19,5 @@
             "description": "プレイヤーをキルします。勝利には一定回数のキルが必要です。"
         }
     ],
-    "from": "Original"
+    "from": "ExR"
 }

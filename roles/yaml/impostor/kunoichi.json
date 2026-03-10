@@ -1,5 +1,5 @@
 {
-    "id": "kunoichiU",
+    "id": "kunoichi",
     "english_name": "Kunoichi",
     "name": "クノイチ",
     "team": "インポスター",
@@ -24,5 +24,5 @@
             "description": "一定時間止まることで透明化します。ボタンを押すか動くことで透明化が解除されます。"
         }
     ],
-    "from": "Original"
+    "from": "SNR"
 }

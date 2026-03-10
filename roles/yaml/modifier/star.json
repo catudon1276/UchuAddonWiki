@@ -1,10 +1,10 @@
 {
-    "id": "StarU",
+    "id": "Star",
     "english_name": "Star",
     "name": "スター",
     "team": "モディファイア",
     "color": "255, 255, 50",
     "intro": "希望の一等星",
     "description": "輝き続けます。",
-    "from": "Original"
+    "from": "SNR"
 }

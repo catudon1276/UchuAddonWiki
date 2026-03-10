@@ -1,10 +1,10 @@
 {
-    "id": "GuardingU",
+    "id": "Guarding",
     "english_name": "Guarding",
     "name": "ガーディング",
     "team": "モディファイア",
     "color": "222, 223, 255",
     "intro": "神の加護",
     "description": "1度だけキルを防ぎます。",
-    "from": "Original"
+    "from": "TOHY"
 }

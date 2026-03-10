@@ -1,8 +1,8 @@
 {
-    "id": "anchorU",
+    "id": "anchor",
     "english_name": "Anchor",
     "name": "アンカー",
-    "team": "第三陣営",
+    "team": "ニュートラル",
     "color": "8, 0, 237",
     "intro": "深淵を繋ぎ止めろ",
     "description": "一定回数アンカーを設置する第三陣営です。",

@@ -1,5 +1,5 @@
 {
-    "id": "shamanU",
+    "id": "shaman",
     "english_name": "Shaman",
     "name": "シャーマン",
     "team": "クルーメイト",
@@ -19,5 +19,5 @@
             "description": "指定数のタスクを終えると、降霊術が強化されます。強化後はどの非クルーメイトが生存しているかまで分かります。"
         }
     ],
-    "from": "Original"
+    "from": "ExR"
 }
