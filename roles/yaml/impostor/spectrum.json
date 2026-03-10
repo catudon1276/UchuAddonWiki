@@ -6,12 +6,12 @@
     "color": "198, 17, 17",
     "intro": "違法改造",
     "description": "一部のクルー能力を使うことが出来ます。",
-    "abilities_title": "クルー能力使用",
+    "abilities_title": "クルー能力コピー",
     "abilities": [
         {
             "button": "NoImage.png",
             "name": "クルー能力使用",
-            "description": "一部のクルー役職の能力を使えるインポスターです。"
+            "description": "一部のクルー役職の能力を使えます。"
         }
     ],
     "from": "Original"

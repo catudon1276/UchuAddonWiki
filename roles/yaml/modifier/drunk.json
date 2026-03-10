@@ -6,5 +6,13 @@
     "color": "247, 195, 148",
     "intro": "昨日は飲みすぎた...",
     "description": "常に移動方向がおかしくなります。",
+    "abilities_title": "泥酔",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "泥酔",
+            "description": "常に移動方向がおかしくなります。"
+        }
+    ],
     "from": "Original"
 }

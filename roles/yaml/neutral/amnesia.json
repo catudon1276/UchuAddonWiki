@@ -6,12 +6,12 @@
     "color": "79, 110, 115",
     "intro": "記憶の抜け殻",
     "description": "通報した死体の役職に変化する第三陣営です。",
-    "abilities_title": "役職変化",
+    "abilities_title": "変化",
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "役職変化",
-            "description": "死体を通報することでその死体の役職になります。勝利条件はなく、通報して自身が何者か思い出さないといけません。"
+            "name": "変化",
+            "description": "通報した死体の役職に変化します。"
         }
     ],
     "from": "SNR"

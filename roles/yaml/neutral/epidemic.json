@@ -1,28 +1,28 @@
 {
-    "id": "epidemic",
-    "english_name": "Epidemic",
-    "name": "エピデミック",
-    "team": "ニュートラル",
-    "color": "68, 255, 0",
-    "intro": "悪意は伝染する",
-    "description": "未知のウイルスを感染させる第三陣営です。",
-    "abilities_title": "固有能力 \"見えない恐怖\"",
-    "abilities": [
-        {
-            "button": "InfectionButton.png",
-            "name": "感染",
-            "description": "プレイヤーを感染させます。生存者全員にウイルスを感染させれば勝利します。"
-        },
-        {
-            "button": "BreakButton.png",
-            "name": "破壊",
-            "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
-        },
-        {
-            "button": "NoImage.png",
-            "name": "除染箱",
-            "description": "除染箱を使用すると使用したプレイヤーの感染率が減少します。感染率が100%の場合は減少しません。"
-        }
-    ],
-    "from": "Original"
+  "id": "epidemic",
+  "english_name": "Epidemic",
+  "name": "エピデミック",
+  "team": "ニュートラル",
+  "color": "68, 255, 0",
+  "intro": "悪意は伝染する",
+  "description": "未知のウイルスを感染させる第三陣営です。",
+  "abilities_title": "感染",
+  "abilities": [
+    {
+      "button": "NoImage.png",
+      "name": "感染",
+      "description": "プレイヤーを感染させます。"
+    },
+    {
+      "button": "NoImage.png",
+      "name": "破壊",
+      "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
+    },
+    {
+      "button": "NoImage.png",
+      "name": "除染箱",
+      "description": "除染箱を使用すると使用したプレイヤーの感染率が減少します。"
+    }
+  ],
+  "from": "Original"
 }

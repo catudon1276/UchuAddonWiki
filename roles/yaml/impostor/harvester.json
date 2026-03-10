@@ -9,7 +9,7 @@
     "abilities_title": "回収",
     "abilities": [
         {
-            "button": "HarvestButton.png",
+            "button": "NoImage.png",
             "name": "回収",
             "description": "会議中に死者の役職を調べることが出来ます。"
         }

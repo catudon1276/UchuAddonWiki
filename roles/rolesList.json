@@ -90,7 +90,10 @@
             "miracle.json",
             "mist.json"
         ],
-        "perk": [],
+        "perk": [
+            "repair.json",
+            "storagebox.json"
+        ],
         "secret": [
             "minigame1.json",
             "minigame2.json",

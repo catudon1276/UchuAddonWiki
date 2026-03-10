@@ -6,15 +6,15 @@
     "color": "198, 17, 17",
     "intro": "時の旅人",
     "description": "次元を越えるインポスターです。",
-    "abilities_title": "固有能力 \"パラレルダイブ\"",
+    "abilities_title": "次元潜伏",
     "abilities": [
         {
-            "button": "DiveButton.png",
+            "button": "PDiveButton.png",
             "name": "潜伏",
-            "description": "新たな次元へ移動します。潜伏中は他プレイヤーの見た目がシャッフルされ、透明化・速度上昇が付与されます。一定時間内に離脱しないと死亡します。"
+            "description": "新たな次元へ移動します。潜伏中は他プレイヤーの見た目がシャッフルされ、透明化・速度上昇が付与されます。"
         },
         {
-            "button": "AwayButton.png",
+            "button": "PAwayButton.png",
             "name": "離脱",
             "description": "次元から離脱します。"
         }

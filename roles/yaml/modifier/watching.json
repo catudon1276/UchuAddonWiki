@@ -6,5 +6,13 @@
     "color": "87, 38, 166",
     "intro": "見届けようじゃないか",
     "description": "匿名投票の影響を受けません。",
+    "abilities_title": "洞察",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "洞察",
+            "description": "匿名投票の影響を受けません。"
+        }
+    ],
     "from": "Original"
 }

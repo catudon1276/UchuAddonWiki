@@ -6,12 +6,12 @@
     "color": "163, 149, 112",
     "intro": "人を呪わば穴二つ",
     "description": "自身への投票を蓄積するクルーメイトです。",
-    "abilities_title": "呪う",
+    "abilities_title": "呪い",
     "abilities": [
         {
             "button": "CurseButton.png",
             "name": "呪う",
-            "description": "自身への投票をチャージし、呪うボタンでチャージした票を使えます。自投票はチャージできません。"
+            "description": "蓄積した投票数を使い、次の会議で特定の行動を行います。"
         }
     ],
     "from": "Original"

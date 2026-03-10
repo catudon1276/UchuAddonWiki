@@ -6,5 +6,13 @@
     "color": "29, 48, 145",
     "intro": "船の管理人",
     "description": "ポータブルアドミンを持つモディファイアです。",
+    "abilities_title": "ポータブルアドミン",
+    "abilities": [
+        {
+            "button": "VisorAdminButton .png",
+            "name": "アドミン",
+            "description": "どこからでもアドミンを確認できるモディファイアです。"
+        }
+    ],
     "from": "ExR"
 }

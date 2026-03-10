@@ -1,12 +1,12 @@
-﻿{
-    "id": "niceDecorator",
+{
+    "id": "Decorator",
     "english_name": "Nice Decorator",
     "name": "ナイスデコレーター",
     "team": "クルーメイト",
     "color": "253, 187, 22",
     "intro": "彩りを宿す手",
     "description": "他の人の役職を変えるクルーメイトです。",
-    "abilities_title": "固有能力 \"デコレーション\"",
+    "abilities_title": "デコレーション",
     "abilities": [
         {
             "button": "DecorationButtonNice.png",

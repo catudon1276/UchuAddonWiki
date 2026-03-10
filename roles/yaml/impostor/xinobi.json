@@ -6,15 +6,15 @@
     "color": "198, 17, 17",
     "intro": "刃の心を宿れ",
     "description": "オブジェクトに変化するインポスターです。",
-    "abilities_title": "固有能力 \"静寂の変化術\"",
+    "abilities_title": "忍術",
     "abilities": [
         {
-            "button": "PossessButton.png",
+            "button": "XinobiButton.png",
             "name": "変化",
             "description": "対象のオブジェクトに変化します。"
         },
         {
-            "button": "VentButton.png",
+            "button": "XinobiVentButton.png",
             "name": "ベン遁",
             "description": "一番近くのベントに遠隔で入ります。全てのベントが接続されています。"
         }

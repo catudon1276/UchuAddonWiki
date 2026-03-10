@@ -11,7 +11,7 @@
         {
             "button": "SeedButton.png",
             "name": "共生",
-            "description": "共生を使った相手が勝利すると追加勝利します。勝利条件はなく、共生して自身が何者か思い出さないといけません。"
+            "description": "対象と共生します。共生相手と共に勝利することが出来ます。"
         }
     ],
     "from": "Original"

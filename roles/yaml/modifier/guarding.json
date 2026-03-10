@@ -1,10 +1,18 @@
 {
-    "id": "Guarding",
+    "id": "guardian",
     "english_name": "Guarding",
     "name": "ガーディング",
     "team": "モディファイア",
     "color": "222, 223, 255",
     "intro": "神の加護",
     "description": "1度だけキルを防ぎます。",
+    "abilities_title": "バリア",
+    "abilities": [
+        {
+            "button": "WitchSpellButton.png",
+            "name": "バリア展開",
+            "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
+        }
+    ],
     "from": "TOHY"
 }

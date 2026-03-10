@@ -6,5 +6,13 @@
     "color": "228, 255, 25",
     "intro": "異常妨害電波",
     "description": "アドミン・バイタルの情報が正しく表示されません。",
+    "abilities_title": "妨害電波",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "妨害電波",
+            "description": "アドミン・バイタルの情報が正しく表示されません。"
+        }
+    ],
     "from": "Original"
 }

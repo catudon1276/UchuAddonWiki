@@ -6,5 +6,13 @@
     "color": "3, 252, 194",
     "intro": "正確な記録屋",
     "description": "ターンの経過時間を記録します。",
+    "abilities_title": "記録",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "記録",
+            "description": "ターンの経過時間を記録します。"
+        }
+    ],
     "from": "Original"
 }

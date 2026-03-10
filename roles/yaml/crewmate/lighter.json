@@ -11,7 +11,7 @@
         {
             "button": "LightButton.png",
             "name": "ライト",
-            "description": "一定時間、自身の視野を広げます。停電中も視野を確保することができます。"
+            "description": "一定時間、視野を大幅に広げます。"
         }
     ],
     "from": "TOR"

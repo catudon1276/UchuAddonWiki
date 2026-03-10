@@ -9,9 +9,9 @@
     "abilities_title": "キル",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "KillButtonOrange.png",
             "name": "キル",
-            "description": "インポスターをキルすると勝利します。キルは1ターンに1度しか行うことが出来ません。"
+            "description": "インポスターをキルします。キルは1ターンに1度しか行えません。"
         }
     ],
     "from": "Original"

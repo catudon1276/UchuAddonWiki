@@ -3,8 +3,21 @@
     "english_name": "Eclipse",
     "name": "エクリプス",
     "team": "インポスター",
-    "color": "50, 50, 100",
+    "color": "198, 17, 17",
     "intro": "災いが降り注ぐ",
     "description": "隕石を召喚するインポスターです。",
+    "abilities_title": "メテオ",
+    "abilities": [
+        {
+            "button": "MeteorMark.png",
+            "name": "マーク",
+            "description": "隕石の着弾地点をマークをします。"
+        },
+        {
+            "button": "MeteorButton.png",
+            "name": "メテオ",
+            "description": "マークをした場所に、隕石を降らせます。マーク地点がないと使用できません。"
+        }
+    ],
     "from": "Original"
 }

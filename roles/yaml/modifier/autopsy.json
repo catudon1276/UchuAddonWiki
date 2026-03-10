@@ -6,5 +6,13 @@
     "color": "128, 255, 221",
     "intro": "斯くして奴は死んだ",
     "description": "どこでもバイタルを見ることが出来ます。",
+    "abilities_title": "ポータブルバイタル",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "ポータブルバイタル",
+            "description": "どこでもバイタルを見ることが出来ます。"
+        }
+    ],
     "from": "SNR"
 }

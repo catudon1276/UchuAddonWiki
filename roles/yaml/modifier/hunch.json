@@ -6,5 +6,13 @@
     "color": "73, 166, 104",
     "intro": "その死を見逃すな",
     "description": "死を感知するモディファイアです。",
+    "abilities_title": "死の感知",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "死の感知",
+            "description": "近くで死亡が起こると感知します。"
+        }
+    ],
     "from": "TOHY"
 }

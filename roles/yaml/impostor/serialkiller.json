@@ -9,9 +9,9 @@
     "abilities_title": "シリアルキル",
     "abilities": [
         {
-            "button": "NoImage.png",
-            "name": "シリアルキル",
-            "description": "キルクールダウンが早い代わりに、一定時間キルをしないと自殺してしまいます。"
+            "button": "SuicideButton.png",
+            "name": "自殺",
+            "description": "キルクールダウンが早い変わりに一定時間キルをしないと自殺してしまいます。"
         }
     ],
     "from": "TOR"

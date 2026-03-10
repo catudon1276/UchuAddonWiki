@@ -610,15 +610,6 @@
             
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
             
-            // パークは常にPerk.pngを使用
-            let iconPath;
-            if (role.team === 'パーク') {
-                iconPath = '../resource/roleicon/Perk.png';
-            } else {
-                iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
-            }
-            const fallbackIcon = `../resource/roleicon/${role.team === 'クルーメイト' ? 'Crewmate' : role.team === 'インポスター' ? 'Impostor' : role.team === 'ニュートラル' ? 'Neutral' : role.team === 'モディファイア' ? 'Modifier' : role.team === 'パーク' ? 'Perk' : 'Ghost'}.png`;
-            
             // 背景画像（役職立ち絵）
             const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
             
@@ -708,29 +699,17 @@
                 </div>
             `;
             
-            // モーダル内のアイコンにも色変換を適用（roleMain.jsのrecolorIcon関数を使用）
+            // モーダル内アイコンも roleMain.js の解決ロジックを利用
             const modalIconElement = document.getElementById('modal-detail-icon');
-            if (iconPath && typeof recolorIcon === 'function') {
-                recolorIcon(iconPath, role.color, (recoloredDataURL) => {
+            if (typeof applyRoleIcon === 'function') {
+                applyRoleIcon(modalIconElement, role);
+            } else if (typeof recolorIcon === 'function') {
+                recolorIcon('../resource/roleicon/Crewmate.png', role.color, (recoloredDataURL) => {
                     if (recoloredDataURL) {
                         modalIconElement.src = recoloredDataURL;
                         modalIconElement.style.display = 'block';
-                    } else if (fallbackIcon) {
-                        recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
-                            if (fallbackDataURL) {
-                                modalIconElement.src = fallbackDataURL;
-                                modalIconElement.style.display = 'block';
-                            }
-                        });
                     }
                 });
-            } else {
-                // recolorIcon関数がない場合は元の画像をそのまま表示
-                modalIconElement.src = iconPath;
-                modalIconElement.style.display = 'block';
-                modalIconElement.onerror = function() {
-                    this.src = fallbackIcon;
-                };
             }
             
             modal.classList.add('active');

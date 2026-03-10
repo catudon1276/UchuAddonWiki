@@ -6,17 +6,17 @@
     "color": "130, 178, 255",
     "intro": "蒼天の導星",
     "description": "キルと幻視を使えるクルーメイトです。",
-    "abilities_title": "固有能力 \"導きの青い星\"",
+    "abilities_title": "キル & 幻視",
     "abilities": [
         {
-            "button": "PolarisKillButton.png",
+            "button": "KillButtonCyan.png",
             "name": "キル",
             "description": "プレイヤーをキルします。"
         },
         {
             "button": "PolarisMediumButton.png",
             "name": "幻視",
-            "description": "死者の役職を占います。結果は会議で表示され、自身のみ視認可能です。幻視にはタスクを消費します。"
+            "description": "死者の役職を占います。結果は会議で表示され、自身のみ視認可能です。"
         }
     ],
     "from": "Original"

@@ -6,12 +6,12 @@
     "color": "222, 223, 255",
     "intro": "神の加護",
     "description": "キルバリアを展開するクルーメイトです。",
-    "abilities_title": "キルバリア",
+    "abilities_title": "バリア",
     "abilities": [
         {
-            "button": "NoImage.png",
-            "name": "キルバリア",
-            "description": "タスクをこなし、キルを防ぐバリアを得ます。バリアはキルを一定回数防ぎます。"
+            "button": "WitchSpellButton.png",
+            "name": "バリア展開",
+            "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
         }
     ],
     "from": "Original"

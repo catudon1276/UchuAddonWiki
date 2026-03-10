@@ -6,5 +6,13 @@
     "color": "11, 51, 107",
     "intro": "探知トランデューサ起動",
     "description": "一番近くのプレイヤーを矢印で追跡します。",
+    "abilities_title": "追跡",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "追跡",
+            "description": "一番近くのプレイヤーを矢印で追跡します。"
+        }
+    ],
     "from": "Original"
 }

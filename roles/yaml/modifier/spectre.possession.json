@@ -6,5 +6,13 @@
     "color": "185, 152, 197",
     "intro": "美しき呪い",
     "description": "このモディファイアを持つプレイヤーは妖狐陣営になります。",
+    "abilities_title": "狐憑き",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "狐憑き",
+            "description": "このモディファイアを持つプレイヤーは妖狐陣営になります。"
+        }
+    ],
     "from": "Original"
 }

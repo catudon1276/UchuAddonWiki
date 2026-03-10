@@ -30,14 +30,34 @@ const FROM_SOURCES = [
     { code: 'TOU', name: 'Town Of Us' }
 ];
 
-// 陣営アイコンのフォールバック
-const TEAM_ICONS = {
-    'クルーメイト': 'Crewmate.png',
-    'インポスター': 'Impostor.png',
-    'ニュートラル': 'Neutral.png',
-    'モディファイア': 'Modifier.png',
-    'ゴースト': 'Ghost.png',
-    'パーク': 'Perk.png'
+// 陣営アイコンのフォールバック候補（実ファイル名の揺れ対応）
+const TEAM_ICON_CANDIDATES = {
+    'クルーメイト': ['Crewmate'],
+    'インポスター': ['Impostor', 'Impsoter'],
+    'ニュートラル': ['Neutral'],
+    'モディファイア': ['Modifier', 'Modifiers'],
+    'ゴースト': ['Ghost'],
+    'パーク': ['Perk', 'Modifiers', 'Neutral']
+};
+
+// id/english_name と実ファイル名の差分吸収（大文字小文字以外の揺れも補正）
+const ROLE_ICON_ALIASES = {
+    decorator: ['Decolate'],
+    loversbreaker: ['LoversBeraker'],
+    shaman: ['Sherman'],
+    summoner: ['Summoer'],
+    supervisor: ['Visor'],
+    visormodifier: ['Visor'],
+    tunamodi: ['Tuna'],
+    proxy: ['Proxy&Monitor'],
+    monitor: ['Proxy&Monitor'],
+    nicehawk: ['Hawk'],
+    evilhawk: ['Hawk'],
+    niceobserver: ['Observer'],
+    evilobserver: ['Observer'],
+    nicedecorator: ['Decolate'],
+    evildecorator: ['Decolate'],
+    chickenmodifier: ['Chicken']
 };
 
 // アイコンの色を変換（赤→役職カラー、青→白）
@@ -90,6 +110,105 @@ function recolorIcon(imagePath, roleColor, callback) {
     };
     
     img.src = imagePath;
+}
+
+function normalizeIconKey(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function toPascalCase(value) {
+    const normalized = String(value || '')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/[^A-Za-z0-9]+/g, ' ')
+        .trim();
+
+    if (!normalized) return '';
+
+    return normalized
+        .split(/\s+/)
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .join('');
+}
+
+function buildRoleIconNameCandidates(role) {
+    const candidateSet = new Set();
+    const push = value => {
+        if (value && String(value).trim()) {
+            candidateSet.add(String(value).trim());
+        }
+    };
+
+    const addVariants = raw => {
+        if (!raw) return;
+        const text = String(raw).trim();
+        const key = normalizeIconKey(text);
+        if (!key) return;
+
+        push(text);
+        push(text.replace(/\s+/g, ''));
+        push(toPascalCase(text));
+
+        if (/^nice\s+/i.test(text)) {
+            push(text.replace(/^nice\s+/i, ''));
+        }
+        if (/^evil\s+/i.test(text)) {
+            push(text.replace(/^evil\s+/i, ''));
+        }
+
+        const aliases = ROLE_ICON_ALIASES[key] || [];
+        aliases.forEach(push);
+    };
+
+    addVariants(role.id);
+    addVariants(role.english_name);
+
+    return Array.from(candidateSet);
+}
+
+function buildRoleIconPaths(role) {
+    const names = [
+        ...buildRoleIconNameCandidates(role),
+        ...(TEAM_ICON_CANDIDATES[role.team] || [])
+    ];
+
+    const unique = new Set();
+    const paths = [];
+
+    names.forEach(name => {
+        const key = normalizeIconKey(name);
+        if (!key || unique.has(key)) return;
+        unique.add(key);
+        paths.push(`../resource/roleicon/${name}.png`);
+    });
+
+    return paths;
+}
+
+function tryRecolorIconPaths(paths, roleColor, onResolved, index = 0) {
+    if (index >= paths.length) {
+        onResolved(null);
+        return;
+    }
+
+    recolorIcon(paths[index], roleColor, dataUrl => {
+        if (dataUrl) {
+            onResolved(dataUrl);
+            return;
+        }
+        tryRecolorIconPaths(paths, roleColor, onResolved, index + 1);
+    });
+}
+
+function applyRoleIcon(iconElement, role) {
+    if (!iconElement) return;
+    const iconPaths = buildRoleIconPaths(role);
+    if (iconPaths.length === 0) return;
+
+    tryRecolorIconPaths(iconPaths, role.color, resolved => {
+        if (!resolved) return;
+        iconElement.src = resolved;
+        iconElement.style.display = 'block';
+    });
 }
 
 // YAMLフォルダから役職リストを自動生成
@@ -377,36 +496,11 @@ function renderRoles() {
     
     container.innerHTML = cardsHTML;
     
-    // アイコンを色変換して表示
+    // アイコンを色変換して表示（idベース・大文字小文字無視）
     filteredRoles.forEach((role, index) => {
         const cardId = `role-card-${index}`;
         const iconElement = document.getElementById(`${cardId}-icon`);
-        
-        // パークは常にPerk.pngを使用
-        let iconPath;
-        if (role.team === 'パーク') {
-            iconPath = '../resource/roleicon/Perk.png';
-        } else {
-            iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
-        }
-        const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
-        
-        if (iconPath) {
-            recolorIcon(iconPath, role.color, (recoloredDataURL) => {
-                if (recoloredDataURL) {
-                    iconElement.src = recoloredDataURL;
-                    iconElement.style.display = 'block';
-                } else if (fallbackIcon) {
-                    // フォールバック
-                    recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
-                        if (fallbackDataURL) {
-                            iconElement.src = fallbackDataURL;
-                            iconElement.style.display = 'block';
-                        }
-                    });
-                }
-            });
-        }
+        applyRoleIcon(iconElement, role);
     });
 }
 
@@ -446,8 +540,6 @@ function showRoleDetails(role) {
     const overlayContent = document.getElementById('overlayContent');
     
     // 画像パス生成
-    const iconPath = role.english_name ? `../resource/roleicon/${role.english_name}.png` : '';
-    const fallbackIcon = TEAM_ICONS[role.team] ? `../resource/roleicon/${TEAM_ICONS[role.team]}` : '';
     const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
     const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
     const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
@@ -558,23 +650,9 @@ function showRoleDetails(role) {
         </div>
     `;
 
-    // アイコンを色変換して表示
+    // アイコンを色変換して表示（idベース・大文字小文字無視）
     const detailIconElement = document.getElementById('detail-icon');
-    if (iconPath) {
-        recolorIcon(iconPath, role.color, (recoloredDataURL) => {
-            if (recoloredDataURL) {
-                detailIconElement.src = recoloredDataURL;
-                detailIconElement.style.display = 'block';
-            } else if (fallbackIcon) {
-                recolorIcon(fallbackIcon, role.color, (fallbackDataURL) => {
-                    if (fallbackDataURL) {
-                        detailIconElement.src = fallbackDataURL;
-                        detailIconElement.style.display = 'block';
-                    }
-                });
-            }
-        });
-    }
+    applyRoleIcon(detailIconElement, role);
 
     document.getElementById('overlay').style.display = 'block';
 }

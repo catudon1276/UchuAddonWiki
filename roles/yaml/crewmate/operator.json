@@ -11,7 +11,7 @@
         {
             "button": "OperateButton.png",
             "name": "オペレート",
-            "description": "会議時間増加の申請を出し、会議時間を増加させます。"
+            "description": "会議時間を増加させる申請を出します。"
         }
     ],
     "from": "Original"

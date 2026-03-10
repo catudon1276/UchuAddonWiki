@@ -1,10 +1,18 @@
 {
-    "id": "chickenModifier",
-    "english_name": "ChickenModifier",
+    "id": "chicken",
+    "english_name": "Chicken",
     "name": "チキン",
     "team": "モディファイア",
     "color": "255, 238, 0",
     "intro": "あなたは臆病者",
     "description": "とても臆病で貧弱なモディファイアです。",
+    "abilities_title": "貧弱体質",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "貧弱体質",
+            "description": "ドアに挟まれる・落下・転落・停電の錯乱・ベントの転倒・投票による恐怖など、様々な原因で死んでしまいます。"
+        }
+    ],
     "from": "Original"
 }

@@ -6,5 +6,13 @@
     "color": "171, 245, 255",
     "intro": "走れ！！",
     "description": "動き続けないと死んでしまいます。",
+    "abilities_title": "マグロ体質",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "マグロ体質",
+            "description": "動き続けないと死んでしまいます。"
+        }
+    ],
     "from": "SNR"
 }

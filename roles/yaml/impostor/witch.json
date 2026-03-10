@@ -9,9 +9,9 @@
     "abilities_title": "魔術",
     "abilities": [
         {
-            "button": "SpellButton.png",
+            "button": "WitchSpellButton.png",
             "name": "魔術",
-            "description": "他プレイヤーに魔法をかけます。魔法がつけられたプレイヤーは、会議でウィッチを追放・推察しないと死亡してしまいます。"
+            "description": "プレイヤーに魔術をかけます。魔術をかけられたプレイヤーは会議でウィッチを追放・推察しないと死亡してしまいます。"
         }
     ],
     "from": "TOR"
