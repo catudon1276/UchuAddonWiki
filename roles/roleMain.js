@@ -32,12 +32,12 @@ const FROM_SOURCES = [
 
 // 陣営フォールバックアイコン（役職にiconが未設定の場合）
 const TEAM_FALLBACK_ICON = {
-    'クルーメイト': 'Crewmate',
-    'インポスター': 'Impsoter',
-    'ニュートラル': 'Neutral',
-    'モディファイア': 'Modifiers',
-    'ゴースト': 'Ghost',
-    'パーク': 'Neutral'
+    'クルーメイト': 'Crewmate.png',
+    'インポスター': 'Impsoter.png',
+    'ニュートラル': 'Neutral.png',
+    'モディファイア': 'Modifiers.png',
+    'ゴースト': 'Ghost.png',
+    'パーク': 'Neutral.png'
 };
 
 // アイコンの色を変換（赤→役職カラー、青→白）
@@ -93,9 +93,9 @@ function recolorIcon(imagePath, roleColor, callback) {
 
 // JSONのiconフィールドからアイコンパスを取得
 function getRoleIconPath(role) {
-    const iconName = role.icon || TEAM_FALLBACK_ICON[role.team];
-    if (!iconName) return null;
-    return `../resource/roleicon/${iconName}.png`;
+    const iconFile = role.icon || TEAM_FALLBACK_ICON[role.team];
+    if (!iconFile) return null;
+    return `../resource/roleicon/${iconFile}`;
 }
 
 function applyRoleIcon(iconElement, role) {
