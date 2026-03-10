@@ -436,6 +436,24 @@
             }
         }
 
+        /* シークレットモーダルのコンテンツ部分 */
+        .secret-modal-body {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .secret-modal-thumbnail {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .secret-modal-text {
+            flex: 1;
+            text-align: center;
+        }
+
         /* モバイル対応 (768px以下) */
         @media (max-width: 768px) {
             .roles-grid {
@@ -503,6 +521,15 @@
                 width: 60px;
                 height: 60px;
                 margin: 0 auto;
+            }
+
+            .secret-modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .secret-modal-thumbnail {
+                margin-bottom: var(--space-lg);
             }
         }
     </style>
@@ -719,29 +746,29 @@
         // ★シークレット役職用モーダル表示関数を追加
         function showSecretModal(role) {
             console.log('🔐 showSecretModal が呼ばれました:', role);
-            
+
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
-            
+
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)';
-            const iconPath = `../resource/roleicon/Jargonword.png`;
+            const iconPath = getRoleIconPath(role);
             const thumbnailPath = role.thumbnail ? `../resource/rolepicture/${role.thumbnail}` : '';
-            
+
             // ボタンHTML生成
             let buttonHTML = '';
             if (role.button && role.button.url) {
                 buttonHTML = `
                     <div style="margin-top: 1.5rem;">
-                        <a href="${role.button.url}" 
-                           target="_blank" 
-                           class="uchu-btn uchu-btn-primary" 
+                        <a href="${role.button.url}"
+                           target="_blank"
+                           class="uchu-btn uchu-btn-primary"
                            style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
                             <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
                         </a>
                     </div>
                 `;
             }
-            
+
             content.innerHTML = `
                 <div style="padding: 1rem;">
                     <!-- ヘッダー部分 -->
@@ -755,29 +782,29 @@
                             </h2>
                         </div>
                     </div>
-                    
-                    <!-- コンテンツ部分：サムネイルと説明+ボタンを横並び（1:2比率） -->
-                    <div style="display: flex; gap: 2rem; align-items: center; position: relative; z-index: 2;">
+
+                    <!-- コンテンツ部分：サムネイルと説明+ボタン -->
+                    <div class="secret-modal-body" style="position: relative; z-index: 2;">
                         ${thumbnailPath ? `
-                            <div style="flex: 1; display: flex; justify-content: center;">
-                                <img src="${thumbnailPath}" 
-                                     alt="${role.name}" 
+                            <div class="secret-modal-thumbnail">
+                                <img src="${thumbnailPath}"
+                                     alt="${role.name}"
                                      style="width: 100%; max-width: 280px; height: auto; object-fit: contain; border-radius: var(--radius-lg); display: block;"
                                      onerror="this.parentElement.style.display='none'">
                             </div>
                         ` : ''}
-                        
-                        <div style="flex: 2; text-align: center;">
+
+                        <div class="secret-modal-text">
                             <!-- 説明文 -->
                             <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-line; margin: 0 0 1.5rem 0;">
                                 ${role.description}
                             </p>
-                            
+
                             ${buttonHTML}
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 閉じるボタン -->
                 <div style="text-align: center; margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--uchu-border); position: relative; z-index: 2;">
                     <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
@@ -786,21 +813,10 @@
                 </div>
             `;
 
-            // Jargonwordアイコンを色変換して表示
+            // アイコンをiconフィールドから色変換して表示
             const secretIconElement = document.getElementById('secret-modal-icon');
-            if (typeof recolorIcon === 'function') {
-                recolorIcon(iconPath, role.color, (recoloredDataURL) => {
-                    if (recoloredDataURL) {
-                        secretIconElement.src = recoloredDataURL;
-                        secretIconElement.style.display = 'block';
-                    } else {
-                        secretIconElement.src = iconPath;
-                        secretIconElement.style.display = 'block';
-                    }
-                });
-            } else {
-                secretIconElement.src = iconPath;
-                secretIconElement.style.display = 'block';
+            if (iconPath) {
+                applyRoleIcon(secretIconElement, role);
             }
 
             modal.classList.add('active');
