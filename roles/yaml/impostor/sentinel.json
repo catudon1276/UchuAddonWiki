@@ -13,11 +13,6 @@
       "button": "NoImage.png",
       "name": "デバイス監視",
       "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。"
-    },
-    {
-      "button": "NoImage.png",
-      "name": "センチネル背面",
-      "description": "センチネルの背面カメラです。"
     }
   ],
   "from": "Original"
