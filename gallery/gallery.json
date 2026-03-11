@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-03-10T12:48:55.547Z",
+    "_generated_at": "2026-03-11T12:44:34.550Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -80,6 +80,7 @@
             "DecorationButtonNice.png",
             "EmergencyButton.png",
             "EpidemicBox.png",
+            "EpidemicBreakBox.png",
             "EpidemicBreakButton.png",
             "EpidemicInfectButton.png",
             "EpsilonCovertButton.png",
@@ -119,6 +120,7 @@
             "ProsecutorButton.png",
             "ProxyButton.png",
             "ProxyRequestButton.png",
+            "ReportButton.png",
             "RocketLaunchButton.png",
             "SeedButton.png",
             "ShamanNecromancyBoostButton.png",
