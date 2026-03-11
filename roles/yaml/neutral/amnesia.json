@@ -10,7 +10,7 @@
     "abilities_title": "忘却",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "ReportButton.png",
             "name": "忘却",
             "description": "通報した死体の役職に変化します。"
         }

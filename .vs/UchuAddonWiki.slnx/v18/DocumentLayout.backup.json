@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\impostor\\spectrum.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:roles\\yaml\\impostor\\spectrum.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\neutral\\epidemic.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:roles\\yaml\\neutral\\epidemic.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,14 +31,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "spectrum.json",
-              "DocumentMoniker": "C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\impostor\\spectrum.json",
-              "RelativeDocumentMoniker": "roles\\yaml\\impostor\\spectrum.json",
-              "ToolTip": "C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\impostor\\spectrum.json",
-              "RelativeToolTip": "roles\\yaml\\impostor\\spectrum.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAYAAAAAAAAAA==",
+              "Title": "epidemic.json",
+              "DocumentMoniker": "C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\neutral\\epidemic.json",
+              "RelativeDocumentMoniker": "roles\\yaml\\neutral\\epidemic.json",
+              "ToolTip": "C:\\Users\\ashih\\Documents\\GitHub\\UchuAddonWiki\\roles\\yaml\\neutral\\epidemic.json",
+              "RelativeToolTip": "roles\\yaml\\neutral\\epidemic.json",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABYAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-10T12:19:39.146Z",
+              "WhenOpened": "2026-03-11T08:49:07.823Z",
               "EditorCaption": ""
             }
           ]
