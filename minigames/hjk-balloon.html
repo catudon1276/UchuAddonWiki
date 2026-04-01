@@ -61,6 +61,7 @@ let invincible = false, invTimer = 0;
 let invertAmount = 0;
 let nightFlash = 0; // ナイトモード終了時の点滅
 let invTotalTime = 6; // 無敵の総時間（点滅タイミング計算用）
+let invCombo = 0;    // 無敵中の連続撃破数
 let touchPos = null, touchOrigin = null, touchBalloonOrigin = null;
 let scorePopups = []; // { x, y, text, timer }
 let invStock = 0;    // 無敵ストック（最大1）
@@ -147,7 +148,7 @@ function init() {
   spawnTimer = 0; coinTimer = 0; powerTimer = 0;
   magnetActive = false; magnetTimer = 0;
   shieldActive = false; shieldTimer = 0;
-  invincible = false; invTimer = 0; invertAmount = 0;
+  invincible = false; invTimer = 0; invertAmount = 0; invCombo = 0;
   invStock = 0; heartStock = 0;
   height = 0; nightBtnX = BW + 80; nightFlash = 0;
   balloon = mkBalloon();
@@ -312,8 +313,10 @@ function update(dt) {
     if (bdist < 14 + 11) {
       if (invincible) {
         b.alive = false;
-        score += 500;
-        scorePopups.push({ x: b.x, y: b.y, text: '+100', timer: 0.9 });
+        invCombo++;
+        const gain = invCombo * 500;
+        score += gain;
+        scorePopups.push({ x: b.x, y: b.y, text: '+' + gain, timer: 0.9 });
       } else {
         triggerDeath();
       }
@@ -444,7 +447,7 @@ function update(dt) {
   if (magnetActive) { magnetTimer -= dt; if (magnetTimer <= 0) magnetActive = false; }
   if (invincible) {
     invTimer -= dt;
-    if (invTimer <= 0) { invincible = false; nightFlash = 0.7; }
+    if (invTimer <= 0) { invincible = false; nightFlash = 0.7; invCombo = 0; }
   }
   if (nightFlash > 0) nightFlash = Math.max(0, nightFlash - dt);
 
