@@ -60,6 +60,7 @@ let shieldActive = false, shieldTimer = 0;
 let invincible = false, invTimer = 0;
 let invertAmount = 0;
 let nightFlash = 0; // ナイトモード終了時の点滅
+let invTotalTime = 6; // 無敵の総時間（点滅タイミング計算用）
 let touchPos = null, touchOrigin = null, touchBalloonOrigin = null;
 let scorePopups = []; // { x, y, text, timer }
 let invStock = 0;    // 無敵ストック（最大1）
@@ -122,7 +123,7 @@ function mkPowerup() {
 function triggerDeath() {
   if (heartStock > 0) {
     heartStock--;
-    invincible = true; invTimer = 3;
+    invincible = true; invTimer = 3; invTotalTime = 3;
     scorePopups.push({ x: balloon.x, y: balloon.y - 20, text: '\u2665 SAVED!', timer: 1.2 });
   } else {
     state = ST.OVER;
@@ -135,7 +136,7 @@ function triggerDeath() {
 function useInvincible() {
   if (invStock > 0 && !invincible && state === ST.PLAY) {
     invStock--;
-    invincible = true; invTimer = 6;
+    invincible = true; invTimer = 6; invTotalTime = 6;
   }
 }
 
@@ -232,13 +233,13 @@ function update(dt) {
   if (keys['a'] || keys['arrowleft']) kbDir -= 1;
   if (keys['d'] || keys['arrowright']) kbDir += 1;
   if (kbDir !== 0) {
-    balloon.vx += kbDir * 0.7;
+    balloon.vx += kbDir * 1.8;
   }
   let kbVDir = 0;
   if (keys['w'] || keys['arrowup']) kbVDir -= 1;
   if (keys['s'] || keys['arrowdown']) kbVDir += 1;
   if (kbVDir !== 0) {
-    balloon.vy += kbVDir * 0.6;
+    balloon.vy += kbVDir * 1.5;
   }
   // ── Birds ──
   birdTimer += dt;
@@ -326,8 +327,8 @@ function update(dt) {
     balloon.y = touchBalloonOrigin.y + dy;
     balloon.vx = 0; balloon.vy = 0;
   } else {
-    balloon.vx *= 0.85;
-    balloon.vy *= 0.85;
+    balloon.vx *= 0.70;
+    balloon.vy *= 0.70;
     balloon.x += balloon.vx;
     balloon.y += balloon.vy;
   }
@@ -704,8 +705,9 @@ function drawGame() {
     ctx.restore();
   });
 
-  // Balloon
-  drawBalloonSprite(balloon.x, balloon.y, balloon.w, balloon.h, invincible);
+  // Balloon（無敵残り1/4以下で点滅）
+  const blinkHide = invincible && invTimer <= invTotalTime * 0.10 && Math.floor(Date.now() / 80) % 2 === 0;
+  if (!blinkHide) drawBalloonSprite(balloon.x, balloon.y, balloon.w, balloon.h, invincible);
 
   // ナイトモードボタン（ゲームUI最前面）
   drawNightModeButton();
