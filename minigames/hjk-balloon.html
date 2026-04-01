@@ -110,9 +110,9 @@ function mkCoin(ox, oy) {
 
 // ── Powerup ──
 function mkPowerup() {
-  // SS(30000)から回復アイテム出現、X(80000)からより頻繁に
   let types;
   if (score >= 80000)      types = ['magnet', 'magnet', 'invincible', 'invincible', 'heart', 'heart'];
+  else if (score >= 60000) types = ['magnet', 'invincible', 'heart', 'heart']; // SSS+: ハート50%
   else if (score >= 30000) types = ['magnet', 'invincible', 'heart'];
   else                     types = ['magnet', 'invincible'];
   const type = types[Math.floor(Math.random() * types.length)];
