@@ -588,20 +588,19 @@ function drawNightModeButton() {
   ctx.font = '7px "Press Start 2P",monospace';
   ctx.fillText('[q]', bx + bw / 2, by + bh * 0.82);
   ctx.textBaseline = 'alphabetic';
-  // 無敵ストック赤丸バッジ（最大3）
-  for (let i = 0; i < invStock; i++) {
-    const dotX = bx + 8 + i * 14;
-    const dotY = by + 6;
+  // 無敵ストック赤丸バッジ（1個、数字が変わる）
+  if (invStock > 0) {
+    const dotX = bx + 8, dotY = by + 8;
     ctx.beginPath();
-    ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+    ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
     ctx.fillStyle = '#f33';
     ctx.shadowColor = '#f00'; ctx.shadowBlur = 6;
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#fff';
-    ctx.font = '6px "Press Start 2P",monospace';
+    ctx.font = '7px "Press Start 2P",monospace';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(i + 1, dotX, dotY + 0.5);
+    ctx.fillText(invStock, dotX, dotY + 0.5);
     ctx.textBaseline = 'alphabetic';
   }
   ctx.restore();
