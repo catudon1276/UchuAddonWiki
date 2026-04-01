@@ -365,7 +365,8 @@ function update(dt) {
   // ── Spawn powerups ──
   powerTimer += dt;
   // 高度が上がるほど出現間隔が伸びる（最大40秒）
-  const powerBase = Math.min(6 + height * 0.018, 32);
+  // SSS(55000)超えで出現間隔を序盤レベルに回復
+  const powerBase = score >= 55000 ? 15 : Math.min(6 + height * 0.018, 32);
   if (powerTimer > powerBase + Math.random() * 4) {
     powerTimer = 0;
     powerups.push(mkPowerup());
@@ -406,8 +407,8 @@ function update(dt) {
     if (p.alive && circHit(p.x, p.y, p.r, bx, by, balloon.w, balloon.h)) {
       p.alive = false;
       if (p.type === 'magnet') { magnetActive = true; magnetTimer = 7; }
-      else if (p.type === 'invincible') { invStock = Math.min(invStock + 1, 1); }
-      else if (p.type === 'heart') { heartStock = Math.min(heartStock + 1, 3); }
+      else if (p.type === 'invincible') { invStock = Math.min(invStock + 1, 3); }
+      else if (p.type === 'heart') { heartStock = Math.min(heartStock + 1, 3); invStock = Math.min(invStock + 1, 3); }
     }
   });
 
@@ -587,6 +588,22 @@ function drawNightModeButton() {
   ctx.font = '7px "Press Start 2P",monospace';
   ctx.fillText('[q]', bx + bw / 2, by + bh * 0.82);
   ctx.textBaseline = 'alphabetic';
+  // 無敵ストック赤丸バッジ（最大3）
+  for (let i = 0; i < invStock; i++) {
+    const dotX = bx + 8 + i * 14;
+    const dotY = by + 6;
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#f33';
+    ctx.shadowColor = '#f00'; ctx.shadowBlur = 6;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fff';
+    ctx.font = '6px "Press Start 2P",monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(i + 1, dotX, dotY + 0.5);
+    ctx.textBaseline = 'alphabetic';
+  }
   ctx.restore();
 }
 
