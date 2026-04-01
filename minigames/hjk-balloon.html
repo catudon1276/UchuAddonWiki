@@ -340,7 +340,7 @@ function update(dt) {
   const rate = tutorial ? Math.max(1.6, 3.0 - elapsed * 0.04) : Math.max(0.4, 1.3 - elapsed * 0.012);
   if (spawnTimer > rate) {
     spawnTimer = 0;
-    const MIN_GAP = 110; // プラットフォーム間の最低縦間隔（気球72px + 余裕）
+    const MIN_GAP = 180; // プラットフォーム間の最低縦間隔（気球72px + 余裕）
     const candidate = mkPlatform();
     const tooClose = platforms.some(p => Math.abs(p.y - candidate.y) < MIN_GAP);
     if (!tooClose) platforms.push(candidate);
