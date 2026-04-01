@@ -60,7 +60,7 @@ let shieldActive = false, shieldTimer = 0;
 let invincible = false, invTimer = 0;
 let invertAmount = 0;
 let nightFlash = 0; // ナイトモード終了時の点滅
-let touchPos = null;
+let touchPos = null, touchOrigin = null, touchBalloonOrigin = null;
 let scorePopups = []; // { x, y, text, timer }
 let invStock = 0;    // 無敵ストック（最大1）
 let heartStock = 0;  // ハートストック（最大3）
@@ -89,7 +89,10 @@ function mkBalloon() {
 // ── Platform (checkered obstacle from sides) ──
 function mkPlatform() {
   const fromRight = Math.random() < 0.5;
-  const w = 90 + Math.random() * 130;
+  // X(80000)以降は最大幅が縮小、最小幅はBW/3(=120)で固定
+  const minW = 120;
+  const maxW = score >= 80000 ? Math.max(120, 220 - (score - 80000) / 800) : 220;
+  const w = minW + Math.random() * (maxW - minW);
   const x = fromRight ? BW - FRAME_T - w : FRAME_T;
   return { x, y: -20, w, h: 16 };
 }
@@ -106,9 +109,11 @@ function mkCoin(ox, oy) {
 
 // ── Powerup ──
 function mkPowerup() {
-  const types = score >= 80000
-    ? ['magnet', 'magnet', 'invincible', 'invincible', 'heart']
-    : ['magnet', 'invincible'];
+  // SS(30000)から回復アイテム出現、X(80000)からより頻繁に
+  let types;
+  if (score >= 80000)      types = ['magnet', 'magnet', 'invincible', 'invincible', 'heart', 'heart'];
+  else if (score >= 30000) types = ['magnet', 'invincible', 'heart'];
+  else                     types = ['magnet', 'invincible'];
   const type = types[Math.floor(Math.random() * types.length)];
   return { type, x: 30 + Math.random() * (BW - 60), y: -30 - Math.random() * 60, r: 14, alive: true };
 }
@@ -173,17 +178,19 @@ function ptrDown(e) {
     if (px > nbLeft && px < nightBtnX && py > nbTop && py < BH - FRAME_T) {
       useInvincible(); return;
     }
+    touchOrigin = { x: getX(e), y: getY(e) };
     touchPos = { x: getX(e), y: getY(e) };
+    touchBalloonOrigin = { x: balloon.x, y: balloon.y };
   }
   if (state === ST.PAUSE) { state = ST.PLAY; return; }
 }
 function ptrMove(e) {
   e.preventDefault();
-  if (state === ST.PLAY && touchPos !== null) {
+  if (state === ST.PLAY && touchOrigin !== null) {
     touchPos = { x: getX(e), y: getY(e) };
   }
 }
-function ptrUp() { touchPos = null; }
+function ptrUp() { touchPos = null; touchOrigin = null; touchBalloonOrigin = null; }
 canvas.addEventListener('mousedown', ptrDown);
 canvas.addEventListener('mousemove', ptrMove);
 canvas.addEventListener('mouseup', ptrUp);
@@ -204,11 +211,19 @@ function update(dt) {
   if (state !== ST.PLAY) return;
 
   elapsed += dt;
-  // Accelerate over time
-  baseSpeed = 2 + elapsed * 0.06;
-  // X(80000)超えで速度上限が上昇
-  const speedCap = score < 80000 ? 8 : Math.min(8 + (score - 80000) / 12000, 14);
-  scrollSpeed = Math.min(baseSpeed, speedCap);
+  const tutorial = score < 10000;
+  // A(12000)まで: ゆっくり固定
+  // S(20000)から: 徐々に加速
+  // X(80000)から: 速度上限が上昇
+  if (tutorial) {
+    baseSpeed = 1.8 + elapsed * 0.025;
+  } else if (score < 20000) {
+    baseSpeed = 2.0; // A〜Sまでは一定
+  } else {
+    baseSpeed = 2.0 + (score - 20000) / 8000 * 0.4 + elapsed * 0.03;
+  }
+  const speedCap = score < 80000 ? 6 : Math.min(6 + (score - 80000) / 10000, 14);
+  scrollSpeed = Math.min(baseSpeed, tutorial ? 3.0 : speedCap);
 
   score += Math.round(scrollSpeed * dt * 60 * 0.3);
 
@@ -227,8 +242,8 @@ function update(dt) {
   }
   // ── Birds ──
   birdTimer += dt;
-  // 序盤は遅く（4秒）、徐々に加速して最短0.5秒
-  const birdRate = Math.max(0.5, 4.0 - elapsed * 0.04);
+  // チュートリアル中は鳥なし。1万超えてから登場、徐々に加速して最短0.5秒
+  const birdRate = tutorial ? 9999 : Math.max(0.5, 4.0 - elapsed * 0.04);
 
   if (birdTimer > birdRate) {
     birdTimer = 0;
@@ -238,7 +253,11 @@ function update(dt) {
     const dx = balloon.x - peekX;
     const dy = balloon.y - spawnY;
     const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    const speed = Math.min(3.0 + elapsed * 0.03 + Math.random() * 1.0, 9);
+    // X(80000)から突進速度が上昇
+    const birdSpeedBase = score >= 80000
+      ? Math.min(5.0 + (score - 80000) / 15000, 13)
+      : 3.0;
+    const speed = Math.min(birdSpeedBase + elapsed * 0.02 + Math.random() * 1.0, 13);
     const peekDur = 0.55 + Math.random() * 0.4;
     birds.push({
       x: fromRight ? BW + 21 : -21,
@@ -299,21 +318,26 @@ function update(dt) {
       }
     }
   });
-  // Touch movement
-  if (touchPos !== null) {
-    balloon.vx += (touchPos.x - balloon.x) * 0.1;
-    balloon.vy += (touchPos.y - balloon.y) * 0.1;
+  // Touch movement（ドラッグ量をそのまま気球位置に反映）
+  if (touchPos !== null && touchOrigin !== null && touchBalloonOrigin !== null) {
+    const dx = touchPos.x - touchOrigin.x;
+    const dy = touchPos.y - touchOrigin.y;
+    balloon.x = touchBalloonOrigin.x + dx;
+    balloon.y = touchBalloonOrigin.y + dy;
+    balloon.vx = 0; balloon.vy = 0;
+  } else {
+    balloon.vx *= 0.85;
+    balloon.vy *= 0.85;
+    balloon.x += balloon.vx;
+    balloon.y += balloon.vy;
   }
-  balloon.vx *= 0.85;
-  balloon.vy *= 0.85;
-  balloon.x += balloon.vx;
-  balloon.y += balloon.vy;
   balloon.x = Math.max(balloon.w / 2 + FRAME_T, Math.min(BW - balloon.w / 2 - FRAME_T, balloon.x));
   balloon.y = Math.max(balloon.h / 2 + FRAME_T, Math.min(BH - balloon.h / 2 - FRAME_T, balloon.y));
 
   // ── Spawn platforms ──
   spawnTimer += dt;
-  const rate = Math.max(0.4, 1.3 - elapsed * 0.012);
+  // チュートリアル中はプラットフォームが少ない
+  const rate = tutorial ? Math.max(1.6, 3.0 - elapsed * 0.04) : Math.max(0.4, 1.3 - elapsed * 0.012);
   if (spawnTimer > rate) {
     spawnTimer = 0;
     platforms.push(mkPlatform());
@@ -369,7 +393,7 @@ function update(dt) {
   coins.forEach(c => {
     if (c.alive && circHit(c.x, c.y, c.r, bx, by, balloon.w, balloon.h)) {
       c.alive = false;
-      score += 10;
+      score += 100;
     }
   });
 
@@ -387,7 +411,7 @@ function update(dt) {
   // 三角ゾーン(p.y+p.h 〜 p.y+p.h+7)→死亡  バーゾーン(p.y 〜 p.y+p.h)→速度減衰
   platforms.forEach(p => {
     const hbx = bx + 6, hby = by + 6, hbw = balloon.w - 12, hbh = balloon.h - 12;
-    if (rectHit(hbx, hby, hbw, hbh, p.x, p.y + p.h, p.w, 7)) {
+    if (rectHit(hbx, hby, hbw, hbh, p.x + 10, p.y + p.h, p.w - 20, 7)) {
       // 三角ゾーン（死亡）
       if (!invincible) {
         if (shieldActive) {
