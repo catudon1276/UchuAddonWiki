@@ -1,0 +1,19 @@
+{
+    "id": "dj",
+    "icon": "DJ.png",
+    "english_name": "DJ",
+    "name": "DJ",
+    "team": "クルーメイト",
+    "color": "173, 3, 252",
+    "intro": "沸け！虹色フェスティバル",
+    "description": "フロアを沸かせるクルーメイトです。",
+    "abilities_title": "スクラッチ",
+    "abilities": [
+        {
+            "button": "DJButton.png",
+            "name": "スクラッチ",
+            "description": "周囲のプレイヤーの視界を光らせます。"
+        }
+    ],
+    "from": "Original"
+}

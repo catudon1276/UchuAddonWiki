@@ -1,0 +1,24 @@
+{
+    "id": "anchor",
+    "icon": "Anchor.png",
+    "english_name": "Anchor",
+    "name": "アンカー",
+    "team": "ニュートラル",
+    "color": "8, 0, 237",
+    "intro": "深淵を繋ぎ止めろ",
+    "description": "一定回数アンカーを設置する第三陣営です。",
+    "abilities_title": "アンカー設置",
+    "abilities": [
+        {
+            "button": "AnchorButton.png",
+            "name": "設置",
+            "description": "アンカーを設置します。設置した時周りに通知がされます。"
+        },
+        {
+            "button": "AnchorFakeButton.png",
+            "name": "幻聴",
+            "description": "既にアンカーを設置した場所から通知を出すことができます。"
+        }
+    ],
+    "from": "Original"
+}

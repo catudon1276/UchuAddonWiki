@@ -1,0 +1,19 @@
+{
+    "id": "repair",
+    "icon": "Restore.png",
+    "english_name": "Repair",
+    "name": "リペア",
+    "team": "パーク",
+    "color": "209, 209, 209",
+    "intro": "",
+    "description": "サボタージュを即座に修理します。",
+    "abilities_title": "リペア",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "リペア",
+            "description": "サボタージュを即座に修理します。"
+        }
+    ],
+    "from": "Original"
+}

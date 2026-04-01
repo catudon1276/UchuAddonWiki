@@ -1,0 +1,19 @@
+{
+    "id": "invisible",
+    "icon": "Invisible.png",
+    "english_name": "Invisible",
+    "name": "インビジブル",
+    "team": "モディファイア",
+    "color": "125, 242, 255",
+    "intro": "無貌の影",
+    "description": "常に透明になります。透明は自覚できません。",
+    "abilities_title": "透明体",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "透明体",
+            "description": "常に透明になります。透明は自覚できません。"
+        }
+    ],
+    "from": "Original"
+}

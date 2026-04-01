@@ -1,0 +1,24 @@
+{
+    "id": "polaris",
+    "icon": "Polaris.png",
+    "english_name": "Polaris",
+    "name": "ポラリス",
+    "team": "クルーメイト",
+    "color": "130, 178, 255",
+    "intro": "蒼天の導星",
+    "description": "キルと幻視を使えるクルーメイトです。",
+    "abilities_title": "導きの青い星",
+    "abilities": [
+        {
+            "button": "KillButtonCyan.png",
+            "name": "キル",
+            "description": "プレイヤーをキルします。"
+        },
+        {
+            "button": "PolarisMediumButton.png",
+            "name": "幻視",
+            "description": "死者の役職を占います。結果は会議で表示され、自身のみ視認可能です。"
+        }
+    ],
+    "from": "Original"
+}

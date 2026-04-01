@@ -1,0 +1,19 @@
+{
+    "id": "scale",
+    "icon": "Scale.png",
+    "english_name": "Scale",
+    "name": "スケール",
+    "team": "モディファイア",
+    "color": "115, 107, 107",
+    "intro": "身体への異常現象",
+    "description": "体の大きさが変わります。",
+    "abilities_title": "異常現象",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "異常現象",
+            "description": "体の大きさが変わります。"
+        }
+    ],
+    "from": "Original"
+}

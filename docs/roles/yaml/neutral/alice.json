@@ -1,0 +1,24 @@
+{
+    "id": "alice",
+    "icon": "Alice.png",
+    "english_name": "Alice",
+    "name": "アリス",
+    "team": "ニュートラル",
+    "color": "255, 255, 15",
+    "intro": "不思議な国に囚われて",
+    "description": "キルされると勝利する第三陣営です。",
+    "abilities_title": "チェシャの導き手",
+    "abilities": [
+        {
+            "button": "KillButtonYellow.png",
+            "name": "キル",
+            "description": "プレイヤーをキルします。勝利にキルが必要な場合のみ使えます。/n必要数キルしても、キルボタンは使えます。"
+        },
+        {
+            "button": "AlicePremonitionButton.png",
+            "name": "予感",
+            "description": "キラーの位置を知ることが出来ます。"
+        }
+    ],
+    "from": "ExR"
+}

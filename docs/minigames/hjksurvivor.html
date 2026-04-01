@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ひじきサバイバー</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #222; color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: sans-serif; overflow-x: hidden; overflow-y: auto; }
+        #game-container { position: relative; }
+        #title { margin: 5px 0; }
+        canvas { border: none; image-rendering: pixelated; background: #333; width: 432px; height: 432px; }
+        #minimap { position: absolute; top: 0px; right: 0px; width: 100px; height: 100px; background: rgba(0, 0, 0, 0.7); border: 2px solid #888; }
+        .ui-container { margin-top: 10px; padding: 15px; background: rgba(0, 0, 0, 0.8); border-radius: 10px; text-align: center; width: 420px; }
+        .hp-bar-bg { width: 100%; height: 12px; background: #333; border-radius: 6px; margin-top: 5px; border: 1px solid #000; overflow: hidden; }
+        #hp-bar-fill { width: 100%; height: 100%; background: #00ff00; transition: width 0.2s; }
+        .skill-bar-bg { width: 100%; height: 8px; background: #111; border-radius: 4px; margin-top: 10px; border: 1px solid #00ccff; overflow: hidden; }
+        #skill-bar-fill { width: 0%; height: 100%; background: #00ccff; }
+        .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); border: 4px solid #fff; padding: 25px; text-align: center; border-radius: 15px; z-index: 100; min-width: 200px; }
+        .hidden { display: none; }
+        button { padding: 8px 15px; font-size: 16px; cursor: pointer; background: #444; color: white; border: 1px solid #666; margin: 5px; border-radius: 5px; }
+        .wiki-link { margin: 10px 0; text-align: center; }
+        .wiki-link a { display: inline-block; padding: 10px 20px; background: #555; color: white; text-decoration: none; border-radius: 5px; border: 1px solid #777; font-size: 14px; transition: background 0.3s; }
+        .wiki-link a:hover { background: #666; }
+        
+        /* スマホ操作ボタン */
+        .mobile-controls { display: none; margin: 10px 0; }
+        .control-container { display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .dpad { display: grid; grid-template-columns: 50px 50px 50px; grid-template-rows: 50px 50px 50px; gap: 3px; }
+        .action-buttons { display: flex; flex-direction: column; gap: 8px; }
+        .control-btn { width: 50px; height: 50px; font-size: 20px; background: rgba(68, 68, 68, 0.8); border: 2px solid #888; border-radius: 10px; color: white; cursor: pointer; user-select: none; touch-action: manipulation; }
+        .control-btn:active { background: rgba(100, 100, 100, 0.9); transform: scale(0.95); }
+        .control-btn.action { width: 85px; height: 85px; font-size: 16px; background: rgba(0, 150, 255, 0.8); font-weight: bold; }
+        .control-btn.action:active { background: rgba(0, 180, 255, 0.9); }
+        .control-btn.skill { width: 85px; height: 50px; font-size: 14px; background: rgba(255, 200, 0, 0.8); font-weight: bold; }
+        .control-btn.skill:active { background: rgba(255, 220, 50, 0.9); }
+        
+        @media (max-width: 768px), (pointer: coarse) {
+            body { padding: 5px; }
+            #title { font-size: 18px; margin: 5px 0; padding: 10px; }
+            .mobile-controls { display: block; }
+            canvas { width: min(95vw, 400px) !important; height: min(95vw, 400px) !important; }
+            .ui-container { width: min(95vw, 400px); padding: 10px; margin-top: 5px; font-size: 14px; }
+            #minimap { display: none; }
+            button { padding: 6px 12px; font-size: 14px; margin: 3px; }
+            .wiki-link { margin: 5px 0; }
+            .wiki-link a { padding: 8px 15px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2 id="title" class="ui-container">ひじきサバイバー
+<div id="setup">
+    必殺技選択<br>
+    <button onclick="startGame('ひじき豆')">1. ひじき豆</button>
+    <button onclick="startGame('縛り豆')">2. 縛り豆(クリア時スコア1.5倍)</button>
+    <button onclick="startGame('波動砲豆')">3. 波動砲豆</button>
+    <button onclick="startGame('ムービング豆')">4. ムービング豆</button>
+    <button onclick="startGame('侍豆')">5. 侍豆</button>
+    <button onclick="startGame('スピードブースター豆')">6. スピードブースター豆</button>
+</div>
+</h2>
+
+    <div id="game-view" class="hidden">
+        <div id="game-container">
+            <canvas id="gameCanvas" width="144" height="144"></canvas>
+            <canvas id="minimap" width="100" height="100"></canvas>
+            
+            <div id="pause-overlay" class="overlay hidden"><h2>PAUSE</h2><button onclick="togglePause()">再開</button></div>
+            
+            <div id="result-overlay" class="overlay hidden">
+                <h2 style="color:#ff4444;">GAME OVER</h2>
+                <p style="font-size: 32px; font-weight: bold; color: #ffff00; margin: 10px 0;">RANK: <span id="res-rank">-</span></p>
+                <p style="color: #fff; font-size: 16px;">ABILITY: <span id="res-ability">0</span></p>
+                <p>SCORE: <span id="res-score">0</span></p>
+                <p>WAVE: <span id="res-wave">1</span></p>
+                <button onclick="location.reload()">もう一度</button>
+            </div>
+
+            <div id="shop-overlay" class="overlay hidden">
+                <h3 style="color: #ffff00;">SHOP</h3>
+                <button id="btn-speed" onclick="buyUpgrade('speed')">速度UP ($50) 残り:<span id="stock-speed">20</span></button>
+                <button id="btn-range" onclick="buyUpgrade('range')">範囲UP ($100) 残り:<span id="stock-range">10</span></button>
+                <button id="btn-heal" onclick="buyUpgrade('heal')">HP全回復 ($60)残り:<span id="stock-heal">5</span></button>
+                <button id="btn-heal25" onclick="buyUpgrade('heal25')">HP25回復 ($15)残り:<span id="stock-heal25">20</span></button><br><br>
+                <button onclick="toggleShop()">閉じる</button>
+            </div>
+        </div>
+
+        <div class="ui-container">
+            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <div style="color: #00ff00;">HP: <span id="hp-display">100</span></div>
+                <div style="color: #fff;">SCORE: <span id="score-display">0</span> [<span id="rank-display" style="color: #ffff00;">E</span>]</div>
+                <div style="color: #ffff00;">$: <span id="money-display">0</span></div>
+            </div>
+            <div class="hp-bar-bg"><div id="hp-bar-fill"></div></div>
+            <div class="skill-bar-bg"><div id="skill-bar-fill"></div></div>
+            <div style="font-size: 10px; color: #00ccff; margin-top: 2px;">SPACE: 必殺ひじき / クリック: 攻撃</div>
+            <div id="wave-info" style="color: #00ff00; margin-top:8px;">WAVE <span id="wave-num">1</span> | 目標撃破: <span id="kill-target">5</span></div>
+            <div id="rest-ui" class="hidden">次まで: <span id="shop-timer">30</span>s <button onclick="toggleShop()" style="background:#ccaa00;color:black;">SHOP</button></div>
+        </div>
+    </div>
+
+    <!-- スマホ用操作ボタン -->
+    <div class="mobile-controls">
+        <div class="control-container">
+            <!-- 左側：十字キー -->
+            <div class="dpad">
+                <div></div>
+                <button class="control-btn" id="btn-up">↑</button>
+                <div></div>
+                <button class="control-btn" id="btn-left">←</button>
+                <div></div>
+                <button class="control-btn" id="btn-right">→</button>
+                <div></div>
+                <button class="control-btn" id="btn-down">↓</button>
+                <div></div>
+            </div>
+            
+            <!-- 右側：攻撃・必殺技ボタン -->
+            <div class="action-buttons">
+                <button class="control-btn action" id="btn-attack">攻撃</button>
+                <button class="control-btn skill" id="btn-skill">必殺技</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="wiki-link">
+        <a href="/UchuAddonWiki/">📚 Wiki を見る</a>
+    </div>
+
+<script>
+const TILE_SIZE = 16, CENTER = 4, MAP_LIMIT = 64;
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const mCanvas = document.getElementById('minimap');
+const mCtx = mCanvas.getContext('2d');
+
+let spriteSheet = new Image();
+spriteSheet.src = '../resource/minigame/Hjksurvivor.png';
+
+// 画像読み込み失敗時のフォールバック用フラグ
+let useShapeFallback = false;
+
+spriteSheet.onerror = function() {
+    console.log('画像の読み込みに失敗しました。図形で代替表示します。');
+    useShapeFallback = true;
+};
+
+// 図形描画用の関数
+function drawCircle(ctx, x, y, size, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawPlayerShape(ctx, x, y, size) {
+    // プレイヤー（緑の円）
+    ctx.fillStyle = "#00ff00";
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+    // 目
+    ctx.fillStyle = "#000";
+    ctx.fillRect(x + size*0.3, y + size*0.3, size*0.15, size*0.15);
+    ctx.fillRect(x + size*0.55, y + size*0.3, size*0.15, size*0.15);
+}
+
+function drawEnemyShape(ctx, x, y, size, type) {
+    const colors = {
+        'normal': '#4444ff',
+        'speed': '#44ff44',
+        'heavy': '#9370DB',
+        'scout': '#88ccff'
+    };
+    ctx.fillStyle = colors[type] || '#ff4444';
+    ctx.beginPath();
+    ctx.arc(x + size/2, y + size/2, size/2, 0, Math.PI * 2);
+    ctx.fill();
+    // 敵の目
+    ctx.fillStyle = "#ff0000";
+    ctx.fillRect(x + size*0.3, y + size*0.3, size*0.2, size*0.2);
+    ctx.fillRect(x + size*0.5, y + size*0.3, size*0.2, size*0.2);
+}
+
+let player = { worldX: 0, worldY: 0, hp: 100, maxHp: 100, money: 0, score: 0, moveSpeed: 0.08, weaponRange: 1.2, angle: 0, isAttacking: false, attackFrame: 0, skillCool: 0, invincibleTimer: 0, isInvincible: false};
+let enemies = [], drops = [];
+let gameState = 'playing', currentWave = 1, killsInTurn = 0, targetKills = 5, shopTimeLeft = 0, keys = {};
+let skillEffect = 0;
+// スクリプト上部（let skillEffect = 0; のあたり）に追加
+let restTimer = null; 
+let scoreMultiplier = 1;
+let beamActive = 0; // 3用
+let mouseWorldX = 0, mouseWorldY = 0;
+canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    // 画面の中心(72, 72)から、マウスがどの方向に離れているか
+    const mx = (e.clientX - rect.left) * (canvas.width / rect.width) - 72;
+    const my = (e.clientY - rect.top) * (canvas.height / rect.height) - 72;
+    
+    // その方向の角度を保存
+    targetAngle = Math.atan2(my, mx);
+
+    mouseWorldX = player.worldX + (mx / 16);
+    mouseWorldY = player.worldY + (my / 16);
+});
+let fixedAngle = 0; // 波動砲発射時の角度を固定する用
+let targetAngle = 0; // マウスが指している方向（角度）を保存する変数
+
+function startRestPhase() {
+    if (gameState === 'resting') return;
+    gameState = 'resting';
+    
+    // --- 追加：既存のタイマーがあれば破棄する ---
+    if (restTimer) clearInterval(restTimer);
+    
+    shopTimeLeft = 30;
+    player.score += currentWave * 500;
+    overlayEffect = { text: "WAVE CLEAR!", timer: 60, opacity: 1.0, scale: 0.5 };
+    document.getElementById('rest-ui').classList.remove('hidden');
+
+    // restTimer 変数に代入するように変更
+    restTimer = setInterval(() => {
+        if (gameState === 'over') { 
+            clearInterval(restTimer); 
+            return; 
+        }
+        if (gameState !== 'paused') {
+            shopTimeLeft--;
+        }
+        document.getElementById('shop-timer').innerText = shopTimeLeft;
+        
+        if (shopTimeLeft <= 0) { 
+            clearInterval(restTimer); 
+            restTimer = null; // クリア
+            nextWave(); 
+        }
+    }, 1000);
+}
+let lastRank = "E";
+let maxEnemies = 20;
+let spawnRateup = 0;
+
+let shopStock = { speed: 20, range: 10, heal: 5, heal25: 20 };
+let overlayEffect = { text: "", timer: 0, opacity: 0, scale: 1.0 };
+
+const SPRITE_POS = { hijiki: 64, normal: 32, speed: -0.1, heavy: 48, scout: 16 };
+
+function startGame(choice) {
+document.getElementById('setup').classList.add('hidden');
+document.getElementById('game-view').classList.remove('hidden');
+    
+    player.abilityType = choice;
+    gameState = 'playing'; // 状態をプレイ中に変更
+    requestAnimationFrame(loop);
+}
+
+window.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    if(e.code==='Space') useSkill();
+    if(e.key==='p') togglePause();
+    if(e.key==='x') toggleShop();
+});
+window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+// スマホ用ボタンのイベントリスナー
+const mobileButtons = {
+    'btn-up': 'w',
+    'btn-down': 's',
+    'btn-left': 'a',
+    'btn-right': 'd'
+};
+
+// 方向ボタンのタッチイベント
+Object.entries(mobileButtons).forEach(([btnId, key]) => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        // タッチイベント
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys[key] = true;
+        }, { passive: false });
+        
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        }, { passive: false });
+        
+        btn.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        }, { passive: false });
+        
+        // マウスイベント（デスクトップでのテスト用）
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            keys[key] = true;
+        });
+        
+        btn.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            keys[key] = false;
+        });
+        
+        btn.addEventListener('mouseleave', (e) => {
+            keys[key] = false;
+        });
+    }
+});
+
+// 攻撃ボタン
+const attackBtn = document.getElementById('btn-attack');
+if (attackBtn) {
+    attackBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if(gameState==='playing' || gameState==='resting'){
+            player.isAttacking=true;
+            player.attackFrame=8;
+        }
+    }, { passive: false });
+    
+    attackBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if(gameState==='playing' || gameState==='resting'){
+            player.isAttacking=true;
+            player.attackFrame=8;
+        }
+    });
+}
+
+// スキルボタン
+const skillBtn = document.getElementById('btn-skill');
+if (skillBtn) {
+    skillBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        useSkill();
+    }, { passive: false });
+    
+    skillBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        useSkill();
+    });
+}
+
+
+canvas.addEventListener('mousedown', () => {
+    if(gameState==='playing' || gameState==='resting'){
+        player.isAttacking=true;
+        player.attackFrame=8;
+    }
+});
+
+function getRank(s) {
+    if (s < 200000) {
+        if (s >= 100000) return "XXX+";
+        if (s >= 90000)  return "XXX";
+        if (s >= 80000)  return "XX";
+        if (s >= 70000)  return "X";
+        if (s >= 60000)  return "SSS+";
+        if (s >= 40000)  return "SSS";
+        if (s >= 30000)  return "SS";
+        if (s >= 22500)  return "S";
+        if (s >= 15000)  return "A";
+        if (s >= 7500)   return "B";
+        if (s >= 4500)   return "C";
+        if (s >= 1250)   return "D";
+        return "E";
+    }
+    const n = Math.floor(Math.log2(s / 200000)) + 1;
+
+    if (n <= 1) return "U";
+    return "U" + n;
+}
+
+function updateUI() {
+    const currentRank = getRank(player.score);
+    if (currentRank !== lastRank && gameState !== 'over') {
+        overlayEffect = { text: "RANK UP!", timer: 60, opacity: 1.0, scale: 1.0 };
+        lastRank = currentRank;
+    }
+    const hpPer = (player.hp / player.maxHp) * 100;
+    document.getElementById('hp-bar-fill').style.width = Math.max(0, hpPer) + "%";
+    document.getElementById('skill-bar-fill').style.width = (player.skillCool / 10) + "%";
+    document.getElementById('hp-display').innerText = Math.ceil(player.hp);
+    document.getElementById('score-display').innerText = player.score;
+    document.getElementById('rank-display').innerText = currentRank;
+    document.getElementById('money-display').innerText = player.money;
+    document.getElementById('wave-num').innerText = currentWave;
+    document.getElementById('kill-target').innerText = Math.max(0, targetKills - killsInTurn);
+    updateShopUI();
+}
+
+function startRestPhase() {
+    if (gameState === 'resting') return;
+    gameState = 'resting';
+    shopTimeLeft = 30;
+    player.score += Math.floor((currentWave * 500) * scoreMultiplier);
+    overlayEffect = { text: "WAVE CLEAR!", timer: 60, opacity: 1.0, scale: 0.5 };
+    document.getElementById('rest-ui').classList.remove('hidden');
+    let timer = setInterval(() => {
+        if (gameState === 'over') { clearInterval(timer); return; }
+        if (gameState !== 'paused') shopTimeLeft--;
+        document.getElementById('shop-timer').innerText = shopTimeLeft;
+        if (shopTimeLeft <= 0) { clearInterval(timer); nextWave(); }
+    }, 1000);
+}
+
+function nextWave() {
+    if (gameState === 'over') return;
+    gameState = 'playing';
+    currentWave++; killsInTurn = 0; targetKills += 2;
+    overlayEffect = { text: "WAVE " + currentWave + " START!", timer: 60, opacity: 1.0, scale: 0.5 };
+    document.getElementById('rest-ui').classList.add('hidden');
+    document.getElementById('shop-overlay').classList.add('hidden');
+    maxEnemies += 2;
+    spawnRateup += 0.0025;
+    
+}
+
+function useSkill() {
+    if(player.abilityType == 'ひじき豆' ||player.abilityType == '縛り豆' || player.skillCool < 1000 || gameState !== 'playing' && gameState !== 'resting') return;
+
+    player.score += 250;
+    player.skillCool = 0;
+    updateUI();
+
+if (player.abilityType === '波動砲豆') {
+        beamActive = 120; // 2秒間
+        fixedAngle = player.angle; // 角度を保存
+    }
+    else if (player.abilityType === 'ムービング豆') {
+        player.worldX = mouseWorldX;
+        player.worldY = mouseWorldY;
+        overlayEffect = { text: "テレポート！", timer: 30, opacity: 1.0, scale: 0.5 };
+    } 
+    else if (player.abilityType === '侍豆') {
+        skillEffect = 20;
+        enemies.forEach((en, i) => {
+            let dx = player.worldX - en.worldX, dy = player.worldY - en.worldY;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 7.5) {
+                player.score += Math.floor(en.scoreVal * scoreMultiplier);
+                enemies.splice(i, 1);
+                killsInTurn++;
+                drops.push({x: en.worldX, y: en.worldY, type: 'coin'});
+            }
+    
+        });
+    }
+    else if (player.abilityType === 'スピードブースター豆') {
+        let speedboost=(player.moveSpeed * 2) - player.moveSpeed;
+        player.moveSpeed *= 2;
+        setTimeout(() => player.moveSpeed -= speedboost, 5000); // 5秒間加速
+    }
+}
+let prevState = gameState;
+function togglePause(){
+    if (gameState === 'over') return;
+
+    if (gameState !== 'paused') {
+        // 現在の状態（playing か resting）を保存してポーズする
+        prevState = gameState;
+        gameState = 'paused';
+        document.getElementById('pause-overlay').classList.remove('hidden');
+    } else {
+        // 保存しておいた状態に戻す
+        gameState = prevState;
+        document.getElementById('pause-overlay').classList.add('hidden');
+    }
+}
+
+function toggleShop() {
+
+    if (player.abilityType === '縛り豆') {
+        overlayEffect = { text: "🙄縛り豆でーすwwwww👈", timer: 60, opacity: 1.0, scale: 0.5 };
+        return;
+    }
+
+    // 休憩中（resting）か、あるいはすでにショップが開いている時（閉じる操作）に動作させる
+    const shop = document.getElementById('shop-overlay');
+    const isShopOpen = !shop.classList.contains('hidden');
+
+    if (gameState === 'resting' || isShopOpen) {
+        shop.classList.toggle('hidden');
+    }
+    if (isShopOpen) {
+        gameState = 'resting'; // 閉じたら休憩状態に戻る
+}
+}
+
+function buyUpgrade(type) {
+    if (shopStock[type] <= 0)  return;
+    if (type === 'speed' && player.money >= 50) { player.moveSpeed += 0.005; player.money -= 50; shopStock.speed--; player.score += 50;}
+    else if (type === 'range' && player.money >= 100) { player.weaponRange += 0.1; player.money -= 100; shopStock.range--; player.score += 50;}
+    else if (type === 'heal' && player.money >= 60) { player.hp = player.maxHp; player.money -= 60; shopStock.heal--; player.score += 50;}
+    else if (type === 'heal25' && player.money >= 15) { player.hp += 25; player.money -= 15; shopStock.heal25--; player.score += 50;}
+    updateUI();
+}
+
+function updateShopUI() {
+    document.getElementById('stock-speed').innerText = shopStock.speed;
+    document.getElementById('stock-range').innerText = shopStock.range;
+    document.getElementById('stock-heal').innerText = shopStock.heal;
+    document.getElementById('stock-heal25').innerText = shopStock.heal25;
+    if (shopStock.speed <= 0) document.getElementById('btn-speed').disabled = true;
+    if (shopStock.range <= 0) document.getElementById('btn-range').disabled = true;
+    if (shopStock.heal <= 0) document.getElementById('btn-heal').disabled = true;
+    if (shopStock.heal25 <= 0) document.getElementById('btn-heal25').disabled = true;
+}
+
+function update() {
+    if (!gameState || gameState === 'setup' || gameState === 'paused' || gameState === 'over') return;
+
+    // --- 【重要】カウントダウンを最優先で実行 ---
+
+    if (skillEffect > 0) skillEffect--;
+    
+// 波動砲の持続時間を減らす
+    if (beamActive > 0) {
+        beamActive--;
+        player.angle = fixedAngle; // 発射中の向きを固定
+        checkBeamCollision();      // 当たり判定を実行
+    }
+
+    if (player.invincibleTimer > 0) {
+    player.invincibleTimer--;
+    if (player.invincibleTimer <= 0) {
+        player.isInvincible = false;
+    }
+}
+
+if (beamActive <= 0) {
+        let dx = 0, dy = 0;
+    if (keys['w'] || keys['arrowup']) dy -= player.moveSpeed;
+    if (keys['s'] || keys['arrowdown']) dy += player.moveSpeed;
+    if (keys['a'] || keys['arrowleft']) dx -= player.moveSpeed;
+    if (keys['d'] || keys['arrowright']) dx += player.moveSpeed;
+
+    if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
+// 移動した後の位置を計算
+let nextX = player.worldX + dx;
+    let nextY = player.worldY + dy;
+
+const LIMIT = 64
+if (nextX > LIMIT || nextX < -LIMIT +1){
+    player.worldX -= dx;
+}
+else if (nextY > LIMIT  || nextY < -LIMIT +1 ){
+    player.worldY -= dy;
+}
+else {
+    player.worldX = nextX;
+    player.worldY = nextY;
+}
+    
+    // 通常時の向き更新
+    player.angle = targetAngle;
+
+    
+}
+
+    // --- 敵の生成とアップデート ---
+    spawnRate = (gameState === 'playing') ? 0.03 : 0.005;
+    if(enemies.length >= 20 ){
+    spawnRate = spawnRateup
+    }
+    if (Math.random() < spawnRate && enemies.length < maxEnemies) {
+        const types = [
+            { type: 'normal', color: 'blue', hp: 2, speed: 0.03, power: 3, scoreVal: 100 },
+            { type: 'speed', color: 'green', hp: 0.5, speed: 0.13, power: 3, scoreVal: 150 },
+            { type: 'heavy', color: '#9370DB', hp: 4, speed: 0.01, power: 8, scoreVal: 500 },
+            { type: 'scout', color: 'lightblue', hp: 2, speed: 0.03, power: 5, scoreVal: 250 }
+        ];
+        
+        let t = types[Math.floor(Math.random() * Math.min(currentWave, 4))];
+        let ang = Math.random() * Math.PI * 2;
+
+        // 一旦、変数 newEnemy に入れる
+        let newEnemy = { worldX: player.worldX + Math.cos(ang)*7, worldY: player.worldY + Math.sin(ang)*7, ...t };
+
+        // ★ここでマップの端（MAP_LIMIT）を超えないように制限をかける
+        newEnemy.worldX = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, newEnemy.worldX));
+        newEnemy.worldY = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, newEnemy.worldY));
+
+        // 制限をかけた後のデータを配列に追加する
+        enemies.push(newEnemy);
+    }
+
+    enemies.forEach((en, i) => {
+    let edx = player.worldX - en.worldX, edy = player.worldY - en.worldY;
+    let dist = Math.sqrt(edx*edx + edy*edy);
+    
+    // プレイヤーに向かって移動
+    en.worldX += edx * (en.speed / dist);
+    en.worldY += edy * (en.speed / dist);
+
+    // 敵もマップの端（MAP_LIMIT = 64）で止める
+    en.worldX = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldX));
+    en.worldY = Math.max(-MAP_LIMIT, Math.min(MAP_LIMIT, en.worldY));
+
+        if (dist < 0.5) {
+            if (!player.isInvincible) {
+    player.hp -= en.power; // ダメージ
+    updateUI();
+
+    player.invincibleTimer = 5;
+    player.isInvincible = true;
+            }
+    // プレイヤーのノックバック処理
+    // 敵がいる方向（edx, edy）とは逆方向にプレイヤーを弾き飛ばす
+    let knockbackStrength = 0.2; // ノックバックの強さ
+    let nexteX = player.worldX + (edx / dist) * knockbackStrength;
+    let nexteY = player.worldY + (edy / dist) * knockbackStrength;
+
+const LIMIT = 64
+if (nexteX > LIMIT || nexteX < -LIMIT +1){
+    player.worldX -= nexteX - player.worldX;
+}
+else if (nexteY > LIMIT  || nexteY < -LIMIT +1 ){
+    player.worldY -= nexteY - player.worldY;
+}
+else {
+    player.worldX = nexteX;
+    player.worldY = nexteY;
+}
+
+        if(player.hp <= 0) gameOver();
+}
+
+        // 敵の個別アップデート (enemies.forEach 内)
+if (player.isAttacking && dist < player.weaponRange) {
+    let angleToEn = Math.atan2(en.worldY - player.worldY, en.worldX - player.worldX);
+    let aDiff = Math.abs(player.angle - angleToEn);
+    if (aDiff > Math.PI) aDiff = Math.PI * 2 - aDiff;
+
+    // 攻撃範囲内（角度 1.0 未満）に敵がいる場合
+    if (aDiff < 1.0) {
+        en.hp -= 0.5; // ダメージ
+
+        let kbStrength = 0.1;
+        en.worldX += Math.cos(angleToEn) * kbStrength;
+        en.worldY += Math.sin(angleToEn) * kbStrength;
+
+        if(en.hp <= 0) enemyKilled(en, i);
+    }
+}
+    });
+
+    // ドロップ・UI更新
+    drops.forEach((d, i) => {
+        if(Math.sqrt((player.worldX-d.x)**2 + (player.worldY-d.y)**2) < 0.7) {
+            if(d.type==='heal') player.hp = Math.min(player.maxHp, player.hp + 5);
+            else player.money += 10;
+            drops.splice(i, 1);
+            updateUI();
+        }
+    });
+
+    if (player.isAttacking) {
+    player.attackFrame -= 0.75; 
+    if (player.attackFrame <= 0) {
+        player.isAttacking = false;
+        player.attackFrame = 0; // 念のため0にリセット
+    }
+   updateUI();
+}    
+}
+updateShopUI();
+
+function checkBeamCollision() {
+    enemies.forEach((en, i) => {
+        let dx = en.worldX - player.worldX;
+        let dy = en.worldY - player.worldY;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        
+        let angleToEn = Math.atan2(dy, dx);
+        let angleDiff = Math.abs(player.angle - angleToEn);
+        if (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
+
+        // 射程50以内、かつビームの判定幅(0.50)の中にいる敵
+        if (dist < 50 && angleDiff < 0.50) {
+            // ビームが出ている間、毎フレームダメージを与える
+            en.hp -= 0.2; 
+            
+            // 敵が死んだら処理
+            if (en.hp <= 0) {
+                enemyKilled(en, i);
+            }
+        }
+    });
+}
+
+function enemyKilled(en, i) {
+    player.score += Math.floor((en.scoreVal || 100) * scoreMultiplier);      
+    
+    player.skillCool = Math.min(1000, player.skillCool + 100);
+
+    let r = Math.random();
+    if(r < 0.8) drops.push({x: en.worldX, y: en.worldY, type: 'coin'});
+    else if(r < 0.85) drops.push({x: en.worldX, y: en.worldY, type: 'heal'});
+    enemies.splice(i, 1);
+    
+    if (gameState === 'playing') {
+        killsInTurn++;
+        if (killsInTurn >= targetKills) startRestPhase();
+    }
+}
+
+function gameOver() {
+    if (player.money > 0)
+    {
+        player.score += player.money;
+        player.money = 0;
+    }
+    if (player.abilityType === '縛り豆') {
+       player.score = Math.floor(player.score * 1.5); 
+       updateUI();
+    }
+    gameState = 'over';
+    document.getElementById('res-ability').innerText = player.abilityType;
+    document.getElementById('res-rank').innerText = getRank(player.score);
+    document.getElementById('res-score').innerText = player.score;
+    document.getElementById('res-wave').innerText = currentWave;
+    document.getElementById('result-overlay').classList.remove('hidden');
+}
+
+function draw() {
+    ctx.clearRect(0, 0, 144, 144);
+    mCtx.clearRect(0, 0, 100, 100);
+
+    let offX = (player.worldX % 1) * 16, offY = (player.worldY % 1) * 16;
+
+    for (let iy = -1; iy <= 10; iy++) {
+    for (let ix = -1; ix <= 10; ix++) {
+        // タイルの「世界座標」を正しく計算
+        let worldTileX = Math.floor(player.worldX) + ix -4;
+        let worldTileY = Math.floor(player.worldY) + iy -4;
+
+        // 世界の端（MAP_LIMIT=64）を超えていたら黒、そうでなければタイル模様
+        ctx.fillStyle = (Math.abs(worldTileX) > MAP_LIMIT || Math.abs(worldTileY) > MAP_LIMIT) ? "#222" : 
+                        ((Math.abs(worldTileX) + Math.abs(worldTileY)) % 2 === 0 ? "#555" : "#4a4a4a");
+        
+        ctx.fillRect(ix * 16 - offX, iy * 16 - offY, 16, 16);
+    }
+}
+    if (player.isInvincible && Math.floor(Date.now() / 50) % 2 === 0) {
+    // 100ミリ秒ごとに点滅させる（描画をスキップする）
+} else {
+    if (useShapeFallback) {
+        drawPlayerShape(ctx, 64, 64, 16);
+    } else {
+        ctx.drawImage(spriteSheet, SPRITE_POS.hijiki, 0, 16, 16, 64, 64, 16, 16);
+    }
+}
+        // draw関数内のプレイヤー描画の後、ctx.restore()の直前などに追加
+if (beamActive > 0) {
+    ctx.save();
+    ctx.translate(72, 72); // プレイヤー中心
+    ctx.rotate(player.angle);
+    
+    // 1. 外側の光（青色グロー）
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#00ffff";
+    let grad = ctx.createLinearGradient(0, 0, 160, 0);
+    grad.addColorStop(0, "rgba(0, 255, 255, 0.8)");
+    grad.addColorStop(1, "rgba(0, 100, 255, 0)");
+    ctx.fillStyle = grad;
+    
+    // 太さがランダムに揺れるエフェクト
+    let beamSize = 6 + Math.random() * 4;
+    ctx.fillRect(8, -beamSize / 2, 160, beamSize);
+    
+    // 2. 内側の芯（白い光）
+    ctx.fillStyle = "white";
+    ctx.fillRect(8, -1.5, 160, 3);
+    
+    // 3. 発射口の火花エフェクト
+    for(let i=0; i<3; i++) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(10 + Math.random()*10, (Math.random()-0.5)*15, 2, 2);
+    }
+    ctx.restore();
+}
+
+    if(skillEffect > 0) {
+        ctx.strokeStyle = "rgba(0, 200, 255, " + (skillEffect/20) + ")";
+        ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(72, 72, 48 * (1 - skillEffect/20), 0, Math.PI*2); ctx.stroke();
+    }
+
+    drops.forEach(d => {
+        let dx = (CENTER + (d.x - player.worldX)) * 16, dy = (CENTER + (d.y - player.worldY)) * 16;
+        ctx.fillStyle = d.type === 'heal' ? "#00ff00" : "#ffff00";
+        ctx.beginPath(); ctx.arc(dx+8, dy+8, 3, 0, Math.PI*2); ctx.fill();
+    });
+
+    enemies.forEach(en => {
+        let dx = (CENTER + (en.worldX - player.worldX)) * 16, dy = (CENTER + (en.worldY - player.worldY)) * 16;
+        let s = en.type === 'heavy' ? 18 : 14;
+        
+        if (useShapeFallback) {
+            drawEnemyShape(ctx, dx + (16-s)/2, dy + (16-s)/2, s, en.type);
+        } else {
+            let sx = SPRITE_POS[en.type] || 32; 
+            ctx.drawImage(spriteSheet, sx, 0, 16, 16, dx + (16-s)/2, dy + (16-s)/2, s, s);
+        }
+        
+        mCtx.fillStyle = en.color; mCtx.fillRect(50 + en.worldX*0.78, 50 + en.worldY*0.78, 2, 2);
+    });
+
+    if (useShapeFallback) {
+        drawPlayerShape(ctx, 64, 64, 16);
+    } else {
+        ctx.drawImage(spriteSheet, SPRITE_POS.hijiki, 0, 16, 16, 64, 64, 16, 16);
+    }
+    mCtx.fillStyle = "#00ff00"; mCtx.fillRect(50 + player.worldX*0.78, 50 + player.worldY*0.78, 3, 3);
+
+    ctx.save();
+    ctx.translate(72, 72);
+    let t = (8 - player.attackFrame) / 4; // 0（開始）から 1（終了）までの進捗率
+    let sweep = t * Math.PI;
+    let attackRotation = player.isAttacking ? Math.sin(sweep) * 0.9 : 0;
+    ctx.rotate(player.angle + attackRotation);
+    ctx.fillStyle = "#eee";
+    ctx.fillRect(10, -1.5, 12 * (player.weaponRange/1.2), 3);
+    ctx.restore();
+
+    if (overlayEffect.timer > 0) {
+        ctx.save();
+        ctx.translate(72, 72);
+        ctx.scale(overlayEffect.scale, overlayEffect.scale);
+        ctx.font = "bold 8px monospace"; ctx.textAlign = "center";
+        ctx.strokeStyle = `rgba(0, 0, 0, ${overlayEffect.opacity})`; ctx.lineWidth = 3;
+        ctx.strokeText(overlayEffect.text, 0, 0);
+        ctx.fillStyle = `rgba(255, 255, 255, ${overlayEffect.opacity})`;
+        ctx.fillText(overlayEffect.text, 0, 0);
+        ctx.restore();
+        overlayEffect.timer--;
+        overlayEffect.scale += (1.5 - overlayEffect.scale) * 0.1;
+        if (overlayEffect.timer < 20) overlayEffect.opacity -= 0.05;
+    }
+}
+
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+</script>
+<div style="text-align: center; margin-top: 10px; color: #888; font-size: 12px;">
+    作：Irm
+</div>
+</body>
+</html>

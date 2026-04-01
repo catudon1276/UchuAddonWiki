@@ -1,0 +1,19 @@
+{
+    "id": "hex",
+    "icon": "Hex.png",
+    "english_name": "Hex",
+    "name": "ヘックス",
+    "team": "モディファイア",
+    "color": "236, 0, 140",
+    "intro": "魂の対価",
+    "description": "追放された際、ランダムで1人が道連れされます。",
+    "abilities_title": "呪縛",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "呪縛",
+            "description": "追放された際、ランダムで1人が道連れされます。"
+        }
+    ],
+    "from": "TOHY"
+}

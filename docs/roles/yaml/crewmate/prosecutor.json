@@ -1,0 +1,19 @@
+{
+    "id": "prosecutor",
+    "icon": "Prosecutor.png",
+    "english_name": "Prosecutor",
+    "name": "プロセキューター",
+    "team": "クルーメイト",
+    "color": "52, 119, 235",
+    "intro": "地獄で会おうぜ",
+    "description": "プレイヤーを強制追放します。",
+    "abilities_title": "有罪判決",
+    "abilities": [
+        {
+            "button": "ProsecutorButton.png",
+            "name": "プロセキュート",
+            "description": "使用後、投票したプレイヤーを強制追放します。"
+        }
+    ],
+    "from": "TOU"
+}

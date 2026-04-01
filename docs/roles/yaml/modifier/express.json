@@ -1,0 +1,19 @@
+{
+    "id": "express",
+    "icon": "Express.png",
+    "english_name": "Express",
+    "name": "エクスプレス",
+    "team": "モディファイア",
+    "color": "121, 126, 208",
+    "intro": "光速の指先で",
+    "description": "足が速いです。",
+    "abilities_title": "高速移動",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "高速移動",
+            "description": "足が速いです。"
+        }
+    ],
+    "from": "TOHY"
+}

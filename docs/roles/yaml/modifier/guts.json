@@ -1,0 +1,19 @@
+{
+    "id": "guts",
+    "icon": "Guts.png",
+    "english_name": "Guts",
+    "name": "ガッツ",
+    "team": "モディファイア",
+    "color": "255, 165, 0",
+    "intro": "不落の残火",
+    "description": "一度のみ吊られても復活します。",
+    "abilities_title": "根性",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "根性",
+            "description": "一度のみ吊られても復活します。"
+        }
+    ],
+    "from": "TOHY"
+}

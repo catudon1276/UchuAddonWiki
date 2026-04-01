@@ -1,0 +1,19 @@
+{
+    "id": "mist",
+    "icon": "Mist.png",
+    "english_name": "Mist",
+    "name": "ミスト",
+    "team": "ゴースト",
+    "color": "198, 17, 17",
+    "intro": "影の帳",
+    "description": "視界を狭める影を作り出せます。",
+    "abilities_title": "夜霧",
+    "abilities": [
+        {
+            "button": "MistButton.png",
+            "name": "夜霧",
+            "description": "その場に視界を狭める影を生み出します。"
+        }
+    ],
+    "from": "Original"
+}

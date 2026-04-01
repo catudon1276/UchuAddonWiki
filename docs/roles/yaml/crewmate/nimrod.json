@@ -1,0 +1,19 @@
+{
+    "id": "nimrod",
+    "icon": "Nimrod.png",
+    "english_name": "Nimrod",
+    "name": "ニムロッド",
+    "team": "クルーメイト",
+    "color": "199, 162, 70",
+    "intro": "覚悟の一矢",
+    "description": "追放時に選んだ人を道連れするクルーメイトです。",
+    "abilities_title": "道連れ",
+    "abilities": [
+        {
+            "button": "NimrodButton.png",
+            "name": "道連れ",
+            "description": "会議中に指定したプレイヤーを道連れ追放することが出来ます。"
+        }
+    ],
+    "from": "TOHY"
+}

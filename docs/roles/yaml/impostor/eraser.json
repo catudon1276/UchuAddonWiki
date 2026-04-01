@@ -1,0 +1,19 @@
+{
+    "id": "Eraser",
+    "icon": "Eraser.png",
+    "english_name": "Eraser",
+    "name": "イレイサー",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "世界が私を忘れて",
+    "description": "プレイヤーの役職を削除するインポスターです。",
+    "abilities_title": "削除",
+    "abilities": [
+        {
+            "button": "EraserEraseButton.png",
+            "name": "削除",
+            "description": "プレイヤーの役職を消去し、強制的にクルーメイトにします。変更は次の会議後に反映されます。"
+        }
+    ],
+    "from": "TOR"
+}

@@ -1,0 +1,19 @@
+{
+    "id": "alert",
+    "icon": "Alert.png",
+    "english_name": "Alert",
+    "name": "アラート",
+    "team": "モディファイア",
+    "color": "67, 232, 108",
+    "intro": "招集せよ",
+    "description": "ポータブルボタンを持つモディファイアです。",
+    "abilities_title": "ポータブルボタン",
+    "abilities": [
+        {
+            "button": "EmergencyButton.png",
+            "name": "ポータブルボタン",
+            "description": "会議ボタンをどこでも使用できます。"
+        }
+    ],
+    "from": "Original"
+}

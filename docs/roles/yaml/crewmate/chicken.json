@@ -1,0 +1,19 @@
+{
+    "id": "chicken",
+    "icon": "Chicken.png",
+    "english_name": "Chicken",
+    "name": "チキン",
+    "team": "クルーメイト",
+    "color": "255, 238, 0",
+    "intro": "あなたは臆病者",
+    "description": "とても臆病で貧弱なクルーメイトです。",
+    "abilities_title": "貧弱",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "貧弱体質",
+            "description": "様々な要因で簡単に死亡してしまいます。ただし、試合終了まで生存するとクルーメイトが乗っ取り勝利します。/n死因一覧/nドアに指を挟む,ベントに足をつまづく,停電が長く続く,昇降機から落下,はしご・ジップラインから転落,何票か投票を入れられる。"
+        }
+    ],
+    "from": "Original"
+}

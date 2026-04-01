@@ -1,0 +1,31 @@
+{
+  "_comment": "UchuAddon デイリーログ - 新しい更新は配列の先頭に追加してください",
+  "updates": [
+    {
+      "date": "2026-01-16",
+      "title": "Wikiサイト開設",
+      "description": "UchuAddonの公式Wikiサイトを公開しました。役職情報やリソースギャラリーを閲覧できます。",
+      "tags": [
+        "Wiki",
+        "New"
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "title": "Ver β1.0.0 リリース",
+      "description": "限定ベータテスターによる動作確認を開始しました。",
+      "tags": [
+        "Beta",
+        "Test"
+      ]
+    },
+    {
+      "date": "2025-11-04",
+      "title": "開発開始",
+      "description": "UchuAddonプロジェクトの開発を開始しました。",
+      "tags": [
+        "Development"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+    "id": "guardian",
+    "icon": "Guardian.png",
+    "english_name": "Guardian",
+    "name": "ガーディアン",
+    "team": "クルーメイト",
+    "color": "222, 223, 255",
+    "intro": "神の加護",
+    "description": "キルバリアを展開するクルーメイトです。",
+    "abilities_title": "バリア",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "バリア展開",
+            "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
+        }
+    ],
+    "from": "Original"
+}

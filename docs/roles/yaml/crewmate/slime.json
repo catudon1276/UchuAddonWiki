@@ -1,0 +1,24 @@
+{
+    "id": "slime",
+    "icon": "Slime.png",
+    "english_name": "Slime",
+    "name": "スライム",
+    "team": "クルーメイト",
+    "color": "36, 255, 12",
+    "intro": "変幻自在",
+    "description": "体を伸縮できるクルーメイトです。",
+    "abilities_title": "サイズ変化",
+    "abilities": [
+        {
+            "button": "SlimeJumboButton.png",
+            "name": "拡大",
+            "description": "身体が巨大化します。同時に視界も広がります。"
+        },
+        {
+            "button": "SlimeMiniButton.png",
+            "name": "縮小",
+            "description": "身体が縮小します。視界が狭まる代わりに移動速度が上昇します。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,0 +1,19 @@
+{
+    "id": "moon",
+    "icon": "Moon.png",
+    "english_name": "Moon",
+    "name": "ムーン",
+    "team": "モディファイア",
+    "color": "255, 255, 20",
+    "intro": "月下のサテライト",
+    "description": "停電の影響を受けません。",
+    "abilities_title": "月光",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "月光",
+            "description": "停電の影響を受けません。"
+        }
+    ],
+    "from": "TOHK"
+}

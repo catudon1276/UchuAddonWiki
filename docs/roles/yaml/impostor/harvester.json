@@ -1,0 +1,19 @@
+{
+    "id": "harvester",
+    "icon": "Harvester.png",
+    "english_name": "Harvester",
+    "name": "ハーヴェスター",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "やがて星となって再会しよう",
+    "description": "死者の役職を調べるインポスターです。",
+    "abilities_title": "回収",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "回収",
+            "description": "会議中に死者の役職を調べることが出来ます。"
+        }
+    ],
+    "from": "Original"
+}

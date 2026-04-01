@@ -1,0 +1,19 @@
+{
+  "id": "Observer",
+  "icon": "Observer.png",
+  "english_name": "Nice Observer",
+  "name": "ナイスオブザーバー",
+  "team": "クルーメイト",
+  "color": "0, 103, 144",
+  "intro": "映照の哨戒者",
+  "description": "カメラを設置するクルーメイトです。",
+  "abilities_title": "カメラ設置",
+  "abilities": [
+    {
+      "button": "NoImage.png",
+      "name": "カメラ設置",
+      "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
+    }
+  ],
+  "from": "Original"
+}

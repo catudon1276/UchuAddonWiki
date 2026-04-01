@@ -1,0 +1,24 @@
+{
+    "id": "xinobi",
+    "icon": "Xinobi.png",
+    "english_name": "Xinobi",
+    "name": "シノビ",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "刃の心を宿れ",
+    "description": "オブジェクトに変化するインポスターです。",
+    "abilities_title": "忍術",
+    "abilities": [
+        {
+            "button": "XinobiButton.png",
+            "name": "変化",
+            "description": "対象のオブジェクトに変化します。"
+        },
+        {
+            "button": "XinobiVentButton.png",
+            "name": "ベン遁",
+            "description": "一番近くのベントに遠隔で入ります。全てのベントが接続されています。"
+        }
+    ],
+    "from": "Original"
+}

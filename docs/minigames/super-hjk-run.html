@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUPER HJK RUN</title>
+    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">        
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Kanit:ital,wght@1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --font-title: 'Kanit', sans-serif;
+        }
+        body {
+            touch-action: none;
+            background-color: #f4f4f4;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 10px;
+            transition: background-color 0.5s;
+            font-family: var(--font-main);
+        }
+        body.night-mode { background-color: #000; }
+
+        canvas {
+            background-color: #fff;
+            border: 3px solid #111;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            transition: filter 0.5s, border-color 0.5s;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .night-canvas { background-color: #111; border-color: #444; }
+        
+        .title-text {
+            font-family: var(--font-title);
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .controls-container {
+            width: 95%;
+            max-width: 800px;
+            margin-top: 10px;
+        }
+        .buttons-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        .btn {
+            height: 90px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            border: 3px solid #111;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #111;
+            box-shadow: 0 5px 0 #111;
+        }
+        .btn:active { transform: translateY(5px); box-shadow: 0 0 0 #111; }
+        
+        .btn-jump { flex: 8; background: #fff; font-size: 1.8rem; }
+        .btn-ult { 
+            flex: 2; background: #ddd; opacity: 0.3; pointer-events: none;
+            position: relative; overflow: hidden;
+        }
+        
+        .btn-ult.can-use { opacity: 1; pointer-events: auto; background: #ff3e3e; color: white; border-color: #111; }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 3px solid #111;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            transition: background-color 0.5s, border-color 0.5s;
+        }
+        .night-mode .status-bar { background: #222; border-color: #444; }
+
+        .gauge-container {
+            width: 140px;
+            height: 18px;
+            background: #eee;
+            border-radius: 9px;
+            overflow: hidden;
+            border: 2px solid #111;
+            position: relative;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            width: 0%;
+            background: #111;
+            transition: width 0.05s linear;
+        }
+        .gauge-fill.stock-1 { background: #ff6b6b; }
+        .gauge-fill.stock-2 { background: #ff0000; }
+        .gauge-fill.ult-active { background: #ff3e3e; animation: blink 0.2s infinite; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .score-font { font-family: 'Inter', sans-serif; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .neon-text { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px currentColor, 0 0 40px currentColor; }
+
+        .hint-text { font-size: 0.55rem; font-weight: 900; margin-top: 1px; opacity: 0.7; }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            font-style: italic;
+            border: 3px solid #111;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+        .modal-btn:active { transform: scale(0.95); }
+        .modal-btn-primary { background: #111; color: #fff; }
+        .modal-btn-secondary { background: #fff; color: #111; }
+    </style>
+</head>
+<body>
+
+    <!-- スタート画面 -->
+    <div id="startModal" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-6">
+        <div class="bg-white p-8 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-md">
+            <h1 class="text-6xl title-text text-black italic mb-6">SUPER<br>HJK RUN</h1>
+            <div class="mb-6 p-4 bg-gray-50 rounded-2xl border-2 border-gray-100">
+                <div class="text-xs font-black text-gray-400 uppercase mb-2">操作方法</div>
+                <div class="text-sm font-bold space-y-1">
+                    <div>SPACE / UP / タップ でジャンプ</div>
+                    <div>[X] でULT発動</div>
+                </div>
+            </div>
+            <button id="startBtn" class="modal-btn modal-btn-primary mb-3">START</button>
+            <a href="/UchuAddonWiki/" class="block">
+                <button class="modal-btn modal-btn-secondary">Back Wiki</button>
+            </a>
+        </div>
+    </div>
+
+    <div id="uiTop" class="flex flex-col items-center w-full max-w-[800px] mb-2 px-4">
+        <div class="flex justify-between items-center w-full mb-2">
+            <h1 class="text-4xl title-text text-black italic transition-colors duration-500" id="titleText">SUPER HJK RUN</h1>
+            <div id="scoreDisplay" class="text-3xl score-font text-black transition-colors duration-500">0</div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="flex flex-col">
+                <span class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1 text-center">ULT GAUGE STOCK</span>
+                <div class="gauge-container">
+                    <div id="ultGaugeFill" class="gauge-fill"></div>
+                </div>
+            </div>
+            <div class="h-8 w-[2px] bg-gray-200"></div>
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">LIFE</span>
+                <div id="lifeDisplay" class="text-2xl flex gap-1 leading-none">❤️</div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="controls-container">
+        <div class="buttons-row">
+            <div id="jumpButton" class="btn btn-jump">
+                <span>JUMP</span>
+                <span class="hint-text">SPACE / UP</span>
+            </div>
+            <div id="ultButton" class="btn btn-ult">
+                <span class="text-xl">ULT</span>
+                <span id="stockCount" class="text-[0.65rem] bg-black/20 px-1 rounded">STK:0</span>
+                <span class="hint-text">[X]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="gameOverModal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center z-50 p-6">
+        <div class="bg-white p-6 rounded-[2.5rem] text-center border-[6px] border-black w-full max-w-sm">
+            <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Result</h2>
+            <div class="mb-4">
+                <div class="text-[10px] font-black text-gray-400 uppercase mb-1">Final Score</div>
+                <p id="finalScore" class="text-5xl score-font font-black text-black leading-none"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <div class="bg-gray-50 p-2 rounded-xl border border-gray-100">
+                    <div class="text-[8px] font-black text-gray-400 uppercase">Walls</div>
+                    <div id="wallsCleared" class="text-lg font-black italic">0</div>
+                </div>
+                <div class="bg-gray-50 p-2 rounded-xl border border-gray-100">
+                    <div class="text-[8px] font-black text-gray-400 uppercase">ULT</div>
+                    <div id="ultUsed" class="text-lg font-black italic">0</div>
+                </div>
+            </div>
+            <div class="mb-6 p-4 bg-gray-50 rounded-2xl border-2 border-gray-100 relative overflow-hidden" id="rankContainer">
+                <div class="text-[10px] font-black text-gray-400 uppercase mb-1">Rank</div>
+                <div id="rankLabel" class="text-7xl font-black italic">C</div>
+            </div>
+            <button id="retryBtn" class="modal-btn modal-btn-primary mb-3">RETRY</button>
+            <a href="/UchuAddonWiki/" class="block">
+                <button class="modal-btn modal-btn-secondary">Back Wiki</button>
+            </a>
+            <p class="text-[10px] font-black text-gray-400 mt-3 uppercase italic">または [X] キーでリトライ</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const startModal = document.getElementById("startModal");
+        const gameOverModal = document.getElementById("gameOverModal");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const ultGaugeFill = document.getElementById("ultGaugeFill");
+        const stockDisplay = document.getElementById("stockCount");
+        const rankLabel = document.getElementById("rankLabel");
+        const rankContainer = document.getElementById("rankContainer");
+
+        let gameStarted = false;
+
+        // --- 画像読み込みとフォールバックの管理 ---
+        let isImageLoaded = false;
+        let isImageError = false;
+        const playerImg = new Image();
+        playerImg.src = "../resource/minigame/HjkRun.png"; 
+
+        playerImg.onload = () => { isImageLoaded = true; };
+        playerImg.onerror = () => { isImageError = true; };
+        
+        canvas.width = 800;
+        canvas.height = 400;
+
+        const GROUND_Y = canvas.height - 40;
+        const CEILING_Y = 40;
+
+        const GRAVITY_BASE = 2400;   
+        const JUMP_FORCE_BASE = 850; 
+        const SPEED_INITIAL = 360;   
+        const SPEED_MAX_LIMIT = 3000;
+
+        let gameState = {
+            score: 0,
+            baseGameSpeed: SPEED_INITIAL,
+            isGameOver: false,
+            isNight: false,
+            lives: 1,
+            invincible: 0,
+            safety: 0,
+            wallCount: 0,
+            ultUsed: 0,
+            ultGauge: 0,
+            isUlt: false,
+            ultTimer: 0,
+            lastTime: 0,
+            obsTimer: 0,
+            lastHeartMilestone: 0, 
+            isHeartPending: false, 
+            isPhasing: false
+        };
+
+        let dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
+        let obstacles = [];
+        let items = [];
+
+        function getRank(s) {
+            if (s < 500) return { label: 'C', color: '#a3a3a3', neon: false };
+            if (s < 800) return { label: 'B', color: '#5b8a72', neon: false };
+            if (s < 1000) return { label: 'A', color: '#4a6fa5', neon: false };
+            if (s < 1500) return { label: 'S', color: '#f59e0b', neon: true };
+            if (s < 2000) return { label: 'SS', color: '#ec4899', neon: true };
+            if (s < 2500) return { label: 'SSS', color: '#8b5cf6', neon: true };
+            if (s < 3000) return { label: 'SSS+', color: '#8b5cf6', neon: true };
+            if (s < 3500) return { label: 'X', color: '#ef4444', neon: true };
+            if (s < 4000) return { label: 'XX', color: '#ef4444', neon: true };
+            if (s < 4500) return { label: 'XXX', color: '#ef4444', neon: true };
+            if (s < 5000) return { label: 'XXX+', color: '#ef4444', neon: true };
+            if (s < 5500) return { label: 'U', color: '#fff', neon: true, ultra: true };
+            const level = Math.floor((s - 6000) / 500) + 3;
+            return { label: 'U' + level, color: '#fff', neon: true, ultra: true };
+        }
+
+        function getGlobalSpeedMultiplier() {
+            if (gameState.score < 2000) return 1.0;
+            return 1.0 + (gameState.score - 2000) / 1000;
+        }
+
+        function jump() {
+            if (!gameStarted || gameState.isGameOver) return;
+            if (dino.jumps < 2) {
+                const mult = getGlobalSpeedMultiplier();
+                const dir = gameState.isNight ? 1 : -1;
+                dino.vy = dir * JUMP_FORCE_BASE * mult;
+                dino.jumps++;
+            }
+        }
+
+        function useUlt() {
+            if (!gameStarted || gameState.isGameOver || gameState.isUlt) return;
+            if (gameState.ultGauge >= 50) {
+                gameState.ultGauge -= 50;
+                gameState.isUlt = true;
+                gameState.ultTimer = 4.0;
+                gameState.ultUsed++;
+            }
+        }
+
+        function update(dt) {
+            if (!gameStarted || gameState.isGameOver) return;
+
+            gameState.score += 20 * dt;
+            scoreDisplay.innerText = Math.floor(gameState.score);
+            
+            if (gameState.baseGameSpeed < 1000) gameState.baseGameSpeed += 2 * dt;
+
+            const globalMult = getGlobalSpeedMultiplier();
+            const currentRunSpeed = Math.min(SPEED_MAX_LIMIT, gameState.baseGameSpeed * globalMult);
+
+            let night = (gameState.score >= 1000) && (Math.floor((gameState.score - 1000) / 600) % 2 === 0);
+            if (night !== gameState.isNight) {
+                gameState.isNight = night;
+                gameState.safety = 0.8; 
+                document.body.classList.toggle("night-mode", night);
+                canvas.classList.toggle("night-canvas", night);
+                document.getElementById("titleText").style.color = night ? "#fff" : "#000";
+                scoreDisplay.style.color = night ? "#fff" : "#000";
+            }
+
+            if (gameState.invincible > 0) gameState.invincible -= dt;
+            if (gameState.safety > 0) gameState.safety -= dt;
+
+            if (!gameState.isUlt) {
+                gameState.ultGauge = Math.min(100, gameState.ultGauge + 4 * dt);
+                ultGaugeFill.style.width = gameState.ultGauge + "%";
+                const stocks = Math.floor(gameState.ultGauge / 50);
+                stockDisplay.innerText = `STK:${stocks}`;
+                ultGaugeFill.className = "gauge-fill " + (stocks === 2 ? "stock-2" : stocks === 1 ? "stock-1" : "");
+                document.getElementById("ultButton").classList.toggle("can-use", stocks >= 1);
+            } else {
+                gameState.ultTimer -= dt;
+                ultGaugeFill.style.width = (gameState.ultTimer / 4 * 100) + "%";
+                ultGaugeFill.classList.add("ult-active");
+                if (gameState.ultTimer <= 0) gameState.isUlt = false;
+            }
+
+            const grav = (gameState.isNight ? -GRAVITY_BASE : GRAVITY_BASE) * globalMult;
+            dino.vy += grav * dt;
+            dino.y += dino.vy * dt;
+
+            let onSurface = false;
+            if (!gameState.isNight) {
+                if (dino.y >= GROUND_Y - dino.h) { 
+                    dino.y = GROUND_Y - dino.h; dino.vy = 0; dino.jumps = 0; onSurface = true; 
+                }
+                if (dino.y < 0) { dino.y = 0; dino.vy = 0; }
+            } else {
+                if (dino.y <= CEILING_Y) { 
+                    dino.y = CEILING_Y; dino.vy = 0; dino.jumps = 0; onSurface = true; 
+                }
+                if (dino.y > canvas.height - dino.h) { dino.y = canvas.height - dino.h; dino.vy = 0; }
+            }
+
+            gameState.isPhasing = onSurface && Math.abs(dino.vy) < 1;
+
+            const currentMilestone = Math.floor(gameState.score / 1000) * 1000;
+            if (currentMilestone >= 1000 && currentMilestone > gameState.lastHeartMilestone) {
+                gameState.isHeartPending = true;
+                gameState.lastHeartMilestone = currentMilestone;
+            }
+
+            if (gameState.isHeartPending && gameState.obsTimer > 0.6) {
+                items.push({
+                    x: canvas.width,
+                    y: gameState.isNight ? CEILING_Y + 10 : GROUND_Y - 40,
+                    w: 30, h: 30, type: "life"
+                });
+                gameState.isHeartPending = false;
+            }
+
+            gameState.obsTimer -= dt;
+            if (gameState.obsTimer <= 0) {
+                const r = Math.random();
+                let transparentProb = (gameState.score >= 2000) ? 0.35 : 0.20;
+                let addedInterval = 0;
+                
+                if (r < transparentProb) {
+                    const h = 160; 
+                    const color = gameState.isNight ? "rgba(0, 150, 255, 0.6)" : "rgba(255, 120, 0, 0.6)";
+                    obstacles.push({
+                        x: canvas.width,
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
+                        w: 45, h: h, type: "transparent", color: color, passed: false
+                    });
+                    addedInterval = 0.45;
+                } else {
+                    const h = 40 + Math.random() * 60;
+                    obstacles.push({
+                        x: canvas.width,
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - h,
+                        w: 30, h: h, type: "normal", color: gameState.isNight ? "#ffffff" : "#111111", passed: false
+                    });
+                }
+
+                if (gameState.score > 500 && Math.random() < 0.25) {
+                    obstacles.push({
+                        x: canvas.width + 300, 
+                        y: gameState.isNight ? CEILING_Y : GROUND_Y - 35,
+                        w: 30, h: 35, type: "rushing", color: "#ff3e3e", passed: false
+                    });
+                }
+
+                let intervalFactor = gameState.score >= 2000 ? 0.6 : 1.1; 
+                gameState.obsTimer = intervalFactor * (SPEED_INITIAL / currentRunSpeed) + Math.random() * 0.4 + addedInterval;
+            }
+
+            items.forEach((item, idx) => {
+                item.x -= currentRunSpeed * dt;
+                if (dino.x < item.x + item.w && dino.x + dino.w > item.x && dino.y < item.y + item.h && dino.y + dino.h > item.y) {
+                    if (gameState.lives < 3) {
+                        gameState.lives++;
+                        updateLifeDisplay();
+                    } else {
+                        gameState.score += 100;
+                    }
+                    items.splice(idx, 1);
+                }
+            });
+            items = items.filter(it => it.x > -50);
+
+            obstacles.forEach((o, i) => {
+                let moveSpeed = (o.type === "rushing") ? currentRunSpeed * 1.6 : currentRunSpeed;
+                o.x -= moveSpeed * dt;
+
+                if (!o.passed && o.x + o.w < dino.x) {
+                    o.passed = true;
+                    gameState.wallCount++;
+                    if (!gameState.isUlt) gameState.ultGauge = Math.min(100, gameState.ultGauge + 3);
+                }
+
+                if (dino.x < o.x + o.w && dino.x + dino.w > o.x && dino.y < o.y + o.h && dino.y + dino.h > o.y) {
+                    if (gameState.isUlt) {
+                        obstacles.splice(i, 1);
+                        gameState.score += 25;
+                    } else if (o.type === "transparent" && gameState.isPhasing) {
+                        // 透過中
+                    } else if (gameState.invincible <= 0 && gameState.safety <= 0) {
+                        gameState.lives--;
+                        updateLifeDisplay();
+                        if (gameState.lives <= 0) endGame();
+                        else { gameState.invincible = 1.5; obstacles.splice(i, 1); }
+                    }
+                }
+            });
+            obstacles = obstacles.filter(o => o.x > -100);
+        }
+
+        function updateLifeDisplay() {
+            const hearts = gameState.lives > 0 ? "❤️".repeat(gameState.lives) : "💀";
+            document.getElementById("lifeDisplay").innerText = hearts;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = gameState.isNight ? "#333" : "#eee";
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y);
+            ctx.moveTo(0, CEILING_Y); ctx.lineTo(canvas.width, CEILING_Y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            items.forEach(item => {
+                ctx.save();
+                ctx.font = "24px serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("❤️", item.x + item.w/2, item.y + item.h/2);
+                ctx.restore();
+            });
+
+            ctx.save();
+            if ((gameState.invincible > 0 || gameState.safety > 0) && Math.floor(Date.now() / 100) % 2 === 0) {
+                ctx.globalAlpha = 0.3;
+            } else if (gameState.isPhasing) {
+                ctx.globalAlpha = 0.6;
+            }
+
+            let sx = 0;
+            if (gameState.isUlt) {
+                const ultAnimSpeed = 100;
+                const ultFrame = Math.floor(Date.now() / ultAnimSpeed) % 4;
+                sx = (2 + ultFrame) * 64;
+            } else if (gameState.isNight) {
+                sx = 64;
+            } else {
+                sx = 0;
+            }
+
+            if (gameState.isNight) {
+                ctx.translate(dino.x + dino.w/2, dino.y + dino.h/2);
+                ctx.scale(1, -1);
+                ctx.translate(-(dino.x + dino.w/2), -(dino.y + dino.h/2));
+            }
+            
+            if (isImageLoaded && !isImageError) {
+                ctx.drawImage(playerImg, sx, 0, 64, 64, dino.x-2, dino.y-2, dino.w+4, dino.h+4);
+            } else {
+                ctx.fillStyle = gameState.isNight ? "#fff" : "#333";
+                ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+            }
+            ctx.restore();
+
+            obstacles.forEach(o => {
+                ctx.fillStyle = o.color;
+                ctx.fillRect(o.x, o.y, o.w, o.h);
+                
+                if(o.type === "rushing") {
+                    ctx.strokeStyle = "#fff";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(o.x, o.y, o.w, o.h);
+                } else if (o.type === "transparent") {
+                    ctx.strokeStyle = o.color.replace("0.6", "1.0");
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(o.x, o.y, o.w, o.h);
+                    ctx.fillStyle = "rgba(255,255,255,0.2)";
+                    for(let j=0; j<o.h; j+=20) {
+                        ctx.fillRect(o.x, o.y + j, o.w, 2);
+                    }
+                }
+            });
+        }
+
+        function endGame() {
+            gameState.isGameOver = true;
+            const res = getRank(gameState.score);
+            document.getElementById("finalScore").innerText = Math.floor(gameState.score);
+            document.getElementById("wallsCleared").innerText = gameState.wallCount;
+            document.getElementById("ultUsed").innerText = gameState.ultUsed;
+            rankLabel.innerText = res.label;
+            rankLabel.style.color = res.color;
+            rankContainer.style.backgroundColor = res.ultra ? "#000" : "";
+            rankContainer.style.borderColor = res.ultra ? "#ff3e3e" : "";
+            rankLabel.className = "text-7xl font-black italic " + (res.neon ? "neon-text" : "");
+            gameOverModal.classList.remove("hidden");
+        }
+
+        function startGame() {
+            gameStarted = true;
+            startModal.classList.add("hidden");
+            gameState.lastTime = performance.now();
+        }
+
+        function reset() {
+            gameState = {
+                score: 0, baseGameSpeed: SPEED_INITIAL, isGameOver: false, isNight: false,
+                lives: 1, invincible: 0, safety: 0, wallCount: 0, ultUsed: 0,
+                ultGauge: 0, isUlt: false, ultTimer: 0, lastTime: performance.now(),
+                obsTimer: 0, lastHeartMilestone: 0, isHeartPending: false, isPhasing: false
+            };
+            dino = { x: 80, y: GROUND_Y - 44, w: 44, h: 44, vy: 0, jumps: 0 };
+            obstacles = [];
+            items = [];
+            updateLifeDisplay();
+            gameOverModal.classList.add("hidden");
+            document.body.classList.remove("night-mode");
+            canvas.classList.remove("night-canvas");
+            document.getElementById("titleText").style.color = "#000";
+            scoreDisplay.style.color = "#000";
+        }
+
+        function loop(t) {
+            const dt = Math.min(0.1, (t - gameState.lastTime) / 1000);
+            gameState.lastTime = t;
+            update(dt);
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space" || e.code === "ArrowUp") { 
+                e.preventDefault(); 
+                jump(); 
+            }
+            if (e.code === "KeyX") { 
+                e.preventDefault(); 
+                if (gameState.isGameOver) {
+                    reset(); 
+                } else {
+                    useUlt();
+                }
+            }
+        });
+
+        canvas.addEventListener("pointerdown", e => {
+            e.preventDefault();
+            jump();
+        });
+
+        document.getElementById("jumpButton").addEventListener("pointerdown", e => { e.preventDefault(); jump(); });
+        document.getElementById("ultButton").addEventListener("pointerdown", e => { e.preventDefault(); useUlt(); });
+        document.getElementById("startBtn").addEventListener("click", startGame);
+        document.getElementById("retryBtn").addEventListener("click", reset);
+        
+        gameState.lastTime = performance.now();
+        requestAnimationFrame(loop);
+    </script>
+</body>
+</html>
