@@ -169,6 +169,10 @@ function getY(e) {
 }
 function ptrDown(e) {
   e.preventDefault();
+  // 2本指タッチ = 無敵発動（タブレット横向きでもボタン不要）
+  if (e.touches && e.touches.length >= 2 && state === ST.PLAY) {
+    useInvincible(); return;
+  }
   if (state === ST.TITLE || state === ST.OVER) { init(); state = ST.PLAY; return; }
   if (state === ST.PLAY) {
     const rect = canvas.getBoundingClientRect();
