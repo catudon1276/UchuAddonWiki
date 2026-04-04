@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-04T03:15:47.103Z",
+    "_generated_at": "2026-04-04T03:32:15.074Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
