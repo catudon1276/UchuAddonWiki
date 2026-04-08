@@ -8,6 +8,7 @@
     <meta property="og:image" content="https://catudon1276.github.io/UchuAddonWiki/components/CoverIllust.png">
     <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link rel="stylesheet" href="../components/styles-common.css">
+    <script src="../components/theme.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* ------------------------------------------------
@@ -23,7 +24,7 @@
            Search & Filter Panel
            ------------------------------------------------ */
         .search-filter-section {
-            background: #FFFFFF;
+            background: var(--uchu-bg-light);
             border: 1px solid var(--uchu-border);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
@@ -55,7 +56,7 @@
         .search-input:focus {
             outline: none;
             border-color: var(--uchu-primary);
-            background: #FFFFFF;
+            background: var(--uchu-bg-light);
             box-shadow: 0 0 0 3px rgba(91, 108, 246, 0.12);
         }
 
@@ -113,9 +114,9 @@
         }
 
         .filter-btn.active, .from-btn.active {
-            background: var(--uchu-text-primary); /* 黒色に変更 */
+            background: var(--uchu-text-primary);
             border-color: var(--uchu-text-primary);
-            color: #FFFFFF;
+            color: var(--uchu-bg-light);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
@@ -298,7 +299,7 @@
             grid-column: 1 / -1;
             text-align: center;
             padding: var(--space-2xl);
-            background: #FFFFFF;
+            background: var(--uchu-bg-light);
             border: 1px solid var(--uchu-border);
             border-radius: var(--radius-lg);
             color: var(--uchu-text-muted);
@@ -342,7 +343,7 @@
         .modal-content {
             max-width: 860px;
             margin: var(--space-2xl) auto;
-            background: #FFFFFF;
+            background: var(--uchu-bg-light);
             border: 1px solid var(--uchu-border);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
@@ -453,7 +454,7 @@
         }
 
         .ability-item {
-            background: rgba(244, 246, 250, 0.4);
+            background: var(--uchu-bg-mid);
             border: 1px solid rgba(226, 232, 240, 0.5);
             border-radius: var(--radius-md);
             padding: var(--space-lg);
@@ -776,7 +777,7 @@
                         <img id="modal-detail-icon" src="" alt="${role.name}" style="display:none;">
                     </div>
                     <div class="modal-header-content">
-                        <h2 class="modal-title" style="color: #374151;">
+                        <h2 class="modal-title" style="color: var(--uchu-text-primary);">
                             ${role.name}${role.english_name ? `<span style="font-size: 0.45em; color: var(--uchu-text-muted); font-weight: 400; margin-left: 0.4em;">/ ${role.english_name}</span>` : ''}
                         </h2>
                         ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}

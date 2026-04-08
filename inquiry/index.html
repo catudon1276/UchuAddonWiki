@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../components/styles-common.css">
+    <script src="../components/theme.js"></script>
     <style>
         /* Inquiry Section */
         .inquiry-section {
@@ -72,7 +73,7 @@
         .form-textarea:focus {
             outline: none;
             border-color: var(--uchu-primary);
-            background: #FFFFFF;
+            background: var(--uchu-bg-light);
             box-shadow: 0 0 0 3px rgba(91, 108, 246, 0.1);
         }
 
@@ -93,7 +94,7 @@
             gap: var(--space-sm);
             padding: var(--space-md) var(--space-2xl);
             background: var(--uchu-text-primary);
-            color: #FFFFFF;
+            color: var(--uchu-bg-light);
             border: none;
             border-radius: var(--radius-sm);
             font-size: 0.9rem;
