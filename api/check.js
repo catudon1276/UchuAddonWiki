@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     }
 
     // 1. Gemini による判定
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     const prompt = `
       以下のテキストが「荒らし」「スパム」「極端に不適切な言葉」を含んでいるか判定してください。
       判定基準：
@@ -44,6 +44,12 @@ export default async function handler(req, res) {
     });
 
     const geminiData = await geminiRes.json();
+
+    if (!geminiRes.ok) {
+      console.error('Gemini API error:', JSON.stringify(geminiData));
+      throw new Error(`Gemini error: ${geminiData.error?.message || geminiRes.status}`);
+    }
+
     const result = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim().toLowerCase() || '';
 
     if (result.includes('unsafe')) {
