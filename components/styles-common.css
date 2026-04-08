@@ -123,6 +123,18 @@
   color: #0f172a;
 }
 
+[data-theme="dark"] .uchu-footer-section p {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .uchu-footer-links a {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .uchu-footer-links a:hover {
+  color: #0f172a;
+}
+
 [data-theme="dark"] .uchu-footer-bottom {
   border-top-color: rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.35);
