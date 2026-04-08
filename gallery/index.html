@@ -538,9 +538,6 @@
                                     item.className = 'gallery-item';
                                     item.onclick = () => openModal(path, img);
                                     item.innerHTML = `<img src="${path}" alt="${img}" class="gallery-image">`;
-
-                                    const rot = (Math.random() - 0.5) * 20;
-                                    item.style.setProperty('--item-base-transform', `rotate(${rot.toFixed(1)}deg)`);
                                     row.appendChild(item);
                                 });
                                 grid.appendChild(row);
@@ -577,10 +574,6 @@
                                     item.className = 'gallery-item';
                                     item.onclick = () => openModal(path, img);
                                     item.innerHTML = `<img src="${path}" alt="${img}" class="gallery-image">`;
-
-                                    const rot = (Math.random() - 0.5) * 20;
-                                    const yOff = (Math.random() - 0.5) * 6;
-                                    item.style.setProperty('--item-base-transform', `rotate(${rot.toFixed(1)}deg) translateY(${yOff.toFixed(1)}px)`);
                                     row.appendChild(item);
                                 });
                                 grid.appendChild(row);

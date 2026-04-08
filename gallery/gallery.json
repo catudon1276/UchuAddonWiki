@@ -11,8 +11,8 @@
         ]
     },
     "roleimage": {
-        "name": "役職立ち絵",
-        "description": "役職詳細ページの背景画像・立ち絵",
+        "name": "役職イラスト",
+        "description": "役職詳細ページのイラスト素材",
         "images": [
             "Admiral.png",
             "Alert.png",
@@ -60,8 +60,8 @@
         ]
     },
     "rolebutton": {
-        "name": "能力ボタン",
-        "description": "役職の能力ボタン画像",
+        "name": "ゲーム内イラスト",
+        "description": "ゲーム内に登場するイラスト素材",
         "images": [
             "AdmiralSkillButton.png",
             "Alchemy.png",
