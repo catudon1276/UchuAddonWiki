@@ -1,5 +1,3 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,24 +19,30 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'Content is required' });
     }
 
+    // NGワードチェック
+    const forbiddenWords = [
+        // 性的表現
+        "セックス", "sex", "えっち", "エッチ", "hentai", "ヘンタイ", "変態",
+        "ちんこ", "まんこ", "ちんちん", "おちんちん", "チンポ", "おっぱい",
+        "ポルノ", "porn", "nude", "エロ", "えろ", "アダルト",
+        "fuck", "dick", "pussy", "ass", "bitch",
+        // 暴言・誹謗中傷
+        "死ね", "しね", "殺す", "ころす", "殺せ", "ころせ",
+        "きもい", "キモい", "キモイ", "うざい", "ウザい", "ウザイ",
+        "くず", "クズ", "ゴミ", "ごみ", "カス", "かす",
+        "バカ", "ばか", "阿呆", "アホ", "あほ",
+        "shit", "damn", "bastard", "crap",
+        // スパム・荒らし
+        "http://", "https://", "spam", "スパム",
+        "広告", "宣伝", "副業", "稼げる", "儲かる", "お金",
+        // 差別表現
+        "差別", "ガイジ", "きちがい", "キチガイ",
+    ];
+    if (forbiddenWords.some(word => text.includes(word))) {
+        return res.status(400).json({ error: '不適切な表現が含まれています。' });
+    }
+
     try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const prompt = `以下の問い合わせ内容をチェックし、嫌がらせ、スパム、または著しく不適切な内容（暴力的、性的な表現など）が含まれている場合は「NG」とだけ返してください。問題がない場合は「OK」とだけ返してください。
-
-カテゴリー: ${category}
-送信者名: ${name}
-内容: ${text}`;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const safetyCheck = response.text().trim();
-
-        if (safetyCheck.includes("NG")) {
-            return res.status(400).json({ error: '不適切な内容が含まれている可能性があるため、送信を中断しました。' });
-        }
-
         // Discord へ送信
         const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
         if (DISCORD_WEBHOOK_URL) {
@@ -56,12 +60,7 @@ module.exports = async (req, res) => {
         return res.status(200).json({ success: true });
 
     } catch (error) {
-        console.error('Gemini API Error:', error);
-
-        if (error.message.includes('API key not valid')) {
-            return res.status(500).json({ error: 'システム設定エラー（APIキーが無効です）' });
-        }
-
-        return res.status(500).json({ error: 'AIによる内容確認中にエラーが発生しました。' });
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'サーバーエラーが発生しました' });
     }
 };
