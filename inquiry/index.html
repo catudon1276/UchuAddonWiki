@@ -53,7 +53,7 @@
             letter-spacing: 0.05em;
         }
 
-        .form-input,いします
+        .form-input,
         .form-textarea {
             width: 100%;
             padding: var(--space-md);
@@ -134,6 +134,13 @@
             background: rgba(239, 68, 68, 0.1);
             color: #dc2626;
             border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+
+        .status-message.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.3);
             display: block;
         }
     </style>
@@ -250,6 +257,10 @@
                     form.reset();
                     // 送信時刻を記録
                     localStorage.setItem('lastInquiryTime', Date.now().toString());
+                } else if (response.status === 400) {
+                    // Gemini による不適切コンテンツ判定
+                    statusMessage.textContent = '⚠️ ' + (data.error || '不適切な内容が含まれているため送信できません');
+                    statusMessage.className = 'status-message warning';
                 } else {
                     throw new Error(data.error || '送信に失敗しました');
                 }
