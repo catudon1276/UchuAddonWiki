@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uchu Addon Wiki お問い合わせ</title>
+    <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../components/styles-common.css">
+    <style>
+        /* Inquiry Section */
+        .inquiry-section {
+            width: 100% !important;
+            margin: var(--space-2xl) 0 !important;
+            padding: var(--space-xl) 0 !important;
+            text-align: center;
+        }
+
+        .inquiry-form {
+            background: var(--uchu-bg-light);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
+            width: 40% !important; /* 画面幅の40%に設定 */
+            margin: 0 auto !important;
+            padding: var(--space-xl) !important;
+            box-sizing: border-box;
+        }
+
+        .inquiry-section .uchu-section-title {
+            display: inline-block;
+            text-align: center;
+            border-bottom: 2px solid var(--uchu-text-primary);
+            padding-bottom: var(--space-sm);
+        }
+
+        .inquiry-form {
+            background: var(--uchu-bg-light);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input,いします
+        .form-textarea {
+            width: 100%;
+            padding: var(--space-md);
+            background: var(--uchu-bg-mid);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--uchu-text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--uchu-primary);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(91, 108, 246, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* ハニーポット（スパム防止用の隠しフィールド） */
+        .honey-pot {
+            display: none;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-2xl);
+            background: var(--uchu-text-primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: var(--space-lg);
+            padding: var(--space-md);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            display: block;
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+
+    <section class="inquiry-section">
+        <h1 class="uchu-section-title">Inquiry</h1>
+        <p style="color: var(--uchu-text-secondary); margin-bottom: var(--space-xl); text-align: center;">
+            ご質問やご要望があればお気軽にご連絡ください。
+        </p>
+        <div class="inquiry-form">
+            <form id="inquiryForm">
+                <!-- ハニーポットフィールド（ボット除け） -->
+                <div class="honey-pot">
+                    <label for="website">Website</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="form-label">カテゴリー (必須)</label>
+                    <select id="category" class="form-input" required>
+                        <option value="" disabled selected>選択してください</option>
+                        <option value="バグ報告">バグ報告</option>
+                        <option value="リクエスト">リクエスト</option>
+                        <option value="感想">感想</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" class="form-label">お名前 (任意)</label>
+                    <input type="text" id="name" class="form-input" placeholder="匿名でも結構です">
+                </div>
+
+                <div class="form-group">
+                    <label for="message" class="form-label">内容 (必須)</label>
+                    <textarea id="message" class="form-textarea" placeholder="お問い合わせ内容を入力してください..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> 送信する
+                </button>
+            </form>
+
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+    </section>
+
+    <div id="footer"></div>
+
+    <script>
+        // ヘッダーとフッターを読み込み
+        fetch('../components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
+        fetch('../components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
+
+        // フォーム送信処理
+        const form = document.getElementById('inquiryForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Vercel の API エンドポイント
+        const API_URL = 'https://uchu-addon-wiki.vercel.app/api/check';
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // ハニーポットチェック（スパム防止）
+            const honeyPot = document.getElementById('website').value;
+            if (honeyPot) {
+                console.warn('Bot detected via honey pot');
+                return; // 何も表示せずに終了
+            }
+
+            // 連投チェック（60秒クールダウン）
+            const lastSent = localStorage.getItem('lastInquiryTime');
+            const now = Date.now();
+            if (lastSent && (now - parseInt(lastSent)) < 60000) {
+                const remaining = Math.ceil((60000 - (now - parseInt(lastSent))) / 1000);
+                statusMessage.textContent = `スパム防止のため、あと${remaining}秒お待ちください`;
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
+            const category = document.getElementById('category').value;
+            const name = document.getElementById('name').value.trim() || '匿名';
+            const message = document.getElementById('message').value.trim();
+
+            if (!category || !message) {
+                statusMessage.textContent = 'カテゴリーと内容を入力してください';
+                statusMessage.className = 'status-message error';
+                return;
+            }
+
+            // 送信中状態
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中...';
+            statusMessage.className = 'status-message';
+            statusMessage.style.display = 'none';
+
+            try {
+                // Vercel の API を経由して送信
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category, name, text: message })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMessage.textContent = '送信が完了しました。ありがとうございます！';
+                    statusMessage.className = 'status-message success';
+                    form.reset();
+                    // 送信時刻を記録
+                    localStorage.setItem('lastInquiryTime', Date.now().toString());
+                } else {
+                    throw new Error(data.error || '送信に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusMessage.textContent = error.message || 'エラーが発生しました。もう一度お試しください。';
+                statusMessage.className = 'status-message error';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
+            }
+        });
+    </script>
+</body>
+</html>

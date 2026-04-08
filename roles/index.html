@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uchu Addon Wiki 役職</title>
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">
+    <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link rel="stylesheet" href="../components/styles-common.css">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Search and Filter Section */
+        /* ------------------------------------------------
+           Page header override
+           ------------------------------------------------ */
+        .uchu-section-title {
+            color: var(--uchu-text-primary);
+            background: none;
+            -webkit-text-fill-color: unset;
+        }
+
+        /* ------------------------------------------------
+           Search & Filter Panel
+           ------------------------------------------------ */
         .search-filter-section {
-            background: rgba(30, 39, 73, 0.3);
-            backdrop-filter: var(--blur-glass);
+            background: #FFFFFF;
             border: 1px solid var(--uchu-border);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
             margin-bottom: var(--space-2xl);
+            box-shadow: var(--shadow-sm);
         }
 
         .search-box {
@@ -26,19 +37,24 @@
         .search-input {
             width: 100%;
             padding: var(--space-lg) var(--space-lg) var(--space-lg) 3.5rem;
-            background: rgba(10, 14, 39, 0.6);
-            border: 2px solid var(--uchu-border);
+            background: var(--uchu-bg-mid);
+            border: 1.5px solid var(--uchu-border);
             border-radius: var(--radius-lg);
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--uchu-text-primary);
             font-family: var(--font-body);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--uchu-text-muted);
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--uchu-accent);
-            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2);
+            border-color: var(--uchu-primary);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(91, 108, 246, 0.12);
         }
 
         .search-icon {
@@ -47,7 +63,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--uchu-text-muted);
-            font-size: 1.3rem;
+            font-size: 1.1rem;
         }
 
         .filter-section {
@@ -56,10 +72,10 @@
 
         .filter-label {
             font-family: var(--font-heading);
-            font-size: 0.9rem;
+            font-size: 0.72rem;
             font-weight: 700;
             margin-bottom: var(--space-md);
-            color: var(--uchu-text-secondary);
+            color: var(--uchu-text-muted);
             text-transform: uppercase;
             letter-spacing: 2px;
             display: flex;
@@ -69,128 +85,154 @@
 
         .filter-buttons {
             display: flex;
-            gap: var(--space-md);
+            gap: var(--space-sm);
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .filter-btn, .from-btn {
-            padding: var(--space-md) var(--space-xl);
-            background: rgba(10, 14, 39, 0.6);
-            border: 2px solid var(--uchu-border);
-            border-radius: var(--radius-md);
+            padding: 0.5rem var(--space-lg);
+            background: var(--uchu-bg-mid);
+            border: 1.5px solid var(--uchu-border);
+            border-radius: 100px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 700;
+            transition: all 0.2s ease;
+            font-weight: 600;
             font-family: var(--font-heading);
             color: var(--uchu-text-secondary);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            font-size: 0.82rem;
+            letter-spacing: 0.3px;
         }
 
         .filter-btn:hover, .from-btn:hover {
-            background: rgba(74, 144, 226, 0.2);
-            border-color: var(--uchu-accent);
-            color: var(--uchu-text-primary);
-            transform: translateY(-2px);
+            border-color: var(--uchu-primary);
+            color: var(--uchu-primary);
+            background: rgba(91, 108, 246, 0.06);
         }
 
         .filter-btn.active, .from-btn.active {
-            background: var(--gradient-accent);
-            border-color: var(--uchu-accent);
-            color: var(--uchu-text-primary);
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+            background: var(--uchu-text-primary); /* 黒色に変更 */
+            border-color: var(--uchu-text-primary);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* Role Cards */
+        /* ------------------------------------------------
+           Role Card Entrance Animation
+           ------------------------------------------------ */
+        .role-card {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        .role-card.card-visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.2s ease,
+                        background 0.15s ease;
+        }
+
+        /* ------------------------------------------------
+           Role List — Flat (no card boxes)
+           ------------------------------------------------ */
         .roles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: var(--space-xl);
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2px;
         }
 
         .role-card {
-            background: rgba(30, 39, 73, 0.4);
-            backdrop-filter: var(--blur-glass);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 12px 14px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
-            gap: var(--space-lg);
-            align-items: flex-start;
+            align-items: center;
+            gap: 14px;
+            transition: background 0.15s ease, transform 0.2s ease;
             position: relative;
-            overflow: hidden;
-        }
-
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .role-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-lg), 0 0 30px rgba(0, 217, 255, 0.3);
+            background: rgba(91, 108, 246, 0.06);
+            transform: translateX(6px);
         }
 
-        .role-card:hover::before {
-            opacity: 0.05;
-        }
-
-        .role-icon-container {
-            width: 80px;
-            height: 80px;
+        /* Hexagon icon container */
+        .role-hex-border {
             flex-shrink: 0;
+            width: 58px;
+            height: 67px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: var(--role-color, var(--uchu-primary));
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(10, 14, 39, 0.6);
-            border-radius: var(--radius-md);
-            position: relative;
-            z-index: 1;
         }
 
-        .role-icon {
-            max-width: 100%;
-            max-height: 100%;
+        .role-hex-inner {
+            width: 49px;
+            height: 57px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: #111111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .role-icon-img {
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
 
-        .role-content {
+        /* Role name + underline */
+        .role-name-wrap {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-bottom: 5px;
             position: relative;
-            z-index: 1;
+        }
+
+        /* 水平の下線 */
+        .role-name-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--role-color, var(--uchu-primary));
+        }
+
+        /* 六角形から下線へつながる斜め線 */
+        .role-name-wrap::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 100%;
+            width: 20px;
+            height: 1px;
+            background: var(--role-color, var(--uchu-primary));
+            transform-origin: right bottom;
+            transform: rotate(30deg);
         }
 
         .role-name {
             font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 1000;
             color: var(--uchu-text-primary);
-            margin-bottom: var(--space-sm);
-            line-height: 1.2;
+            line-height: 1.3;
+            white-space: nowrap;
+            display: inline-block;
+            transform-origin: left center;
         }
 
-        .role-description {
-            color: var(--uchu-text-secondary);
-            line-height: 1.6;
-            font-size: 0.95rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
+        /* Team badges (shown inside modal only) */
         .role-badges {
             display: flex;
             gap: var(--space-sm);
@@ -202,23 +244,75 @@
             display: inline-flex;
             align-items: center;
             gap: var(--space-xs);
-            padding: var(--space-xs) var(--space-md);
-            border-radius: var(--radius-sm);
+            padding: 3px 10px;
+            border-radius: 100px;
             font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid;
+            letter-spacing: 0.8px;
+            border: 1.5px solid;
         }
 
-        .badge-crew { background: #8CFFFF; color: #000; border-color: #8CFFFF; }
-        .badge-impostor { background: #FF1919; color: #fff; border-color: #FF1919; }
-        .badge-neutral { background: #F3A200; color: #000; border-color: #F3A200; }
-        .badge-modifier { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
-        .badge-ghost { background: #CCCCCC; color: #000; border-color: #CCCCCC; }
-        .badge-perk { background: #9B59B6; color: #fff; border-color: #9B59B6; }
+        .badge-crew     { background: rgba(140,255,255,0.12); color: #0891B2; border-color: rgba(8,145,178,0.35); }
+        .badge-impostor { background: rgba(255,25,25,0.1);   color: #EF4444; border-color: rgba(239,68,68,0.35); }
+        .badge-neutral  { background: rgba(243,162,0,0.1);   color: #D97706; border-color: rgba(217,119,6,0.35); }
+        .badge-modifier { background: rgba(91,108,246,0.1);  color: #5B6CF6; border-color: rgba(91,108,246,0.35); }
+        .badge-ghost    { background: rgba(107,114,128,0.1); color: #6B7280; border-color: rgba(107,114,128,0.35); }
+        .badge-perk     { background: rgba(139,92,246,0.1);  color: #8B5CF6; border-color: rgba(139,92,246,0.35); }
 
-        /* Modal/Overlay */
+        /* ------------------------------------------------
+           Gallery
+           ------------------------------------------------ */
+        .gallery-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 6px;
+        }
+
+        .gallery-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--uchu-border);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            display: block;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+
+        /* ------------------------------------------------
+           No Results
+           ------------------------------------------------ */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--space-2xl);
+            background: #FFFFFF;
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-lg);
+            color: var(--uchu-text-muted);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .no-results i {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.4;
+            color: var(--uchu-primary);
+        }
+
+        /* ------------------------------------------------
+           Role Modal — White Panel
+           ------------------------------------------------ */
         .role-modal {
             display: none;
             position: fixed;
@@ -226,7 +320,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             overflow-y: auto;
             padding: var(--space-xl);
@@ -234,53 +329,44 @@
 
         .role-modal.active {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         .modal-content {
-            max-width: 1000px;
-            max-height: 90vh;
+            max-width: 860px;
             margin: var(--space-2xl) auto;
-            background: linear-gradient(135deg, rgba(30, 39, 73, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
-            backdrop-filter: var(--blur-glass);
-            border: 2px solid var(--uchu-border);
+            background: #FFFFFF;
+            border: 1px solid var(--uchu-border);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
             position: relative;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.2);
             overflow-y: auto;
             overflow-x: hidden;
         }
 
-        /* スクロールバーのスタイル */
-        .modal-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: rgba(10, 14, 39, 0.5);
-            border-radius: 4px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb {
-            background: var(--uchu-accent);
-            border-radius: 4px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--uchu-primary);
-        }
+        /* Custom scrollbar for modal */
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-track { background: var(--uchu-bg-mid); border-radius: 3px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--uchu-border); border-radius: 3px; }
+        .modal-content::-webkit-scrollbar-thumb:hover { background: var(--uchu-primary); }
 
         /* 背景の役職立ち絵 */
         .modal-background-image {
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 400px;
-            height: 600px;
+            width: 340px;
+            height: 520px;
             background-size: contain;
             background-position: bottom right;
             background-repeat: no-repeat;
-            opacity: 0.3;
+            opacity: 0.18;
             pointer-events: none;
             z-index: 0;
         }
@@ -290,24 +376,26 @@
             position: absolute;
             top: var(--space-lg);
             right: var(--space-lg);
-            max-width: 150px;
-            max-height: 80px;
+            max-width: 130px;
+            max-height: 64px;
             object-fit: contain;
-            opacity: 0.9;
+            opacity: 0.7;
             z-index: 3;
         }
 
         .modal-header {
             display: flex;
             gap: var(--space-xl);
-            margin-bottom: var(--space-2xl);
+            margin-bottom: var(--space-xl);
             align-items: flex-start;
         }
 
         .modal-icon {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             flex-shrink: 0;
+            background: #111111;
+            border: 1px solid var(--uchu-border);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
@@ -315,8 +403,8 @@
         }
 
         .modal-icon img {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 70%;
+            max-height: 70%;
         }
 
         .modal-header-content {
@@ -325,25 +413,23 @@
 
         .modal-title {
             font-family: var(--font-display);
-            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 800;
             margin-bottom: var(--space-sm);
-            background: var(--gradient-cosmic);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            /* color is set inline via JS (role color) */
         }
 
         .modal-intro {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--uchu-text-secondary);
             font-style: italic;
             margin-bottom: var(--space-md);
         }
 
         .modal-description {
-            font-size: 1rem;
+            font-size: 0.975rem;
             color: var(--uchu-text-secondary);
-            line-height: 1.8;
+            line-height: 1.85;
             margin-bottom: var(--space-xl);
         }
 
@@ -353,38 +439,37 @@
 
         .section-title {
             font-family: var(--font-heading);
-            font-size: 1.3rem;
-            color: var(--uchu-accent);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6b7280;
             margin-bottom: var(--space-lg);
             display: flex;
             align-items: center;
             gap: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         .ability-item {
-            background: rgba(30, 39, 73, 0.4);
-            border: 1px solid var(--uchu-border);
+            background: rgba(244, 246, 250, 0.4);
+            border: 1px solid rgba(226, 232, 240, 0.5);
             border-radius: var(--radius-md);
             padding: var(--space-lg);
             margin-bottom: var(--space-md);
             display: flex;
             gap: var(--space-lg);
+            align-items: center;
         }
 
         .ability-button-container {
-            width: 80px;
-            height: 80px;
             flex-shrink: 0;
-            background: rgba(10, 14, 39, 0.6);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .ability-button {
-            max-width: 100%;
-            max-height: 100%;
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            display: block;
         }
 
         .ability-content {
@@ -393,7 +478,7 @@
 
         .ability-name {
             font-family: var(--font-heading);
-            font-size: 1.1rem;
+            font-size: 0.975rem;
             font-weight: 700;
             color: var(--uchu-text-primary);
             margin-bottom: var(--space-sm);
@@ -401,42 +486,13 @@
 
         .ability-description {
             color: var(--uchu-text-secondary);
-            line-height: 1.6;
+            line-height: 1.65;
+            font-size: 0.9rem;
         }
 
-        .no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: var(--space-2xl);
-            background: rgba(30, 39, 73, 0.4);
-            border-radius: var(--radius-lg);
-            color: var(--uchu-text-muted);
-        }
-
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: var(--space-lg);
-            opacity: 0.5;
-        }
-
-        /* タブレット対応 (768px - 1024px) */
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .modal-header {
-                gap: var(--space-lg);
-            }
-
-            .modal-icon {
-                width: 100px;
-                height: 100px;
-            }
-
-            .modal-from-logo {
-                max-width: 120px;
-                max-height: 60px;
-            }
-        }
-
-        /* シークレットモーダルのコンテンツ部分 */
+        /* ------------------------------------------------
+           Secret Modal body
+           ------------------------------------------------ */
         .secret-modal-body {
             display: flex;
             gap: 2rem;
@@ -454,10 +510,18 @@
             text-align: center;
         }
 
-        /* モバイル対応 (768px以下) */
+        /* ------------------------------------------------
+           Responsive
+           ------------------------------------------------ */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .modal-icon { width: 86px; height: 86px; }
+            .modal-from-logo { max-width: 110px; max-height: 54px; }
+        }
+
         @media (max-width: 768px) {
             .roles-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0;
             }
 
             .modal-content {
@@ -467,60 +531,34 @@
                 border-radius: 0;
             }
 
-            /* 背景立ち絵を下方中央に配置 */
             .modal-background-image {
                 width: 100%;
-                height: 400px;
+                height: 320px;
                 background-position: bottom center;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                bottom: 0; left: 0; right: 0;
             }
 
             .modal-header {
                 flex-direction: column;
-                text-align: left;
                 gap: var(--space-md);
                 margin-bottom: var(--space-lg);
             }
 
-            .modal-icon {
-                width: 80px;
-                height: 80px;
-                margin: 0;
-            }
+            .modal-icon { width: 72px; height: 72px; }
 
             .modal-from-logo {
                 position: static;
                 margin: 0 auto var(--space-md);
-                max-width: 100px;
-                max-height: 50px;
+                max-width: 90px; max-height: 46px;
                 display: block;
             }
 
-            .modal-title {
-                font-size: 1.8rem;
-                text-align: left;
-            }
-
-            .modal-intro {
-                font-size: 1rem;
-                text-align: left;
-            }
-
-            .modal-description {
-                text-align: left;
-            }
+            .modal-title  { font-size: 1.6rem; }
+            .modal-intro  { font-size: 0.95rem; }
 
             .ability-item {
                 flex-direction: column;
                 gap: var(--space-md);
-            }
-
-            .ability-icon {
-                width: 60px;
-                height: 60px;
-                margin: 0 auto;
             }
 
             .secret-modal-body {
@@ -528,9 +566,7 @@
                 align-items: center;
             }
 
-            .secret-modal-thumbnail {
-                margin-bottom: var(--space-lg);
-            }
+            .secret-modal-thumbnail { margin-bottom: var(--space-lg); }
         }
     </style>
 </head>
@@ -604,6 +640,34 @@
 
     <script src="roleMain.js"></script>
     <script>
+        // ---- Role card entrance animation (top → bottom, in DOM order) ----
+        let animTimer = null;
+
+        function animateRoleCards() {
+            // 前回のタイマーをリセット
+            if (animTimer !== null) {
+                clearTimeout(animTimer);
+                animTimer = null;
+            }
+            const cards = document.querySelectorAll('.role-card');
+            cards.forEach((card, i) => {
+                card.classList.remove('card-visible');
+                card.style.transitionDelay = '0ms';
+                // DOM順に 30ms ずつずらして表示
+                setTimeout(() => {
+                    card.classList.add('card-visible');
+                }, i * 30);
+            });
+        }
+
+        new MutationObserver(() => {
+            animateRoleCards();
+        }).observe(
+            document.getElementById('rolesContainer'),
+            { childList: true }
+        );
+    </script>
+    <script>
         // Load header and footer
         fetch('../components/header.html')
             .then(response => response.text())
@@ -621,35 +685,55 @@
         function showRoleDetails(role) {
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
-            
+
             // ★シークレット役職の判定を追加
             const isSecret = role._isSecret === true ||
-                             role.team === 'SECRET' || 
-                             role.team === 'シークレット' || 
+                             role.team === 'SECRET' ||
+                             role.team === 'シークレット' ||
                              (role.search_keywords && Array.isArray(role.search_keywords) && role.search_keywords.length > 0);
-            
+
             console.log('📋 showRoleDetails called:', role.name, 'isSecret:', isSecret);
-            
+
             if (isSecret) {
                 showSecretModal(role);
                 return;
             }
-            
+
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
-            
+
             // 背景画像（役職立ち絵）
             const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
-            
+
             // 出典ロゴ
             const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
-            
+
+            let galleryHTML = '';
+            if (role.gallery && role.gallery.length > 0) {
+                const galleryImages = role.gallery.map(img => `
+                    <img src="../resource/rolepicture/${img}"
+                         alt="使用イメージ"
+                         class="gallery-image"
+                         onerror="this.style.display='none'">
+                `).join('');
+                galleryHTML = `
+                    <div class="gallery-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-images"></i> 使用イメージ画像
+                        </h3>
+                        <div class="gallery-grid">
+                            ${galleryImages}
+                        </div>
+                    </div>
+                `;
+            }
+
             let abilitiesHTML = '';
             if (role.abilities && role.abilities.length > 0) {
                 const abilitiesItems = role.abilities.map(ability => `
                     <div class="ability-item">
                         <div class="ability-button-container">
-                            <img src="../resource/rolebutton/${ability.button}" 
-                                 alt="${ability.name}" 
+                            <img src="../resource/rolebutton/${ability.button}"
+                                 alt="${ability.name}"
                                  class="ability-button"
                                  onerror="this.src='../resource/roleimage/NoImage.png'">
                         </div>
@@ -659,12 +743,12 @@
                         </div>
                     </div>
                 `).join('');
-                
+
                 // abilities_title があれば「固有能力 〇〇」、なければ「固有能力」
-                const abilitiesSectionTitle = role.abilities_title 
-                    ? `固有能力 ${role.abilities_title}` 
+                const abilitiesSectionTitle = role.abilities_title
+                    ? `固有能力 ${role.abilities_title}`
                     : '固有能力';
-                
+
                 abilitiesHTML = `
                     <div class="abilities-section">
                         <h3 class="section-title">
@@ -674,25 +758,24 @@
                     </div>
                 `;
             }
-            
-            const teamClass = role.team === 'クルーメイト' ? 'crew' : 
+
+            const teamClass = role.team === 'クルーメイト' ? 'crew' :
                              role.team === 'インポスター' ? 'impostor' :
                              role.team === 'ニュートラル' ? 'neutral' :
                              role.team === 'モディファイア' ? 'modifier' :
                              role.team === 'パーク' ? 'perk' : 'ghost';
-            
+
             content.innerHTML = `
                 ${characterPath ? `<div class="modal-background-image" style="background-image: url('${characterPath}');"></div>` : ''}
                 ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="modal-from-logo" onerror="this.style.display='none'">` : ''}
-                
+
                 <div class="modal-header" style="position: relative; z-index: 2;">
                     <div class="modal-icon">
                         <img id="modal-detail-icon" src="" alt="${role.name}" style="display:none;">
                     </div>
                     <div class="modal-header-content">
-                        <h2 class="modal-title" style="color: ${roleColor};">
-                            ${role.name}
-                            ${role.english_name ? `<span style="font-size: 0.5em; color: rgba(255, 255, 255, 0.4); font-weight: 400; margin-left: 0.5em;">${role.english_name}</span>` : ''}
+                        <h2 class="modal-title" style="color: #374151;">
+                            ${role.name}${role.english_name ? `<span style="font-size: 0.45em; color: var(--uchu-text-muted); font-weight: 400; margin-left: 0.4em;">/ ${role.english_name}</span>` : ''}
                         </h2>
                         ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}
                         <div class="role-badges">
@@ -701,12 +784,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="modal-description" style="position: relative; z-index: 2;">${role.description}</div>
-                
+
                 <div style="position: relative; z-index: 2;">
                     ${abilitiesHTML}
-                    
+
                     ${role.tips ? `
                         <div class="abilities-section">
                             <h3 class="section-title">
@@ -717,15 +800,17 @@
                             </div>
                         </div>
                     ` : ''}
+
+                    ${galleryHTML}
                 </div>
-                
+
                 <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
                     <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
                         <i class="fas fa-times"></i> 閉じる
                     </button>
                 </div>
             `;
-            
+
             // モーダル内アイコンも roleMain.js の解決ロジックを利用
             const modalIconElement = document.getElementById('modal-detail-icon');
             if (typeof applyRoleIcon === 'function') {
@@ -738,7 +823,7 @@
                     }
                 });
             }
-            
+
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -777,7 +862,7 @@
                             <img id="secret-modal-icon" src="" alt="Secret" style="display:none;">
                         </div>
                         <div class="modal-header-content">
-                            <h2 class="modal-title" style="color: ${roleColor}; margin: 0;">
+                            <h2 class="modal-title" style="color: #374151; margin: 0;">
                                 ${role.name}
                             </h2>
                         </div>

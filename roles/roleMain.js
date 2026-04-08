@@ -382,13 +382,14 @@ function renderRoles() {
         const cardId = `role-card-${index}`;
         
         return `
-        <div class="col-lg-6 col-xl-4 mb-4">
-            <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="border-left: 4px solid ${roleColor};">
-                <img id="${cardId}-icon" class="role-card-icon" alt="${role.name}" style="display:none;">
-                <div class="role-card-content">
-                    <div class="role-name">${role.name}</div>
-                    <div class="role-description">${role.description}</div>
+        <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="--role-color: ${roleColor};">
+            <div class="role-hex-border">
+                <div class="role-hex-inner">
+                    <img id="${cardId}-icon" class="role-icon-img" alt="${role.name}" style="display:none;">
                 </div>
+            </div>
+            <div class="role-name-wrap">
+                <span class="role-name">${role.name}</span>
             </div>
         </div>
     `}).join('');
@@ -400,6 +401,21 @@ function renderRoles() {
         const cardId = `role-card-${index}`;
         const iconElement = document.getElementById(`${cardId}-icon`);
         applyRoleIcon(iconElement, role);
+    });
+
+    // 文字長体：テキストがはみ出す場合に横方向圧縮
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.role-name-wrap').forEach(wrap => {
+            const nameEl = wrap.querySelector('.role-name');
+            if (!nameEl) return;
+            nameEl.style.transform = '';
+            const wrapW = wrap.clientWidth;
+            const textW = nameEl.scrollWidth;
+            if (textW > wrapW && textW > 0) {
+                const scale = Math.max(0.6, wrapW / textW);
+                nameEl.style.transform = `scaleX(${scale})`;
+            }
+        });
     });
 }
 

@@ -11,105 +11,69 @@
     <meta property="og:description" content="UchuAddonの公式Wikiです。役職に関する情報をまとめています。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://catudon1276.github.io/UchuAddonWiki/">
-    <link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">
+  <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link rel="stylesheet" href="components/styles-common.css">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Hero Section */
-        .hero-section {
-            position: relative;
-            padding: clamp(3rem, 10vh, 8rem) var(--space-xl);
-            text-align: center;
-            overflow: hidden;
+        /* ------------------------------------------------
+           Global Reset & Typography
+           ------------------------------------------------ */
+        .uchu-section-title,
+        .update-log-title {
+            color: var(--uchu-text-primary);
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center; /* 中央揃え */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-xl);
+            margin-left: auto;
+            margin-right: auto;
+            display: block; /* 中央揃え用にブロック化 */
+            width: fit-content; /* 幅は内容に合わせる */
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--uchu-text-primary);
         }
 
-        .hero-logo-container {
+        /* ------------------------------------------------
+           Hero Section — オープンなレイアウト
+           ------------------------------------------------ */
+        .hero-section {
             position: relative;
-            margin-bottom: var(--space-xl);
+            padding: clamp(4rem, 10vh, 8rem) var(--space-xl) clamp(3rem, 6vh, 5rem);
+            text-align: center;
+            background: transparent;
+            overflow: hidden;
         }
 
         .hero-logo {
             max-width: 600px;
             width: 100%;
-            filter: drop-shadow(0 10px 30px rgba(102, 126, 234, 0.4));
+            display: block;
+            margin: 0 auto var(--space-xl);
+            /* 背景ボックスを撤廃 */
         }
 
         .hero-description {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-size: clamp(1.05rem, 2.5vw, 1.25rem);
             color: var(--uchu-text-secondary);
-            max-width: 800px;
-            margin: 0 auto var(--space-xl);
-            line-height: 1.8;
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.9;
+            font-weight: 400;
         }
 
-        /* Addon Info - かっこいい注釈スタイル */
-        .addon-info {
-            position: relative;
-            padding: var(--space-xl);
-            margin: var(--space-2xl) auto;
-            max-width: 900px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .addon-info::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-        }
-
-        .addon-info::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-        }
-
-        .addon-info-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .addon-info-badge {
-            display: inline-block;
-            padding: var(--space-xs) var(--space-lg);
-            background: var(--gradient-accent);
-            color: white;
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 20px;
-            margin-bottom: var(--space-md);
-        }
-
-        .addon-info-text {
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-            color: var(--uchu-text-primary);
-            line-height: 1.8;
-            margin: 0;
-        }
-
-        .addon-info-highlight {
-            color: var(--uchu-accent);
-            font-weight: 700;
-        }
-
-        /* Action Buttons */
+        /* ------------------------------------------------
+           Action Buttons — ボックスデザイン
+           ------------------------------------------------ */
         .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: flex;
+            justify-content: center;
             gap: var(--space-lg);
-            max-width: 1000px;
+            max-width: 1000px; /* 幅を広げて1行に収める */
             margin: var(--space-2xl) auto;
-            padding: 0 var(--space-lg);
+            padding: var(--space-xl) 0;
+            flex-wrap: nowrap; /* 1行固定 */
         }
 
         .action-btn {
@@ -117,227 +81,53 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: var(--space-xl);
-            background: rgba(30, 39, 73, 0.4);
-            backdrop-filter: var(--blur-glass);
-            border: 2px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
             text-decoration: none;
-            transition: all 0.3s ease;
-            min-height: 180px;
+            transition: all 0.2s ease;
+            padding: var(--space-xl) var(--space-xl);
+            min-width: 200px; /* ボタンの幅を確保 */
+            background: var(--uchu-bg-light);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
         }
 
         .action-btn:hover {
-            transform: translateY(-5px);
-            border-color: var(--uchu-accent);
-            box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
+            transform: translateY(-4px);
+            border-color: rgba(91, 108, 246, 0.3);
+            box-shadow: var(--shadow-sm);
         }
 
         .action-btn-icon {
-            font-size: 3rem;
-            margin-bottom: var(--space-md);
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.8rem;
+            margin-bottom: var(--space-sm);
+            color: var(--uchu-text-primary); /* 黒色に変更 */
         }
 
         .action-btn-title {
-            font-size: 1.3rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--uchu-text-primary);
             margin-bottom: var(--space-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .action-btn-desc {
-            font-size: 0.9rem;
-            color: var(--uchu-text-muted);
-            text-align: center;
-        }
-
-        /* Credits Section */
-        .credits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-lg);
-            margin-top: var(--space-2xl);
-        }
-
-        .credit-card {
-            background: rgba(30, 39, 73, 0.4);
-            backdrop-filter: var(--blur-glass);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            transition: all 0.3s ease;
-        }
-
-        .credit-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(74, 144, 226, 0.5);
-            box-shadow: var(--shadow-md);
-        }
-
-        .credit-card h3 {
-            font-family: var(--font-heading);
-            font-size: 1.3rem;
-            color: var(--uchu-accent);
-            margin-bottom: var(--space-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .credit-card ul {
-            list-style: none;
-        }
-
-        .credit-card li {
-            padding: var(--space-sm) 0;
-            color: var(--uchu-text-secondary);
-            border-bottom: 1px solid rgba(58, 68, 112, 0.3);
-            transition: all 0.2s ease;
-        }
-
-        .credit-card li:hover {
-            color: var(--uchu-text-primary);
-            padding-left: var(--space-sm);
-        }
-
-        .credit-card li:last-child {
-            border-bottom: none;
-        }
-
-        /* Update Log Section */
-        .update-log-section {
-            max-width: 1200px;
-            margin: var(--space-2xl) auto;
-            padding: 0 var(--space-lg);
-        }
-
-        .update-log-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: var(--space-xl);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: var(--font-heading);
-            background: var(--gradient-cosmic);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* すべてのセクションタイトルを統一 */
-        .uchu-section-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: var(--space-xl);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: var(--font-heading);
-            background: var(--gradient-cosmic);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .movie-section .uchu-section-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .update-timeline {
-            position: relative;
-            padding-left: var(--space-xl);
-        }
-
-        .update-timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--gradient-accent);
-        }
-
-        .update-item {
-            position: relative;
-            margin-bottom: var(--space-xl);
-            padding: var(--space-lg);
-            background: rgba(30, 39, 73, 0.4);
-            backdrop-filter: var(--blur-glass);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-md);
-            transition: all 0.3s ease;
-        }
-
-        .update-item:hover {
-            border-color: var(--uchu-accent);
-        }
-
-        .update-item::before {
-            content: '';
-            position: absolute;
-            left: calc(-1 * var(--space-xl) - 6px);
-            top: var(--space-lg);
-            width: 12px;
-            height: 12px;
-            background: var(--uchu-accent);
-            border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.3);
-        }
-
-        .update-date {
-            font-size: 0.9rem;
-            color: var(--uchu-accent);
-            font-weight: 700;
-            margin-bottom: var(--space-xs);
-        }
-
-        .update-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--uchu-text-primary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .update-desc {
-            color: var(--uchu-text-secondary);
-            line-height: 1.6;
-        }
-
-        .update-tags {
-            display: flex;
-            gap: var(--space-xs);
-            margin-top: var(--space-sm);
-            flex-wrap: wrap;
-        }
-
-        .update-tag {
-            padding: var(--space-xs) var(--space-sm);
-            background: rgba(74, 144, 226, 0.2);
-            color: var(--uchu-accent);
             font-size: 0.75rem;
-            border-radius: 4px;
-            font-weight: 600;
+            color: var(--uchu-text-muted);
         }
 
-        /* Movie Section */
+        /* ------------------------------------------------
+           Movie Section — フラット
+           ------------------------------------------------ */
         .movie-section {
-            max-width: 1000px;
+            max-width: 900px;
             margin: var(--space-2xl) auto;
+            padding: var(--space-xl) var(--space-lg);
         }
 
         .movie-carousel-container {
             position: relative;
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -353,84 +143,56 @@
 
         .movie-slide.active {
             display: block;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.4s ease;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .movie-container {
-            background: rgba(30, 39, 73, 0.4);
-            backdrop-filter: var(--blur-glass);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            transition: all 0.3s ease;
-        }
-
-        .movie-container:hover {
-            border-color: rgba(74, 144, 226, 0.5);
-            box-shadow: var(--shadow-md);
+            to   { opacity: 1; }
         }
 
         .movie-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-md);
+            border-radius: var(--radius-sm);
         }
 
         .movie-wrapper iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
 
         .movie-desc {
             color: var(--uchu-text-secondary);
             text-align: center;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.6;
-            margin: 0;
+            margin: var(--space-md) 0 0;
         }
 
         .carousel-btn {
             position: absolute;
-            top: 50%;
+            top: 40%;
             transform: translateY(-50%);
-            background: rgba(30, 39, 73, 0.8);
-            backdrop-filter: var(--blur-glass);
-            border: 2px solid var(--uchu-border);
-            color: var(--uchu-text-primary);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.2rem;
+            background: transparent;
+            border: none;
+            color: var(--uchu-text-secondary);
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             z-index: 10;
+            padding: var(--space-sm);
         }
 
         .carousel-btn:hover {
-            background: var(--uchu-accent);
-            border-color: var(--uchu-accent);
-            color: #000;
-            transform: translateY(-50%) scale(1.1);
+            color: var(--uchu-text-primary);
         }
 
-        .carousel-prev {
-            left: -60px;
-        }
-
-        .carousel-next {
-            right: -60px;
-        }
+        .carousel-prev { left: -40px; }
+        .carousel-next { right: -40px; }
 
         .carousel-indicators {
             display: flex;
@@ -440,26 +202,175 @@
         }
 
         .indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(74, 144, 226, 0.3);
+            width: 32px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--uchu-border);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
 
         .indicator.active {
-            background: var(--uchu-accent);
-            width: 30px;
-            border-radius: 6px;
+            background: var(--uchu-text-primary);
         }
 
         .indicator:hover {
-            background: var(--uchu-accent);
-            opacity: 0.7;
+            background: var(--uchu-text-muted);
         }
 
-        /* Load More Button */
+        /* ------------------------------------------------
+           Credits Section — 役割別グリッド
+           ------------------------------------------------ */
+        .credits-section {
+            max-width: 1000px;
+            margin: var(--space-2xl) auto;
+            padding: var(--space-xl) var(--space-lg);
+        }
+
+        .credits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3列固定 */
+            gap: var(--space-lg); /* 間隔を広めに */
+            margin-top: var(--space-xl);
+            max-width: 960px; /* 全体の幅を広く */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .credit-item {
+            text-align: center;
+            padding: var(--space-lg); /* パディングを広く */
+        }
+
+        .credit-item h3 {
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-lg);
+            display: inline-flex; /* 幅をテキストに合わせて少し長く */
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            border-bottom: 2px solid #b0b8c4;
+            padding-bottom: var(--space-sm);
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .credit-item h3 i {
+            font-size: 1.1rem;
+            color: var(--uchu-text-primary);
+        }
+
+        .credit-item ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .credit-item ul li::marker {
+            content: '';
+        }
+
+        .credit-item li {
+            padding: var(--space-xs) 0;
+            color: var(--uchu-text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        /* ------------------------------------------------
+           Update / News — シンプルリスト
+           ------------------------------------------------ */
+        .update-log-section {
+            max-width: 800px;
+            margin: var(--space-2xl) auto;
+            padding: 0 var(--space-lg);
+        }
+
+        .update-log-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: var(--space-xl);
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--uchu-text-primary);
+        }
+
+        .update-timeline {
+            position: relative;
+            padding-left: 0;
+        }
+
+        .update-timeline::before {
+            display: none; /* タイムラインの線撤廃 */
+        }
+
+        .update-item {
+            position: relative;
+            margin-bottom: var(--space-md);
+            padding: var(--space-lg);
+            background: var(--uchu-bg-light);
+            border: 1px solid var(--uchu-border);
+            border-radius: var(--radius-md);
+            box-shadow: none;
+            transition: all 0.15s ease;
+        }
+
+        .update-item:hover {
+            border-color: rgba(91, 108, 246, 0.3);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .update-item::before {
+            display: none; /* ドット撤廃 */
+        }
+
+        .update-date {
+            font-size: 0.75rem;
+            color: var(--uchu-text-muted);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .update-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .update-desc {
+            color: var(--uchu-text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .update-tags {
+            display: flex;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .update-tag {
+            padding: 3px 10px;
+            background: transparent;
+            color: var(--uchu-text-muted);
+            font-size: 0.7rem;
+            border-radius: 2px;
+            font-weight: 600;
+            border: 1px solid var(--uchu-border);
+        }
+
+        /* ------------------------------------------------
+           Load More Button
+           ------------------------------------------------ */
         .load-more-container {
             text-align: center;
             margin-top: var(--space-xl);
@@ -467,58 +378,106 @@
 
         .load-more-btn {
             padding: var(--space-md) var(--space-2xl);
-            background: rgba(30, 39, 73, 0.6);
-            backdrop-filter: var(--blur-glass);
-            border: 2px solid var(--uchu-border);
-            color: var(--uchu-text-primary);
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: var(--radius-md);
+            background: transparent;
+            border: 1.5px solid var(--uchu-border);
+            color: var(--uchu-text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             gap: var(--space-sm);
         }
 
         .load-more-btn:hover {
-            background: var(--gradient-accent);
-            border-color: var(--uchu-accent);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            border-color: var(--uchu-text-primary);
+            color: var(--uchu-text-primary);
         }
 
-        .load-more-btn i {
-            font-size: 1.2rem;
+        /* ------------------------------------------------
+           Ofuse Float Button
+           ------------------------------------------------ */
+        .ofuse-float-btn {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 3.5rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--uchu-bg-dark);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            z-index: 999;
+        }
+
+        .ofuse-float-btn:hover {
+            transform: scale(1.1) translateY(-2px);
+            background: #1e293b;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+        }
+
+        .ofuse-float-btn::after {
+            content: "ofuseで支援する";
+            position: absolute;
+            right: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--uchu-bg-dark);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .ofuse-float-btn:hover::after {
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
+            .ofuse-float-btn {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 56px;
+                height: 56px;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* ------------------------------------------------
+           Responsive
+           ------------------------------------------------ */
+        @media (max-width: 768px) {
             .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: var(--space-lg);
+            }
+
+            .hero-logo {
+                max-width: 90%;
+            }
+
+            .credits-grid {
                 grid-template-columns: 1fr;
             }
 
-            .update-timeline {
-                padding-left: var(--space-lg);
-            }
-
-            .update-item::before {
-                left: calc(-1 * var(--space-lg) - 6px);
-            }
-
-            .carousel-prev {
-                left: -10px;
-            }
-
-            .carousel-next {
-                right: -10px;
-            }
-
-            .carousel-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
+            .carousel-prev { left: -10px; }
+            .carousel-next { right: -10px; }
         }
     </style>
 </head>
@@ -533,7 +492,7 @@
 
             <div class="addon-info">
                 <div class="addon-info-content">
-                    <div class="addon-info-badge">About UchuAddon</div>
+                    <div class="addon-info-badge"></div>
                     <p class="addon-info-text">
                         <span class="addon-info-highlight">UchuAddon</span>は、Among Us MOD「Nebula on the Ship」のアドオンです。<br>
                         新しい役職やゲームモードを追加し、より幅広くゲーム体験を提供します。
@@ -552,6 +511,11 @@
                 <i class="fas fa-images action-btn-icon"></i>
                 <div class="action-btn-title">ギャラリー</div>
                 <div class="action-btn-desc">素材リソースを閲覧</div>
+            </a>
+            <a href="inquiry/index.html" class="action-btn">
+                <i class="fas fa-envelope action-btn-icon"></i>
+                <div class="action-btn-title">お問い合わせ</div>
+                <div class="action-btn-desc">ご意見・ご要望</div>
             </a>
             <a href="https://github.com/Dolly1016/Nebula/releases" target="_blank" class="action-btn">
                 <i class="fas fa-download action-btn-icon"></i>
@@ -609,14 +573,14 @@
         <section class="uchu-section">
             <h2 class="uchu-section-title">Credit</h2>
             <div class="credits-grid">
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-lightbulb"></i> IDEA</h3>
                     <ul>
                         <li>ネコうどん</li>
                     </ul>
                 </div>
 
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-code"></i> コード・開発</h3>
                     <ul>
                         <li>ごま</li>
@@ -626,7 +590,7 @@
                     </ul>
                 </div>
 
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-laptop-code"></i> コード・開発見習い</h3>
                     <ul>
                         <li>ExNEO</li>
@@ -634,7 +598,7 @@
                     </ul>
                 </div>
 
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-palette"></i> デザイナー</h3>
                     <ul>
                         <li>ねこかぼちゃ</li>
@@ -645,15 +609,17 @@
                     </ul>
                 </div>
 
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-language"></i> 翻訳</h3>
                     <ul>
                         <li>したにあ（English）</li>
+                        <li>あいす7（English）</li>
+                        <li>Mcl（English）</li>
                         <li>Plana（China）</li>
                     </ul>
                 </div>
 
-                <div class="credit-card">
+                <div class="credit-item">
                     <h3><i class="fas fa-star"></i> スペシャルサンクス</h3>
                     <ul>
                         <li>Nebula on the Ship</li>
@@ -680,6 +646,10 @@
             </div>
         </section>
     </main>
+
+    <a href="https://ofuse.me/catudon" target="_blank" rel="noopener noreferrer" class="ofuse-float-btn" aria-label="ofuse で支援する">
+        <i class="fas fa-heart"></i>
+    </a>
 
     <div id="footer"></div>
 
