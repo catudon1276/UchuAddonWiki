@@ -1,20 +1,25 @@
 ﻿{
-  "id": "sentinel",
-  "icon": "Sentinel.png",
-  "illust": "Sentinel.png",
-  "english_name": "Sentinel",
-  "name": "センチネル",
-  "team": "インポスター",
-  "color": "198, 17, 17",
-  "intro": "アンチデバイス",
-  "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。",
-  "abilities_title": "デバイス監視",
-  "abilities": [
-    {
-      "button": "NoImage.png",
-      "name": "デバイス監視",
-      "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。"
-    }
-  ],
-  "from": "TOHY"
+    "id": "sentinel",
+    "icon": "Sentinel.png",
+    "illust": "Sentinel.png",
+    "english_name": "Sentinel",
+    "name": "センチネル",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "アンチデバイス",
+    "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。",
+    "abilities_title": "デバイス監視",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "デバイス監視",
+            "description": "情報機器の周囲にプレイヤーがいるとリアルタイムで報告されます。"
+        }
+    ],
+    "options": [
+        {
+            "name": "インポスターを検知しない"
+        }
+    ],
+    "from": "TOHY"
 }

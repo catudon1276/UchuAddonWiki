@@ -1,4 +1,4 @@
-{
+﻿{
     "id": "mist",
     "icon": "Mist.png",
     "illust": "Mist.png",
@@ -14,6 +14,23 @@
             "button": "MistButton.png",
             "name": "夜霧",
             "description": "その場に視界を狭める影を生み出します。"
+        }
+    ],
+    "options": [
+        {
+            "name": "夜霧クールダウン"
+        },
+        {
+            "name": "夜霧持続時間"
+        },
+        {
+            "name": "夜霧使用可能数"
+        },
+        {
+            "name": "夜霧サイズ"
+        },
+        {
+            "name": "夜霧の領域内での視界"
         }
     ],
     "from": "Original"

@@ -16,5 +16,10 @@
             "description": "アドミン・バイタルの情報が正しく表示されません。"
         }
     ],
+    "options": [
+        {
+            "name": "自覚可能"
+        }
+    ],
     "from": "Original"
 }

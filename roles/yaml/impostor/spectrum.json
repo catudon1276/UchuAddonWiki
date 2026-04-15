@@ -16,5 +16,10 @@
             "description": "一部のクルー役職の能力を使えます。"
         }
     ],
+    "options": [
+        {
+            "name": "キルクールダウン"
+        }
+    ],
     "from": "Original"
 }

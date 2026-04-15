@@ -1,25 +1,55 @@
 ﻿{
-  "id": "trigger",
-  "icon": "Trigger.png",
-  "illust": "Trigger.png",
-  "english_name": "Trigger",
-  "name": "トリガー",
-  "team": "クルーメイト",
-  "color": "227, 227, 227",
-  "intro": "銀の銃弾",
-  "description": "ベントを解析・移設することが出来ます。",
-  "abilities_title": "メカニカル・グレース",
-  "abilities": [
-    {
-      "button": "TriggerAnalysisButton.png",
-      "name": "解析",
-      "description": "ベントを解析します。解析したベントを誰かが使うと会議で報告を受け取ります。"
-    },
-    {
-      "button": "TriggerDragButton.png",
-      "name": "移設",
-      "description": "ベントを掴み、移設します。"
-    }
-  ],
-  "from": "Original"
+    "id": "trigger",
+    "icon": "Trigger.png",
+    "illust": "Trigger.png",
+    "english_name": "Trigger",
+    "name": "トリガー",
+    "team": "クルーメイト",
+    "color": "227, 227, 227",
+    "intro": "銀の銃弾",
+    "description": "ベントを解析・移設することが出来ます。",
+    "abilities_title": "メカニカル・グレース",
+    "abilities": [
+        {
+            "button": "TriggerAnalysisButton.png",
+            "name": "解析",
+            "description": "ベントを解析します。解析したベントを誰かが使うと会議で報告を受け取ります。"
+        },
+        {
+            "button": "TriggerDragButton.png",
+            "name": "移設",
+            "description": "ベントを掴み、移設します。"
+        }
+    ],
+    "options": [
+        {
+            "name": "解析クールダウン"
+        },
+        {
+            "name": "解析使用可能回数"
+        },
+        {
+            "name": "明暗の表示",
+            "description": "解析の結果に明暗結果を追加します。"
+        },
+        {
+            "name": "移設クールダウン"
+        },
+        {
+            "name": "移設持続時間"
+        },
+        {
+            "name": "解析報告"
+        },
+        {
+            "name": "ベントの使用を検知しました"
+        },
+        {
+            "name": "<b>明暗結果：明</b>"
+        },
+        {
+            "name": "<b>明暗結果：暗</b>"
+        }
+    ],
+    "from": "Original"
 }

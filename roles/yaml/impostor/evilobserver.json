@@ -1,20 +1,31 @@
 {
-  "id": "observer",
-  "icon": "Observer.png",
-  "illust": "EvilObserver.png",
-  "english_name": "Evil Observer",
-  "name": "イビルオブザーバー",
-  "team": "インポスター",
-  "color": "198, 17, 17",
-  "intro": "逃れ得ぬ監視網",
-  "description": "カメラを設置するインポスターです。",
-  "abilities_title": "カメラ設置",
-  "abilities": [
-    {
-      "button": "NoImage.png",
-      "name": "カメラ設置",
-      "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
-    }
-  ],
-  "from": "Original"
+    "id": "observer",
+    "icon": "Observer.png",
+    "illust": "EvilObserver.png",
+    "english_name": "Evil Observer",
+    "name": "イビルオブザーバー",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "逃れ得ぬ監視網",
+    "description": "カメラを設置するインポスターです。",
+    "abilities_title": "カメラ設置",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "カメラ設置",
+            "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
+        }
+    ],
+    "options": [
+        {
+            "name": "カメラ最大数"
+        },
+        {
+            "name": "カメラ設置クールダウン"
+        },
+        {
+            "name": "他プレイヤーがカメラを視認可能"
+        }
+    ],
+    "from": "Original"
 }

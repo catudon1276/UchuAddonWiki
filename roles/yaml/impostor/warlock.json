@@ -1,4 +1,4 @@
-{
+﻿{
     "id": "warlock",
     "icon": "Warlock.png",
     "illust": "toughness.png",
@@ -14,6 +14,20 @@
             "button": "WarlockCurseButton.png",
             "name": "呪う",
             "description": "プレイヤーを呪います。呪ったプレイヤーの近くに別のプレイヤーがいると呪殺ボタンが有効化されます。"
+        }
+    ],
+    "options": [
+        {
+            "name": "呪殺クールダウン"
+        },
+        {
+            "name": "呪いクールダウン"
+        },
+        {
+            "name": "同チームのプレイヤーを呪殺可能"
+        },
+        {
+            "name": "キル後の硬直時間"
         }
     ],
     "from": "TOR"

@@ -16,5 +16,10 @@
             "description": "常に移動方向がおかしくなります。"
         }
     ],
+    "options": [
+        {
+            "name": "会議後に移動方向を再シャッフル"
+        }
+    ],
     "from": "Original"
 }

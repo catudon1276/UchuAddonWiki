@@ -1,30 +1,44 @@
 ﻿{
-  "id": "sonar",
-  "icon": "Sonar.png",
-  "illust": "Sonar.png",
-  "english_name": "Sonar",
-  "name": "ソナー",
-  "team": "クルーメイト",
-  "color": "52, 115, 68",
-  "intro": "アンテナを設置せよ",
-  "description": "キルを検知するアンテナを設置します。",
-  "abilities_title": "アンテナ",
-  "abilities": [
-    {
-      "button": "SonarPlaceButton.png",
-      "name": "設置",
-      "description": "アンテナを設置します。設置したアンテナは自分にしか見えません。"
-    },
-    {
-      "button": "SonarAntenna.png",
-      "name": "アンテナ",
-      "description": "有効化しているアンテナです。周囲でキルが起こると通知します。"
-    },
-    {
-      "button": "SonarAntennaBreak.png",
-      "name": "壊れたアンテナ",
-      "description": "一度キルを検知するとアンテナは壊れてしまいます。この状態ではキルを検知できません。"
-    }
-  ],
-  "from": "Original"
+    "id": "sonar",
+    "icon": "Sonar.png",
+    "illust": "Sonar.png",
+    "english_name": "Sonar",
+    "name": "ソナー",
+    "team": "クルーメイト",
+    "color": "52, 115, 68",
+    "intro": "アンテナを設置せよ",
+    "description": "キルを検知するアンテナを設置します。",
+    "abilities_title": "アンテナ",
+    "abilities": [
+        {
+            "button": "SonarPlaceButton.png",
+            "name": "設置",
+            "description": "アンテナを設置します。設置したアンテナは自分にしか見えません。"
+        },
+        {
+            "button": "SonarAntenna.png",
+            "name": "アンテナ",
+            "description": "有効化しているアンテナです。周囲でキルが起こると通知します。"
+        },
+        {
+            "button": "SonarAntennaBreak.png",
+            "name": "壊れたアンテナ",
+            "description": "一度キルを検知するとアンテナは壊れてしまいます。この状態ではキルを検知できません。"
+        }
+    ],
+    "options": [
+        {
+            "name": "設置クールダウン"
+        },
+        {
+            "name": "アンテナ設置可能回数"
+        },
+        {
+            "name": "キル検知範囲"
+        },
+        {
+            "name": "通知持続時間"
+        }
+    ],
+    "from": "Original"
 }

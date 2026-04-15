@@ -1,30 +1,79 @@
 ﻿{
-  "id": "epidemic",
-  "icon": "Epidemic.png",
-  "illust": "Epidemic.png",
-  "english_name": "Epidemic",
-  "name": "エピデミック",
-  "team": "ニュートラル",
-  "color": "68, 255, 0",
-  "intro": "悪意は伝染する",
-  "description": "未知のウイルスを感染させる第三陣営です。",
-  "abilities_title": "見えない恐怖",
-  "abilities": [
-    {
-      "button": "EpidemicInfectButton.png",
-      "name": "感染",
-      "description": "プレイヤーを感染させます。"
-    },
-    {
-      "button": "EpidemicBreakButton.png",
-      "name": "破壊",
-      "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
-    },
-    {
-      "button": "EpidemicBox.png",
-      "name": "除染箱",
-      "description": "除染箱を使用すると使用したプレイヤーの感染率が減少します。"
-    }
-  ],
-  "from": "Original"
+    "id": "epidemic",
+    "icon": "Epidemic.png",
+    "illust": "Epidemic.png",
+    "english_name": "Epidemic",
+    "name": "エピデミック",
+    "team": "ニュートラル",
+    "color": "68, 255, 0",
+    "intro": "悪意は伝染する",
+    "description": "未知のウイルスを感染させる第三陣営です。",
+    "abilities_title": "見えない恐怖",
+    "abilities": [
+        {
+            "button": "EpidemicInfectButton.png",
+            "name": "感染",
+            "description": "プレイヤーを感染させます。"
+        },
+        {
+            "button": "EpidemicBreakButton.png",
+            "name": "破壊",
+            "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
+        },
+        {
+            "button": "EpidemicBox.png",
+            "name": "除染箱",
+            "description": "除染箱を使用すると使用したプレイヤーの感染率が減少します。"
+        }
+    ],
+    "options": [
+        {
+            "name": "感染クールダウン"
+        },
+        {
+            "name": "感染所要時間"
+        },
+        {
+            "name": "感染完了までの時間"
+        },
+        {
+            "name": "ウイルス伝染範囲"
+        },
+        {
+            "name": "破壊設定"
+        },
+        {
+            "name": "破壊クールダウン"
+        },
+        {
+            "name": "破壊所要時間"
+        },
+        {
+            "name": "破壊使用可能数"
+        },
+        {
+            "name": "除染箱再補給までのターン",
+            "description": "除染箱が何ターンの間壊れるか設定します。"
+        },
+        {
+            "name": "除染箱の設定"
+        },
+        {
+            "name": "除染箱出現数"
+        },
+        {
+            "name": "1プレイヤーごとの除染箱使用可能数"
+        },
+        {
+            "name": "除染所要時間"
+        },
+        {
+            "name": "減少する感染率"
+        },
+        {
+            "name": "除染ペナルティ倍率",
+            "description": "設定した値分、徐々に効果が薄くなっていきます。"
+        }
+    ],
+    "from": "Original"
 }

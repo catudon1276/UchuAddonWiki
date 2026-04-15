@@ -16,5 +16,10 @@
             "description": "輝き続けます。"
         }
     ],
+    "options": [
+        {
+            "name": "にじいろスターでのFPS数"
+        }
+    ],
     "from": "SNR"
 }
