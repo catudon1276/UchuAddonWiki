@@ -1,6 +1,7 @@
 {
     "id": "lighter",
     "icon": "Lighter.png",
+    "illust": "Lighter.png",
     "english_name": "Lighter",
     "name": "ライター",
     "team": "クルーメイト",

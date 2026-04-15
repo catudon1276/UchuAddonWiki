@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "anchor",
     "icon": "Anchor.png",
+    "illust": "Anchor.png",
     "english_name": "Anchor",
     "name": "アンカー",
     "team": "ニュートラル",

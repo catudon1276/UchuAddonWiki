@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "tuna",
   "icon": "Tuna.png",
+  "illust": "Tuna.png",
   "english_name": "Tuna",
   "name": "マグロ",
   "team": "ニュートラル",

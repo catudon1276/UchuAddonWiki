@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "bakery",
     "icon": "Bakery.png",
+    "illust": "Bakery.png",
     "english_name": "Bakery",
     "name": "ベーカリー",
     "team": "クルーメイト",

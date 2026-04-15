@@ -1,6 +1,7 @@
-{
-    "id": "Hawk",
+﻿{
+    "id": "hawk",
     "icon": "Hawk.png",
+    "illust": "NiceHawk.png",
     "english_name": "Nice Hawk",
     "name": "ナイスホーク",
     "team": "クルーメイト",

@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "sentinel",
   "icon": "Sentinel.png",
+  "illust": "Sentinel.png",
   "english_name": "Sentinel",
   "name": "センチネル",
   "team": "インポスター",

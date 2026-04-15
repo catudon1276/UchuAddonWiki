@@ -780,7 +780,7 @@
             const roleColor = role.color ? `rgb(${role.color})` : 'rgb(74, 144, 226)';
 
             // 背景画像（役職立ち絵）
-            const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
+            const characterPath = role.illust ? `../resource/roleimage/${role.illust}` : '';
 
             // 出典ロゴ（TORGMはTORのロゴを流用）
             const fromLogoCode = role.from === 'TORGM' ? 'TOR' : role.from;

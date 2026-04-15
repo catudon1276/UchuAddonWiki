@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "obolus",
     "icon": "Obolus.png",
+    "illust": "Obolus.png",
     "english_name": "Obolus",
     "name": "オボルス",
     "team": "ニュートラル",

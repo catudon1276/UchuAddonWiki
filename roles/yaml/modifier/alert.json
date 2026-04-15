@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "alert",
     "icon": "Alert.png",
+    "illust": "Alert.png",
     "english_name": "Alert",
     "name": "アラート",
     "team": "モディファイア",

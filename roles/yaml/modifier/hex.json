@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "hex",
     "icon": "Hex.png",
+    "illust": "Hex.png",
     "english_name": "Hex",
     "name": "ヘックス",
     "team": "モディファイア",

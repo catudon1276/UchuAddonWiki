@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "seed",
     "icon": "Seed.png",
+    "illust": "Seed.png",
     "english_name": "Seed",
     "name": "シード",
     "team": "ニュートラル",

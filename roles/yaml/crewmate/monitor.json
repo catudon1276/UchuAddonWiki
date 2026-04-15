@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "monitor",
   "icon": "Proxy&Monitor.png",
+  "illust": "Monitor.png",
   "english_name": "Monitor",
   "name": "モニター",
   "team": "クルーメイト",

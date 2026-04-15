@@ -1,6 +1,7 @@
 {
     "id": "watching",
     "icon": "Watching.png",
+    "illust": "Watching.png",
     "english_name": "Watching",
     "name": "ウォッチング",
     "team": "モディファイア",

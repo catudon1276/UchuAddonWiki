@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "forensics",
     "icon": "Forensic.png",
+    "illust": "Forensics.png",
     "english_name": "Forensics",
     "name": "フォレンジック",
     "team": "モディファイア",

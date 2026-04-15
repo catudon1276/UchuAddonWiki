@@ -1,6 +1,7 @@
 {
     "id": "drunk",
     "icon": "Drunk.png",
+    "illust": "Drunk.png",
     "english_name": "Drunk",
     "name": "ドランク",
     "team": "モディファイア",

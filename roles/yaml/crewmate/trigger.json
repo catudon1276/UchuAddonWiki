@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "trigger",
   "icon": "Trigger.png",
+  "illust": "Trigger.png",
   "english_name": "Trigger",
   "name": "トリガー",
   "team": "クルーメイト",

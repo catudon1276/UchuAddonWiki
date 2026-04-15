@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "spectrePossession",
     "icon": "SpectrePossession.png",
+    "illust": "SpectrePossession.png",
     "english_name": "SpectrePossession",
     "name": "狐憑き",
     "team": "モディファイア",

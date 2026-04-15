@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "amnesia",
     "icon": "Amnesia.png",
+    "illust": "Amnesia.png",
     "english_name": "Amnesia",
     "name": "アムネシア",
     "team": "ニュートラル",

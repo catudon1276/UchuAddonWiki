@@ -1,6 +1,7 @@
 {
     "id": "visorModifier",
     "icon": "Visor.png",
+    "illust": "Visor.png",
     "english_name": "Visor",
     "name": "バイザー",
     "team": "モディファイア",

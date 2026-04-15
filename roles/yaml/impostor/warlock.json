@@ -1,6 +1,7 @@
 {
     "id": "warlock",
     "icon": "Warlock.png",
+    "illust": "Warlock.png",
     "english_name": "Warlock",
     "name": "ウォーロック",
     "team": "インポスター",

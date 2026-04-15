@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "SerialKiller",
     "icon": "SerialKiller.png",
+    "illust": "SerialKiller.png",
     "english_name": "SerialKiller",
     "name": "シリアルキラー",
     "team": "インポスター",

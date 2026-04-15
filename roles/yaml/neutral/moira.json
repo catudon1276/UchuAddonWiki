@@ -1,0 +1,25 @@
+﻿{
+    "id": "moira",
+    "icon": "Moira.png",
+    "illust": "Moira.png",
+    "english_name": "Moira",
+    "name": "モイラ",
+    "team": "ニュートラル",
+    "color": "194, 125, 207",
+    "intro": "万象の織り手",
+    "description": "プレイヤーの役職を交換する第三陣営です。設定回数役職を交換すると勝利します。",
+    "abilities_title": "運命操作",
+    "abilities": [
+        {
+            "button": "MoiraRevelationButton.png",
+            "name": "啓示",
+            "description": "ターゲットを交換対象に追加します。"
+        },
+        {
+            "button": "MoiraExchangeButton.png",
+            "name": "操作",
+            "description": "選択した二人の役職を入れ替えます。交換は全員視点で通知されます。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "admiral",
     "icon": "Admiral.png",
+    "illust": "Admiral.png",
     "english_name": "Admiral",
     "name": "アドミラル",
     "team": "クルーメイト",

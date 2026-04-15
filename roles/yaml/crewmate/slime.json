@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "slime",
     "icon": "Slime.png",
+    "illust": "Slime.png",
     "english_name": "Slime",
     "name": "スライム",
     "team": "クルーメイト",

@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "voyager",
     "icon": "Voyager.png",
+    "illust": "Voyager.png",
     "english_name": "Voyager",
     "name": "ボイジャー",
     "team": "インポスター",

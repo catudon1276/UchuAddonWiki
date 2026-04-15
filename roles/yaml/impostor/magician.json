@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "magician",
     "icon": "Magician.png",
+    "illust": "Magician.png",
     "english_name": "Magician",
     "name": "マジシャン",
     "team": "インポスター",

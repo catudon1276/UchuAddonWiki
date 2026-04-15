@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "witch",
     "icon": "Witch.png",
+    "illust": "Witch.png",
     "english_name": "Witch",
     "name": "ウィッチ",
     "team": "インポスター",

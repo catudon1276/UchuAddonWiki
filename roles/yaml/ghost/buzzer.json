@@ -1,6 +1,7 @@
 {
     "id": "buzzer",
     "icon": "Buzzer.png",
+    "illust": "Buzzer.png",
     "english_name": "Buzzer",
     "name": "ブザー",
     "team": "ゴースト",

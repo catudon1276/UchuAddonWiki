@@ -481,7 +481,7 @@ function showRoleDetails(role) {
     const overlayContent = document.getElementById('overlayContent');
 
     // 画像パス生成
-    const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
+    const characterPath = role.illust ? `../resource/roleimage/${role.illust}` : '';
     const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
     const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
 

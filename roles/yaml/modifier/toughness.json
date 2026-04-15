@@ -1,6 +1,7 @@
 {
     "id": "toughness",
     "icon": "Toughness.png",
+    "illust": "Toughness.png",
     "english_name": "Toughness",
     "name": "タフネス",
     "team": "モディファイア",

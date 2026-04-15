@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "Eraser",
     "icon": "Eraser.png",
+    "illust": "Eraser.png",
     "english_name": "Eraser",
     "name": "イレイサー",
     "team": "インポスター",

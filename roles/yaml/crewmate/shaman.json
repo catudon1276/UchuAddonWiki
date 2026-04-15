@@ -1,6 +1,7 @@
 {
     "id": "shaman",
     "icon": "Sherman.png",
+    "illust": "Shaman.png",
     "english_name": "Shaman",
     "name": "シャーマン",
     "team": "クルーメイト",

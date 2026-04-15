@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "commander",
     "icon": "Commander.png",
+    "illust": "Commander.png",
     "english_name": "Commander",
     "name": "コマンダー",
     "team": "インポスター",

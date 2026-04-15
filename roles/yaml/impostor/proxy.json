@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "proxy",
   "icon": "Proxy&Monitor.png",
+  "illust": "Proxy.png",
   "english_name": "Proxy",
   "name": "プロキシ",
   "team": "インポスター",

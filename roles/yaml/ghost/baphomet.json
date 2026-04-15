@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "baphomet",
     "icon": "Baphomet.png",
+    "illust": "Baphomet.png",
     "english_name": "Baphomet",
     "name": "バフォメット",
     "team": "ゴースト",

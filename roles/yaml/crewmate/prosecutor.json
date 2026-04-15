@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "prosecutor",
     "icon": "Prosecutor.png",
+    "illust": "Prosecutor.png",
     "english_name": "Prosecutor",
     "name": "プロセキューター",
     "team": "クルーメイト",

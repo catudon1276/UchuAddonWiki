@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "guts",
     "icon": "Guts.png",
+    "illust": "Guts.png",
     "english_name": "Guts",
     "name": "ガッツ",
     "team": "モディファイア",

@@ -1,6 +1,7 @@
-{
-    "id": "Decorator",
+﻿{
+    "id": "decorator",
     "icon": "Decolate.png",
+    "illust": "NiceDecorator.png",
     "english_name": "Nice Decorator",
     "name": "ナイスデコレーター",
     "team": "クルーメイト",

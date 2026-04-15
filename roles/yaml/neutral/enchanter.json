@@ -1,0 +1,20 @@
+﻿{
+    "id": "enchanter",
+    "icon": "Enchanter.png",
+    "illust": "Enchanter.png",
+    "english_name": "Enchanter",
+    "name": "エンチャンター",
+    "team": "ニュートラル",
+    "color": "66, 245, 114",
+    "intro": "最強のガジェットを求めて",
+    "description": "選んだ相手に対してモディファイアを渡すことができる第三陣営です。設定回数エンチャントすると追加勝利します。",
+    "abilities_title": "ドレスコード - リライト",
+    "abilities": [
+        {
+            "button": "EnchanterButton.png",
+            "name": "エンチャント",
+            "description": "プレイヤーにモディファイアを付与します。エンチャントによって追加されたモディファイアのみ変化し続けます。勝利に必要な回数エンチャントしても、引き続き使用可能です。"
+        }
+    ],
+    "from": "Original"
+}

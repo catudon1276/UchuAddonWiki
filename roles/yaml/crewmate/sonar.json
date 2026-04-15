@@ -1,6 +1,7 @@
-{
+﻿{
   "id": "sonar",
   "icon": "Sonar.png",
+  "illust": "Sonar.png",
   "english_name": "Sonar",
   "name": "ソナー",
   "team": "クルーメイト",

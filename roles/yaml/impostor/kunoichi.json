@@ -1,6 +1,7 @@
-{
+﻿{
     "id": "kunoichi",
     "icon": "Kunoichi.png",
+    "illust": "Kunoichi.png",
     "english_name": "Kunoichi",
     "name": "クノイチ",
     "team": "インポスター",

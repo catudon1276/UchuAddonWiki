@@ -1,6 +1,7 @@
 {
     "id": "superVisor",
     "icon": "Visor.png",
+    "illust": "Visor.png",
     "english_name": "Visor",
     "name": "バイザー",
     "team": "クルーメイト",

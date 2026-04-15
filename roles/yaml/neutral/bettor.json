@@ -1,0 +1,30 @@
+{
+    "id": "bettor",
+    "icon": "Better.png",
+    "illust": "Bettor.png",
+    "english_name": "Bettor",
+    "name": "ベッター",
+    "team": "ニュートラル",
+    "color": "247, 157, 72",
+    "intro": "Logic Over Luck.",
+    "description": "全員の役職を言い当てると勝利する第三陣営です。",
+    "abilities_title": "ロジカル・コール",
+    "abilities": [
+        {
+            "button": "BettorGuessButton.png",
+            "name": "推測",
+            "description": "プレイヤーの役職を推測します。全員の役職を言い当てると勝利します。"
+        },
+        {
+            "button": "BettorAnalyzeButton.png",
+            "name": "分析",
+            "description": "選択したプレイヤーの陣営を確認できます。"
+        },
+        {
+            "button": "IdentifyButton.png",
+            "name": "特定",
+            "description": "選択したプレイヤーの役職を知ることができます。一定のヒット割合で使用可能になります。"
+        }
+    ],
+    "from": "Original"
+}
