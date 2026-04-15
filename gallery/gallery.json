@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-15T09:09:01.231Z",
+    "_generated_at": "2026-04-15T09:55:13.721Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -150,7 +150,6 @@
             "MiracleButton.png",
             "MistButton.png",
             "MoiraExchangeButton.png",
-            "MoiraIcon.png",
             "MoiraRevelationButton.png",
             "NimrodButton.png",
             "NoImage.png",
