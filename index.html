@@ -306,7 +306,16 @@
         .update-timeline {
             position: relative;
             padding-left: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: var(--space-sm);
         }
+
+        /* スクロールバーのスタイル */
+        .update-timeline::-webkit-scrollbar { width: 6px; }
+        .update-timeline::-webkit-scrollbar-track { background: var(--uchu-bg-mid); border-radius: 3px; }
+        .update-timeline::-webkit-scrollbar-thumb { background: var(--uchu-border); border-radius: 3px; }
+        .update-timeline::-webkit-scrollbar-thumb:hover { background: var(--uchu-text-muted); }
 
         .update-timeline::before {
             display: none; /* タイムラインの線撤廃 */
@@ -369,34 +378,6 @@
             border-radius: 2px;
             font-weight: 600;
             border: 1px solid var(--uchu-border);
-        }
-
-        /* ------------------------------------------------
-           Load More Button
-           ------------------------------------------------ */
-        .load-more-container {
-            text-align: center;
-            margin-top: var(--space-xl);
-        }
-
-        .load-more-btn {
-            padding: var(--space-md) var(--space-2xl);
-            background: transparent;
-            border: 1.5px solid var(--uchu-border);
-            color: var(--uchu-text-secondary);
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .load-more-btn:hover {
-            border-color: var(--uchu-text-primary);
-            color: var(--uchu-text-primary);
         }
 
         /* ------------------------------------------------
@@ -633,11 +614,6 @@
             <div class="update-timeline" id="updateTimeline">
                 <!-- 更新ログはJavaScriptで動的に読み込み -->
             </div>
-            <div class="load-more-container" id="loadMoreContainer" style="display: none;">
-                <button class="load-more-btn" id="loadMoreBtn">
-                    <i class="fas fa-plus-circle"></i> もっと見る
-                </button>
-            </div>
         </section>
     </main>
 
@@ -693,34 +669,21 @@
             });
         });
 
-        // ニュース「もっと見る」機能
-        const INITIAL_NEWS_COUNT = 3; // 初期表示件数
-        let allNews = [];
-        let displayedCount = 0;
-
+        // ニュース表示
         fetch('daily.json')
             .then(r => r.json())
             .then(data => {
-                allNews = data.updates;
-                displayedCount = Math.min(INITIAL_NEWS_COUNT, allNews.length);
-                renderNews(displayedCount);
-
-                // 「もっと見る」ボタンの表示/非表示
-                const loadMoreContainer = document.getElementById('loadMoreContainer');
-                if (allNews.length > INITIAL_NEWS_COUNT) {
-                    loadMoreContainer.style.display = 'block';
-                }
+                renderNews(data.updates);
             })
             .catch(err => {
                 console.error('ニュースの読み込みに失敗しました:', err);
             });
 
-        function renderNews(count) {
+        function renderNews(updates) {
             const timeline = document.getElementById('updateTimeline');
-            timeline.innerHTML = ''; // クリア
+            timeline.innerHTML = '';
 
-            const newsToShow = allNews.slice(0, count);
-            newsToShow.forEach(update => {
+            updates.forEach(update => {
                 const item = document.createElement('div');
                 item.className = 'update-item';
 
@@ -737,17 +700,6 @@
                 timeline.appendChild(item);
             });
         }
-
-        // 「もっと見る」ボタンのクリックイベント
-        document.getElementById('loadMoreBtn').addEventListener('click', () => {
-            displayedCount = Math.min(displayedCount + 3, allNews.length);
-            renderNews(displayedCount);
-
-            // 全て表示したらボタンを非表示
-            if (displayedCount >= allNews.length) {
-                document.getElementById('loadMoreContainer').style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
