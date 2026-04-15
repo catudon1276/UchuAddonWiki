@@ -366,9 +366,9 @@
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 340px;
+            width: 100%;
             height: 520px;
-            background-size: contain;
+            background-size: auto 100%;
             background-position: bottom right;
             background-repeat: no-repeat;
             opacity: 0.18;
@@ -569,6 +569,42 @@
             color: var(--uchu-text-muted);
             margin-top: 2px;
             line-height: 1.55;
+        }
+
+        .option-sub-list {
+            margin-top: var(--space-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .option-sub-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+            padding-left: var(--space-sm);
+        }
+
+        .option-sub-arrow {
+            color: var(--uchu-text-muted);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .option-sub-content {}
+
+        .option-sub-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--uchu-text-secondary);
+        }
+
+        .option-sub-description {
+            font-size: 0.78rem;
+            color: var(--uchu-text-muted);
+            margin-top: 1px;
+            line-height: 1.5;
         }
 
         /* ------------------------------------------------
@@ -848,14 +884,27 @@
 
             let optionsHTML = '';
             if (role.options && role.options.length > 0) {
-                const optionItems = role.options.map(opt => `
+                const optionItems = role.options.map(opt => {
+                    const subHTML = (opt.options && opt.options.length > 0)
+                        ? `<div class="option-sub-list">${opt.options.map(sub => `
+                            <div class="option-sub-item">
+                                <span class="option-sub-arrow">└</span>
+                                <div class="option-sub-content">
+                                    <div class="option-sub-name">${sub.name}</div>
+                                    ${sub.description ? `<div class="option-sub-description">${formatText(sub.description)}</div>` : ''}
+                                </div>
+                            </div>`).join('')}
+                        </div>`
+                        : '';
+                    return `
                     <div class="option-item">
                         <div class="option-content">
                             <div class="option-name">${opt.name}</div>
                             ${opt.description ? `<div class="option-description">${formatText(opt.description)}</div>` : ''}
+                            ${subHTML}
                         </div>
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
                 optionsHTML = `
                     <div class="options-section">
                         <h3 class="section-title">

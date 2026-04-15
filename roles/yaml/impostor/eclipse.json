@@ -47,10 +47,12 @@
             "name": "会議時マーク地点リセット"
         },
         {
-            "name": "マーク設定SE"
-        },
-        {
-            "name": "SE範囲"
+            "name": "マーク設定SE",
+            "options": [
+                {
+                    "name": "SE範囲"
+                }
+            ]
         }
     ],
     "from": "Original"
