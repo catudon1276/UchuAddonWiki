@@ -28,7 +28,8 @@ const FROM_SOURCES = [
     { code: 'TORGM', name: 'TheOtherRoles-GM' },
     { code: 'TOHK', name: 'TownOfHost-K' },
     { code: 'TOHY', name: 'TownOfHost-Y' },
-    { code: 'TOU', name: 'TownOfUs' }
+    { code: 'TOU', name: 'TownOfUs' },
+    { code: 'TOUMR', name: 'TownOfUs -MIRA-' }
 ];
 
 // 陣営フォールバックアイコン（役職にiconが未設定の場合）
