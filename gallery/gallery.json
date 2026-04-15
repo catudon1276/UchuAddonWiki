@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-15T04:28:53.747Z",
+    "_generated_at": "2026-04-15T09:09:01.231Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -39,7 +39,6 @@
             "EvilHawk.png",
             "Express.png",
             "Forensics.png",
-            "Guardian.png",
             "Guts.png",
             "Harvester.png",
             "Hex.png",
@@ -81,6 +80,7 @@
             "Static.png",
             "Testament.png",
             "Timer.png",
+            "Toughness.png",
             "Trigger.png",
             "Tuna.png",
             "Uchu__20260329183105.png",
