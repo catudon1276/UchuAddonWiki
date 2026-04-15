@@ -530,6 +530,48 @@
         }
 
         /* ------------------------------------------------
+           Options Section
+           ------------------------------------------------ */
+        .options-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-sm) var(--space-lg);
+            border-left: 2px solid var(--uchu-border);
+            margin-bottom: 2px;
+            transition: border-color 0.15s ease;
+        }
+
+        .option-item:hover {
+            border-left-color: var(--uchu-text-primary);
+        }
+
+
+
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-name {
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--uchu-text-primary);
+        }
+
+        .option-description {
+            font-size: 0.82rem;
+            color: var(--uchu-text-muted);
+            margin-top: 2px;
+            line-height: 1.55;
+        }
+
+        /* ------------------------------------------------
            Secret Modal body
            ------------------------------------------------ */
         .secret-modal-body {
@@ -804,6 +846,26 @@
                 `;
             }
 
+            let optionsHTML = '';
+            if (role.options && role.options.length > 0) {
+                const optionItems = role.options.map(opt => `
+                    <div class="option-item">
+                        <div class="option-content">
+                            <div class="option-name">${opt.name}</div>
+                            ${opt.description ? `<div class="option-description">${formatText(opt.description)}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                optionsHTML = `
+                    <div class="options-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-cog"></i> 設定
+                        </h3>
+                        ${optionItems}
+                    </div>
+                `;
+            }
+
             let abilitiesHTML = '';
             if (role.abilities && role.abilities.length > 0) {
                 const abilitiesItems = role.abilities.map(ability => `
@@ -867,6 +929,8 @@
 
                 <div style="position: relative; z-index: 2;">
                     ${abilitiesHTML}
+
+                    ${optionsHTML}
 
                     ${role.tips ? `
                         <div class="abilities-section">

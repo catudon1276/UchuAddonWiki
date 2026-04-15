@@ -16,12 +16,12 @@
       "description": "アンテナを設置します。設置したアンテナは自分にしか見えません。"
     },
     {
-      "button": "SonarAntennaDocument.png",
+      "button": "SonarAntenna.png",
       "name": "アンテナ",
       "description": "有効化しているアンテナです。周囲でキルが起こると通知します。"
     },
     {
-      "button": "SonarAntennaBreakDocument.png",
+      "button": "SonarAntennaBreak.png",
       "name": "壊れたアンテナ",
       "description": "一度キルを検知するとアンテナは壊れてしまいます。この状態ではキルを検知できません。"
     }
