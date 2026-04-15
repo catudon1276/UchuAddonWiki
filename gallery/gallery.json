@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-15T03:41:04.048Z",
+    "_generated_at": "2026-04-15T03:49:36.777Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -30,6 +30,7 @@
             "Citrus.png",
             "Commander.png",
             "DJ.png",
+            "Drunk.png",
             "Eclipse.png",
             "Egoist.png",
             "Enchanter.png",
@@ -78,6 +79,7 @@
             "Spectrum.png",
             "Star.png",
             "Static.png",
+            "Testament.png",
             "Timer.png",
             "Trigger.png",
             "Tuna.png",
