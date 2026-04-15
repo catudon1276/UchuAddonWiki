@@ -4,7 +4,7 @@
     "english_name": "Forensics",
     "name": "フォレンジック",
     "team": "モディファイア",
-    "color": "236, 0, 140",
+    "color": "12, 90, 147",
     "intro": "その死こそが、最後の刻み。",
     "description": "追放されたプレイヤーがインポスターかそうでないかがわかります。",
     "abilities_title": "検視",
@@ -15,5 +15,5 @@
             "description": "追放されたプレイヤーがインポスターかそうでないかがわかります。"
         }
     ],
-    "from": "Original"
+    "from": "TOHY"
 }
