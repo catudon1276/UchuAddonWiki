@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-12T00:48:05.791Z",
+    "_generated_at": "2026-04-15T01:27:07.575Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -23,8 +23,9 @@
             "Bakery.png",
             "Baphomet.png",
             "Better.png",
-            "Bettor.png",
+            "Bomber.png",
             "Chicken.png",
+            "Citrus.png",
             "Commander.png",
             "Eclipse.png",
             "Enchanter.png",
@@ -49,6 +50,7 @@
             "Moon.png",
             "Nekokabocha.png",
             "NiceDecorator.png",
+            "NiceObserver.png",
             "Nimrod.png",
             "Obolus.png",
             "Observer.png",
@@ -76,7 +78,8 @@
             "Voyager.png",
             "Waraningyou.png",
             "Witch.png",
-            "Xinobi.png"
+            "Xinobi.png",
+            "nova.png"
         ]
     },
     "rolebutton": {
@@ -140,7 +143,6 @@
             "MoiraIcon.png",
             "MoiraRevelationButton.png",
             "NimrodButton.png",
-            "NimrodIcon.png",
             "NoImage.png",
             "NuunButton.png",
             "ObserverMonitorButton.png",

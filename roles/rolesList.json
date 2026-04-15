@@ -14,7 +14,6 @@
             "nicedecorator.json",
             "nicehawk.json",
             "niceobserver.json",
-            "nicesummoner.json",
             "nimrod.json",
             "operator.json",
             "polaris.json",
@@ -33,7 +32,6 @@
             "evildecorator.json",
             "evilhawk.json",
             "evilobserver.json",
-            "evilsummoner.json",
             "harvester.json",
             "kunoichi.json",
             "magician.json",
@@ -64,7 +62,6 @@
             "chickenmodifier.json",
             "drunk.json",
             "express.json",
-            "guarding.json",
             "guts.json",
             "hex.json",
             "highlow.json",
@@ -79,6 +76,7 @@
             "star.json",
             "static.json",
             "timer.json",
+            "toughness.json",
             "tunamodi.json",
             "visor.json",
             "watching.json"
@@ -88,10 +86,7 @@
             "miracle.json",
             "mist.json"
         ],
-        "perk": [
-            "repair.json",
-            "storagebox.json"
-        ],
+        "perk": [],
         "secret": [
             "minigame1.json",
             "minigame2.json",
