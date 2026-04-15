@@ -770,8 +770,6 @@
                              role.team === 'シークレット' ||
                              (role.search_keywords && Array.isArray(role.search_keywords) && role.search_keywords.length > 0);
 
-            console.log('📋 showRoleDetails called:', role.name, 'isSecret:', isSecret);
-
             if (isSecret) {
                 showSecretModal(role);
                 return;
@@ -934,7 +932,6 @@
 
         // ★シークレット役職用モーダル表示関数を追加
         function showSecretModal(role) {
-            console.log('🔐 showSecretModal が呼ばれました:', role);
 
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
