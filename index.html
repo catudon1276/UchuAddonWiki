@@ -237,6 +237,7 @@
             max-width: 960px; /* 全体の幅を広く */
             margin-left: auto;
             margin-right: auto;
+            justify-items: center; /* グリッドアイテムを中央揃え */
         }
 
         .credit-item {
@@ -589,13 +590,6 @@
                         <li>あらいもん</li>
                         <li>アンハッピーセット</li>
                         <li>たこやき</li>
-                    </ul>
-                </div>
-
-                <div class="credit-item">
-                    <h3><i class="fas fa-laptop-code"></i> コード・開発見習い</h3>
-                    <ul>
-                        <li>ExNEO</li>
                         <li>ラムネ</li>
                     </ul>
                 </div>
@@ -624,13 +618,11 @@
                 <div class="credit-item">
                     <h3><i class="fas fa-star"></i> スペシャルサンクス</h3>
                     <ul>
-                        <li>Nebula on the Ship</li>
-                        <li>Super New Roles</li>
-                        <li>Extreme Roles</li>
-                        <li>Town of Host Y</li>
-                        <li>Town of Host K</li>
-                        <li>Town of Us</li>
-                        <li>The Other Roles</li>
+                        <li>Dolly</li>
+                        <li>Pierre P</li>
+                        <li style="height: 1.0rem;"></li>
+                        <li>All MOD Developers</li>
+                        <li>All the Players</li>
                     </ul>
                 </div>
             </div>
@@ -656,6 +648,16 @@
     <div id="footer"></div>
 
     <script>
+        // ★ パスワード保護（一般公開後の一時的な措置）
+        (function() {
+            const PASSWORD = 'Next Stage';
+            const input = prompt('このページはパスワードで保護されています。パスワードを入力してください。');
+            if (input !== PASSWORD) {
+                document.body.innerHTML = '<p style="text-align:center;padding:4rem;color:#ef4444;font-family:sans-serif;">アクセスが拒否されました。</p>';
+                return;
+            }
+        })();
+
         // ヘッダーとフッターを読み込み
         fetch('components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
         fetch('components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
