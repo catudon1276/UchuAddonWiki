@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-15T10:42:04.651Z",
+    "_generated_at": "2026-04-15T10:49:53.870Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -102,6 +102,7 @@
             "AlchemyBullet.png",
             "AlicePremonitionButton.png",
             "AnalysisIcon.png",
+            "Anchor.png",
             "AnchorButton.png",
             "AnchorFakeButton.png",
             "AnchorIcon.png",
