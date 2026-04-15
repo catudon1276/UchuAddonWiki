@@ -1,8 +1,8 @@
 {
-    "id": "guardian",
-    "icon": "Guardian.png",
-    "english_name": "Guarding",
-    "name": "ガーディング",
+    "id": "toughness",
+    "icon": "Toughness.png",
+    "english_name": "Toughness",
+    "name": "タフネス",
     "team": "モディファイア",
     "color": "222, 223, 255",
     "intro": "神の加護",

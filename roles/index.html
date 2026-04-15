@@ -154,6 +154,7 @@
             gap: 14px;
             transition: background 0.15s ease, transform 0.2s ease;
             position: relative;
+            overflow: hidden;
         }
 
         .role-card:hover {
@@ -240,6 +241,7 @@
             display: flex;
             gap: var(--space-sm);
             margin-top: var(--space-md);
+            margin-bottom: var(--space-xl);
             flex-wrap: wrap;
         }
 
@@ -389,13 +391,13 @@
         .modal-header {
             display: flex;
             gap: var(--space-xl);
-            margin-bottom: var(--space-xl);
+            margin-bottom: 0;
             align-items: flex-start;
         }
 
         .modal-icon {
-            width: 100px;
-            height: 100px;
+            width: 128px;
+            height: 128px;
             flex-shrink: 0;
             background: #111111;
             border: 1px solid var(--uchu-border);
@@ -406,8 +408,30 @@
         }
 
         .modal-icon img {
-            max-width: 70%;
-            max-height: 70%;
+            max-width: 72%;
+            max-height: 72%;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: 2px solid var(--uchu-text-primary);
+            color: var(--uchu-text-primary);
+            padding: var(--space-md) var(--space-2xl);
+            border-radius: var(--radius-md);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .modal-close-btn:hover {
+            background: var(--uchu-text-primary);
+            color: var(--uchu-bg-light);
         }
 
         .modal-header-content {
@@ -420,6 +444,13 @@
             font-weight: 800;
             margin-bottom: var(--space-sm);
             /* color is set inline via JS (role color) */
+        }
+
+        .modal-english-name {
+            font-size: 0.45em;
+            color: var(--uchu-text-muted);
+            font-weight: 400;
+            margin-left: 0.4em;
         }
 
         .modal-intro {
@@ -522,7 +553,7 @@
            Responsive
            ------------------------------------------------ */
         @media (max-width: 1024px) and (min-width: 769px) {
-            .modal-icon { width: 86px; height: 86px; }
+            .modal-icon { width: 108px; height: 108px; }
             .modal-from-logo { max-width: 110px; max-height: 54px; }
         }
 
@@ -547,22 +578,55 @@
             }
 
             .modal-header {
-                flex-direction: column;
+                flex-direction: row;
                 gap: var(--space-md);
-                margin-bottom: var(--space-lg);
+                margin-bottom: var(--space-sm);
+                align-items: flex-start;
             }
 
-            .modal-icon { width: 72px; height: 72px; }
+            .modal-icon { width: 76px; height: 76px; flex-shrink: 0; }
 
             .modal-from-logo {
                 position: static;
-                margin: 0 auto var(--space-md);
+                margin: 0 0 var(--space-sm) auto;
                 max-width: 90px; max-height: 46px;
                 display: block;
             }
 
-            .modal-title  { font-size: 1.6rem; }
-            .modal-intro  { font-size: 0.95rem; }
+            .role-badges {
+                justify-content: flex-start;
+                margin-top: var(--space-sm);
+                margin-bottom: 0;
+            }
+
+            .modal-title  { font-size: 1.25rem; margin-bottom: 0.1em; }
+            .modal-intro  { font-size: 0.9rem; margin-bottom: 0.1em; }
+
+            .modal-description {
+                margin-top: var(--space-xl);
+            }
+
+            .modal-ja-name {
+                display: block;
+                white-space: nowrap;
+                transform-origin: left center;
+            }
+
+            .modal-english-name {
+                display: block;
+                margin-left: 0;
+                margin-top: 0.25em;
+                font-size: 0.6em;
+            }
+
+            .ability-name {
+                display: block;
+                margin-bottom: var(--space-xs);
+            }
+
+            .ability-description {
+                display: block;
+            }
 
             .ability-item {
                 flex-direction: column;
@@ -689,6 +753,12 @@
                 document.getElementById('footer').innerHTML = data;
             });
 
+        // \n を <br> に変換してHTML改行を有効化
+        function formatText(text) {
+            if (!text) return '';
+            return String(text).replace(/\n/g, '<br>');
+        }
+
         // Override showRoleDetails to use new modal
         function showRoleDetails(role) {
             const modal = document.getElementById('roleModal');
@@ -712,8 +782,9 @@
             // 背景画像（役職立ち絵）
             const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
 
-            // 出典ロゴ
-            const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
+            // 出典ロゴ（TORGMはTORのロゴを流用）
+            const fromLogoCode = role.from === 'TORGM' ? 'TOR' : role.from;
+            const fromLogoPath = fromLogoCode ? `../resource/from/${fromLogoCode}.png` : '';
 
             let galleryHTML = '';
             if (role.gallery && role.gallery.length > 0) {
@@ -747,7 +818,7 @@
                         </div>
                         <div class="ability-content">
                             <div class="ability-name">${ability.name}</div>
-                            <div class="ability-description">${ability.description}</div>
+                            <div class="ability-description">${formatText(ability.description)}</div>
                         </div>
                     </div>
                 `).join('');
@@ -783,17 +854,18 @@
                     </div>
                     <div class="modal-header-content">
                         <h2 class="modal-title" style="color: var(--uchu-text-primary);">
-                            ${role.name}${role.english_name ? `<span style="font-size: 0.45em; color: var(--uchu-text-muted); font-weight: 400; margin-left: 0.4em;">/ ${role.english_name}</span>` : ''}
+                            <span class="modal-ja-name">${role.name}</span>${role.english_name ? `<span class="modal-english-name">/ ${role.english_name}</span>` : ''}
                         </h2>
                         ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}
-                        <div class="role-badges">
-                            <span class="role-badge badge-${teamClass}">${role.team}</span>
-                            ${role.from ? `<span class="role-badge" style="background: rgba(74, 144, 226, 0.2); color: var(--uchu-accent); border-color: var(--uchu-accent);">${role.from}</span>` : ''}
-                        </div>
                     </div>
                 </div>
 
-                <div class="modal-description" style="position: relative; z-index: 2;">${role.description}</div>
+                <div class="role-badges" style="position: relative; z-index: 2;">
+                    <span class="role-badge badge-${teamClass}">${role.team}</span>
+                    ${role.from ? `<span class="role-badge" style="background: rgba(74, 144, 226, 0.2); color: var(--uchu-accent); border-color: var(--uchu-accent);">${(typeof FROM_SOURCES !== 'undefined' ? FROM_SOURCES.find(s => s.code === role.from)?.name : null) || role.from}</span>` : ''}
+                </div>
+
+                <div class="modal-description" style="position: relative; z-index: 2;">${formatText(role.description)}</div>
 
                 <div style="position: relative; z-index: 2;">
                     ${abilitiesHTML}
@@ -804,7 +876,7 @@
                                 <i class="fas fa-lightbulb"></i> 豆知識
                             </h3>
                             <div style="color: var(--uchu-text-secondary); line-height: 1.8; font-size: 1rem;">
-                                ${role.tips}
+                                ${formatText(role.tips)}
                             </div>
                         </div>
                     ` : ''}
@@ -813,7 +885,7 @@
                 </div>
 
                 <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
-                    <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
+                    <button class="modal-close-btn" onclick="closeModal()">
                         <i class="fas fa-times"></i> 閉じる
                     </button>
                 </div>
@@ -834,6 +906,30 @@
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            // モーダルタイトルの長体処理（スマホ幅でオーバーフロー時）
+            requestAnimationFrame(() => {
+                const jaNameEl = content.querySelector('.modal-ja-name');
+                if (!jaNameEl) return;
+                jaNameEl.style.transform = '';
+                jaNameEl.style.fontSize = '';
+                const parentW = jaNameEl.parentElement.clientWidth;
+                const textW = jaNameEl.scrollWidth;
+                if (textW > parentW && textW > 0) {
+                    const ratio = parentW / textW;
+                    const basePx = parseFloat(getComputedStyle(jaNameEl).fontSize);
+                    if (ratio >= 0.7) {
+                        jaNameEl.style.transform = `scaleX(${ratio})`;
+                    } else {
+                        const targetPx = Math.max(basePx * 0.65, basePx * ratio / 0.7);
+                        jaNameEl.style.fontSize = `${targetPx}px`;
+                        const newTextW = jaNameEl.scrollWidth;
+                        if (newTextW > parentW && newTextW > 0) {
+                            jaNameEl.style.transform = `scaleX(${parentW / newTextW})`;
+                        }
+                    }
+                }
+            });
         }
 
         // ★シークレット役職用モーダル表示関数を追加
@@ -870,8 +966,8 @@
                             <img id="secret-modal-icon" src="" alt="Secret" style="display:none;">
                         </div>
                         <div class="modal-header-content">
-                            <h2 class="modal-title" style="color: var(--uchu-text-primary); margin: 0;">
-                                ${role.name}
+                            <h2 class="modal-title" style="color: var(--uchu-text-primary);">
+                                <span class="modal-ja-name">${role.name}</span>
                             </h2>
                         </div>
                     </div>
@@ -889,8 +985,8 @@
 
                         <div class="secret-modal-text">
                             <!-- 説明文 -->
-                            <p style="color: var(--uchu-text-secondary); font-size: 1.1rem; line-height: 1.8; white-space: pre-line; margin: 0 0 1.5rem 0;">
-                                ${role.description}
+                            <p class="modal-description" style="margin: 0 0 1.5rem 0;">
+                                ${formatText(role.description)}
                             </p>
 
                             ${buttonHTML}
@@ -900,7 +996,7 @@
 
                 <!-- 閉じるボタン -->
                 <div style="text-align: center; margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--uchu-border); position: relative; z-index: 2;">
-                    <button class="uchu-btn uchu-btn-primary" onclick="closeModal()">
+                    <button class="modal-close-btn" onclick="closeModal()">
                         <i class="fas fa-times"></i> 閉じる
                     </button>
                 </div>

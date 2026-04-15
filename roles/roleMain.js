@@ -24,10 +24,11 @@ const FROM_SOURCES = [
     { code: 'Original', name: 'Uchu Addon' },
     { code: 'ExR', name: 'Extreme Roles' },
     { code: 'SNR', name: 'Super New Roles' },
-    { code: 'TOR', name: 'The Other Roles' },
-    { code: 'TOHK', name: 'Town Of Host-K' },
-    { code: 'TOHY', name: 'Town Of Host-Y' },
-    { code: 'TOU', name: 'Town Of Us' }
+    { code: 'TOR', name: 'TheOtherRoles' },
+    { code: 'TORGM', name: 'TheOtherRoles-GM' },
+    { code: 'TOHK', name: 'TownOfHost-K' },
+    { code: 'TOHY', name: 'TownOfHost-Y' },
+    { code: 'TOU', name: 'TownOfUs' }
 ];
 
 // 陣営フォールバックアイコン（役職にiconが未設定の場合）
@@ -136,13 +137,13 @@ async function loadAllRoles() {
             filteredRoles = [];
             return;
         }
-        
+
         const rolesList = await response.json();
-        
+
         // 各陣営のフォルダから役職を読み込む
         const loadingPromises = [];
         const secretLoadingPromises = [];
-        
+
         // yamlフォルダ内の各陣営フォルダから読み込み
         for (const [teamName, folderName] of Object.entries(ROLE_FOLDERS)) {
             const roles = rolesList.roles[folderName] || [];
@@ -155,15 +156,15 @@ async function loadAllRoles() {
                 }
             });
         }
-        
+
         const results = await Promise.all(loadingPromises);
         const secretResults = await Promise.all(secretLoadingPromises);
-        
+
         // 成功した読み込みのみをフィルター
         allRoles = results.filter(role => role !== null);
         secretRoles = secretResults.filter(role => role !== null);
         filteredRoles = allRoles;
-        
+
         console.log(`${allRoles.length}個の役職を読み込みました`);
         console.log(`${secretRoles.length}個のシークレット役職を読み込みました`);
     } catch (error) {
@@ -183,17 +184,17 @@ async function loadRoleFromJSON(filePath, teamName) {
             return null;
         }
         const role = await response.json();
-        
+
         // teamが指定されていない場合、フォルダ名から自動設定
         if (!role.team) {
             role.team = teamName;
         }
-        
+
         // シークレットフォルダから読み込まれた役職にフラグを追加
         if (teamName === 'シークレット') {
             role._isSecret = true;
         }
-        
+
         return role;
     } catch (error) {
         console.error(`${filePath} の読み込みエラー:`, error);
@@ -213,7 +214,7 @@ function setupEventListeners() {
     document.querySelectorAll('.team-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const team = this.dataset.team;
-            
+
             if (team === 'all') {
                 // すべて選択時は他を解除
                 activeFilters.teams = [];
@@ -222,7 +223,7 @@ function setupEventListeners() {
             } else {
                 // すべてボタンを解除
                 document.querySelector('.team-btn[data-team="all"]').classList.remove('active');
-                
+
                 // トグル動作
                 const index = activeFilters.teams.indexOf(team);
                 if (index > -1) {
@@ -232,17 +233,17 @@ function setupEventListeners() {
                     activeFilters.teams.push(team);
                     this.classList.add('active');
                 }
-                
+
                 // 何も選択されていない場合は「すべて」を有効化
                 if (activeFilters.teams.length === 0) {
                     document.querySelector('.team-btn[data-team="all"]').classList.add('active');
                 }
             }
-            
+
             filterAndRender();
         });
     });
-    
+
     // オーバーレイ外クリックで閉じる
     const overlay = document.getElementById('overlay');
     if (overlay) {
@@ -252,7 +253,7 @@ function setupEventListeners() {
             }
         });
     }
-    
+
     // ESCキーでオーバーレイを閉じる
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
@@ -265,9 +266,9 @@ function setupEventListeners() {
 function renderFromFilters() {
     const container = document.getElementById('fromContainer');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     // すべてボタン
     const allBtn = document.createElement('button');
     allBtn.className = 'from-btn active';
@@ -281,7 +282,7 @@ function renderFromFilters() {
         filterAndRender();
     });
     container.appendChild(allBtn);
-    
+
     // 出典元ボタン（複数選択対応）
     FROM_SOURCES.forEach(source => {
         const btn = document.createElement('button');
@@ -290,25 +291,19 @@ function renderFromFilters() {
         btn.textContent = source.name;
         btn.addEventListener('click', function() {
             const from = source.code;
-            
-            // すべてボタンを解除
-            document.querySelector('.from-btn[data-from="all"]').classList.remove('active');
-            
-            // トグル動作
-            const index = activeFilters.froms.indexOf(from);
-            if (index > -1) {
-                activeFilters.froms.splice(index, 1);
-                this.classList.remove('active');
+
+            if (this.classList.contains('active')) {
+                // 選択中をクリック → 「すべて」に戻す
+                activeFilters.froms = [];
+                document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.from-btn[data-from="all"]').classList.add('active');
             } else {
-                activeFilters.froms.push(from);
+                // 別の出典を選択 → 他をすべて解除してこれだけ有効化（最大1個）
+                activeFilters.froms = [from];
+                document.querySelectorAll('.from-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
             }
-            
-            // 何も選択されていない場合は「すべて」を有効化
-            if (activeFilters.froms.length === 0) {
-                document.querySelector('.from-btn[data-from="all"]').classList.add('active');
-            }
-            
+
             filterAndRender();
         });
         container.appendChild(btn);
@@ -319,20 +314,20 @@ function renderFromFilters() {
 function filterAndRender() {
     // シークレット役職の検索（大文字小文字を無視して完全一致）
     const searchLower = activeFilters.search.trim();
-    const secretMatches = secretRoles.filter(role => 
-        role.search_keywords && role.search_keywords.some(keyword => 
+    const secretMatches = secretRoles.filter(role =>
+        role.search_keywords && role.search_keywords.some(keyword =>
             keyword.toLowerCase() === searchLower.toLowerCase()
         )
     );
-    
+
     console.log('🔍 検索キーワード:', searchLower);
     console.log('🔐 シークレットマッチ:', secretMatches.length, '件');
-    
+
     // 通常の役職フィルタリング
     filteredRoles = allRoles.filter(role => {
         // 検索フィルター
         if (activeFilters.search) {
-            const searchMatch = role.name.toLowerCase().includes(activeFilters.search) || 
+            const searchMatch = role.name.toLowerCase().includes(activeFilters.search) ||
                               role.description.toLowerCase().includes(activeFilters.search) ||
                               (role.english_name && role.english_name.toLowerCase().includes(activeFilters.search));
             if (!searchMatch) return false;
@@ -367,7 +362,7 @@ function filterAndRender() {
 function renderRoles() {
     const container = document.getElementById('rolesContainer');
     const noResults = document.getElementById('noResults');
-    
+
     if (filteredRoles.length === 0) {
         container.innerHTML = '';
         noResults.style.display = 'block';
@@ -375,12 +370,12 @@ function renderRoles() {
     }
 
     noResults.style.display = 'none';
-    
+
     // カードを生成
     const cardsHTML = filteredRoles.map((role, index) => {
         const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
         const cardId = `role-card-${index}`;
-        
+
         return `
         <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="--role-color: ${roleColor};">
             <div class="role-hex-border">
@@ -393,9 +388,9 @@ function renderRoles() {
             </div>
         </div>
     `}).join('');
-    
+
     container.innerHTML = cardsHTML;
-    
+
     // アイコンを色変換して表示
     filteredRoles.forEach((role, index) => {
         const cardId = `role-card-${index}`;
@@ -403,20 +398,8 @@ function renderRoles() {
         applyRoleIcon(iconElement, role);
     });
 
-    // 文字長体：テキストがはみ出す場合に横方向圧縮
-    requestAnimationFrame(() => {
-        document.querySelectorAll('.role-name-wrap').forEach(wrap => {
-            const nameEl = wrap.querySelector('.role-name');
-            if (!nameEl) return;
-            nameEl.style.transform = '';
-            const wrapW = wrap.clientWidth;
-            const textW = nameEl.scrollWidth;
-            if (textW > wrapW && textW > 0) {
-                const scale = Math.max(0.6, wrapW / textW);
-                nameEl.style.transform = `scaleX(${scale})`;
-            }
-        });
-    });
+    // 文字長体＋フォントサイズ縮小
+    requestAnimationFrame(() => applyRoleNameFit());
 }
 
 // チームクラスを取得
@@ -432,11 +415,54 @@ function getTeamClass(team) {
     }
 }
 
+// 役職名のはみ出し圧縮処理
+function applyRoleNameFit() {
+    const isMobile = window.innerWidth <= 768;
+
+    document.querySelectorAll('.role-name-wrap').forEach(wrap => {
+        const nameEl = wrap.querySelector('.role-name');
+        if (!nameEl) return;
+        nameEl.style.transform = '';
+        nameEl.style.fontSize = '';
+
+        const wrapW = wrap.clientWidth;
+        if (wrapW <= 0) return;
+
+        const textW = nameEl.scrollWidth;
+        if (textW <= wrapW) return;
+
+        const ratio = wrapW / textW;
+
+        // PC では微小なはみ出し（12%未満）は無視してフォント差異を許容
+        if (!isMobile && ratio >= 0.88) return;
+
+        if (ratio >= 0.7) {
+            // 軽度のはみ出し：scaleX のみ
+            nameEl.style.transform = `scaleX(${ratio})`;
+        } else {
+            // 重度のはみ出し：フォントサイズ縮小 → 残りを scaleX で調整
+            const basePx = parseFloat(getComputedStyle(nameEl).fontSize);
+            const targetPx = Math.max(basePx * 0.6, basePx * ratio / 0.7);
+            nameEl.style.fontSize = `${targetPx}px`;
+            const newTextW = nameEl.scrollWidth;
+            if (newTextW > wrapW && newTextW > 0) {
+                nameEl.style.transform = `scaleX(${wrapW / newTextW})`;
+            }
+        }
+    });
+}
+
+// フォント読み込み完了後に再計測（描画幅を正確に取得）
+document.fonts.ready.then(() => applyRoleNameFit());
+
+// 画面回転・リサイズ時に再適用
+window.addEventListener('resize', () => requestAnimationFrame(() => applyRoleNameFit()));
+
 // シークレット役職かどうか判定するヘルパー関数
 function isSecretRole(role) {
     return role._isSecret === true ||
-           role.team === 'SECRET' || 
-           role.team === 'シークレット' || 
+           role.team === 'SECRET' ||
+           role.team === 'シークレット' ||
            (role.search_keywords && Array.isArray(role.search_keywords) && role.search_keywords.length > 0);
 }
 
@@ -444,21 +470,21 @@ function isSecretRole(role) {
 function showRoleDetails(role) {
     // シークレット役職の判定（複数条件で確実に判定）
     const isSecret = isSecretRole(role);
-    
+
     console.log('📋 showRoleDetails called:', role.name, 'team:', role.team, 'isSecret:', isSecret, '_isSecret:', role._isSecret, 'search_keywords:', role.search_keywords);
-    
+
     if (isSecret) {
         showSecretDetails(role);
         return;
     }
-    
+
     const overlayContent = document.getElementById('overlayContent');
-    
+
     // 画像パス生成
     const characterPath = role.english_name ? `../resource/roleimage/${role.english_name}.png` : '';
     const fromLogoPath = role.from ? `../resource/from/${role.from}.png` : '';
     const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
-    
+
     // 能力セクション生成
     let abilitiesHTML = '';
     if (role.abilities && role.abilities.length > 0) {
@@ -468,8 +494,8 @@ function showRoleDetails(role) {
                 <div class="ability-item mb-3">
                     <div class="d-flex align-items-start">
                         <div class="ability-button-container">
-                            <img src="${buttonSrc}" 
-                                 alt="${ability.name}" 
+                            <img src="${buttonSrc}"
+                                 alt="${ability.name}"
                                  class="ability-button"
                                  onerror="this.src='../resource/rolebutton/NoImage.png'">
                         </div>
@@ -481,7 +507,7 @@ function showRoleDetails(role) {
                 </div>
             `;
         }).join('');
-        
+
         abilitiesHTML = `
             <div class="abilities-section mb-4">
                 <h5 class="text-primary mb-3"><i class="fas fa-bolt me-2"></i>固有能力</h5>
@@ -489,19 +515,19 @@ function showRoleDetails(role) {
             </div>
         `;
     }
-    
+
     // ギャラリーセクション生成（画像がある場合のみ）
     let galleryHTML = '';
     if (role.gallery && role.gallery.length > 0) {
         const galleryImages = role.gallery.map(img => {
             return `
-                <img src="../resource/rolepicture/${img}" 
-                     alt="使用イメージ" 
+                <img src="../resource/rolepicture/${img}"
+                     alt="使用イメージ"
                      class="gallery-image"
                      onerror="this.style.display='none'">
             `;
         }).join('');
-        
+
         galleryHTML = `
             <div class="gallery-section mb-4">
                 <h5 class="text-primary mb-3"><i class="fas fa-images me-2"></i>使用イメージ画像</h5>
@@ -511,13 +537,13 @@ function showRoleDetails(role) {
             </div>
         `;
     }
-    
+
     // 出典名を取得
     const fromSourceName = role.from ? (FROM_SOURCES.find(s => s.code === role.from)?.name || role.from) : '';
-    
+
     overlayContent.innerHTML = `
         ${characterPath ? `<div class="character-background" style="background-image: url('${characterPath}');"></div>` : ''}
-        
+
         <div class="role-detail-header">
             <div class="role-detail-title-section">
                 <div class="role-detail-intro-section">
@@ -531,22 +557,22 @@ function showRoleDetails(role) {
                     </div>
                     ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="role-detail-from-logo" onerror="this.style.display='none'">` : ''}
                 </div>
-                
+
                 <div class="role-badges">
                     <div class="role-team-badge team-${getTeamClass(role.team)}">${role.team}</div>
                     ${fromSourceName ? `<div class="from-source-badge">${fromSourceName}</div>` : ''}
                 </div>
             </div>
         </div>
-        
+
         <div class="row position-relative" style="z-index: 2;">
             <div class="col-md-12">
                 <div class="mb-4">
                     <p class="role-detail-description">${role.description}</p>
                 </div>
-                
+
                 ${abilitiesHTML}
-                
+
                 ${role.tips ? `
                     <div class="mb-4">
                         <h5 class="text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>豆知識</h5>
@@ -555,9 +581,9 @@ function showRoleDetails(role) {
                 ` : ''}
             </div>
         </div>
-        
+
         ${galleryHTML}
-        
+
         <div class="text-center mt-4 position-relative" style="z-index: 2;">
             <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">
                 <i class="fas fa-times me-2"></i>閉じる
@@ -579,37 +605,37 @@ function closeOverlay() {
 
 // シークレット役職詳細を表示
 function showSecretDetails(role) {
-    console.log('🔐 showSecretDetails が呼ばれました:', role);    
+    console.log('🔐 showSecretDetails が呼ばれました:', role);
 
     const overlayContent = document.getElementById('overlayContent');
-    
-    
+
+
     // 画像パス生成
     const iconPath = `../resource/roleicon/Jargonword.png`;
     const thumbnailPath = role.thumbnail ? `../resource/rolepicture/${role.thumbnail}` : '';
     const roleColor = role.color ? `rgb(${role.color})` : 'rgb(138, 43, 226)';
-    
+
     // ボタンHTML生成
     let buttonHTML = '';
     if (role.button && role.button.url) {
         buttonHTML = `
             <div style="text-align: center; margin-top: 1.5rem;">
-                <a href="${role.button.url}" 
-                   target="_blank" 
-                   class="btn btn-primary btn-lg" 
+                <a href="${role.button.url}"
+                   target="_blank"
+                   class="btn btn-primary btn-lg"
                    style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; padding: 12px 24px;">
                     <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
                 </a>
             </div>
         `;
     }
-    
+
     overlayContent.innerHTML = `
         <div style="padding: 2rem;">
             <!-- ヘッダー部分 -->
             <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                <img id="secret-detail-icon" 
-                     style="width: 80px; height: 80px; object-fit: contain; flex-shrink: 0; display: none;" 
+                <img id="secret-detail-icon"
+                     style="width: 80px; height: 80px; object-fit: contain; flex-shrink: 0; display: none;"
                      alt="Secret">
                 <div style="flex: 1;">
                     <h2 style="color: ${roleColor}; font-size: 2rem; font-weight: bold; margin: 0 0 1rem 0; line-height: 1.2;">
@@ -620,18 +646,18 @@ function showSecretDetails(role) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- コンテンツ部分 -->
             <div style="display: grid; grid-template-columns: ${thumbnailPath ? '200px 1fr' : '1fr'}; gap: 2rem; align-items: start;">
                 ${thumbnailPath ? `
                     <div>
-                        <img src="${thumbnailPath}" 
-                             alt="${role.name}" 
+                        <img src="${thumbnailPath}"
+                             alt="${role.name}"
                              style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; border: 3px solid ${roleColor}; display: block;"
                              onerror="this.parentElement.style.display='none'">
                     </div>
                 ` : ''}
-                
+
                 <div>
                     <!-- 警告ボックス -->
                     <div style="background: ${roleColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}; border-left: 4px solid ${roleColor}; padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem;">
@@ -642,17 +668,17 @@ function showSecretDetails(role) {
                             この役職は特定のキーワードで検索した場合のみ表示されます。
                         </span>
                     </div>
-                    
+
                     <!-- 説明文 -->
                     <p style="color: #cbd5e0; font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin: 0;">
                         ${role.description}
                     </p>
-                    
+
                     ${buttonHTML}
                 </div>
             </div>
         </div>
-        
+
         <!-- 閉じるボタン -->
         <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
             <button class="btn btn-primary btn-lg px-4 py-2" onclick="closeOverlay()">

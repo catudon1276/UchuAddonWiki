@@ -1,5 +1,6 @@
 {
     "id": "commander",
+    "icon": "Commander.png",
     "english_name": "Commander",
     "name": "コマンダー",
     "team": "インポスター",
@@ -14,5 +15,5 @@
             "description": "リーダーとしてインポスターを統率します。"
         }
     ],
-    "from": "Original"
+    "from": "ExR"
 }
