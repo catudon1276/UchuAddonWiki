@@ -1,15 +1,15 @@
 <!-- UCHU ADDON - COMMON HEADER -->
 <header class="uchu-header">
     <nav class="uchu-nav">
-        <a href="/UchuAddonWiki/" class="uchu-logo-link">
-            <img src="/UchuAddonWiki/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
+        <a href="/" class="uchu-logo-link">
+            <img src="/resource/UchuAddonTitleLogo.png" alt="UchuAddon Logo" class="uchu-logo">
         </a>
 
         <ul class="uchu-nav-links">
-            <li><a href="/UchuAddonWiki/" class="uchu-nav-link">トップ</a></li>
-            <li><a href="/UchuAddonWiki/roles/" class="uchu-nav-link">役職</a></li>
-            <li><a href="/UchuAddonWiki/gallery/" class="uchu-nav-link">ギャラリー</a></li>
-            <li><a href="/UchuAddonWiki/inquiry/" class="uchu-nav-link">お問い合わせ</a></li>
+            <li><a href="/" class="uchu-nav-link">トップ</a></li>
+            <li><a href="/roles/" class="uchu-nav-link">役職</a></li>
+            <li><a href="/gallery/" class="uchu-nav-link">ギャラリー</a></li>
+            <li><a href="/inquiry/" class="uchu-nav-link">お問い合わせ</a></li>
             <li>
                 <button class="theme-toggle" id="themeToggle" aria-label="ダークモード切り替え">
                     <i class="fas fa-moon" id="themeIcon"></i>
@@ -25,7 +25,7 @@
     const p = window.location.pathname;
     document.querySelectorAll('.uchu-nav-link').forEach(link => {
         const h = link.getAttribute('href');
-        if ((p === '/UchuAddonWiki/' || p === '/UchuAddonWiki/index.html') && h === '/UchuAddonWiki/') link.classList.add('active');
+        if ((p === '/' || p === '/index.html') && h === '/') link.classList.add('active');
         else if (p.includes('/roles/') && h.includes('/roles/')) link.classList.add('active');
         else if (p.includes('/gallery/') && h.includes('/gallery/')) link.classList.add('active');
         else if (p.includes('/inquiry/') && h.includes('/inquiry/')) link.classList.add('active');
