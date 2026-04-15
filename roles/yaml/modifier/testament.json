@@ -1,0 +1,19 @@
+{
+    "id": "testament",
+    "icon": "Testament.png",
+    "english_name": "Testament",
+    "name": "テスタメント",
+    "team": "モディファイア",
+    "color": "236, 0, 140",
+    "intro": "鎮魂検認",
+    "description": "自身が追放されたとき、自身の役職を公開します。",
+    "abilities_title": "遺言",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "遺言",
+            "description": "追放されたとき、自身の役職を公開します。"
+        }
+    ],
+    "from": "Original"
+}

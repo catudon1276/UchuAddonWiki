@@ -1,0 +1,19 @@
+{
+    "id": "egoist",
+    "icon": "Egoist.png",
+    "english_name": "Egoist",
+    "name": "エゴイスト",
+    "team": "モディファイア",
+    "color": "236, 0, 140",
+    "intro": "開花する、己のEGO",
+    "description": "クルーメイトを裏切ったモディファイアです。",
+    "abilities_title": "裏切り",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "裏切り",
+            "description": "クルーメイトの敗北時に勝利するようになります。"
+        }
+    ],
+    "from": "Original"
+}

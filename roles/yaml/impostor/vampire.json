@@ -1,0 +1,24 @@
+{
+    "id": "vampire",
+    "icon": "Vampire.png",
+    "english_name": "Vampire",
+    "name": "ヴァンパイア",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "明けない夜と、癒えない渇き。",
+    "description": "遅延してキルをすることができるインポスターです。",
+    "abilities_title": "吸血",
+    "abilities": [
+        {
+            "button": "BiteButton.png",
+            "name": "噛みつく",
+            "description": "プレイヤーに噛みつき、遅延してキルします。"
+        },
+        {
+            "button": "GarlicButton.png",
+            "name": "ニンニク",
+            "description": "ニンニクを設置します。ニンニクの近くでは噛みつきボタンを押すことができません。"
+        }
+    ],
+    "from": "Original"
+}

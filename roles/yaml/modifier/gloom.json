@@ -1,0 +1,19 @@
+{
+    "id": "gloom",
+    "icon": "Gloom.png",
+    "english_name": "Gloom",
+    "name": "グルーム",
+    "team": "モディファイア",
+    "color": "236, 0, 140",
+    "intro": "曇り日の暗雲",
+    "description": "通常時と停電時の視界が逆転します。",
+    "abilities_title": "暗視",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "暗視",
+            "description": "通常時と停電時の視界が逆転します。"
+        }
+    ],
+    "from": "Original"
+}

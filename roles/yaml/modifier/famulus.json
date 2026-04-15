@@ -1,0 +1,19 @@
+{
+    "id": "famulus",
+    "icon": "Famulus.png",
+    "english_name": "Famulus",
+    "name": "ファムルス",
+    "team": "モディファイア",
+    "color": "31, 26, 122",
+    "intro": "無音に響く弔鐘",
+    "description": "バフォメットと共に勝利を狙います。",
+    "abilities_title": "眷属",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "眷属",
+            "description": "バフォメットの眷属となります。バフォメットの勝利条件達成に協力します。"
+        }
+    ],
+    "from": "Original"
+}

@@ -1,0 +1,24 @@
+{
+    "id": "baphomet",
+    "icon": "Baphomet.png",
+    "english_name": "Baphomet",
+    "name": "バフォメット",
+    "team": "ゴースト",
+    "color": "198, 17, 17",
+    "intro": "死より始まる黙示録",
+    "description": "霊界から眷属と共に勝利を狙います。",
+    "abilities_title": "アポカリプスメロディー",
+    "abilities": [
+        {
+            "button": "BaphometFamilyButton.png",
+            "name": "眷属",
+            "description": "自身の眷属となるファムルスを作成します。作成したことは全プレイヤーに通知されます。"
+        },
+        {
+            "button": "NoImage.png",
+            "name": "バフォメットゲージ",
+            "description": "勝利に必要なゲージです。自身のファムルスの周囲で停止することでゲージが進行します。進行中は生きているプレイヤーにのみ見える自身の亡霊がその場に出てしまいます。"
+        }
+    ],
+    "from": "Original"
+}
