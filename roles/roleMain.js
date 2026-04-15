@@ -67,15 +67,14 @@ function recolorIcon(imagePath, roleColor, callback) {
 
             // 赤色の検出（赤が強く、緑青が弱い）
             if (r > 150 && g < 100 && b < 100) {
-                // 赤→役職カラーに変換
-                data[i] = targetRGB[0];
+                data[i]     = targetRGB[0];
                 data[i + 1] = targetRGB[1];
                 data[i + 2] = targetRGB[2];
             }
             // 青色の検出（青が強く、赤緑が弱い）
             else if (b > 150 && r < 100 && g < 100) {
                 // 青→白に変換
-                data[i] = 255;
+                data[i]     = 255;
                 data[i + 1] = 255;
                 data[i + 2] = 255;
             }
@@ -454,6 +453,7 @@ function applyRoleNameFit() {
 
 // フォント読み込み完了後に再計測（描画幅を正確に取得）
 document.fonts.ready.then(() => applyRoleNameFit());
+
 
 // 画面回転・リサイズ時に再適用
 window.addEventListener('resize', () => requestAnimationFrame(() => applyRoleNameFit()));
