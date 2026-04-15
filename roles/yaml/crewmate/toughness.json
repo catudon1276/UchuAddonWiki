@@ -1,8 +1,8 @@
 ﻿{
-    "id": "guardian",
-    "icon": "Guardian.png",
-    "illust": "Guardian.png",
-    "english_name": "Guardian",
+    "id": "toughness",
+    "icon": "Toughness.png",
+    "illust": "Toughness.png",
+    "english_name": "Toughness",
     "name": "ガーディアン",
     "team": "クルーメイト",
     "color": "222, 223, 255",
