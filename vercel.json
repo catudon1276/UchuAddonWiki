@@ -1,5 +1,0 @@
-{
-    "rewrites": [
-        { "source": "/UchuAddonWiki/:path*", "destination": "/:path*" }
-    ]
-}
