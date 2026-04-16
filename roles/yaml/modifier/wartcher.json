@@ -1,9 +1,9 @@
 {
-    "id": "watching",
-    "icon": "Watching.png",
-    "illust": "Watching.png",
+    "id": "wartcher",
+    "icon": "Wartcher.png",
+    "illust": "Wartcher.png",
     "english_name": "Watching",
-    "name": "ウォッチング",
+    "name": "ウォーチャー",
     "team": "モディファイア",
     "color": "87, 38, 166",
     "intro": "見届けようじゃないか",
