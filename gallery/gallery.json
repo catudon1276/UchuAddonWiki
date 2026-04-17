@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-16T01:50:22.043Z",
+    "_generated_at": "2026-04-17T22:29:04.101Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -109,6 +109,7 @@
             "AnchorFakeButton.png",
             "AnchorIcon.png",
             "AnchorInner.png",
+            "BaphometDocument.png",
             "BaphometFamilyButton.png",
             "BettorAnalyzeButton.png",
             "BettorGuessButton.png",

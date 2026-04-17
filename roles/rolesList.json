@@ -89,7 +89,8 @@
             "toughness.json",
             "tunamodi.json",
             "visor.json",
-            "wartcher.json"
+            "wartcher.json",
+            "watcher.json"
         ],
         "ghost": [
             "baphomet.json",
