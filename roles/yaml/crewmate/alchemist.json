@@ -18,7 +18,7 @@
         {
             "button": "AlchemyBullet.png",
             "name": "錬金弾",
-            "description": "会議中に使用できる錬金弾です。"
+            "description": "会議中に使用できる錬金弾です。\n選択したプレイヤーをキルします。"
         }
     ],
     "options": [

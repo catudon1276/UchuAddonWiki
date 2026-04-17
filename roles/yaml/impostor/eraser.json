@@ -8,7 +8,7 @@
     "color": "198, 17, 17",
     "intro": "世界が私を忘れて",
     "description": "プレイヤーの役職を削除するインポスターです。",
-    "abilities_title": "削除",
+    "abilities_title": "役職消去プロトコル",
     "abilities": [
         {
             "button": "EraserEraseButton.png",

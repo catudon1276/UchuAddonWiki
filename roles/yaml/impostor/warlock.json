@@ -8,7 +8,7 @@
     "color": "198, 17, 17",
     "intro": "自他の支配者",
     "description": "呪われたプレイヤーにキルをさせるインポスターです。",
-    "abilities_title": "呪殺",
+    "abilities_title": "隷属の黒魔術",
     "abilities": [
         {
             "button": "WarlockCurseButton.png",

@@ -8,7 +8,7 @@
     "color": "198, 17, 17",
     "intro": "花は散り際こそ美しく",
     "description": "クナイを投げてキルするインポスターです。",
-    "abilities_title": "クナイ",
+    "abilities_title": "桜花潜影",
     "abilities": [
         {
             "button": "KunoichiKunaiButton.png",
@@ -17,7 +17,7 @@
         },
         {
             "button": "VanillaKillButton.png",
-            "name": "クナイ",
+            "name": "クナイ投げ",
             "description": "装備したクナイを投げます。クナイがプレイヤーに一定回数ヒットすることでキルできます。"
         },
         {

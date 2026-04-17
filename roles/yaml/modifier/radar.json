@@ -6,7 +6,7 @@
     "name": "レーダー",
     "team": "モディファイア",
     "color": "11, 51, 107",
-    "intro": "探知トランデューサ起動",
+    "intro": "因果、走査せよ",
     "description": "一番近くのプレイヤーを矢印で追跡します。",
     "abilities_title": "追跡",
     "abilities": [

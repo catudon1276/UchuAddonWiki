@@ -1,0 +1,20 @@
+{
+    "id": "watcher",
+    "icon": "Watcher.png",
+    "illust": "Watcher.png",
+    "english_name": "Watcher",
+    "name": "ウォッチャー",
+    "team": "モディファイア",
+    "color": "87, 38, 166",
+    "intro": "沈黙の裏を見る",
+    "description": "匿名投票の影響を受けません。",
+    "abilities_title": "洞察",
+    "abilities": [
+        {
+            "button": "NoImage.png",
+            "name": "洞察",
+            "description": "匿名投票の影響を受けません。"
+        }
+    ],
+    "from": "TORGM"
+}

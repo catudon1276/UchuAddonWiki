@@ -11,7 +11,7 @@
     "abilities_title": "カメラ設置",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "ObserverPlaceButtonN.png",
             "name": "カメラ設置",
             "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
         }

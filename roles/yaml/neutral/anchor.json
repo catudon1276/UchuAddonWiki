@@ -8,7 +8,7 @@
     "color": "8, 0, 237",
     "intro": "深淵を繋ぎ止めろ",
     "description": "一定回数アンカーを設置する第三陣営です。",
-    "abilities_title": "アンカー設置",
+    "abilities_title": "理論特異点",
     "abilities": [
         {
             "button": "AnchorButton.png",

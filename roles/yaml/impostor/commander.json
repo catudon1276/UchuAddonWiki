@@ -6,14 +6,14 @@
     "name": "コマンダー",
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "指令官",
+    "intro": "最高司令官",
     "description": "リーダーとしてインポスターを統率するインポスターです。",
-    "abilities_title": "指令",
+    "abilities_title": "総司令",
     "abilities": [
         {
-            "button": "NoImage.png",
+            "button": "CommanderCommandButton.png",
             "name": "指令",
-            "description": "リーダーとしてインポスターを統率します。"
+            "description": "インポスター全員のキルクールダウンを短縮します\n指令後は一定時間ボタンのクールが進まない時間が発生します。"
         }
     ],
     "options": [
