@@ -30,6 +30,22 @@
             padding: var(--space-2xl);
             margin-bottom: var(--space-2xl);
             box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .roles-count-badge {
+            position: absolute;
+            bottom: var(--space-lg);
+            right: var(--space-xl);
+            font-size: 0.78rem;
+            color: var(--uchu-text-muted);
+            font-family: var(--font-heading);
+            letter-spacing: 0.04em;
+        }
+
+        .roles-count-badge span {
+            font-weight: 700;
+            color: var(--uchu-text-secondary);
         }
 
         .search-box {
@@ -765,6 +781,7 @@
                     <!-- 出典フィルターはJSで生成 -->
                 </div>
             </div>
+            <div class="roles-count-badge">表示中: <span id="rolesCountDisplay">0</span> 件</div>
         </div>
 
         <!-- Roles Grid -->

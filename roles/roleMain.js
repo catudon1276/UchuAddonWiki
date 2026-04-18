@@ -398,6 +398,10 @@ function renderRoles() {
         applyRoleIcon(iconElement, role);
     });
 
+    // 件数表示更新
+    const countEl = document.getElementById('rolesCountDisplay');
+    if (countEl) countEl.textContent = filteredRoles.length;
+
     // 文字長体＋フォントサイズ縮小
     requestAnimationFrame(() => applyRoleNameFit());
 }
