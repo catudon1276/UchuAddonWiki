@@ -36,6 +36,7 @@
             "kunoichi.json",
             "magician.json",
             "nekokabocha.json",
+            "nova.json",
             "proxy.json",
             "rocket.json",
             "sentinel.json",
@@ -45,8 +46,7 @@
             "voyager.json",
             "warlock.json",
             "witch.json",
-            "xinobi.json",
-            "nova.json"
+            "xinobi.json"
         ],
         "neutral": [
             "alice.json",
@@ -90,7 +90,6 @@
             "toughness.json",
             "tunamodi.json",
             "visor.json",
-            "wartcher.json",
             "watcher.json"
         ],
         "ghost": [
@@ -100,6 +99,7 @@
         "perk": [],
         "secret": [
             "Comment1.json",
+            "Comment2.json",
             "minigame1.json",
             "minigame2.json",
             "minigame4.json",
