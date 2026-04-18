@@ -50,6 +50,7 @@
         ],
         "neutral": [
             "alice.json",
+            "citrus.json",
             "amnesia.json",
             "anchor.json",
             "bettor.json",

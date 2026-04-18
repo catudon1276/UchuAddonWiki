@@ -6,7 +6,7 @@
     "name": "アラート",
     "team": "モディファイア",
     "color": "67, 232, 108",
-    "intro": "招集せよ",
+    "intro": "緊急招集",
     "description": "ポータブルボタンを持つモディファイアです。",
     "abilities_title": "ポータブルボタン",
     "abilities": [

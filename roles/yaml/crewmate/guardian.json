@@ -1,9 +1,9 @@
 ﻿{
-    "id": "guarding",
+    "id": "guardian",
     "icon": "Toughness.png",
     "illust": "Toughness.png",
-    "english_name": "Guarding",
-    "name": "ガーディング",
+    "english_name": "Guardian",
+    "name": "ガーディアン",
     "team": "クルーメイト",
     "color": "222, 223, 255",
     "intro": "神の加護",

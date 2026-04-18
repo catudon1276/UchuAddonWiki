@@ -16,5 +16,10 @@
             "description": "足が速いです。"
         }
     ],
+    "options": [
+        {
+            "name": "速度倍率"
+        }
+    ],
     "from": "TOHY"
 }
