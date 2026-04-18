@@ -1,0 +1,34 @@
+{
+    "id": "nova",
+    "icon": "Nova.png",
+    "illust": "Nova.png",
+    "english_name": "Nova",
+    "name": "ノヴァ",
+    "team": "インポスター",
+    "color": "198, 17, 17",
+    "intro": "星の産声",
+    "description": "一直線上にビームを放つインポスターです。",
+    "abilities_title": "星砲",
+    "abilities": [
+        {
+            "button": "NovaFireButton.png",
+            "name": "発射",
+            "description": "一直線上にビームを放ち、命中したプレイヤーをキルします。"
+        }
+    ],
+    "options": [
+        {
+            "name": "発射モード",
+            "description": "ビームの発射方向を設定します。",
+            "options": [
+                { "name": "自由" },
+                { "name": "左右" },
+                { "name": "上下左右" }
+            ]
+        },
+        { "name": "発射クールダウン" },
+        { "name": "ビームのサイズ" },
+        { "name": "チャージ時間" }
+    ],
+    "from": "Original"
+}

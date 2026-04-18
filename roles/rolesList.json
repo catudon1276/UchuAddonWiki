@@ -45,7 +45,8 @@
             "voyager.json",
             "warlock.json",
             "witch.json",
-            "xinobi.json"
+            "xinobi.json",
+            "nova.json"
         ],
         "neutral": [
             "alice.json",

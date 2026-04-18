@@ -44,5 +44,5 @@
             "description": "停電が何秒継続したら死亡するかを設定します。"
         }
     ],
-    "from": "Original"
+    "from": "SNR"
 }
