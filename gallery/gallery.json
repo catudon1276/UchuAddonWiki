@@ -1,7 +1,7 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-18T04:52:59.840Z",
+    "_generated_at": "2026-04-18T05:26:45.692Z",
     "logo": {
         "name": "タイトル",
         "description": "UchuAddonの公式ロゴ",
@@ -117,6 +117,8 @@
             "BuzzerButton.png",
             "CameraNextButton.png",
             "CameraSelfButton.png",
+            "CitrusInfectionButton.png",
+            "CitrusSelfInfectionButton.png",
             "CommanderCommandButton.png",
             "CurseButton.png",
             "DJButton.png",

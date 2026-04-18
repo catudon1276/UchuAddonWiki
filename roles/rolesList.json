@@ -8,6 +8,7 @@
             "bakery.json",
             "chicken.json",
             "dj.json",
+            "guardian.json",
             "lighter.json",
             "monitor.json",
             "nicedecorator.json",
@@ -20,7 +21,6 @@
             "shaman.json",
             "slime.json",
             "sonar.json",
-            "toughness.json",
             "trigger.json",
             "visor.json",
             "waraningyou.json"
@@ -50,10 +50,10 @@
         ],
         "neutral": [
             "alice.json",
-            "citrus.json",
             "amnesia.json",
             "anchor.json",
             "bettor.json",
+            "citrus.json",
             "enchanter.json",
             "epidemic.json",
             "loversbreaker.json",
