@@ -366,6 +366,8 @@ function renderRoles() {
     if (filteredRoles.length === 0) {
         container.innerHTML = '';
         noResults.style.display = 'block';
+        const countEl = document.getElementById('rolesCountDisplay');
+        if (countEl) countEl.textContent = 0;
         return;
     }
 
