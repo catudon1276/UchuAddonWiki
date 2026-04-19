@@ -120,11 +120,15 @@ function getLookDur() {
   return d * (0.6 + Math.random() * 0.5);
 }
 function getWarningDur() {
-  // 予兆の長さ: normalで0.5秒、fastで0.3秒
-  const phase = getPhase();
-  if (phase === 'extreme') return 0; // 予兆なし
-  if (phase === 'fast') return 0.25 + Math.random() * 0.1;
-  return 0.4 + Math.random() * 0.2;
+  if (score < 280) {
+    // 0→280: 2.0秒→0.5秒
+    const t = score / 280;
+    return 2.0 - t * 1.5;
+  } else {
+    // 280→700: 0.5秒→0.1秒
+    const t = Math.min((score - 280) / 420, 1);
+    return 0.5 - t * 0.4;
+  }
 }
 
 // ── Init ──
