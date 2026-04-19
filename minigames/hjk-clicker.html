@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hjk Clicker</title>
+<link rel="icon" type="image/png" href="/UchuAddonWiki/resource/UchuLogo.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; overflow: hidden; touch-action: none; background: #1b2a4a; }
+body { display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', system-ui, sans-serif; }
+canvas { display: block; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// ── Layout ──
+const BW = 400, BH = 700;
+const GAME_TOP = BH * 0.15;
+const GAME_BOTTOM = BH * 0.85;
+const GAME_H = GAME_BOTTOM - GAME_TOP;
+const INDIGO = '#1b2a4a';
+
+let W, H, S;
+function resize() {
+  const ar = BW / BH;
+  let w = window.innerWidth, h = window.innerHeight;
+  if (w / h > ar) { H = h; W = h * ar; } else { W = w; H = w / ar; }
+  canvas.width = W; canvas.height = H;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  S = W / BW;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Sprite (3フレーム横並び) ──
+const spriteImg = new Image();
+spriteImg.src = '../resource/minigame/HjkClicker.png';
+let spriteLoaded = false;
+spriteImg.onload = () => {
+  spriteLoaded = true;
+  FRAME_W = spriteImg.naturalWidth / 3;
+  FRAME_H = spriteImg.naturalHeight;
+};
+let FRAME_W = 64, FRAME_H = 64;
+
+// ── States ──
+const ST = { TITLE: 0, PLAY: 1, DEATH: 2, OVER: 3, PAUSE: 4 };
+let state = ST.TITLE;
+
+// ── Game variables ──
+let score = 0, hiScore = 0;
+let hjkState = 'back';
+let backTimer = 2;
+let lookTimer = 0;
+let elapsed = 0;
+let clicking = false;
+let combo = 0, maxCombo = 0;
+let warningTimer = 0;  // 予兆タイマー（振り向く前に体が揺れる）
+let warningActive = false;
+
+// Death演出
+let deathTimer = 0;
+let deathSpeed = 0;
+let shakeAmount = 0;
+
+// エフェクト
+let pops = [];
+let flashes = [];
+
+// ── ランク判定 ──
+function getRank(s) {
+  if (s < 30)   return { label: 'E',    color: '#bdc3c7', neon: false };
+  if (s < 60)   return { label: 'D',    color: '#95a5a6', neon: false };
+  if (s < 100)  return { label: 'C',    color: '#a3a3a3', neon: false };
+  if (s < 150)  return { label: 'B',    color: '#5b8a72', neon: false };
+  if (s < 200)  return { label: 'A',    color: '#4a6fa5', neon: false };
+  if (s < 280)  return { label: 'S',    color: '#f59e0b', neon: true };
+  if (s < 370)  return { label: 'SS',   color: '#ec4899', neon: true };
+  if (s < 470)  return { label: 'SSS',  color: '#8b5cf6', neon: true };
+  if (s < 580)  return { label: 'SSS+', color: '#8b5cf6', neon: true };
+  if (s < 700)  return { label: 'X',    color: '#ef4444', neon: true };
+  if (s < 850)  return { label: 'XX',   color: '#ef4444', neon: true };
+  if (s < 1000) return { label: 'XXX',  color: '#ef4444', neon: true };
+  if (s < 1200) return { label: 'XXX+', color: '#ef4444', neon: true };
+  if (s < 1500) return { label: 'U',    color: '#fff', neon: true, ultra: true };
+  const level = Math.floor((s - 1500) / 300) + 2;
+  return { label: 'U' + level, color: '#fff', neon: true, ultra: true };
+}
+
+// ── 難易度フェーズ ──
+// S超え(280)でペースアップ、X超え(700)で予兆消滅
+function getPhase() {
+  if (score >= 700) return 'extreme';  // X以上: 予兆なし
+  if (score >= 280) return 'fast';     // S以上: ペースアップ
+  return 'normal';
+}
+
+function getBackDur() {
+  const phase = getPhase();
+  let d;
+  if (phase === 'extreme') {
+    d = Math.max(0.3, 1.0 - elapsed * 0.005);
+  } else if (phase === 'fast') {
+    d = Math.max(0.5, 1.8 - elapsed * 0.02);
+  } else {
+    d = Math.max(1.0, 3.5 - elapsed * 0.025);
+  }
+  return d * (0.4 + Math.random() * 0.6);
+}
+function getLookDur() {
+  const phase = getPhase();
+  let d;
+  if (phase === 'extreme') {
+    d = Math.min(2.5, 0.6 + elapsed * 0.008);
+  } else if (phase === 'fast') {
+    d = Math.min(2.2, 0.8 + elapsed * 0.012);
+  } else {
+    d = Math.min(2.0, 1.0 + elapsed * 0.015);
+  }
+  return d * (0.6 + Math.random() * 0.5);
+}
+function getWarningDur() {
+  // 予兆の長さ: normalで0.5秒、fastで0.3秒
+  const phase = getPhase();
+  if (phase === 'extreme') return 0; // 予兆なし
+  if (phase === 'fast') return 0.25 + Math.random() * 0.1;
+  return 0.4 + Math.random() * 0.2;
+}
+
+// ── Init ──
+function init() {
+  score = 0;
+  hjkState = 'back';
+  backTimer = 3.0 + Math.random() * 1.0;
+  lookTimer = 0;
+  elapsed = 0;
+  clicking = false;
+  combo = 0;
+  maxCombo = 0;
+  warningTimer = 0;
+  warningActive = false;
+  deathTimer = 0;
+  deathSpeed = 0;
+  shakeAmount = 0;
+  pops = [];
+  flashes = [];
+}
+
+// ── Input ──
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: (cx - r.left) / S, y: (cy - r.top) / S };
+}
+
+function onDown(e) {
+  e.preventDefault();
+  const pos = getPos(e);
+
+  if (state === ST.TITLE) { init(); state = ST.PLAY; return; }
+  if (state === ST.OVER) { init(); state = ST.PLAY; return; }
+  if (state === ST.DEATH) return;
+
+  // ポーズボタン判定 (右上の藍枠エリア)
+  if (state === ST.PLAY) {
+    const px = pos.x, py = pos.y;
+    if (px > BW - 60 && py < GAME_TOP) {
+      state = ST.PAUSE;
+      return;
+    }
+  }
+  // ポーズ中タップで再開
+  if (state === ST.PAUSE) {
+    state = ST.PLAY;
+    return;
+  }
+
+  clicking = true;
+  doClick(pos);
+}
+function onUp(e) {
+  e.preventDefault();
+  clicking = false;
+}
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mouseup', onUp);
+canvas.addEventListener('touchstart', onDown, { passive: false });
+canvas.addEventListener('touchend', onUp, { passive: false });
+canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  if (state === ST.TITLE || state === ST.OVER) {
+    if (e.key === ' ' || e.key === 'Enter') { init(); state = ST.PLAY; }
+    return;
+  }
+  if (state === ST.DEATH) return;
+  if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') {
+    if (state === ST.PLAY) state = ST.PAUSE;
+    else if (state === ST.PAUSE) state = ST.PLAY;
+    return;
+  }
+  if (state === ST.PAUSE) return;
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'z' || e.key === 'Z') {
+    clicking = true;
+    doClick({ x: BW / 2, y: GAME_TOP + GAME_H * 0.5 });
+  }
+});
+window.addEventListener('keyup', e => {
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'z' || e.key === 'Z') {
+    clicking = false;
+  }
+});
+
+function doClick(pos) {
+  if (state !== ST.PLAY) return;
+
+  if (hjkState === 'looking') {
+    triggerDeath();
+    return;
+  }
+
+  combo++;
+  if (combo > maxCombo) maxCombo = combo;
+  score++;
+
+  const popY = Math.max(GAME_TOP + 20, pos.y - 10);
+  pops.push({
+    x: pos.x + (Math.random() - 0.5) * 30,
+    y: popY,
+    text: '+1',
+    t: 0.6,
+    vy: -50 - Math.random() * 20
+  });
+}
+
+function triggerDeath() {
+  state = ST.DEATH;
+  deathTimer = 0;
+  deathSpeed = 0.7;
+  shakeAmount = 12;
+  flashes.push({ t: 0.3, color: 'rgba(255,0,0,0.4)' });
+}
+
+// ── Update ──
+let lastTime = 0;
+function update(dt) {
+  // ポップ更新(常に)
+  for (let i = pops.length - 1; i >= 0; i--) {
+    const p = pops[i];
+    p.t -= dt;
+    p.y += p.vy * dt;
+    if (p.t <= 0) pops.splice(i, 1);
+  }
+  for (let i = flashes.length - 1; i >= 0; i--) {
+    flashes[i].t -= dt;
+    if (flashes[i].t <= 0) flashes.splice(i, 1);
+  }
+
+  if (state === ST.DEATH) {
+    deathTimer += deathSpeed * dt;
+    shakeAmount = Math.max(0, shakeAmount - dt * 6);
+    if (deathTimer >= 1.0) {
+      state = ST.OVER;
+      if (score > hiScore) hiScore = score;
+    }
+    return;
+  }
+
+  if (state !== ST.PLAY) return;
+
+  elapsed += dt;
+
+  if (hjkState === 'back') {
+    backTimer -= dt;
+
+    // 予兆チェック
+    const wDur = getWarningDur();
+    if (wDur > 0 && backTimer <= wDur && !warningActive) {
+      warningActive = true;
+      warningTimer = backTimer; // 残り時間=予兆時間
+    }
+    if (warningActive) {
+      warningTimer = Math.max(0, backTimer);
+    }
+
+    if (backTimer <= 0) {
+      hjkState = 'looking';
+      lookTimer = getLookDur();
+      warningActive = false;
+      warningTimer = 0;
+      if (clicking) triggerDeath();
+    }
+  } else if (hjkState === 'looking') {
+    lookTimer -= dt;
+    if (clicking) triggerDeath();
+    if (lookTimer <= 0) {
+      hjkState = 'back';
+      backTimer = getBackDur();
+      combo = 0;
+    }
+  }
+}
+
+// ── Draw ──
+function draw() {
+  ctx.save();
+  ctx.scale(S, S);
+
+  if (shakeAmount > 0 && state === ST.DEATH) {
+    ctx.translate(
+      (Math.random() - 0.5) * shakeAmount,
+      (Math.random() - 0.5) * shakeAmount
+    );
+  }
+
+  // 藍背景
+  ctx.fillStyle = INDIGO;
+  ctx.fillRect(0, 0, BW, BH);
+
+  // ゲーム空間(白)
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, GAME_TOP, BW, GAME_H);
+
+  if (state === ST.TITLE) {
+    drawTitle();
+  } else {
+    drawGame();
+    drawHUD();
+    if (state === ST.PAUSE) drawPause();
+    if (state === ST.OVER) drawGameOver();
+  }
+
+  // フラッシュ（ゲーム空間のみ）
+  if (flashes.length > 0) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, GAME_TOP, BW, GAME_H);
+    ctx.clip();
+    for (const f of flashes) {
+      ctx.fillStyle = f.color;
+      ctx.fillRect(0, GAME_TOP, BW, GAME_H);
+    }
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+// ── Title ──
+function drawTitle() {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  if (spriteLoaded) {
+    const dw = 130, dh = 130 * (FRAME_H / FRAME_W);
+    ctx.drawImage(spriteImg, 0, 0, FRAME_W, FRAME_H,
+      BW / 2 - dw / 2, GAME_TOP + GAME_H * 0.1, dw, dh);
+  }
+
+  // タイトル(上藍枠)
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 30px sans-serif';
+  ctx.fillText('Hjk Clicker', BW / 2, GAME_TOP * 0.5);
+
+  // 説明
+  ctx.fillStyle = '#555';
+  ctx.font = '15px sans-serif';
+  ctx.fillText('後ろを向いている間にクリック！', BW / 2, GAME_TOP + GAME_H * 0.58);
+  ctx.fillText('振り向いたら止まれ！', BW / 2, GAME_TOP + GAME_H * 0.64);
+
+  if (hiScore > 0) {
+    ctx.fillStyle = '#e67e22';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('BEST: ' + hiScore, BW / 2, GAME_TOP + GAME_H * 0.73);
+  }
+
+  const blink = Math.sin(performance.now() / 400) > 0;
+  if (blink) {
+    ctx.fillStyle = '#fff';
+    ctx.font = '18px sans-serif';
+    ctx.fillText('CLICK TO START', BW / 2, GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.5);
+  }
+}
+
+// ── Game ──
+function drawGame() {
+  if (!spriteLoaded) return;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, GAME_TOP, BW, GAME_H);
+  ctx.clip();
+
+  const baseW = 150;
+  const baseH = baseW * (FRAME_H / FRAME_W);
+  let sprIdx, dw, dh, dx, dy;
+
+  const hjkBaseY = GAME_BOTTOM - baseH - 15;
+
+  if (state === ST.DEATH || state === ST.OVER) {
+    sprIdx = 2;
+    const t = Math.min(deathTimer, 1);
+    const scale = 1 + t * 4;
+    dw = baseW * scale;
+    dh = baseH * scale;
+    dx = BW / 2 - dw / 2;
+    const centerY = GAME_TOP + GAME_H * 0.45;
+    dy = centerY - dh / 2 + (1 - t) * GAME_H * 0.15;
+  } else if (hjkState === 'looking') {
+    sprIdx = 1;
+    dw = baseW; dh = baseH;
+    dx = BW / 2 - dw / 2;
+    dy = hjkBaseY;
+  } else {
+    // 後ろ姿
+    sprIdx = 0;
+    dw = baseW; dh = baseH;
+    dx = BW / 2 - dw / 2;
+    dy = hjkBaseY;
+
+    // 予兆: 体がプルプル揺れる
+    if (warningActive) {
+      const intensity = 1 - (warningTimer / getWarningDur());
+      const wobble = Math.sin(performance.now() / 40) * (2 + intensity * 6);
+      dx += wobble;
+    }
+  }
+
+  // スプライト描画
+  ctx.drawImage(spriteImg, sprIdx * FRAME_W, 0, FRAME_W, FRAME_H,
+    dx, dy, dw, dh);
+
+  // 振り向き中: hjk真上に「!」
+  if (hjkState === 'looking' && (state === ST.PLAY || state === ST.PAUSE)) {
+    ctx.fillStyle = '#e74c3c';
+    ctx.font = 'bold 48px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('!', BW / 2, dy - 8);
+  }
+
+  // 予兆中: hjk真上に小さい「?」
+  if (warningActive && hjkState === 'back' && state === ST.PLAY) {
+    const a = 0.4 + Math.sin(performance.now() / 100) * 0.3;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#e67e22';
+    ctx.font = 'bold 32px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('?', BW / 2, dy - 5);
+    ctx.globalAlpha = 1;
+  }
+
+  // ポップテキスト
+  for (const p of pops) {
+    const a = Math.max(0, p.t / 0.6);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(p.text, p.x, p.y);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+// ── HUD (上の藍枠) ──
+function drawHUD() {
+  const midY = GAME_TOP * 0.5;
+
+  // スコア(中央)
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillText(score, BW / 2, midY - 5);
+
+  // ランク(スコアの下)
+  const rank = getRank(score);
+  if (rank.neon) {
+    ctx.shadowColor = rank.ultra ? '#fff' : rank.color;
+    ctx.shadowBlur = 10;
+  }
+  ctx.fillStyle = rank.color;
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText(rank.label, BW / 2, midY + 22);
+  ctx.shadowBlur = 0;
+
+  // BEST(左寄せ)
+  if (hiScore > 0) {
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '12px sans-serif';
+    ctx.fillText('BEST: ' + hiScore, 12, midY);
+  }
+
+  // ポーズボタン(右上) ── || アイコン
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  const px = BW - 38, py = midY - 10;
+  ctx.fillRect(px, py, 5, 20);
+  ctx.fillRect(px + 10, py, 5, 20);
+}
+
+// ── Pause ──
+function drawPause() {
+  // ゲーム空間にオーバーレイ
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, GAME_TOP, BW, GAME_H);
+
+  const cy = GAME_TOP + GAME_H * 0.5;
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillText('PAUSE', BW / 2, cy - 30);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = '15px sans-serif';
+  ctx.fillText('タップ / P / Escキー で再開', BW / 2, cy + 15);
+
+  // Wiki戻るボタン(下の藍枠)
+  drawWikiButton();
+}
+
+// ── Game Over ──
+function drawGameOver() {
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, GAME_TOP, BW, GAME_H);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const cy = GAME_TOP + GAME_H * 0.5;
+
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillText('GAME OVER', BW / 2, cy - 90);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 52px sans-serif';
+  ctx.fillText(score, BW / 2, cy - 30);
+
+  // ランク
+  const rank = getRank(score);
+  if (rank.neon) {
+    ctx.shadowColor = rank.ultra ? '#fff' : rank.color;
+    ctx.shadowBlur = 15;
+  }
+  ctx.fillStyle = rank.color;
+  ctx.font = 'bold 30px sans-serif';
+  ctx.fillText(rank.label, BW / 2, cy + 25);
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = '14px sans-serif';
+  ctx.fillText('MAX COMBO: ' + maxCombo, BW / 2, cy + 65);
+
+  if (score > 0 && score >= hiScore) {
+    ctx.fillStyle = '#f1c40f';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('NEW BEST!', BW / 2, cy + 95);
+  }
+
+  // 下藍枠: リトライ + Wiki
+  const botMid = GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.35;
+  const blink = Math.sin(performance.now() / 400) > 0;
+  if (blink) {
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('CLICK TO RETRY', BW / 2, botMid);
+  }
+
+  drawWikiButton();
+}
+
+// ── Wiki戻るボタン (下藍枠の下寄りに配置) ──
+function drawWikiButton() {
+  const btnW = 110, btnH = 28;
+  const bx = BW / 2 - btnW / 2;
+  const by = GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.6;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(bx, by, btnW, btnH, 4);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Back Wiki', bx + btnW / 2, by + btnH / 2);
+}
+
+// Wiki戻るボタンのクリック判定を追加
+canvas.addEventListener('click', e => {
+  if (state !== ST.OVER && state !== ST.PAUSE) return;
+  const pos = getPos(e);
+  const btnW = 110, btnH = 28;
+  const bx = BW / 2 - btnW / 2;
+  const by = GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.6;
+  if (pos.x >= bx && pos.x <= bx + btnW && pos.y >= by && pos.y <= by + btnH) {
+    window.location.href = '/UchuAddonWiki/';
+  }
+});
+
+// ── Loop ──
+function loop(ts) {
+  const dt = Math.min(0.05, (ts - lastTime) / 1000);
+  lastTime = ts;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+lastTime = performance.now();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
