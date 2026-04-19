@@ -101,16 +101,19 @@ function getPhase() {
 }
 
 function getBackDur() {
-  const phase = getPhase();
-  let d;
-  if (phase === 'extreme') {
-    d = Math.max(0.3, 1.0 - elapsed * 0.005);
-  } else if (phase === 'fast') {
-    d = Math.max(0.5, 1.8 - elapsed * 0.02);
-  } else {
-    d = Math.max(1.0, 3.5 - elapsed * 0.025);
+  // 約8%の確率で超長い待機（全フェーズ共通）
+  if (Math.random() < 0.08) {
+    return 12 + Math.random() * 6; // 12〜18秒
   }
-  return d * (0.4 + Math.random() * 0.6);
+
+  const phase = getPhase();
+  if (phase === 'extreme') {
+    return 0.5 + Math.random() * 6.5; // 0.5〜7秒（幅6.5）
+  } else if (phase === 'fast') {
+    return 0.8 + Math.random() * 7.2; // 0.8〜8秒（幅7.2）
+  } else {
+    return 1 + Math.random() * 8;     // 1〜9秒（幅8）
+  }
 }
 function getLookDur() {
   const phase = getPhase();
