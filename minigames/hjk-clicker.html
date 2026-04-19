@@ -105,7 +105,7 @@ function getBackDur() {
   if (Math.random() < 0.08) {
     return 12 + Math.random() * 6; // 12〜18秒
   }
-  return 0.5 + Math.random() * 7.5; // 0.5〜8秒
+  return 0.5 + Math.random() * 4.5; // 0.5〜5秒
 }
 function getLookDur() {
   const phase = getPhase();
@@ -427,7 +427,7 @@ function drawGame() {
     // 予兆: 体がプルプル揺れる
     if (warningActive) {
       const intensity = 1 - (warningTimer / getWarningDur());
-      const wobble = Math.sin(performance.now() / 40) * (2 + intensity * 6);
+      const wobble = Math.sin(performance.now() / 20) * (1 + intensity * 2);
       dx += wobble;
     }
   }
