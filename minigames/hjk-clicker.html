@@ -121,13 +121,13 @@ function getLookDur() {
 }
 function getWarningDur() {
   if (score < 280) {
-    // 0→280: 2.0秒→0.5秒
+    // 0→280: 1.0秒→0.1秒
     const t = score / 280;
-    return 2.0 - t * 1.5;
+    return 1.0 - t * 0.9;
   } else {
-    // 280→700: 0.5秒→0.1秒
+    // 280→700: 0.1秒→0.03秒
     const t = Math.min((score - 280) / 420, 1);
-    return 0.5 - t * 0.4;
+    return 0.1 - t * 0.07;
   }
 }
 
