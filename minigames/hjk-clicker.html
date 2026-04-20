@@ -184,7 +184,13 @@ function onDown(e) {
   const pos = getPos(e);
 
   if (state === ST.TITLE) { init(); state = ST.PLAY; return; }
-  if (state === ST.OVER) { init(); state = ST.PLAY; return; }
+  if (state === ST.OVER) {
+    const rb = getRetryBtnRect();
+    if (pos.x >= rb.x && pos.x <= rb.x + rb.w && pos.y >= rb.y && pos.y <= rb.y + rb.h) {
+      init(); state = ST.PLAY;
+    }
+    return;
+  }
   if (state === ST.DEATH) return;
 
   // ポーズボタン判定 (右上の藍枠エリア)
@@ -217,10 +223,11 @@ canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false }
 
 window.addEventListener('keydown', e => {
   if (e.repeat) return;
-  if (state === ST.TITLE || state === ST.OVER) {
+  if (state === ST.TITLE) {
     if (e.key === ' ' || e.key === 'Enter') { init(); state = ST.PLAY; }
     return;
   }
+  if (state === ST.OVER) return;
   if (state === ST.DEATH) return;
   if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') {
     if (state === ST.PLAY) state = ST.PAUSE;
@@ -632,16 +639,33 @@ function drawGameOver() {
     ctx.fillText('NEW BEST!', BW / 2, cy + 95);
   }
 
-  const botMid = GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.35;
-  const blink = Math.sin(performance.now() / 400) > 0;
-  if (blink) {
-    ctx.fillStyle = '#fff';
-    ctx.font = '16px sans-serif';
-    ctx.fillText('CLICK TO RETRY', BW / 2, botMid);
-  }
-
   ctx.restore();
+
+  // リトライボタン
+  const rb = getRetryBtnRect();
+  ctx.save();
+  ctx.globalAlpha = f;
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(rb.x, rb.y, rb.w, rb.h, 6);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('RETRY', rb.x + rb.w / 2, rb.y + rb.h / 2);
+  ctx.restore();
+
   drawWikiButton();
+}
+
+// ── リトライボタン矩形 ──
+function getRetryBtnRect() {
+  const w = 130, h = 36;
+  return { x: BW / 2 - w / 2, y: GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.15, w, h };
 }
 
 // ── Wiki戻るボタン (下藍枠の下寄りに配置) ──
