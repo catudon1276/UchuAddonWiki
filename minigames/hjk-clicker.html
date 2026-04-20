@@ -74,6 +74,9 @@ let avgClickInterval = 0; // クリック間隔の平均（EMA）
 let deathTimer = 0;
 let deathSpeed = 0;
 let shakeAmount = 0;
+let gameOverFade = 0;
+let blackFade = 0;
+let blackDelay = 0;
 
 // エフェクト
 let pops = [];
@@ -160,6 +163,9 @@ function init() {
   deathTimer = 0;
   deathSpeed = 0;
   shakeAmount = 0;
+  gameOverFade = 0;
+  blackFade = 0;
+  blackDelay = 0;
   pops = [];
   flashes = [];
 }
@@ -276,7 +282,7 @@ function doClick(pos) {
 function triggerDeath() {
   state = ST.DEATH;
   deathTimer = 0;
-  deathSpeed = 2.5;
+  deathSpeed = 5.0;
   shakeAmount = 12;
 }
 
@@ -299,8 +305,21 @@ function update(dt) {
     deathTimer += deathSpeed * dt;
     shakeAmount = Math.max(0, shakeAmount - dt * 6);
     if (deathTimer >= 1.0) {
+      deathTimer = 1.0;
       state = ST.OVER;
+      blackDelay = 0.35; // 顔が見える余韻
       if (score > hiScore) hiScore = score;
+    }
+    return;
+  }
+
+  if (state === ST.OVER) {
+    if (blackDelay > 0) {
+      blackDelay -= dt; // 余韻待機
+    } else if (blackFade < 1) {
+      blackFade = Math.min(1, blackFade + dt * 5); // 約0.2秒で真っ黒
+    } else {
+      gameOverFade = Math.min(1, gameOverFade + dt * 2.5); // 約0.4秒でフェードイン
     }
     return;
   }
@@ -372,6 +391,11 @@ function draw() {
     drawGame();
     drawHUD();
     if (state === ST.PAUSE) drawPause();
+    // 黒暗転
+    if (state === ST.OVER && blackFade > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${blackFade})`;
+      ctx.fillRect(0, 0, BW, BH);
+    }
     if (state === ST.OVER) drawGameOver();
   }
 
@@ -445,10 +469,10 @@ function drawGame() {
   if (state === ST.DEATH || state === ST.OVER) {
     sprIdx = 2;
     const t = Math.min(deathTimer, 1);
-    const scale = 1 + t * 4;
+    const scale = 1 + t * 11;
     dw = baseW * scale;
     dh = baseH * scale;
-    dx = BW / 2 - dw / 2;
+    dx = BW / 2 - dw / 2 - dw * 0.04;
     const centerY = GAME_TOP + GAME_H * 0.45;
     dy = centerY - dh / 2 + (1 - t) * GAME_H * 0.15;
   } else if (hjkState === 'looking') {
@@ -566,6 +590,12 @@ function drawPause() {
 
 // ── Game Over ──
 function drawGameOver() {
+  const f = gameOverFade;
+  if (f <= 0) return;
+
+  ctx.save();
+  ctx.globalAlpha = f;
+
   ctx.fillStyle = 'rgba(0,0,0,0.55)';
   ctx.fillRect(0, GAME_TOP, BW, GAME_H);
 
@@ -582,7 +612,6 @@ function drawGameOver() {
   ctx.font = 'bold 52px sans-serif';
   ctx.fillText(score, BW / 2, cy - 30);
 
-  // ランク
   const rank = getRank(score);
   if (rank.neon) {
     ctx.shadowColor = rank.ultra ? '#fff' : rank.color;
@@ -603,7 +632,6 @@ function drawGameOver() {
     ctx.fillText('NEW BEST!', BW / 2, cy + 95);
   }
 
-  // 下藍枠: リトライ + Wiki
   const botMid = GAME_BOTTOM + (BH - GAME_BOTTOM) * 0.35;
   const blink = Math.sin(performance.now() / 400) > 0;
   if (blink) {
@@ -612,6 +640,7 @@ function drawGameOver() {
     ctx.fillText('CLICK TO RETRY', BW / 2, botMid);
   }
 
+  ctx.restore();
   drawWikiButton();
 }
 
