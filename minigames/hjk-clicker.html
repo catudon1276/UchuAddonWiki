@@ -60,8 +60,15 @@ let lookTimer = 0;
 let elapsed = 0;
 let clicking = false;
 let combo = 0, maxCombo = 0;
-let warningTimer = 0;  // 予兆タイマー（振り向く前に体が揺れる）
+let warningTimer = 0;
 let warningActive = false;
+
+// ひじきの学習
+let playerClickRate = 0;  // プレイヤーの連打速度（clicks/sec、EMA）
+let backClickCount = 0;   // 今の後ろ向き中のクリック数
+let backPhaseElapsed = 0; // 今の後ろ向き中の経過時間
+let lastClickElapsed = 0; // 最後にクリックしたときのelapsed
+let avgClickInterval = 0; // クリック間隔の平均（EMA）
 
 // Death演出
 let deathTimer = 0;
@@ -105,7 +112,9 @@ function getBackDur() {
   if (Math.random() < 0.08) {
     return 12 + Math.random() * 6; // 12〜18秒
   }
-  return 0.5 + Math.random() * 4.5; // 0.5〜5秒
+  // 連打が速いほどひじきが短く間隔を取る（最大50%短縮）
+  const smart = Math.max(0.5, 1.0 - playerClickRate * 0.12);
+  return (0.5 + Math.random() * 4.5) * smart;
 }
 function getLookDur() {
   const phase = getPhase();
@@ -143,6 +152,11 @@ function init() {
   maxCombo = 0;
   warningTimer = 0;
   warningActive = false;
+  playerClickRate = 0;
+  backClickCount = 0;
+  backPhaseElapsed = 0;
+  lastClickElapsed = 0;
+  avgClickInterval = 0;
   deathTimer = 0;
   deathSpeed = 0;
   shakeAmount = 0;
@@ -160,6 +174,7 @@ function getPos(e) {
 
 function onDown(e) {
   e.preventDefault();
+  if (e.touches && e.touches.length > 1) return;
   const pos = getPos(e);
 
   if (state === ST.TITLE) { init(); state = ST.PLAY; return; }
@@ -229,6 +244,24 @@ function doClick(pos) {
   combo++;
   if (combo > maxCombo) maxCombo = combo;
   score++;
+  backClickCount++;
+
+  // Sランク以降: クリックのリズムを読んで嫌なタイミングで振り向く
+  if (score >= 280 && hjkState === 'back') {
+    const interval = elapsed - lastClickElapsed;
+    if (interval > 0.05 && interval < 3.0) {
+      avgClickInterval = avgClickInterval > 0
+        ? avgClickInterval * 0.7 + interval * 0.3
+        : interval;
+      // スコアが高いほど罠を仕掛ける確率が上がる（最大40%）
+      const trapChance = Math.min(0.4, (score - 280) / 1050);
+      if (avgClickInterval > 0 && Math.random() < trapChance) {
+        // 次にクリックしそうなタイミングに合わせてbackTimerを詰める
+        backTimer = Math.min(backTimer, avgClickInterval * (0.5 + Math.random() * 0.4));
+      }
+    }
+    lastClickElapsed = elapsed;
+  }
 
   const popY = Math.max(GAME_TOP + 20, pos.y - 10);
   pops.push({
@@ -277,6 +310,7 @@ function update(dt) {
   elapsed += dt;
 
   if (hjkState === 'back') {
+    backPhaseElapsed += dt;
     backTimer -= dt;
 
     // 予兆チェック
@@ -290,6 +324,11 @@ function update(dt) {
     }
 
     if (backTimer <= 0) {
+      // 連打速度を学習（指数移動平均）
+      const rate = backPhaseElapsed > 0 ? backClickCount / backPhaseElapsed : 0;
+      playerClickRate = playerClickRate * 0.7 + rate * 0.3;
+      backClickCount = 0;
+      backPhaseElapsed = 0;
       hjkState = 'looking';
       lookTimer = getLookDur();
       warningActive = false;
@@ -424,12 +463,6 @@ function drawGame() {
     dx = BW / 2 - dw / 2;
     dy = hjkBaseY;
 
-    // 予兆: 体がプルプル揺れる
-    if (warningActive) {
-      const intensity = 1 - (warningTimer / getWarningDur());
-      const wobble = Math.sin(performance.now() / 20) * (1 + intensity * 2);
-      dx += wobble;
-    }
   }
 
   // スプライト描画
