@@ -24,9 +24,10 @@
             background: var(--uchu-bg-light);
             border: 1px solid var(--uchu-border);
             border-radius: var(--radius-md);
-            width: 40% !important; /* 画面幅の40%に設定 */
-            margin: 0 auto !important;
-            padding: var(--space-xl) !important;
+            max-width: 560px;
+            width: 90%;
+            margin: 0 auto;
+            padding: var(--space-xl);
             box-sizing: border-box;
         }
 
@@ -37,10 +38,20 @@
             padding-bottom: var(--space-sm);
         }
 
-        .inquiry-form {
-            background: var(--uchu-bg-light);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-md);
+        @media (max-width: 480px) {
+            .inquiry-form {
+                width: 92%;
+                padding: var(--space-lg) var(--space-md);
+            }
+
+            .form-label {
+                font-size: 0.8rem;
+            }
+
+            .form-input,
+            .form-textarea {
+                font-size: 0.95rem;
+            }
         }
 
         .form-group {
