@@ -2,7 +2,6 @@
     "id": "guest",
     "icon": "Guest.png",
     "illust": "Guest.png",
-    "english_name": "Guest",
     "name": {
         "ja": "ゲスト",
         "en": "Guest"

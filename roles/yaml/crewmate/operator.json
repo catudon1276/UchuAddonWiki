@@ -2,7 +2,6 @@
     "id": "operator",
     "icon": "Operator.png",
     "illust": "Operator.png",
-    "english_name": "Operator",
     "name": {
         "ja": "オペレーター",
         "en": "Operator"

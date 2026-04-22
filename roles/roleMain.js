@@ -359,8 +359,7 @@ function filterAndRender() {
                 nameJa.toLowerCase().includes(q) ||
                 nameEn.toLowerCase().includes(q) ||
                 descJa.toLowerCase().includes(q) ||
-                descEn.toLowerCase().includes(q) ||
-                (role.english_name && role.english_name.toLowerCase().includes(q));
+                descEn.toLowerCase().includes(q);
             if (!searchMatch) return false;
         }
 
@@ -415,8 +414,7 @@ function renderRoles() {
             if (typeof role.name === 'object' && role.name !== null) {
                 return pickLocalized(role.name);
             }
-            // 従来動作: english_name があり英語モードなら english_name を使う
-            return (isEn && role.english_name) ? role.english_name : role.name;
+            return role.name;
         })();
         const nameAlt = (typeof role.name === 'object' && role.name !== null) ? (role.name.ja || role.name.en || '') : role.name;
 
@@ -608,15 +606,13 @@ function showRoleDetails(role) {
                         <h2 class="role-detail-name" style="color: ${roleColor};">
                             ${(()=>{
                                 const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
-                                // name が {ja,en} オブジェクト: 英語モードなら en / 日本語モードなら ja
-                                // 補助表示は反対側の言語(日本語モードなら english_name or name.en)
                                 let primary, secondary;
                                 if (typeof role.name === 'object' && role.name !== null) {
                                     primary   = isEn ? (role.name.en || role.name.ja) : role.name.ja;
-                                    secondary = isEn ? role.name.ja : (role.name.en || role.english_name);
+                                    secondary = isEn ? role.name.ja : role.name.en;
                                 } else {
-                                    primary   = (isEn && role.english_name) ? role.english_name : role.name;
-                                    secondary = (isEn && role.english_name) ? role.name : role.english_name;
+                                    primary   = role.name;
+                                    secondary = null;
                                 }
                                 return primary + (secondary && secondary !== primary ? `<span class="role-detail-english-inline">${secondary}</span>` : '');
                             })()}

@@ -2,7 +2,6 @@
     "id": "timer",
     "icon": "Timer.png",
     "illust": "Timer.png",
-    "english_name": "Timer",
     "name": {
         "ja": "タイマー",
         "en": "Timer"

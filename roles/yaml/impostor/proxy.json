@@ -2,7 +2,6 @@
     "id": "proxy",
     "icon": "Proxy&Monitor.png",
     "illust": "Proxy.png",
-    "english_name": "Proxy",
     "name": {
         "ja": "プロキシ",
         "en": "Proxy"
