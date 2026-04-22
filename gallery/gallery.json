@@ -181,6 +181,7 @@
             "NiceHawk.png",
             "NiceObserver.png",
             "Nimrod.png",
+            "Nova.png",
             "Obolus.png",
             "Operator.png",
             "Polaris.png",
@@ -212,8 +213,7 @@
             "Warlock.png",
             "Watcher.png",
             "Witch.png",
-            "Xinobi.png",
-            "nova.png"
+            "Xinobi.png"
         ]
     },
     "promotionart": {

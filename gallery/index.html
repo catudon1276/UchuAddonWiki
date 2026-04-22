@@ -380,12 +380,43 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        /* プロモーションアート：横A4想定・3列表示 */
+        .gallery-grid.promotionart-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .gallery-grid.promotionart-grid .gallery-item {
+            width: 100%;
+            margin: 0;
+        }
+
+        .gallery-grid.promotionart-grid .gallery-item.item-visible:hover {
+            transform: scale(1.03) !important;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+        }
+
+        .gallery-grid.promotionart-grid .gallery-image {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 297 / 210;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .hero-title { font-size: 2rem; }
             .terms-section { padding: 2rem 1rem; margin: 2rem 1rem 0; }
             .terms-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
             .stats-bar { flex-direction: column; gap: 1rem; }
+            .gallery-grid.promotionart-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid.promotionart-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -419,7 +450,7 @@
                     </div>
                 </div>
 
-                <p class="terms-note"><i class="fas fa-info-circle me-1"></i><span data-i18n="gallery.terms_note">色調の変更は問題ありません</span></p>
+                <p class="terms-note"><i class="fas fa-info-circle" style="margin-right:6px;"></i><span data-i18n="gallery.terms_note">色調の変更は問題ありません</span></p>
 
                 <p class="terms-footer" data-i18n="gallery.terms_footer">以上の点をご理解いただいたうえでご利用ください。</p>
             </div>
@@ -536,9 +567,21 @@
                     grid.classList.add('center-grid');
                 } else if (id === 'roleimage') {
                     grid.classList.add('role-image-grid');
+                } else if (id === 'promotionart') {
+                    grid.classList.add('promotionart-grid');
                 }
 
-                if (id !== 'logo') {
+                if (id === 'promotionart') {
+                    const uniqueImages = [...new Set(cat.images)];
+                    uniqueImages.forEach(img => {
+                        const path = `../resource/${id}/${img}`;
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item';
+                        item.onclick = () => openModal(path, img);
+                        item.innerHTML = `<img src="${path}" alt="${img}" class="gallery-image">`;
+                        grid.appendChild(item);
+                    });
+                } else if (id !== 'logo') {
                     // 重複を除去
                     const uniqueImages = [...new Set(cat.images)];
 

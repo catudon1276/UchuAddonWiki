@@ -14,10 +14,17 @@
     <style>
         /* Inquiry Section */
         .inquiry-section {
-            width: 100% !important;
-            margin: var(--space-2xl) 0 !important;
-            padding: var(--space-xl) 0 !important;
+            width: 100%;
+            margin: var(--space-2xl) 0;
+            padding: var(--space-xl) 0;
             text-align: center;
+        }
+
+        .inquiry-section .uchu-section-title {
+            display: inline-block;
+            text-align: center;
+            border-bottom: 2px solid var(--uchu-text-primary);
+            padding-bottom: var(--space-sm);
         }
 
         .inquiry-form {
@@ -31,26 +38,41 @@
             box-sizing: border-box;
         }
 
-        .inquiry-section .uchu-section-title {
-            display: inline-block;
-            text-align: center;
-            border-bottom: 2px solid var(--uchu-text-primary);
-            padding-bottom: var(--space-sm);
-        }
+        @media (max-width: 600px) {
+            .inquiry-section {
+                margin: 0;
+                padding: var(--space-lg) 0 var(--space-2xl);
+            }
 
-        @media (max-width: 480px) {
+            .inquiry-section .uchu-section-title {
+                font-size: 1.8rem;
+            }
+
             .inquiry-form {
-                width: 92%;
-                padding: var(--space-lg) var(--space-md);
+                width: calc(100% - 16px);
+                max-width: 100%;
+                border-radius: 6px;
+                padding: var(--space-xl) var(--space-lg);
+                margin-top: var(--space-lg);
             }
 
             .form-label {
-                font-size: 0.8rem;
+                font-size: 0.9rem;
             }
 
             .form-input,
             .form-textarea {
-                font-size: 0.95rem;
+                font-size: 1rem;
+                padding: 14px var(--space-md);
+            }
+
+            .form-textarea {
+                min-height: 180px;
+            }
+
+            .submit-btn {
+                padding: 16px;
+                font-size: 1rem;
             }
         }
 
