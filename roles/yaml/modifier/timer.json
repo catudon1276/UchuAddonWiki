@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "timer",
     "icon": "Timer.png",
     "illust": "Timer.png",
     "english_name": "Timer",
-    "name": "タイマー",
+    "name": {
+        "ja": "タイマー",
+        "en": "Timer"
+    },
     "team": "モディファイア",
     "color": "3, 252, 194",
-    "intro": "正確な記録屋",
-    "description": "ターンの経過時間を記録します。",
-    "abilities_title": "記録",
+    "intro": {
+        "ja": "正確な記録屋",
+        "en": "The Precise Recorder"
+    },
+    "description": {
+        "ja": "ターンの経過時間を記録します。",
+        "en": "Records the elapsed time of each round."
+    },
+    "abilities_title": {
+        "ja": "記録",
+        "en": "Record"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "記録",
-            "description": "ターンの経過時間を記録します。"
+            "name": {
+                "ja": "記録",
+                "en": "Record"
+            },
+            "description": {
+                "ja": "ターンの経過時間を記録します。",
+                "en": "Records the elapsed time of each round."
+            }
         }
     ],
     "from": "Original"

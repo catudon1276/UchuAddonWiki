@@ -1,59 +1,113 @@
-﻿{
+{
     "id": "scale",
     "icon": "Scale.png",
     "illust": "Scale.png",
     "english_name": "Scale",
-    "name": "スケール",
+    "name": {
+        "ja": "スケール",
+        "en": "Scale"
+    },
     "team": "モディファイア",
     "color": "115, 107, 107",
-    "intro": "身体への異常現象",
-    "description": "体の大きさが変わります。",
-    "abilities_title": "異常現象",
+    "intro": {
+        "ja": "身体への異常現象",
+        "en": "Anomalies of the Body"
+    },
+    "description": {
+        "ja": "体の大きさが変わります。",
+        "en": "Your body size changes."
+    },
+    "abilities_title": {
+        "ja": "異常現象",
+        "en": "Anomaly"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "異常現象",
-            "description": "体の大きさが変わります。"
+            "name": {
+                "ja": "異常現象",
+                "en": "Anomaly"
+            },
+            "description": {
+                "ja": "体の大きさが変わります。",
+                "en": "Your body size changes."
+            }
         }
     ],
     "options": [
         {
-            "name": "サイズ設定"
+            "name": {
+                "ja": "サイズ設定",
+                "en": "Size Settings"
+            }
         },
         {
-            "name": "サイズ設定方法",
+            "name": {
+                "ja": "サイズ設定方法",
+                "en": "Size Configuration Method"
+            },
             "options": [
                 {
-                    "name": "サイズ"
+                    "name": {
+                        "ja": "サイズ",
+                        "en": "Size"
+                    }
                 },
                 {
-                    "name": "最大サイズ"
+                    "name": {
+                        "ja": "最大サイズ",
+                        "en": "Maximum Size"
+                    }
                 },
                 {
-                    "name": "最小サイズ"
+                    "name": {
+                        "ja": "最小サイズ",
+                        "en": "Minimum Size"
+                    }
                 },
                 {
-                    "name": "会議後に再抽選"
+                    "name": {
+                        "ja": "会議後に再抽選",
+                        "en": "Re-randomize After Meetings"
+                    }
                 },
                 {
-                    "name": "セレクト枠数"
+                    "name": {
+                        "ja": "セレクト枠数",
+                        "en": "Number of Select Slots"
+                    }
                 },
                 {
-                    "name": "選出枠"
+                    "name": {
+                        "ja": "選出枠",
+                        "en": "Selection Slot"
+                    }
                 },
                 {
-                    "name": "会議後に再選出"
+                    "name": {
+                        "ja": "会議後に再選出",
+                        "en": "Reselect After Meetings"
+                    }
                 }
             ]
         },
         {
-            "name": "固定"
+            "name": {
+                "ja": "固定",
+                "en": "Fixed"
+            }
         },
         {
-            "name": "ランダム"
+            "name": {
+                "ja": "ランダム",
+                "en": "Random"
+            }
         },
         {
-            "name": "選出"
+            "name": {
+                "ja": "選出",
+                "en": "Selected"
+            }
         }
     ],
     "from": "Original"

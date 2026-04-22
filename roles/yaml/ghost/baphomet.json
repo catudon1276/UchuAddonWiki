@@ -1,33 +1,66 @@
-﻿{
+{
     "id": "baphomet",
     "icon": "Baphomet.png",
     "illust": "Baphomet.png",
     "english_name": "Baphomet",
-    "name": "バフォメット",
+    "name": {
+        "ja": "バフォメット",
+        "en": "Baphomet"
+    },
     "team": "ゴースト",
     "color": "31, 26, 122",
-    "intro": "死より始まる黙示録",
-    "description": "霊界から眷属と共に勝利を狙います。",
-    "abilities_title": "アポカリプスメロディー",
+    "intro": {
+        "ja": "死より始まる黙示録",
+        "en": "An Apocalypse That Begins in Death"
+    },
+    "description": {
+        "ja": "霊界から眷属と共に勝利を狙います。",
+        "en": "Aims to win from the spirit realm together with their servitors."
+    },
+    "abilities_title": {
+        "ja": "アポカリプスメロディー",
+        "en": "Apocalypse Melody"
+    },
     "abilities": [
         {
             "button": "BaphometFamilyButton.png",
-            "name": "眷属",
-            "description": "自身の眷属となるファムルスを作成します。作成したことは全プレイヤーに通知されます。"
+            "name": {
+                "ja": "眷属",
+                "en": "Servitor"
+            },
+            "description": {
+                "ja": "自身の眷属となるファムルスを作成します。作成したことは全プレイヤーに通知されます。",
+                "en": "Creates a Famulus who becomes your servitor. All players are notified when one is created."
+            }
         },
         {
             "button": "BaphometDocument.png",
-            "name": "バフォメットゲージ",
-            "description": "勝利に必要なゲージです。自身のファムルスの周囲で停止することでゲージが進行します。進行中は生きているプレイヤーにのみ見える自身の亡霊がその場に出てしまいます。"
+            "name": {
+                "ja": "バフォメットゲージ",
+                "en": "Baphomet Gauge"
+            },
+            "description": {
+                "ja": "勝利に必要なゲージです。自身のファムルスの周囲で停止することでゲージが進行します。進行中は生きているプレイヤーにのみ見える自身の亡霊がその場に出てしまいます。",
+                "en": "The gauge required for victory. It fills while you stand still near one of your Famulus. While filling, your phantom — visible only to living players — appears at your location."
+            }
         }
     ],
     "options": [
         {
-            "name": "勝利に必要なゲージ量"
+            "name": {
+                "ja": "勝利に必要なゲージ量",
+                "en": "Gauge Amount Required to Win"
+            }
         },
         {
-            "name": "会議終了時の消失ゲージ量",
-            "description": "会議終了時に設定量ゲージから消えます。ゲージが満タンなら減りません"
+            "name": {
+                "ja": "会議終了時の消失ゲージ量",
+                "en": "Gauge Lost at Meeting End"
+            },
+            "description": {
+                "ja": "会議終了時に設定量ゲージから消えます。ゲージが満タンなら減りません",
+                "en": "The configured amount is removed from the gauge at the end of each meeting. It does not decrease when the gauge is full."
+            }
         }
     ],
     "from": "Original"

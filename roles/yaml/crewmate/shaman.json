@@ -3,42 +3,84 @@
     "icon": "Sherman.png",
     "illust": "Shaman.png",
     "english_name": "Shaman",
-    "name": "シャーマン",
+    "name": {
+        "ja": "シャーマン",
+        "en": "Shaman"
+    },
     "team": "クルーメイト",
     "color": "202, 80, 242",
-    "intro": "追憶憑依",
-    "description": "生存してる非クルーメイト数を調べることが出来ます。",
-    "abilities_title": "英霊の記憶",
+    "intro": {
+        "ja": "追憶憑依",
+        "en": "Memorial Possession"
+    },
+    "description": {
+        "ja": "生存してる非クルーメイト数を調べることが出来ます。",
+        "en": "Can investigate the number of living non-Crewmates."
+    },
+    "abilities_title": {
+        "ja": "英霊の記憶",
+        "en": "Memory of the Heroic Spirits"
+    },
     "abilities": [
         {
             "button": "ShamanNecromancyButton.png",
-            "name": "降霊術",
-            "description": "生存している非クルーメイト数を調べます。指定の部屋でしか使用できず、降霊中に動くとキャンセルされます。"
+            "name": {
+                "ja": "降霊術",
+                "en": "Necromancy"
+            },
+            "description": {
+                "ja": "生存している非クルーメイト数を調べます。指定の部屋でしか使用できず、降霊中に動くとキャンセルされます。",
+                "en": "Investigates the number of living non-Crewmates. Can only be used in a designated room, and is canceled if you move during the necromancy."
+            }
         },
         {
             "button": "ShamanNecromancyBoostButton.png",
-            "name": "強化降霊術",
-            "description": "一定数のタスクを終えると強化されます。どの非クルーメイトが生存しているかまで分かります。"
+            "name": {
+                "ja": "強化降霊術",
+                "en": "Enhanced Necromancy"
+            },
+            "description": {
+                "ja": "一定数のタスクを終えると強化されます。どの非クルーメイトが生存しているかまで分かります。",
+                "en": "Becomes enhanced after completing a certain number of tasks. You can also learn which non-Crewmates are alive."
+            }
         }
     ],
     "options": [
         {
-            "name": "降霊術クールダウン"
+            "name": {
+                "ja": "降霊術クールダウン",
+                "en": "Necromancy Cooldown"
+            }
         },
         {
-            "name": "降霊術所要時間"
+            "name": {
+                "ja": "降霊術所要時間",
+                "en": "Necromancy Duration"
+            }
         },
         {
-            "name": "降霊術使用可能数"
+            "name": {
+                "ja": "降霊術使用可能数",
+                "en": "Number of Necromancy Uses"
+            }
         },
         {
-            "name": "タスク完了時に部屋を再抽選"
+            "name": {
+                "ja": "タスク完了時に部屋を再抽選",
+                "en": "Re-randomize Room on Task Completion"
+            }
         },
         {
-            "name": "降霊術の強化",
+            "name": {
+                "ja": "降霊術の強化",
+                "en": "Necromancy Enhancement"
+            },
             "options": [
                 {
-                    "name": "強化されるタスク数"
+                    "name": {
+                        "ja": "強化されるタスク数",
+                        "en": "Tasks Required for Enhancement"
+                    }
                 }
             ]
         }

@@ -1,31 +1,61 @@
-﻿{
+{
     "id": "SerialKiller",
     "icon": "SerialKiller.png",
     "illust": "SerialKiller.png",
     "english_name": "SerialKiller",
-    "name": "シリアルキラー",
+    "name": {
+        "ja": "シリアルキラー",
+        "en": "Serial Killer"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "連続殺人鬼",
-    "description": "キルクールダウンが早い変わりに時間で自殺するインポスターです。",
-    "abilities_title": "シリアルキル",
+    "intro": {
+        "ja": "連続殺人鬼",
+        "en": "Serial Killer"
+    },
+    "description": {
+        "ja": "キルクールダウンが早い変わりに時間で自殺するインポスターです。",
+        "en": "An Impostor whose kill cooldown is fast, but who commits suicide over time."
+    },
+    "abilities_title": {
+        "ja": "シリアルキル",
+        "en": "Serial Kill"
+    },
     "abilities": [
         {
             "button": "SuicideButton.png",
-            "name": "自殺",
-            "description": "キルクールダウンが早い変わりに一定時間キルをしないと自殺してしまいます。"
+            "name": {
+                "ja": "自殺",
+                "en": "Suicide"
+            },
+            "description": {
+                "ja": "キルクールダウンが早い変わりに一定時間キルをしないと自殺してしまいます。",
+                "en": "The kill cooldown is fast, but you commit suicide if you do not kill for a certain duration."
+            }
         }
     ],
     "options": [
         {
-            "name": "キルクールダウン"
+            "name": {
+                "ja": "キルクールダウン",
+                "en": "Kill Cooldown"
+            }
         },
         {
-            "name": "自殺までの秒数"
+            "name": {
+                "ja": "自殺までの秒数",
+                "en": "Seconds Until Suicide"
+            }
         },
         {
-            "name": "自殺ボタンを有効にする",
-            "description": "ボタンを押すことで自殺できるようになります。"
+            "name": {
+                "ja": "自殺ボタンを有効にする",
+                "en": "Enable Suicide Button"
+            },
+            "description": {
+                "ja": "ボタンを押すことで自殺できるようになります。",
+                "en": "Allows committing suicide by pressing a button."
+            }
         }
     ],
     "from": "TOR"

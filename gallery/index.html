@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uchu Addon Wiki ギャラリー</title>
+    <title data-i18n="meta.site_title_gallery">Uchu Addon Wiki ギャラリー</title>
     <meta property="og:title" content="Uchu Addon Wiki - ギャラリー">
     <meta property="og:image" content="https://catudon1276.github.io/UchuAddonWiki/components/CoverIllust.png">
     <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../components/styles-common.css">
     <script src="../components/theme.js"></script>
+    <script src="../components/i18n.js"></script>
     <style>
         .hero-section {
             max-width: 1200px;
@@ -392,42 +393,42 @@
     <div id="header"></div>
 
     <div class="hero-section">
-        <h1 class="hero-title"><i class="fas fa-images me-3"></i> GALLERY</h1>
+        <h1 class="hero-title"><i class="fas fa-images me-3"></i> <span data-i18n="gallery.section_title">GALLERY</span></h1>
 
         <div class="terms-section">
-            <h3 class="terms-title"><i class="fas fa-file-contract me-2"></i>ご利用規約</h3>
+            <h3 class="terms-title"><i class="fas fa-file-contract me-2"></i><span data-i18n="gallery.terms_title">ご利用規約</span></h3>
             <div class="terms-content">
-                <p class="terms-intro">本アドオンで登場するボタンやイラストです。配信や動画でお使いいただけます。</p>
+                <p class="terms-intro" data-i18n="gallery.terms_intro">本アドオンで登場するボタンやイラストです。配信や動画でお使いいただけます。</p>
 
                 <div class="terms-grid">
                     <div class="terms-col allowed">
-                        <h4><i class="fas fa-check-circle"></i> OK</h4>
+                        <h4><i class="fas fa-check-circle"></i> <span data-i18n="gallery.terms_allowed">OK</span></h4>
                         <ul>
-                            <li>動画や配信内での画像素材</li>
-                            <li>SNSのアイコン、ヘッダー、カバー用の画像素材</li>
+                            <li data-i18n="gallery.terms_allowed_1">動画や配信内での画像素材</li>
+                            <li data-i18n="gallery.terms_allowed_2">SNSのアイコン、ヘッダー、カバー用の画像素材</li>
                         </ul>
                     </div>
 
                     <div class="terms-col prohibited">
-                        <h4><i class="fas fa-times-circle"></i> NG</h4>
+                        <h4><i class="fas fa-times-circle"></i> <span data-i18n="gallery.terms_prohibited">NG</span></h4>
                         <ul>
-                            <li>イラストの作者を偽る発言（自作発言）</li>
-                            <li>イラストの無断転載</li>
-                            <li>その他、関係する方々に迷惑のかかるご利用</li>
+                            <li data-i18n="gallery.terms_prohibited_1">イラストの作者を偽る発言（自作発言）</li>
+                            <li data-i18n="gallery.terms_prohibited_2">イラストの無断転載</li>
+                            <li data-i18n="gallery.terms_prohibited_3">その他、関係する方々に迷惑のかかるご利用</li>
                         </ul>
                     </div>
                 </div>
 
-                <p class="terms-note"><i class="fas fa-info-circle me-1"></i>色調の変更は問題ありません</p>
+                <p class="terms-note"><i class="fas fa-info-circle me-1"></i><span data-i18n="gallery.terms_note">色調の変更は問題ありません</span></p>
 
-                <p class="terms-footer">以上の点をご理解いただいたうえでご利用ください。</p>
+                <p class="terms-footer" data-i18n="gallery.terms_footer">以上の点をご理解いただいたうえでご利用ください。</p>
             </div>
         </div>
     </div>
 
     <div class="filter-section">
         <div class="category-buttons" id="categoryButtons">
-            <button class="category-btn active" data-category="all">すべて</button>
+            <button class="category-btn active" data-category="all" data-i18n="gallery.filter_all">すべて</button>
         </div>
     </div>
 
@@ -441,14 +442,26 @@
         <div class="modal-content">
             <img id="modalImage" class="modal-image" src="" alt="">
             <div class="modal-controls">
-                <button id="modalDownloadBtn" class="modal-btn"><i class="fas fa-download me-2"></i>ダウンロード</button>
-                <button id="modalCloseBtn" class="modal-btn close-btn"><i class="fas fa-times me-2"></i>閉じる</button>
+                <button id="modalDownloadBtn" class="modal-btn"><i class="fas fa-download me-2"></i><span data-i18n="gallery.modal_download">ダウンロード</span></button>
+                <button id="modalCloseBtn" class="modal-btn close-btn"><i class="fas fa-times me-2"></i><span data-i18n="gallery.modal_close">閉じる</span></button>
             </div>
         </div>
     </div>
 
     <script>
         let galleryData = {}, currentFilter = 'all';
+
+        // i18n ヘルパー
+        function __currentLang() {
+            try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; }
+        }
+        function __pickLocalized(v) {
+            if (v && typeof v === 'object' && ('ja' in v || 'en' in v)) {
+                const lang = __currentLang();
+                return v[lang] != null ? v[lang] : (v.ja != null ? v.ja : v.en);
+            }
+            return v;
+        }
 
         fetch('../components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
         fetch('../components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
@@ -473,7 +486,8 @@
                 const btn = document.createElement('button');
                 btn.className = 'category-btn';
                 btn.dataset.category = id;
-                btn.textContent = galleryData[id].name;
+                btn.dataset.nameRaw = JSON.stringify(galleryData[id].name);
+                btn.textContent = __pickLocalized(galleryData[id].name);
                 btn.onclick = () => {
                     currentFilter = id;
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -484,7 +498,23 @@
             });
             renderGallery();
         }).catch(() => {
-            document.getElementById('galleryContent').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>読み込みエラー</p></div>';
+            const errMsg = (window.UchuI18n && window.UchuI18n.t('gallery.load_error')) || '読み込みエラー';
+            document.getElementById('galleryContent').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>' + errMsg + '</p></div>';
+        });
+
+        // 言語切替時にカテゴリボタン/見出しを再描画
+        document.addEventListener('click', function(e){
+            if (e.target.closest && e.target.closest('.lang-switch-btn')) {
+                setTimeout(function(){
+                    document.querySelectorAll('.category-btn[data-name-raw]').forEach(function(btn){
+                        try {
+                            const raw = JSON.parse(btn.dataset.nameRaw);
+                            btn.textContent = __pickLocalized(raw);
+                        } catch(e) {}
+                    });
+                    if (Object.keys(galleryData).length > 0) renderGallery();
+                }, 0);
+            }
         });
 
         function renderGallery() {
@@ -497,7 +527,7 @@
                 if (!cat.images || cat.images.length === 0) return;
                 const sec = document.createElement('div');
                 sec.className = 'category-section';
-                sec.innerHTML = `<h2 class="category-title">${cat.name}</h2>`;
+                sec.innerHTML = `<h2 class="category-title">${__pickLocalized(cat.name)}</h2>`;
                 const grid = document.createElement('div');
                 grid.className = 'gallery-grid';
 

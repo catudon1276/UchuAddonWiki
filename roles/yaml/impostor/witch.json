@@ -1,33 +1,63 @@
-﻿{
+{
     "id": "witch",
     "icon": "Witch.png",
     "illust": "Witch.png",
     "english_name": "Witch",
-    "name": "ウィッチ",
+    "name": {
+        "ja": "ウィッチ",
+        "en": "Witch"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "死の詠唱者",
-    "description": "プレイヤーを呪うインポスターです。",
-    "abilities_title": "魔術",
+    "intro": {
+        "ja": "死の詠唱者",
+        "en": "Chanter of Death"
+    },
+    "description": {
+        "ja": "プレイヤーを呪うインポスターです。",
+        "en": "An Impostor who puts players under a spell."
+    },
+    "abilities_title": {
+        "ja": "魔術",
+        "en": "Spell"
+    },
     "abilities": [
         {
             "button": "WitchSpellButton.png",
-            "name": "魔術",
-            "description": "プレイヤーに魔術をかけます。魔術をかけられたプレイヤーは会議でウィッチを追放・推察しないと死亡してしまいます。"
+            "name": {
+                "ja": "魔術",
+                "en": "Spell"
+            },
+            "description": {
+                "ja": "プレイヤーに魔術をかけます。魔術をかけられたプレイヤーは会議でウィッチを追放・推察しないと死亡してしまいます。",
+                "en": "Puts a spell on a player. A player under the spell will die unless the Witch is ejected or guessed during a meeting."
+            }
         }
     ],
     "options": [
         {
-            "name": "魔術クールダウン"
+            "name": {
+                "ja": "魔術クールダウン",
+                "en": "Spell Cooldown"
+            }
         },
         {
-            "name": "魔術所要時間"
+            "name": {
+                "ja": "魔術所要時間",
+                "en": "Spell Duration"
+            }
         },
         {
-            "name": "1ターンの最大魔術使用可能数"
+            "name": {
+                "ja": "1ターンの最大魔術使用可能数",
+                "en": "Maximum Spell Uses per Round"
+            }
         },
         {
-            "name": "通常キル使用可能"
+            "name": {
+                "ja": "通常キル使用可能",
+                "en": "Normal Kill Available"
+            }
         }
     ],
     "from": "TOR"

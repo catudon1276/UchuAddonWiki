@@ -3,22 +3,43 @@
     "icon": "Drunk.png",
     "illust": "Drunk.png",
     "english_name": "Drunk",
-    "name": "ドランク",
+    "name": {
+        "ja": "ドランク",
+        "en": "Drunk"
+    },
     "team": "モディファイア",
     "color": "247, 195, 148",
-    "intro": "昨日は飲みすぎた...",
-    "description": "常に移動方向がおかしくなります。",
-    "abilities_title": "泥酔",
+    "intro": {
+        "ja": "昨日は飲みすぎた...",
+        "en": "Had Too Much Last Night..."
+    },
+    "description": {
+        "ja": "常に移動方向がおかしくなります。",
+        "en": "Your movement direction is always off."
+    },
+    "abilities_title": {
+        "ja": "泥酔",
+        "en": "Dead Drunk"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "泥酔",
-            "description": "常に移動方向がおかしくなります。"
+            "name": {
+                "ja": "泥酔",
+                "en": "Dead Drunk"
+            },
+            "description": {
+                "ja": "常に移動方向がおかしくなります。",
+                "en": "Your movement direction is always off."
+            }
         }
     ],
     "options": [
         {
-            "name": "会議後に移動方向を再シャッフル"
+            "name": {
+                "ja": "会議後に移動方向を再シャッフル",
+                "en": "Reshuffle Movement Direction After Meetings"
+            }
         }
     ],
     "from": "Original"

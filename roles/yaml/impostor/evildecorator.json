@@ -1,34 +1,67 @@
-﻿{
+{
     "id": "decorator",
     "icon": "Decolate.png",
     "illust": "EvilDecorator.png",
     "english_name": "Evil Decorator",
-    "name": "イビルデコレーター",
+    "name": {
+        "ja": "イビルデコレーター",
+        "en": "Evil Decorator"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "粉飾としての美",
-    "description": "他の人の役職を変更するインポスターです。",
-    "abilities_title": "デコレーション",
+    "intro": {
+        "ja": "粉飾としての美",
+        "en": "Beauty as a Disguise"
+    },
+    "description": {
+        "ja": "他の人の役職を変更するインポスターです。",
+        "en": "An Impostor who changes other players' roles."
+    },
+    "abilities_title": {
+        "ja": "デコレーション",
+        "en": "Decoration"
+    },
     "abilities": [
         {
             "button": "DecorationButton.png",
-            "name": "装飾",
-            "description": "プレイヤーの役職をフィルターの中からランダムに変更することが出来ます。\n第三陣営やマッドメイトに対して使用すると使用回数を無駄にしてしまいます。"
+            "name": {
+                "ja": "装飾",
+                "en": "Decorate"
+            },
+            "description": {
+                "ja": "プレイヤーの役職をフィルターの中からランダムに変更することが出来ます。\n第三陣営やマッドメイトに対して使用すると使用回数を無駄にしてしまいます。",
+                "en": "Randomly changes a player's role from within the filter.\nUsing this on a third-party faction or Madmate wastes a use."
+            }
         }
     ],
-    "tips": "フィルターを設定していないと、役職を配ることができません。",
+    "tips": {
+        "ja": "フィルターを設定していないと、役職を配ることができません。",
+        "en": "Roles cannot be distributed unless a filter is configured."
+    },
     "options": [
         {
-            "name": "デコレーション使用回数"
+            "name": {
+                "ja": "デコレーション使用回数",
+                "en": "Number of Decoration Uses"
+            }
         },
         {
-            "name": "デコレーションクールダウン"
+            "name": {
+                "ja": "デコレーションクールダウン",
+                "en": "Decoration Cooldown"
+            }
         },
         {
-            "name": "インポスター排出可能フィルター"
+            "name": {
+                "ja": "インポスター排出可能フィルター",
+                "en": "Filter of Possible Impostor Roles"
+            }
         },
         {
-            "name": "クルーメイト排出可能フィルター"
+            "name": {
+                "ja": "クルーメイト排出可能フィルター",
+                "en": "Filter of Possible Crewmate Roles"
+            }
         }
     ],
     "from": "SNR"

@@ -1,41 +1,80 @@
-﻿{
+{
     "id": "rocket",
     "icon": "Rocket.png",
     "illust": "Rocket.png",
     "english_name": "Rocket",
-    "name": "ロケット",
+    "name": {
+        "ja": "ロケット",
+        "en": "Rocket"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "大気圏ツアー、ご案内",
-    "description": "プレイヤーをロケットと共に打ち上げるインポスターです。",
-    "abilities_title": "ロケット発射",
+    "intro": {
+        "ja": "大気圏ツアー、ご案内",
+        "en": "A Guide to the Atmospheric Tour"
+    },
+    "description": {
+        "ja": "プレイヤーをロケットと共に打ち上げるインポスターです。",
+        "en": "An Impostor who launches players along with a rocket."
+    },
+    "abilities_title": {
+        "ja": "ロケット発射",
+        "en": "Rocket Launch"
+    },
     "abilities": [
         {
             "button": "HoldButton.png",
-            "name": "掴む",
-            "description": "プレイヤーを掴みます。二人目以降を掴む場合はクールタイムが変化します。"
+            "name": {
+                "ja": "掴む",
+                "en": "Grab"
+            },
+            "description": {
+                "ja": "プレイヤーを掴みます。二人目以降を掴む場合はクールタイムが変化します。",
+                "en": "Grabs a player. The cooldown changes when grabbing a second or later player."
+            }
         },
         {
             "button": "RocketLaunchButton.png",
-            "name": "発射",
-            "description": "掴んでいるプレイヤーをロケットで発射します。複数人の場合は全員を発射します。"
+            "name": {
+                "ja": "発射",
+                "en": "Launch"
+            },
+            "description": {
+                "ja": "掴んでいるプレイヤーをロケットで発射します。複数人の場合は全員を発射します。",
+                "en": "Launches the grabbed players with the rocket. If there are multiple, all are launched."
+            }
         }
     ],
     "options": [
         {
-            "name": "掴みクールダウン"
+            "name": {
+                "ja": "掴みクールダウン",
+                "en": "Grab Cooldown"
+            }
         },
         {
-            "name": "二人目以降の掴みクールダウン"
+            "name": {
+                "ja": "二人目以降の掴みクールダウン",
+                "en": "Grab Cooldown from the Second Target Onward"
+            }
         },
         {
-            "name": "発射クールダウン"
+            "name": {
+                "ja": "発射クールダウン",
+                "en": "Launch Cooldown"
+            }
         },
         {
-            "name": "通常キル使用可能"
+            "name": {
+                "ja": "通常キル使用可能",
+                "en": "Normal Kill Available"
+            }
         },
         {
-            "name": "掴まれているプレイヤーがカウンター可能"
+            "name": {
+                "ja": "掴まれているプレイヤーがカウンター可能",
+                "en": "Grabbed Players Can Counter"
+            }
         }
     ],
     "from": "SNR"

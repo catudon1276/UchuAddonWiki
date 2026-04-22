@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "spectrum",
     "icon": "Spectrum.png",
     "illust": "Spectrum.png",
     "english_name": "Spectrum",
-    "name": "スペクトラム",
+    "name": {
+        "ja": "スペクトラム",
+        "en": "Spectrum"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "違法改造",
-    "description": "一部のクルー能力を使うことが出来ます。",
-    "abilities_title": "改造能力",
+    "intro": {
+        "ja": "違法改造",
+        "en": "Illegal Modification"
+    },
+    "description": {
+        "ja": "一部のクルー能力を使うことが出来ます。",
+        "en": "Can use some Crewmate abilities."
+    },
+    "abilities_title": {
+        "ja": "改造能力",
+        "en": "Modified Ability"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "改造能力",
-            "description": "一部のクルー役職の能力を使えます。"
+            "name": {
+                "ja": "改造能力",
+                "en": "Modified Ability"
+            },
+            "description": {
+                "ja": "一部のクルー役職の能力を使えます。",
+                "en": "Allows using the abilities of some Crewmate roles."
+            }
         }
     ],
     "options": [
         {
-            "name": "キルクールダウン"
+            "name": {
+                "ja": "キルクールダウン",
+                "en": "Kill Cooldown"
+            }
         }
     ],
     "from": "Original"

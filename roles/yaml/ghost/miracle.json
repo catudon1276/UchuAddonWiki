@@ -3,37 +3,73 @@
     "icon": "Miracle.png",
     "illust": "Miracle.png",
     "english_name": "Miracle",
-    "name": "ミラクル",
+    "name": {
+        "ja": "ミラクル",
+        "en": "Miracle"
+    },
     "team": "ゴースト",
     "color": "243, 255, 163",
-    "intro": "天文確率のキセキ",
-    "description": "生きているプレイヤーと自身の役職を交換します。",
-    "abilities_title": "ミラクルスワップ",
+    "intro": {
+        "ja": "天文確率のキセキ",
+        "en": "A Miracle of Astronomical Odds"
+    },
+    "description": {
+        "ja": "生きているプレイヤーと自身の役職を交換します。",
+        "en": "Swaps roles with a living player."
+    },
+    "abilities_title": {
+        "ja": "ミラクルスワップ",
+        "en": "Miracle Swap"
+    },
     "abilities": [
         {
             "button": "MiracleButton.png",
-            "name": "スワップ",
-            "description": "対象のプレイヤーと、次の会議後役職を交換します。"
+            "name": {
+                "ja": "スワップ",
+                "en": "Swap"
+            },
+            "description": {
+                "ja": "対象のプレイヤーと、次の会議後役職を交換します。",
+                "en": "Swaps roles with the target player after the next meeting."
+            }
         }
     ],
     "options": [
         {
-            "name": "スワップクールダウン"
+            "name": {
+                "ja": "スワップクールダウン",
+                "en": "Swap Cooldown"
+            }
         },
         {
-            "name": "スワップ使用可能数"
+            "name": {
+                "ja": "スワップ使用可能数",
+                "en": "Number of Swap Uses"
+            }
         },
         {
-            "name": "交換可能プレイヤー",
+            "name": {
+                "ja": "交換可能プレイヤー",
+                "en": "Swappable Players"
+            },
             "options": [
                 {
-                    "name": "同陣営のみ"
+                    "name": {
+                        "ja": "同陣営のみ",
+                        "en": "Same Faction Only"
+                    }
                 },
                 {
-                    "name": "第三陣営以外"
+                    "name": {
+                        "ja": "第三陣営以外",
+                        "en": "Except Third-Party Factions"
+                    }
                 },
                 {
-                    "name": "全プレイヤー"
+                    "name": {
+                        "ja": "全プレイヤー",
+                        "en": "All Players"
+                    }
                 }
             ]
         }

@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "express",
     "icon": "Express.png",
     "illust": "Express.png",
     "english_name": "Express",
-    "name": "エクスプレス",
+    "name": {
+        "ja": "エクスプレス",
+        "en": "Express"
+    },
     "team": "モディファイア",
     "color": "121, 126, 208",
-    "intro": "光速の指先で",
-    "description": "足が速いです。",
-    "abilities_title": "高速移動",
+    "intro": {
+        "ja": "光速の指先で",
+        "en": "At the Speed of Light"
+    },
+    "description": {
+        "ja": "足が速いです。",
+        "en": "You move fast."
+    },
+    "abilities_title": {
+        "ja": "高速移動",
+        "en": "High-Speed Movement"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "高速移動",
-            "description": "足が速いです。"
+            "name": {
+                "ja": "高速移動",
+                "en": "High-Speed Movement"
+            },
+            "description": {
+                "ja": "足が速いです。",
+                "en": "You move fast."
+            }
         }
     ],
     "options": [
         {
-            "name": "速度倍率"
+            "name": {
+                "ja": "速度倍率",
+                "en": "Speed Multiplier"
+            }
         }
     ],
     "from": "TOHY"

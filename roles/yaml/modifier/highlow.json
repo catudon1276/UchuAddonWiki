@@ -1,30 +1,57 @@
-﻿{
+{
     "id": "HighLow",
     "icon": "HighLow.png",
     "illust": "HighLow.png",
     "english_name": "HighLow",
-    "name": "ハイロー",
+    "name": {
+        "ja": "ハイロー",
+        "en": "HighLow"
+    },
     "team": "モディファイア",
     "color": "194, 198, 110",
-    "intro": "会議は私の気まぐれで",
-    "description": "投票するときに運がいいと票数が増えます。運が悪いと減ります。",
-    "abilities_title": "運命投票",
+    "intro": {
+        "ja": "会議は私の気まぐれで",
+        "en": "Meetings Bend to My Whim"
+    },
+    "description": {
+        "ja": "投票するときに運がいいと票数が増えます。運が悪いと減ります。",
+        "en": "When voting, good luck increases your vote count and bad luck decreases it."
+    },
+    "abilities_title": {
+        "ja": "運命投票",
+        "en": "Fate Vote"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "運命投票",
-            "description": "投票するときに運がいいと票数が増え、運が悪いと減ります。"
+            "name": {
+                "ja": "運命投票",
+                "en": "Fate Vote"
+            },
+            "description": {
+                "ja": "投票するときに運がいいと票数が増え、運が悪いと減ります。",
+                "en": "When voting, good luck increases your vote count and bad luck decreases it."
+            }
         }
     ],
     "options": [
         {
-            "name": "失敗したときの票数"
+            "name": {
+                "ja": "失敗したときの票数",
+                "en": "Vote Count on Failure"
+            }
         },
         {
-            "name": "成功する確率"
+            "name": {
+                "ja": "成功する確率",
+                "en": "Success Probability"
+            }
         },
         {
-            "name": "成功したときの票数"
+            "name": {
+                "ja": "成功したときの票数",
+                "en": "Vote Count on Success"
+            }
         }
     ],
     "from": "TOHY"

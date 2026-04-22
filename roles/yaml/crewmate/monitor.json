@@ -1,24 +1,48 @@
-﻿{
+{
   "id": "monitor",
   "icon": "Proxy&Monitor.png",
   "illust": "Monitor.png",
   "english_name": "Monitor",
-  "name": "モニター",
+  "name": {
+    "ja": "モニター",
+    "en": "Monitor"
+  },
   "team": "クルーメイト",
   "color": "198, 17, 17",
-  "intro": "万象を瞰る電子妖精",
-  "description": "プロキシと連携するマッドメイトです。",
-  "abilities_title": "CODE FAIRY",
+  "intro": {
+    "ja": "万象を瞰る電子妖精",
+    "en": "The Digital Fairy Who Watches All"
+  },
+  "description": {
+    "ja": "プロキシと連携するマッドメイトです。",
+    "en": "A Madmate who cooperates with the Proxy."
+  },
+  "abilities_title": {
+    "ja": "CODE FAIRY",
+    "en": "CODE FAIRY"
+  },
   "abilities": [
     {
       "button": "ProxyButton.png",
-      "name": "申請",
-      "description": "プロキシに役職チェンジをリクエストします。"
+      "name": {
+        "ja": "申請",
+        "en": "Request"
+      },
+      "description": {
+        "ja": "プロキシに役職チェンジをリクエストします。",
+        "en": "Requests a role change from the Proxy."
+      }
     },
     {
       "button": "ProxyRequestButton.png",
-      "name": "承認",
-      "description": "リクエストされたプロキシがこのボタンを押すと役職がチェンジされます。"
+      "name": {
+        "ja": "承認",
+        "en": "Approve"
+      },
+      "description": {
+        "ja": "リクエストされたプロキシがこのボタンを押すと役職がチェンジされます。",
+        "en": "When the requested Proxy presses this button, the role change takes effect."
+      }
     }
   ],
   "from": "Original"

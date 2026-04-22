@@ -1,70 +1,136 @@
-﻿{
+{
     "id": "alice",
     "icon": "Alice.png",
     "illust": "Alice.png",
     "english_name": "Alice",
-    "name": "アリス",
+    "name": {
+        "ja": "アリス",
+        "en": "Alice"
+    },
     "team": "ニュートラル",
     "color": "255, 255, 15",
-    "intro": "不思議な国に囚われて",
-    "description": "キルされると勝利する第三陣営です。",
-    "abilities_title": "チェシャの導き手",
+    "intro": {
+        "ja": "不思議な国に囚われて",
+        "en": "Trapped in Wonderland"
+    },
+    "description": {
+        "ja": "キルされると勝利する第三陣営です。",
+        "en": "A third-party faction who wins when killed."
+    },
+    "abilities_title": {
+        "ja": "チェシャの導き手",
+        "en": "Guide of the Cheshire"
+    },
     "abilities": [
         {
             "button": "KillButtonYellow.png",
-            "name": "キル",
-            "description": "プレイヤーをキルします。勝利にキルが必要な場合のみ使えます。\n必要数キルしても、キルボタンは使えます。"
+            "name": {
+                "ja": "キル",
+                "en": "Kill"
+            },
+            "description": {
+                "ja": "プレイヤーをキルします。勝利にキルが必要な場合のみ使えます。\n必要数キルしても、キルボタンは使えます。",
+                "en": "Kills a player. Can only be used if kills are required to win.\nThe Kill button remains usable even after reaching the required number of kills."
+            }
         },
         {
             "button": "AlicePremonitionButton.png",
-            "name": "予感",
-            "description": "キラーの位置を知ることが出来ます。"
+            "name": {
+                "ja": "予感",
+                "en": "Premonition"
+            },
+            "description": {
+                "ja": "キラーの位置を知ることが出来ます。",
+                "en": "Lets you learn the position of killers."
+            }
         }
     ],
     "options": [
         {
-            "name": "勝利までのキル数"
+            "name": {
+                "ja": "勝利までのキル数",
+                "en": "Kills Required to Win"
+            }
         },
         {
-            "name": "停電を修理可能"
+            "name": {
+                "ja": "停電を修理可能",
+                "en": "Can Fix Blackouts"
+            }
         },
         {
-            "name": "通信障害を修理可能"
+            "name": {
+                "ja": "通信障害を修理可能",
+                "en": "Can Fix Communication Sabotage"
+            }
         },
         {
-            "name": "追加勝利"
+            "name": {
+                "ja": "追加勝利",
+                "en": "Additional Win"
+            }
         },
         {
-            "name": "<b>予感能力の設定</b>"
+            "name": {
+                "ja": "<b>予感能力の設定</b>",
+                "en": "<b>Premonition Ability Settings</b>"
+            }
         },
         {
-            "name": "予感クールダウン"
+            "name": {
+                "ja": "予感クールダウン",
+                "en": "Premonition Cooldown"
+            }
         },
         {
-            "name": "予感範囲"
+            "name": {
+                "ja": "予感範囲",
+                "en": "Premonition Range"
+            }
         },
         {
-            "name": "予感使用可能回数"
+            "name": {
+                "ja": "予感使用可能回数",
+                "en": "Number of Premonition Uses"
+            }
         },
         {
-            "name": "<b>キルの設定</b>"
+            "name": {
+                "ja": "<b>キルの設定</b>",
+                "en": "<b>Kill Settings</b>"
+            }
         },
         {
-            "name": "勝利にキルが必要",
+            "name": {
+                "ja": "勝利にキルが必要",
+                "en": "Kills Required to Win"
+            },
             "options": [
                 {
-                    "name": "キルクールダウン"
+                    "name": {
+                        "ja": "キルクールダウン",
+                        "en": "Kill Cooldown"
+                    }
                 },
                 {
-                    "name": "必要キル数"
+                    "name": {
+                        "ja": "必要キル数",
+                        "en": "Required Kill Count"
+                    }
                 },
                 {
-                    "name": "隠れているプレイヤーをキル可能"
+                    "name": {
+                        "ja": "隠れているプレイヤーをキル可能",
+                        "en": "Can Kill Hidden Players"
+                    }
                 }
             ]
         },
         {
-            "name": "勝利にタスクが必要"
+            "name": {
+                "ja": "勝利にタスクが必要",
+                "en": "Tasks Required to Win"
+            }
         }
     ],
     "from": "ExR"

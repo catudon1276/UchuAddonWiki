@@ -3,17 +3,35 @@
     "icon": "Testament.png",
     "illust": "Testament.png",
     "english_name": "Testament",
-    "name": "テスタメント",
+    "name": {
+        "ja": "テスタメント",
+        "en": "Testament"
+    },
     "team": "モディファイア",
     "color": "212, 85, 180",
-    "intro": "鎮魂検認",
-    "description": "自身が追放されたとき、自身の役職を公開します。",
-    "abilities_title": "遺言",
+    "intro": {
+        "ja": "鎮魂検認",
+        "en": "Requiem Probate"
+    },
+    "description": {
+        "ja": "自身が追放されたとき、自身の役職を公開します。",
+        "en": "When you are ejected, your role is revealed to everyone."
+    },
+    "abilities_title": {
+        "ja": "遺言",
+        "en": "Last Will"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "遺言",
-            "description": "追放されたとき、自身の役職を公開します。"
+            "name": {
+                "ja": "遺言",
+                "en": "Last Will"
+            },
+            "description": {
+                "ja": "追放されたとき、自身の役職を公開します。",
+                "en": "When ejected, your role is revealed to everyone."
+            }
         }
     ],
     "from": "TOHY"

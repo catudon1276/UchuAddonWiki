@@ -3,32 +3,56 @@
     "icon": "Nova.png",
     "illust": "Nova.png",
     "english_name": "Nova",
-    "name": "ノヴァ",
+    "name": {
+        "ja": "ノヴァ",
+        "en": "Nova"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "星の産声",
-    "description": "一直線上にビームを放つインポスターです。",
-    "abilities_title": "星砲",
+    "intro": {
+        "ja": "星の産声",
+        "en": "The First Cry of a Star"
+    },
+    "description": {
+        "ja": "一直線上にビームを放つインポスターです。",
+        "en": "An Impostor who fires a beam in a straight line."
+    },
+    "abilities_title": {
+        "ja": "星砲",
+        "en": "Star Cannon"
+    },
     "abilities": [
         {
             "button": "NovaFireButton.png",
-            "name": "発射",
-            "description": "一直線上にビームを放ち、命中したプレイヤーをキルします。"
+            "name": {
+                "ja": "発射",
+                "en": "Fire"
+            },
+            "description": {
+                "ja": "一直線上にビームを放ち、命中したプレイヤーをキルします。",
+                "en": "Fires a beam in a straight line and kills any player it hits."
+            }
         }
     ],
     "options": [
         {
-            "name": "発射モード",
-            "description": "ビームの発射方向を設定します。",
+            "name": {
+                "ja": "発射モード",
+                "en": "Fire Mode"
+            },
+            "description": {
+                "ja": "ビームの発射方向を設定します。",
+                "en": "Sets the direction in which the beam is fired."
+            },
             "options": [
-                { "name": "自由" },
-                { "name": "左右" },
-                { "name": "上下左右" }
+                { "name": { "ja": "自由", "en": "Free" } },
+                { "name": { "ja": "左右", "en": "Left/Right" } },
+                { "name": { "ja": "上下左右", "en": "Up/Down/Left/Right" } }
             ]
         },
-        { "name": "発射クールダウン" },
-        { "name": "ビームのサイズ" },
-        { "name": "チャージ時間" }
+        { "name": { "ja": "発射クールダウン", "en": "Fire Cooldown" } },
+        { "name": { "ja": "ビームのサイズ", "en": "Beam Size" } },
+        { "name": { "ja": "チャージ時間", "en": "Charge Time" } }
     ],
     "from": "SNR"
 }

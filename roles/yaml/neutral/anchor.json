@@ -1,44 +1,86 @@
-﻿{
+{
     "id": "anchor",
     "icon": "Anchor.png",
     "illust": "Anchor.png",
     "english_name": "Anchor",
-    "name": "アンカー",
+    "name": {
+        "ja": "アンカー",
+        "en": "Anchor"
+    },
     "team": "ニュートラル",
     "color": "8, 0, 237",
-    "intro": "深淵を繋ぎ止めろ",
-    "description": "一定回数アンカーを設置する第三陣営です。",
-    "abilities_title": "理論特異点",
+    "intro": {
+        "ja": "深淵を繋ぎ止めろ",
+        "en": "Tether the Abyss"
+    },
+    "description": {
+        "ja": "一定回数アンカーを設置する第三陣営です。",
+        "en": "A third-party faction who places a certain number of anchors."
+    },
+    "abilities_title": {
+        "ja": "理論特異点",
+        "en": "Theoretical Singularity"
+    },
     "abilities": [
         {
             "button": "AnchorButton.png",
-            "name": "設置",
-            "description": "アンカーを設置します。設置した時周りに通知がされます。"
+            "name": {
+                "ja": "設置",
+                "en": "Place"
+            },
+            "description": {
+                "ja": "アンカーを設置します。設置した時周りに通知がされます。",
+                "en": "Places an anchor. A notification is sent to nearby players when placed."
+            }
         },
         {
             "button": "AnchorFakeButton.png",
-            "name": "幻聴",
-            "description": "既にアンカーを設置した場所から通知を出すことができます。"
+            "name": {
+                "ja": "幻聴",
+                "en": "Phantom Sound"
+            },
+            "description": {
+                "ja": "既にアンカーを設置した場所から通知を出すことができます。",
+                "en": "Emits a notification from a location where an anchor has already been placed."
+            }
         }
     ],
     "options": [
         {
-            "name": "アンカークールダウン"
+            "name": {
+                "ja": "アンカークールダウン",
+                "en": "Anchor Cooldown"
+            }
         },
         {
-            "name": "アンカー設置数"
+            "name": {
+                "ja": "アンカー設置数",
+                "en": "Number of Anchor Placements"
+            }
         },
         {
-            "name": "幻聴クールダウン"
+            "name": {
+                "ja": "幻聴クールダウン",
+                "en": "Phantom Sound Cooldown"
+            }
         },
         {
-            "name": "ターン毎の設置可能回数"
+            "name": {
+                "ja": "ターン毎の設置可能回数",
+                "en": "Placements Allowed per Round"
+            }
         },
         {
-            "name": "幻聴回数"
+            "name": {
+                "ja": "幻聴回数",
+                "en": "Number of Phantom Sounds"
+            }
         },
         {
-            "name": "アンカーの通知が聞こえる範囲"
+            "name": {
+                "ja": "アンカーの通知が聞こえる範囲",
+                "en": "Range Within Which Anchor Notifications Are Heard"
+            }
         }
     ],
     "from": "Original"

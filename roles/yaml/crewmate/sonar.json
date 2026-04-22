@@ -1,43 +1,85 @@
-﻿{
+{
     "id": "sonar",
     "icon": "Sonar.png",
     "illust": "Sonar.png",
     "english_name": "Sonar",
-    "name": "ソナー",
+    "name": {
+        "ja": "ソナー",
+        "en": "Sonar"
+    },
     "team": "クルーメイト",
     "color": "52, 115, 68",
-    "intro": "絶命の残響、共振す。",
-    "description": "キルを検知するアンテナを設置します。",
-    "abilities_title": "アンテナ",
+    "intro": {
+        "ja": "絶命の残響、共振す。",
+        "en": "The Echo of Death, Resonating."
+    },
+    "description": {
+        "ja": "キルを検知するアンテナを設置します。",
+        "en": "Places antennas that detect kills."
+    },
+    "abilities_title": {
+        "ja": "アンテナ",
+        "en": "Antenna"
+    },
     "abilities": [
         {
             "button": "SonarPlaceButton.png",
-            "name": "設置",
-            "description": "アンテナを設置します。設置したアンテナは自分にしか見えません。"
+            "name": {
+                "ja": "設置",
+                "en": "Place"
+            },
+            "description": {
+                "ja": "アンテナを設置します。設置したアンテナは自分にしか見えません。",
+                "en": "Places an antenna. Placed antennas are visible only to you."
+            }
         },
         {
             "button": "SonarAntenna.png",
-            "name": "アンテナ",
-            "description": "有効化しているアンテナです。周囲でキルが起こると通知します。"
+            "name": {
+                "ja": "アンテナ",
+                "en": "Antenna"
+            },
+            "description": {
+                "ja": "有効化しているアンテナです。周囲でキルが起こると通知します。",
+                "en": "An active antenna. Notifies you when a kill occurs nearby."
+            }
         },
         {
             "button": "SonarAntennaBreak.png",
-            "name": "壊れたアンテナ",
-            "description": "一度キルを検知するとアンテナは壊れてしまいます。この状態ではキルを検知できません。"
+            "name": {
+                "ja": "壊れたアンテナ",
+                "en": "Broken Antenna"
+            },
+            "description": {
+                "ja": "一度キルを検知するとアンテナは壊れてしまいます。この状態ではキルを検知できません。",
+                "en": "The antenna breaks once it detects a kill. In this state, it cannot detect kills."
+            }
         }
     ],
     "options": [
         {
-            "name": "設置クールダウン"
+            "name": {
+                "ja": "設置クールダウン",
+                "en": "Place Cooldown"
+            }
         },
         {
-            "name": "アンテナ設置可能回数"
+            "name": {
+                "ja": "アンテナ設置可能回数",
+                "en": "Number of Antenna Placements"
+            }
         },
         {
-            "name": "キル検知範囲"
+            "name": {
+                "ja": "キル検知範囲",
+                "en": "Kill Detection Range"
+            }
         },
         {
-            "name": "通知持続時間"
+            "name": {
+                "ja": "通知持続時間",
+                "en": "Notification Duration"
+            }
         }
     ],
     "from": "Original"

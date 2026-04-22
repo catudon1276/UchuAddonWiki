@@ -1,38 +1,71 @@
-﻿{
+{
     "id": "harvester",
     "icon": "Harvester.png",
     "illust": "Harvester.png",
     "english_name": "Harvester",
-    "name": "ハーヴェスター",
+    "name": {
+        "ja": "ハーヴェスター",
+        "en": "Harvester"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "やがて星となって再会しよう",
-    "description": "死者の役職を調べるインポスターです。",
-    "abilities_title": "回収",
+    "intro": {
+        "ja": "やがて星となって再会しよう",
+        "en": "Someday We Will Meet Again as Stars"
+    },
+    "description": {
+        "ja": "死者の役職を調べるインポスターです。",
+        "en": "An Impostor who investigates the roles of the dead."
+    },
+    "abilities_title": {
+        "ja": "回収",
+        "en": "Harvest"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "回収",
-            "description": "会議中に死者の役職を調べることが出来ます。"
+            "name": {
+                "ja": "回収",
+                "en": "Harvest"
+            },
+            "description": {
+                "ja": "会議中に死者の役職を調べることが出来ます。",
+                "en": "During a meeting, allows investigating the roles of dead players."
+            }
         }
     ],
     "options": [
         {
-            "name": "回収最大使用回数"
+            "name": {
+                "ja": "回収最大使用回数",
+                "en": "Maximum Number of Harvest Uses"
+            }
         },
         {
-            "name": "1会議での最大回収回数"
+            "name": {
+                "ja": "1会議での最大回収回数",
+                "en": "Maximum Harvests per Meeting"
+            }
         },
         {
-            "name": "キル時に回収回数を増加",
+            "name": {
+                "ja": "キル時に回収回数を増加",
+                "en": "Increase Harvest Count on Kill"
+            },
             "options": [
                 {
-                    "name": "増加回収数"
+                    "name": {
+                        "ja": "増加回収数",
+                        "en": "Amount of Harvest Increase"
+                    }
                 }
             ]
         },
         {
-            "name": "回収結果"
+            "name": {
+                "ja": "回収結果",
+                "en": "Harvest Result"
+            }
         }
     ],
     "from": "Original"

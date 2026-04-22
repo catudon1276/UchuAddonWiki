@@ -1,49 +1,87 @@
-﻿{
+{
     "id": "admiral",
     "icon": "Admiral.png",
     "illust": "Admiral.png",
     "english_name": "Admiral",
-    "name": "アドミラル",
+    "name": {
+        "ja": "アドミラル",
+        "en": "Admiral"
+    },
     "team": "クルーメイト",
     "color": "61, 88, 179",
-    "intro": "絶対権限",
-    "description": "提督権限を行使し追放を防ぐクルーメイトです。",
-    "abilities_title": "絶対的提督権限",
+    "intro": {
+        "ja": "絶対権限",
+        "en": "Absolute Authority"
+    },
+    "description": {
+        "ja": "提督権限を行使し追放を防ぐクルーメイトです。",
+        "en": "A Crewmate who exercises the Admiral's authority to prevent ejections."
+    },
+    "abilities_title": {
+        "ja": "絶対的提督権限",
+        "en": "Absolute Admiral's Authority"
+    },
     "abilities": [
         {
             "button": "AdmiralSkillButton.png",
-            "name": "提督権限",
-            "description": "追放を防ぎます。能力を発動した会議は追放者が出ても死にません。"
+            "name": {
+                "ja": "提督権限",
+                "en": "Admiral's Authority"
+            },
+            "description": {
+                "ja": "追放を防ぎます。能力を発動した会議は追放者が出ても死にません。",
+                "en": "Prevents an ejection. During the meeting in which this ability is used, no one will be ejected even if a player receives the majority of votes."
+            }
         }
     ],
     "options": [
         {
-            "name": "提督権限使用可能回数"
+            "name": {
+                "ja": "提督権限使用可能回数",
+                "en": "Number of Times Admiral's Authority Can Be Used"
+            }
         },
         {
-            "name": "役職を公開",
-            "description": "設定量のタスクを終えた時、アドミラルの名前が変色します。",
+            "name": {
+                "ja": "役職を公開",
+                "en": "Reveal Role"
+            },
+            "description": {
+                "ja": "設定量のタスクを終えた時、アドミラルの名前が変色します。",
+                "en": "When the set number of tasks is completed, the Admiral's name changes color."
+            },
             "options": [
                 {
-                    "name": "役職公開タスク数"
+                    "name": {
+                        "ja": "役職公開タスク数",
+                        "en": "Tasks Required to Reveal Role"
+                    }
                 }
             ]
         },
         {
-            "name": "匿名投票貫通"
+            "name": {
+                "ja": "匿名投票貫通",
+                "en": "Bypass Anonymous Voting"
+            }
         },
         {
-            "name": "アドミラル推察不可",
+            "name": {
+                "ja": "アドミラル推察不可",
+                "en": "Admiral Cannot Be Guessed"
+            },
             "options": [
                 {
-                  "name": "役職非公開時推察可能",
-                  "description": "役職が開示されていない場合に推察可能にします"
-
+                    "name": {
+                        "ja": "役職非公開時推察可能",
+                        "en": "Allow Guessing When Role Is Not Revealed"
+                    },
+                    "description": {
+                        "ja": "役職が開示されていない場合に推察可能にします",
+                        "en": "Allows guessing when the role has not yet been revealed."
+                    }
                 }
             ]
-        },
-        {
-            "name": "死亡する投票数"
         }
     ],
     "from": "Original"

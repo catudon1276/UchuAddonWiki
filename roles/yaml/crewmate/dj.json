@@ -3,29 +3,59 @@
     "icon": "DJ.png",
     "illust": "DJ.png",
     "english_name": "DJ",
-    "name": "DJ",
+    "name": {
+        "ja": "DJ",
+        "en": "DJ"
+    },
     "team": "クルーメイト",
     "color": "173, 3, 252",
-    "intro": "沸け！虹色フェスティバル",
-    "description": "フロアを沸かせるクルーメイトです。",
-    "abilities_title": "スクラッチ",
+    "intro": {
+        "ja": "沸け！虹色フェスティバル",
+        "en": "Ignite! Rainbow Festival"
+    },
+    "description": {
+        "ja": "フロアを沸かせるクルーメイトです。",
+        "en": "A Crewmate who hypes up the dance floor."
+    },
+    "abilities_title": {
+        "ja": "スクラッチ",
+        "en": "Scratch"
+    },
     "abilities": [
         {
             "button": "DJButton.png",
-            "name": "スクラッチ",
-            "description": "周囲のプレイヤーの視界を光らせます。"
+            "name": {
+                "ja": "スクラッチ",
+                "en": "Scratch"
+            },
+            "description": {
+                "ja": "周囲のプレイヤーの視界を光らせます。",
+                "en": "Flashes the vision of nearby players."
+            }
         }
     ],
     "options": [
         {
-            "name": "スクラッチクールダウン"
+            "name": {
+                "ja": "スクラッチクールダウン",
+                "en": "Scratch Cooldown"
+            }
         },
         {
-            "name": "フラッシュ回数",
-            "description": "スキル使用時の視界フラッシュ回数を設定します。"
+            "name": {
+                "ja": "フラッシュ回数",
+                "en": "Number of Flashes"
+            },
+            "description": {
+                "ja": "スキル使用時の視界フラッシュ回数を設定します。",
+                "en": "Sets the number of vision flashes when the ability is used."
+            }
         },
         {
-            "name": "スクラッチ範囲"
+            "name": {
+                "ja": "スクラッチ範囲",
+                "en": "Scratch Range"
+            }
         }
     ],
     "from": "Original"

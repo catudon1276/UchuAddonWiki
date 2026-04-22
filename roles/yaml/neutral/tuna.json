@@ -1,53 +1,101 @@
-﻿{
+{
     "id": "tuna",
     "icon": "Tuna.png",
     "illust": "Tuna.png",
     "english_name": "Tuna",
-    "name": "マグロ",
+    "name": {
+        "ja": "マグロ",
+        "en": "Tuna"
+    },
     "team": "ニュートラル",
     "color": "171, 245, 255",
-    "intro": "走れ！！",
-    "description": "常に動かないと死んでしまう第三陣営です。",
-    "abilities_title": "回遊",
+    "intro": {
+        "ja": "走れ！！",
+        "en": "Run!!"
+    },
+    "description": {
+        "ja": "常に動かないと死んでしまう第三陣営です。",
+        "en": "A third-party faction who dies if they stop moving."
+    },
+    "abilities_title": {
+        "ja": "回遊",
+        "en": "Migration"
+    },
     "abilities": [
         {
             "button": "TunaGaugeDocuments.png",
-            "name": "マグロゲージ",
-            "description": "近くに他のプレイヤーがいることでゲージが溜まります。ゲージをMAXにすると勝利します。自殺タイマーが0になると死亡するため、常に動き続ける必要があります。"
+            "name": {
+                "ja": "マグロゲージ",
+                "en": "Tuna Gauge"
+            },
+            "description": {
+                "ja": "近くに他のプレイヤーがいることでゲージが溜まります。ゲージをMAXにすると勝利します。自殺タイマーが0になると死亡するため、常に動き続ける必要があります。",
+                "en": "The gauge fills when other players are nearby. You win when it reaches its maximum. If the suicide timer hits 0, you die — so you must keep moving at all times."
+            }
         }
     ],
     "options": [
         {
-            "name": "モード設定",
+            "name": {
+                "ja": "モード設定",
+                "en": "Mode Settings"
+            },
             "options": [
                 {
-                    "name": "<b>累計</b>"
+                    "name": {
+                        "ja": "<b>累計</b>",
+                        "en": "<b>Cumulative</b>"
+                    }
                 },
                 {
-                    "name": "停止可能累計時間"
+                    "name": {
+                        "ja": "停止可能累計時間",
+                        "en": "Cumulative Stoppable Time"
+                    }
                 },
                 {
-                    "name": "会議時に自殺タイマーをリセット"
+                    "name": {
+                        "ja": "会議時に自殺タイマーをリセット",
+                        "en": "Reset Suicide Timer at Meeting"
+                    }
                 },
                 {
-                    "name": "<b>常時</b>"
+                    "name": {
+                        "ja": "<b>常時</b>",
+                        "en": "<b>Continuous</b>"
+                    }
                 },
                 {
-                    "name": "停止可能時間"
+                    "name": {
+                        "ja": "停止可能時間",
+                        "en": "Stoppable Time"
+                    }
                 }
             ]
         },
         {
-            "name": "会議後の自殺タイマー停止時間"
+            "name": {
+                "ja": "会議後の自殺タイマー停止時間",
+                "en": "Suicide Timer Pause Duration After Meeting"
+            }
         },
         {
-            "name": "ベント使用"
+            "name": {
+                "ja": "ベント使用",
+                "en": "Can Use Vents"
+            }
         },
         {
-            "name": "勝利に必要なゲージ量"
+            "name": {
+                "ja": "勝利に必要なゲージ量",
+                "en": "Gauge Amount Required to Win"
+            }
         },
         {
-            "name": "停止中のゲージ上昇倍率"
+            "name": {
+                "ja": "停止中のゲージ上昇倍率",
+                "en": "Gauge Gain Multiplier While Stopped"
+            }
         }
     ],
     "from": "SNR"

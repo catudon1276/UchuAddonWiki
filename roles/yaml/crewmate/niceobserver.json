@@ -1,30 +1,57 @@
-﻿{
+{
     "id": "observer",
     "icon": "Observer.png",
     "illust": "NiceObserver.png",
     "english_name": "Nice Observer",
-    "name": "ナイスオブザーバー",
+    "name": {
+        "ja": "ナイスオブザーバー",
+        "en": "Nice Observer"
+    },
     "team": "クルーメイト",
     "color": "0, 103, 144",
-    "intro": "映照の哨戒者",
-    "description": "カメラを設置するクルーメイトです。",
-    "abilities_title": "カメラ設置",
+    "intro": {
+        "ja": "映照の哨戒者",
+        "en": "The Reflecting Sentinel"
+    },
+    "description": {
+        "ja": "カメラを設置するクルーメイトです。",
+        "en": "A Crewmate who places cameras."
+    },
+    "abilities_title": {
+        "ja": "カメラ設置",
+        "en": "Place Camera"
+    },
     "abilities": [
         {
             "button": "ObserverPlaceButtonN.png",
-            "name": "カメラ設置",
-            "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
+            "name": {
+                "ja": "カメラ設置",
+                "en": "Place Camera"
+            },
+            "description": {
+                "ja": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。",
+                "en": "Places a stationary camera. It activates after a meeting, and you can monitor the area around the camera at any time."
+            }
         }
     ],
     "options": [
         {
-            "name": "カメラ最大数"
+            "name": {
+                "ja": "カメラ最大数",
+                "en": "Maximum Cameras"
+            }
         },
         {
-            "name": "カメラ設置クールダウン"
+            "name": {
+                "ja": "カメラ設置クールダウン",
+                "en": "Place Camera Cooldown"
+            }
         },
         {
-            "name": "他プレイヤーがカメラを視認可能"
+            "name": {
+                "ja": "他プレイヤーがカメラを視認可能",
+                "en": "Other Players Can See Cameras"
+            }
         }
     ],
     "from": "Original"

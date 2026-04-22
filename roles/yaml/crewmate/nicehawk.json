@@ -1,34 +1,67 @@
-﻿{
+{
     "id": "hawk",
     "icon": "Hawk.png",
     "illust": "NiceHawk.png",
     "english_name": "Nice Hawk",
-    "name": "ナイスホーク",
+    "name": {
+        "ja": "ナイスホーク",
+        "en": "Nice Hawk"
+    },
     "team": "クルーメイト",
     "color": "255, 255, 112",
-    "intro": "正義の俯瞰者",
-    "description": "視界を広げるクルーメイトです。",
-    "abilities_title": "千里眼",
+    "intro": {
+        "ja": "正義の俯瞰者",
+        "en": "The Righteous Overseer"
+    },
+    "description": {
+        "ja": "視界を広げるクルーメイトです。",
+        "en": "A Crewmate who expands vision."
+    },
+    "abilities_title": {
+        "ja": "千里眼",
+        "en": "Clairvoyance"
+    },
     "abilities": [
         {
             "button": "HawkButtonNice.png",
-            "name": "ホークアイ",
-            "description": "一定時間、視野が大幅に広がり壁越しに見えます。"
+            "name": {
+                "ja": "ホークアイ",
+                "en": "Hawk Eye"
+            },
+            "description": {
+                "ja": "一定時間、視野が大幅に広がり壁越しに見えます。",
+                "en": "For a certain duration, greatly expands vision and allows seeing through walls."
+            }
         }
     ],
     "options": [
         {
-            "name": "ホークアイクールダウン"
+            "name": {
+                "ja": "ホークアイクールダウン",
+                "en": "Hawk Eye Cooldown"
+            }
         },
         {
-            "name": "ホークアイ持続時間"
+            "name": {
+                "ja": "ホークアイ持続時間",
+                "en": "Hawk Eye Duration"
+            }
         },
         {
-            "name": "ホークアイ倍率"
+            "name": {
+                "ja": "ホークアイ倍率",
+                "en": "Hawk Eye Multiplier"
+            }
         },
         {
-          "name": "ホークアイ中移動不可",
-          "description": "ホークアイ中に移動出来ないようにします。"
+          "name": {
+            "ja": "ホークアイ中移動不可",
+            "en": "Cannot Move While Using Hawk Eye"
+          },
+          "description": {
+            "ja": "ホークアイ中に移動出来ないようにします。",
+            "en": "Prevents movement while Hawk Eye is active."
+          }
         }
     ],
     "from": "SNR"

@@ -3,44 +3,89 @@
     "icon": "Better.png",
     "illust": "Bettor.png",
     "english_name": "Bettor",
-    "name": "ベッター",
+    "name": {
+        "ja": "ベッター",
+        "en": "Bettor"
+    },
     "team": "ニュートラル",
     "color": "247, 157, 72",
-    "intro": "Logic Over Luck.",
-    "description": "全員の役職を言い当てると勝利する第三陣営です。",
-    "abilities_title": "ロジカル・コール",
+    "intro": {
+        "ja": "Logic Over Luck.",
+        "en": "Logic Over Luck."
+    },
+    "description": {
+        "ja": "全員の役職を言い当てると勝利する第三陣営です。",
+        "en": "A third-party faction who wins by correctly guessing the roles of all players."
+    },
+    "abilities_title": {
+        "ja": "ロジカル・コール",
+        "en": "Logical Call"
+    },
     "abilities": [
         {
             "button": "BettorGuessButton.png",
-            "name": "推測",
-            "description": "プレイヤーの役職を推測します。全員の役職を言い当てると勝利します。"
+            "name": {
+                "ja": "推測",
+                "en": "Guess"
+            },
+            "description": {
+                "ja": "プレイヤーの役職を推測します。全員の役職を言い当てると勝利します。",
+                "en": "Guesses a player's role. You win by correctly guessing every player's role."
+            }
         },
         {
             "button": "BettorAnalyzeButton.png",
-            "name": "分析",
-            "description": "選択したプレイヤーの陣営を確認できます。"
+            "name": {
+                "ja": "分析",
+                "en": "Analyze"
+            },
+            "description": {
+                "ja": "選択したプレイヤーの陣営を確認できます。",
+                "en": "Reveals the faction of the selected player."
+            }
         },
         {
             "button": "IdentifyButton.png",
-            "name": "特定",
-            "description": "選択したプレイヤーの役職を知ることができます。一定のヒット割合で使用可能になります。"
+            "name": {
+                "ja": "特定",
+                "en": "Identify"
+            },
+            "description": {
+                "ja": "選択したプレイヤーの役職を知ることができます。一定のヒット割合で使用可能になります。",
+                "en": "Reveals the role of the selected player. Becomes available after reaching a certain hit ratio."
+            }
         }
     ],
     "options": [
         {
-            "name": "分析クールダウン"
+            "name": {
+                "ja": "分析クールダウン",
+                "en": "Analyze Cooldown"
+            }
         },
         {
-            "name": "分析の使用回数"
+            "name": {
+                "ja": "分析の使用回数",
+                "en": "Number of Analyze Uses"
+            }
         },
         {
-            "name": "特定を死亡したプレイヤーに使用可能"
+            "name": {
+                "ja": "特定を死亡したプレイヤーに使用可能",
+                "en": "Can Use Identify on Dead Players"
+            }
         },
         {
-            "name": "特定が使用可能になるヒット数割合"
+            "name": {
+                "ja": "特定が使用可能になるヒット数割合",
+                "en": "Hit Ratio to Unlock Identify"
+            }
         },
         {
-            "name": "ゲーム開始後「推測」が使用できないターン数"
+            "name": {
+                "ja": "ゲーム開始後「推測」が使用できないターン数",
+                "en": "Rounds Before Guess Becomes Usable"
+            }
         }
     ],
     "from": "Original"

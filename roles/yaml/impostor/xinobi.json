@@ -1,35 +1,68 @@
-﻿{
+{
     "id": "xinobi",
     "icon": "Xinobi.png",
     "illust": "Xinobi.png",
     "english_name": "Xinobi",
-    "name": "シノビ",
+    "name": {
+        "ja": "シノビ",
+        "en": "Xinobi"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "刃の心を宿れ",
-    "description": "オブジェクトに変化するインポスターです。",
-    "abilities_title": "忍術",
+    "intro": {
+        "ja": "刃の心を宿れ",
+        "en": "Inhabit the Heart of the Blade"
+    },
+    "description": {
+        "ja": "オブジェクトに変化するインポスターです。",
+        "en": "An Impostor who transforms into an object."
+    },
+    "abilities_title": {
+        "ja": "忍術",
+        "en": "Ninjutsu"
+    },
     "abilities": [
         {
             "button": "XinobiButton.png",
-            "name": "変化",
-            "description": "対象のオブジェクトに変化します。"
+            "name": {
+                "ja": "変化",
+                "en": "Transform"
+            },
+            "description": {
+                "ja": "対象のオブジェクトに変化します。",
+                "en": "Transforms into the target object."
+            }
         },
         {
             "button": "XinobiVentButton.png",
-            "name": "ベン遁",
-            "description": "一番近くのベントに遠隔で入ります。全てのベントが接続されています。"
+            "name": {
+                "ja": "ベン遁",
+                "en": "Vent Teleport"
+            },
+            "description": {
+                "ja": "一番近くのベントに遠隔で入ります。全てのベントが接続されています。",
+                "en": "Remotely enters the nearest vent. All vents are connected."
+            }
         }
     ],
     "options": [
         {
-            "name": "キルクールダウン"
+            "name": {
+                "ja": "キルクールダウン",
+                "en": "Kill Cooldown"
+            }
         },
         {
-            "name": "ベン遁クールダウン"
+            "name": {
+                "ja": "ベン遁クールダウン",
+                "en": "Vent Teleport Cooldown"
+            }
         },
         {
-            "name": "全ベント接続"
+            "name": {
+                "ja": "全ベント接続",
+                "en": "Connect All Vents"
+            }
         }
     ],
     "from": "Original"

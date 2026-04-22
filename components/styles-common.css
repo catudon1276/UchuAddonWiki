@@ -677,3 +677,50 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ================================================
+   LANGUAGE SWITCHER (JP / EN) - header right
+   ================================================ */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: transparent;
+  border: 1px solid var(--uchu-border);
+  border-radius: 100px;
+  padding: 2px;
+  margin-left: var(--space-sm);
+}
+
+.lang-switch-btn {
+  background: transparent;
+  border: none;
+  color: var(--uchu-text-secondary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1;
+}
+
+.lang-switch-btn:hover {
+  color: var(--uchu-text-primary);
+}
+
+.lang-switch-btn.active {
+  background: var(--uchu-text-primary);
+  color: var(--uchu-bg-light);
+}
+
+[data-theme="dark"] .lang-switcher {
+  border-color: var(--uchu-border);
+}
+
+[data-theme="dark"] .lang-switch-btn.active {
+  background: var(--uchu-text-primary);
+  color: var(--uchu-bg-dark);
+}

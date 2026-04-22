@@ -1,78 +1,159 @@
-﻿{
+{
     "id": "epidemic",
     "icon": "Epidemic.png",
     "illust": "Epidemic.png",
     "english_name": "Epidemic",
-    "name": "エピデミック",
+    "name": {
+        "ja": "エピデミック",
+        "en": "Epidemic"
+    },
     "team": "ニュートラル",
     "color": "68, 255, 0",
-    "intro": "悪意は伝染する",
-    "description": "未知のウイルスを感染させる第三陣営です。",
-    "abilities_title": "見えない恐怖",
+    "intro": {
+        "ja": "悪意は伝染する",
+        "en": "Malice Spreads"
+    },
+    "description": {
+        "ja": "未知のウイルスを感染させる第三陣営です。",
+        "en": "A third-party faction who spreads an unknown virus."
+    },
+    "abilities_title": {
+        "ja": "見えない恐怖",
+        "en": "Unseen Terror"
+    },
     "abilities": [
         {
             "button": "EpidemicInfectButton.png",
-            "name": "感染",
-            "description": "プレイヤーを感染させます。"
+            "name": {
+                "ja": "感染",
+                "en": "Infect"
+            },
+            "description": {
+                "ja": "プレイヤーを感染させます。",
+                "en": "Infects a player."
+            }
         },
         {
             "button": "EpidemicBreakButton.png",
-            "name": "破壊",
-            "description": "対象の除染箱を一時的に使用不可な状態にさせます。"
+            "name": {
+                "ja": "破壊",
+                "en": "Break"
+            },
+            "description": {
+                "ja": "対象の除染箱を一時的に使用不可な状態にさせます。",
+                "en": "Temporarily disables the target decontamination box."
+            }
         },
         {
             "button": "EpidemicBox.png",
-            "name": "除染箱",
-            "description": "除染箱を使用すると使用したプレイヤーの感染率が減少します。"
+            "name": {
+                "ja": "除染箱",
+                "en": "Decontamination Box"
+            },
+            "description": {
+                "ja": "除染箱を使用すると使用したプレイヤーの感染率が減少します。",
+                "en": "Using a decontamination box lowers the infection rate of the player who used it."
+            }
         }
     ],
     "options": [
         {
-            "name": "感染クールダウン"
+            "name": {
+                "ja": "感染クールダウン",
+                "en": "Infect Cooldown"
+            }
         },
         {
-            "name": "感染所要時間"
+            "name": {
+                "ja": "感染所要時間",
+                "en": "Infect Duration"
+            }
         },
         {
-            "name": "感染完了までの時間"
+            "name": {
+                "ja": "感染完了までの時間",
+                "en": "Time Until Infection Completes"
+            }
         },
         {
-            "name": "ウイルス伝染範囲"
+            "name": {
+                "ja": "ウイルス伝染範囲",
+                "en": "Virus Transmission Range"
+            }
         },
         {
-            "name": "<b>破壊設定</b>"
+            "name": {
+                "ja": "<b>破壊設定</b>",
+                "en": "<b>Break Settings</b>"
+            }
         },
         {
-            "name": "破壊クールダウン"
+            "name": {
+                "ja": "破壊クールダウン",
+                "en": "Break Cooldown"
+            }
         },
         {
-            "name": "破壊所要時間"
+            "name": {
+                "ja": "破壊所要時間",
+                "en": "Break Duration"
+            }
         },
         {
-            "name": "破壊使用可能数"
+            "name": {
+                "ja": "破壊使用可能数",
+                "en": "Number of Break Uses"
+            }
         },
         {
-            "name": "除染箱再補給までのターン",
-            "description": "除染箱が何ターンの間壊れるか設定します。"
+            "name": {
+                "ja": "除染箱再補給までのターン",
+                "en": "Rounds Until Decontamination Box Respawns"
+            },
+            "description": {
+                "ja": "除染箱が何ターンの間壊れるか設定します。",
+                "en": "Sets how many rounds the decontamination box stays broken."
+            }
         },
         {
-            "name": "<b>除染箱の設定</b>"
+            "name": {
+                "ja": "<b>除染箱の設定</b>",
+                "en": "<b>Decontamination Box Settings</b>"
+            }
         },
         {
-            "name": "除染箱出現数"
+            "name": {
+                "ja": "除染箱出現数",
+                "en": "Number of Decontamination Boxes"
+            }
         },
         {
-            "name": "1プレイヤーごとの除染箱使用可能数"
+            "name": {
+                "ja": "1プレイヤーごとの除染箱使用可能数",
+                "en": "Decontamination Box Uses per Player"
+            }
         },
         {
-            "name": "除染所要時間"
+            "name": {
+                "ja": "除染所要時間",
+                "en": "Decontamination Duration"
+            }
         },
         {
-            "name": "減少する感染率"
+            "name": {
+                "ja": "減少する感染率",
+                "en": "Infection Rate Reduction"
+            }
         },
         {
-            "name": "除染ペナルティ倍率",
-            "description": "設定した値分、徐々に効果が薄くなっていきます。"
+            "name": {
+                "ja": "除染ペナルティ倍率",
+                "en": "Decontamination Penalty Multiplier"
+            },
+            "description": {
+                "ja": "設定した値分、徐々に効果が薄くなっていきます。",
+                "en": "Gradually reduces effectiveness by the configured amount."
+            }
         }
     ],
     "from": "Original"

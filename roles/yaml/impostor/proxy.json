@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "proxy",
     "icon": "Proxy&Monitor.png",
     "illust": "Proxy.png",
     "english_name": "Proxy",
-    "name": "プロキシ",
+    "name": {
+        "ja": "プロキシ",
+        "en": "Proxy"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "境界を跨ぐ結節点",
-    "description": "モニターと連携するインポスターです。",
-    "abilities_title": "巡れ、電脳連携",
+    "intro": {
+        "ja": "境界を跨ぐ結節点",
+        "en": "The Node That Crosses Boundaries"
+    },
+    "description": {
+        "ja": "モニターと連携するインポスターです。",
+        "en": "An Impostor who cooperates with the Monitor."
+    },
+    "abilities_title": {
+        "ja": "巡れ、電脳連携",
+        "en": "Flow, Cybernetic Link"
+    },
     "abilities": [
         {
             "button": "ProxyButton.png",
-            "name": "申請",
-            "description": "モニターと役職をチェンジします。"
+            "name": {
+                "ja": "申請",
+                "en": "Request"
+            },
+            "description": {
+                "ja": "モニターと役職をチェンジします。",
+                "en": "Swaps roles with the Monitor."
+            }
         }
     ],
     "options": [
         {
-            "name": "申請クールダウン"
+            "name": {
+                "ja": "申請クールダウン",
+                "en": "Request Cooldown"
+            }
         }
     ],
     "from": "Original"

@@ -3,31 +3,61 @@
     "icon": "Lighter.png",
     "illust": "Lighter.png",
     "english_name": "Lighter",
-    "name": "ライター",
+    "name": {
+        "ja": "ライター",
+        "en": "Lighter"
+    },
     "team": "クルーメイト",
     "color": "219, 203, 55",
-    "intro": "私を照らして",
-    "description": "ライトで視界を広げるクルーメイトです。",
-    "abilities_title": "ライト",
+    "intro": {
+        "ja": "私を照らして",
+        "en": "Shine on Me"
+    },
+    "description": {
+        "ja": "ライトで視界を広げるクルーメイトです。",
+        "en": "A Crewmate who expands vision with a light."
+    },
+    "abilities_title": {
+        "ja": "ライト",
+        "en": "Light"
+    },
     "abilities": [
         {
             "button": "LightButton.png",
-            "name": "ライト",
-            "description": "一定時間、視野を大幅に広げます。"
+            "name": {
+                "ja": "ライト",
+                "en": "Light"
+            },
+            "description": {
+                "ja": "一定時間、視野を大幅に広げます。",
+                "en": "Greatly expands vision for a certain duration."
+            }
         }
     ],
     "options": [
         {
-            "name": "ライトクールダウン"
+            "name": {
+                "ja": "ライトクールダウン",
+                "en": "Light Cooldown"
+            }
         },
         {
-            "name": "ライト持続時間"
+            "name": {
+                "ja": "ライト持続時間",
+                "en": "Light Duration"
+            }
         },
         {
-            "name": "ライト倍率"
+            "name": {
+                "ja": "ライト倍率",
+                "en": "Light Multiplier"
+            }
         },
         {
-            "name": "ライト使用中、透明プレイヤーを視認可能"
+            "name": {
+                "ja": "ライト使用中、透明プレイヤーを視認可能",
+                "en": "Can See Invisible Players While Using Light"
+            }
         }
     ],
     "from": "TOR"

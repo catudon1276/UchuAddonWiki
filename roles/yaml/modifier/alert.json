@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "alert",
     "icon": "Alert.png",
     "illust": "Alert.png",
     "english_name": "Alert",
-    "name": "アラート",
+    "name": {
+        "ja": "アラート",
+        "en": "Alert"
+    },
     "team": "モディファイア",
     "color": "67, 232, 108",
-    "intro": "緊急招集",
-    "description": "ポータブルボタンを持つモディファイアです。",
-    "abilities_title": "ポータブルボタン",
+    "intro": {
+        "ja": "緊急招集",
+        "en": "Emergency Summons"
+    },
+    "description": {
+        "ja": "ポータブルボタンを持つモディファイアです。",
+        "en": "A modifier that carries a portable emergency button."
+    },
+    "abilities_title": {
+        "ja": "ポータブルボタン",
+        "en": "Portable Button"
+    },
     "abilities": [
         {
             "button": "EmergencyButton.png",
-            "name": "ポータブルボタン",
-            "description": "会議ボタンをどこでも使用できます。"
+            "name": {
+                "ja": "ポータブルボタン",
+                "en": "Portable Button"
+            },
+            "description": {
+                "ja": "会議ボタンをどこでも使用できます。",
+                "en": "Lets you call a meeting from anywhere."
+            }
         }
     ],
     "from": "Original"

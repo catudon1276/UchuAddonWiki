@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "static",
     "icon": "Static.png",
     "illust": "Static.png",
     "english_name": "Static",
-    "name": "スタティック",
+    "name": {
+        "ja": "スタティック",
+        "en": "Static"
+    },
     "team": "モディファイア",
     "color": "228, 255, 25",
-    "intro": "電脳の潰散",
-    "description": "アドミン・バイタルの情報が正しく表示されません。",
-    "abilities_title": "妨害電波",
+    "intro": {
+        "ja": "電脳の潰散",
+        "en": "Collapse of the Cyber Mind"
+    },
+    "description": {
+        "ja": "アドミン・バイタルの情報が正しく表示されません。",
+        "en": "Admin and Vitals information is not displayed correctly."
+    },
+    "abilities_title": {
+        "ja": "妨害電波",
+        "en": "Jamming Signal"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "妨害電波",
-            "description": "アドミン・バイタルの情報が正しく表示されません。"
+            "name": {
+                "ja": "妨害電波",
+                "en": "Jamming Signal"
+            },
+            "description": {
+                "ja": "アドミン・バイタルの情報が正しく表示されません。",
+                "en": "Admin and Vitals information is not displayed correctly."
+            }
         }
     ],
     "options": [
         {
-            "name": "自覚可能"
+            "name": {
+                "ja": "自覚可能",
+                "en": "Self-Aware"
+            }
         }
     ],
     "from": "Original"

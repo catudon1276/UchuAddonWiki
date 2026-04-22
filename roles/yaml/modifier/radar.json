@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "radar",
     "icon": "Radar.png",
     "illust": "Radar.png",
     "english_name": "Radar",
-    "name": "レーダー",
+    "name": {
+        "ja": "レーダー",
+        "en": "Radar"
+    },
     "team": "モディファイア",
     "color": "11, 51, 107",
-    "intro": "因果、走査せよ",
-    "description": "一番近くのプレイヤーを矢印で追跡します。",
-    "abilities_title": "追跡",
+    "intro": {
+        "ja": "因果、走査せよ",
+        "en": "Scan the Threads of Fate"
+    },
+    "description": {
+        "ja": "一番近くのプレイヤーを矢印で追跡します。",
+        "en": "Tracks the nearest player with an arrow."
+    },
+    "abilities_title": {
+        "ja": "追跡",
+        "en": "Tracking"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "追跡",
-            "description": "一番近くのプレイヤーを矢印で追跡します。"
+            "name": {
+                "ja": "追跡",
+                "en": "Tracking"
+            },
+            "description": {
+                "ja": "一番近くのプレイヤーを矢印で追跡します。",
+                "en": "Tracks the nearest player with an arrow."
+            }
         }
     ],
     "from": "TOU"

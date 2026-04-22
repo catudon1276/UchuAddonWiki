@@ -1,57 +1,114 @@
-﻿{
+{
     "id": "polaris",
     "icon": "Polaris.png",
     "illust": "Polaris.png",
     "english_name": "Polaris",
-    "name": "ポラリス",
+    "name": {
+        "ja": "ポラリス",
+        "en": "Polaris"
+    },
     "team": "クルーメイト",
     "color": "130, 178, 255",
-    "intro": "蒼天の導星",
-    "description": "キルと幻視を使えるクルーメイトです。",
-    "abilities_title": "導きの青い星",
+    "intro": {
+        "ja": "蒼天の導星",
+        "en": "The Guiding Star of the Azure Sky"
+    },
+    "description": {
+        "ja": "キルと幻視を使えるクルーメイトです。",
+        "en": "A Crewmate who can use Kill and Vision."
+    },
+    "abilities_title": {
+        "ja": "導きの青い星",
+        "en": "Guiding Blue Star"
+    },
     "abilities": [
         {
             "button": "KillButtonCyan.png",
-            "name": "キル",
-            "description": "プレイヤーをキルします。"
+            "name": {
+                "ja": "キル",
+                "en": "Kill"
+            },
+            "description": {
+                "ja": "プレイヤーをキルします。",
+                "en": "Kills a player."
+            }
         },
         {
             "button": "PolarisMediumButton.png",
-            "name": "幻視",
-            "description": "死者の役職を占います。結果は会議で表示され、自身のみ視認可能です。"
+            "name": {
+                "ja": "幻視",
+                "en": "Vision"
+            },
+            "description": {
+                "ja": "死者の役職を占います。結果は会議で表示され、自身のみ視認可能です。",
+                "en": "Divines the role of a dead player. The result is shown during a meeting and is visible only to you."
+            }
         }
     ],
     "options": [
         {
-            "name": "<b>キルの設定</b>"
+            "name": {
+                "ja": "<b>キルの設定</b>",
+                "en": "<b>Kill Settings</b>"
+            }
         },
         {
-            "name": "キル可能回数"
+            "name": {
+                "ja": "キル可能回数",
+                "en": "Number of Kill Uses"
+            }
         },
         {
-            "name": "キルクールダウン"
+            "name": {
+                "ja": "キルクールダウン",
+                "en": "Kill Cooldown"
+            }
         },
         {
-          "name": "隠れてるプレイヤーをキル可能",
-          "description": "ベント中のプレイヤーをキルできるようになります"
+          "name": {
+            "ja": "隠れてるプレイヤーをキル可能",
+            "en": "Can Kill Hidden Players"
+          },
+          "description": {
+            "ja": "ベント中のプレイヤーをキルできるようになります",
+            "en": "Allows killing players who are inside vents."
+          }
         },
         {
-            "name": "<b>幻視の設定</b>"
+            "name": {
+                "ja": "<b>幻視の設定</b>",
+                "en": "<b>Vision Settings</b>"
+            }
         },
         {
-            "name": "幻視クールダウン"
+            "name": {
+                "ja": "幻視クールダウン",
+                "en": "Vision Cooldown"
+            }
         },
         {
-            "name": "幻視所要時間"
+            "name": {
+                "ja": "幻視所要時間",
+                "en": "Vision Duration"
+            }
         },
         {
-            "name": "幻視使用可能回数"
+            "name": {
+                "ja": "幻視使用可能回数",
+                "en": "Number of Vision Uses"
+            }
         },
         {
-            "name": "幻視使用時タスクを消費"
+            "name": {
+                "ja": "幻視使用時タスクを消費",
+                "en": "Consume Tasks When Using Vision"
+            }
         },
         {
-            "name": "幻視消費タスク"
+            "name": {
+                "ja": "幻視消費タスク",
+                "en": "Tasks Consumed by Vision"
+            }
         }
     ],
     "from": "Original"

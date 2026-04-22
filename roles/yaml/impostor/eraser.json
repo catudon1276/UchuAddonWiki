@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "eraser",
     "icon": "Eraser.png",
     "illust": "Eraser.png",
     "english_name": "Eraser",
-    "name": "イレイサー",
+    "name": {
+        "ja": "イレイサー",
+        "en": "Eraser"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "世界が私を忘れて",
-    "description": "プレイヤーの役職を削除するインポスターです。",
-    "abilities_title": "役職消去プロトコル",
+    "intro": {
+        "ja": "世界が私を忘れて",
+        "en": "The World Forgets Me"
+    },
+    "description": {
+        "ja": "プレイヤーの役職を削除するインポスターです。",
+        "en": "An Impostor who erases a player's role."
+    },
+    "abilities_title": {
+        "ja": "役職消去プロトコル",
+        "en": "Role Erasure Protocol"
+    },
     "abilities": [
         {
             "button": "EraserEraseButton.png",
-            "name": "削除",
-            "description": "プレイヤーの役職を消去し、強制的にクルーメイトにします。変更は次の会議後に反映されます。"
+            "name": {
+                "ja": "削除",
+                "en": "Erase"
+            },
+            "description": {
+                "ja": "プレイヤーの役職を消去し、強制的にクルーメイトにします。変更は次の会議後に反映されます。",
+                "en": "Erases a player's role and forcibly turns them into a Crewmate. The change takes effect after the next meeting."
+            }
         }
     ],
     "options": [
         {
-            "name": "削除クールダウン"
+            "name": {
+                "ja": "削除クールダウン",
+                "en": "Erase Cooldown"
+            }
         },
         {
-            "name": "削除可能回数"
+            "name": {
+                "ja": "削除可能回数",
+                "en": "Number of Erase Uses"
+            }
         }
     ],
     "from": "TOR"

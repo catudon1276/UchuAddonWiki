@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uchu Addon Wiki 役職</title>
+    <title data-i18n="meta.site_title_roles">Uchu Addon Wiki 役職</title>
     <meta property="og:title" content="Uchu Addon Wiki - 役職一覧">
     <meta property="og:image" content="https://catudon1276.github.io/UchuAddonWiki/components/CoverIllust.png">
     <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link rel="stylesheet" href="../components/styles-common.css">
     <script src="../components/theme.js"></script>
+    <script src="../components/i18n.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* ------------------------------------------------
@@ -317,11 +318,7 @@
             grid-column: 1 / -1;
             text-align: center;
             padding: var(--space-2xl);
-            background: var(--uchu-bg-light);
-            border: 1px solid var(--uchu-border);
-            border-radius: var(--radius-lg);
             color: var(--uchu-text-muted);
-            box-shadow: var(--shadow-sm);
         }
 
         .no-results i {
@@ -608,7 +605,6 @@
             margin-top: 2px;
         }
 
-        .option-sub-content {}
 
         .option-sub-name {
             font-size: 0.85rem;
@@ -744,9 +740,9 @@
     <section class="uchu-section">
         <div class="uchu-section-header">
             <h1 class="uchu-section-title">
-                <i class="fas fa-users"></i> ROLES
+                <i class="fas fa-users"></i> <span data-i18n="roles.section_title">ROLES</span>
             </h1>
-            <p class="uchu-section-subtitle">
+            <p class="uchu-section-subtitle" data-i18n="roles.section_subtitle">
                 クルーメイト、インポスター、ニュートラルなど全役職を網羅
             </p>
         </div>
@@ -755,33 +751,33 @@
         <div class="search-filter-section">
             <div class="search-box">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="役職名で検索...">
+                <input type="text" class="search-input" id="searchInput" placeholder="役職名で検索..." data-i18n-placeholder="roles.search_placeholder">
             </div>
 
             <div class="filter-section">
                 <div class="filter-label">
-                    <i class="fas fa-users"></i> 陣営フィルター
+                    <i class="fas fa-users"></i> <span data-i18n="roles.filter_team_label">陣営フィルター</span>
                 </div>
                 <div class="filter-buttons">
-                    <button class="filter-btn team-btn active" data-team="all">すべて</button>
-                    <button class="filter-btn team-btn" data-team="クルーメイト">クルーメイト</button>
-                    <button class="filter-btn team-btn" data-team="インポスター">インポスター</button>
-                    <button class="filter-btn team-btn" data-team="ニュートラル">ニュートラル</button>
-                    <button class="filter-btn team-btn" data-team="モディファイア">モディファイア</button>
-                    <button class="filter-btn team-btn" data-team="ゴースト">ゴースト</button>
-                    <button class="filter-btn team-btn" data-team="パーク">パーク</button>
+                    <button class="filter-btn team-btn active" data-team="all" data-i18n="roles.filter_all">すべて</button>
+                    <button class="filter-btn team-btn" data-team="クルーメイト" data-i18n="roles.filter_crew">クルーメイト</button>
+                    <button class="filter-btn team-btn" data-team="インポスター" data-i18n="roles.filter_impostor">インポスター</button>
+                    <button class="filter-btn team-btn" data-team="ニュートラル" data-i18n="roles.filter_neutral">ニュートラル</button>
+                    <button class="filter-btn team-btn" data-team="モディファイア" data-i18n="roles.filter_modifier">モディファイア</button>
+                    <button class="filter-btn team-btn" data-team="ゴースト" data-i18n="roles.filter_ghost">ゴースト</button>
+                    <button class="filter-btn team-btn" data-team="パーク" data-i18n="roles.filter_perk">パーク</button>
                 </div>
             </div>
 
             <div class="filter-section">
                 <div class="filter-label">
-                    <i class="fas fa-book"></i> 出典元フィルター
+                    <i class="fas fa-book"></i> <span data-i18n="roles.filter_from_label">出典元フィルター</span>
                 </div>
                 <div class="filter-buttons" id="fromContainer">
                     <!-- 出典フィルターはJSで生成 -->
                 </div>
             </div>
-            <div class="roles-count-badge">表示中: <span id="rolesCountDisplay">0</span> 件</div>
+            <div class="roles-count-badge"><span data-i18n="roles.count_prefix">表示中:</span> <span id="rolesCountDisplay">0</span> <span data-i18n="roles.count_suffix">件</span></div>
         </div>
 
         <!-- Roles Grid -->
@@ -791,7 +787,7 @@
 
         <div class="no-results" id="noResults" style="display: none;">
             <i class="fas fa-search-minus"></i>
-            <p>該当する役職が見つかりませんでした</p>
+            <p data-i18n="roles.no_results">該当する役職が見つかりませんでした</p>
         </div>
     </section>
 
@@ -801,6 +797,50 @@
             <!-- モーダル内容はJavaScriptで動的に生成 -->
         </div>
     </div>
+
+    <!-- Porting Guidelines -->
+    <section class="uchu-section" style="padding-top:0;">
+        <div style="border-top:1px solid var(--uchu-border);">
+            <button id="guidelineToggle" onclick="toggleGuideline()" style="display:flex;align-items:center;gap:0.6em;width:100%;background:none;border:none;padding:var(--space-lg) 0;cursor:pointer;color:var(--uchu-text-muted);font-size:0.85rem;text-align:left;">
+                <span id="guidelineChevron" style="display:inline-block;transition:transform 0.25s ease;font-size:0.7rem;">▶</span>
+                <span data-i18n="roles.guideline_toggle">移植・二次利用に関するガイドライン</span>
+            </button>
+            <div id="guidelineBody" style="overflow:hidden;max-height:0;transition:max-height 0.3s ease;display:flex;flex-direction:column;gap:var(--space-xl);color:var(--uchu-text-secondary);font-size:0.9rem;line-height:1.75;padding:0;">
+
+                <div>
+                    <p style="font-weight:700;color:var(--uchu-text-primary);margin-bottom:0.4em;" data-i18n="roles.guideline_1_title">1. 役職アイディアおよび仕様について</p>
+                    <p data-i18n-html="roles.guideline_1_body_html"><span style="font-weight:600;">移植の許可：</span>UchuAddon が独自に考案した役職のアイディア・ゲーム性・ロジックに関しては、著作権を主張いたしません。他環境への移植や、改変した役職の作成は自由に行っていただいて構いません。<br>ただし、他MOD由来の役職については本項は適用されません。下記「3. 他MOD由来の役職について」をご確認ください。</p>
+                </div>
+
+                <div>
+                    <p style="font-weight:700;color:var(--uchu-text-primary);margin-bottom:0.4em;" data-i18n="roles.guideline_2_title">2. 独自リソースの利用禁止</p>
+                    <p data-i18n-html="roles.guideline_2_body_html"><span style="font-weight:600;">禁止事項：</span>アドオン内に含まれるボタンイラスト、画像、エフェクト、テクスチャ等の各種リソースを、そのまま（あるいは改変して）抜き出し、他MODやプロジェクトへ移植・利用することは一切禁止いたします。</p>
+                </div>
+
+                <div style="padding-bottom:var(--space-2xl);">
+                    <p style="font-weight:700;color:var(--uchu-text-primary);margin-bottom:0.4em;" data-i18n="roles.guideline_3_title">3. 他MOD由来の役職について</p>
+                    <p data-i18n-html="roles.guideline_3_body_html"><span style="font-weight:600;">遵守事項：</span>本アドオンに実装されている他MOD由来の役職に関しては、それぞれの元MODが定める規約およびガイドラインに従ってください。</p>
+                    <p style="margin-top:0.5em;" data-i18n-html="roles.guideline_3_disclaimer_html"><span style="font-weight:600;">免責事項：</span>他MODの役職移植に関するトラブルや権利侵害について、本アドオン制作側は一切の責任を負いません。</p>
+                </div>
+
+            </div>
+        </div>
+        <script>
+            let guidelineOpen = false;
+            function toggleGuideline() {
+                const body = document.getElementById('guidelineBody');
+                const chevron = document.getElementById('guidelineChevron');
+                guidelineOpen = !guidelineOpen;
+                if (guidelineOpen) {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                    chevron.style.transform = 'rotate(90deg)';
+                } else {
+                    body.style.maxHeight = '0';
+                    chevron.style.transform = '';
+                }
+            }
+        </script>
+    </section>
 
     <!-- Footer -->
     <div id="footer"></div>
@@ -848,6 +888,33 @@
                 document.getElementById('footer').innerHTML = data;
             });
 
+        // 現在開いている役職を保持(言語切替時の再描画用)
+        window.__currentOpenedRole = null;
+
+        // 言語切り替え時にフィルターとカード、モーダルを再レンダリング
+        document.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('.lang-switch-btn')) {
+                setTimeout(function() {
+                    if (typeof renderFromFilters === 'function') renderFromFilters();
+                    if (typeof filterAndRender === 'function') filterAndRender();
+                    // モーダルが開いていれば再描画
+                    var modalEl = document.getElementById('roleModal');
+                    if (modalEl && modalEl.classList.contains('active') && window.__currentOpenedRole) {
+                        showRoleDetails(window.__currentOpenedRole);
+                    }
+                }, 50);
+            }
+        });
+
+        // i18n ヘルパー(i18n.js未読の時はja文字列をフォールバック)
+        function __t(key, ja) {
+            if (window.UchuI18n && typeof window.UchuI18n.t === 'function') {
+                var v = window.UchuI18n.t(key);
+                if (v != null) return v;
+            }
+            return ja;
+        }
+
         // \n を <br> に変換してHTML改行を有効化
         function formatText(text) {
             if (!text) return '';
@@ -858,6 +925,9 @@
         function showRoleDetails(role) {
             const modal = document.getElementById('roleModal');
             const content = document.getElementById('modalContent');
+
+            // 言語切替時の再描画用に現在開いている役職を記録
+            window.__currentOpenedRole = role;
 
             // ★シークレット役職の判定を追加
             const isSecret = role._isSecret === true ||
@@ -890,7 +960,7 @@
                 galleryHTML = `
                     <div class="gallery-section">
                         <h3 class="section-title">
-                            <i class="fas fa-images"></i> 使用イメージ画像
+                            <i class="fas fa-images"></i> ${__t('roles.modal_gallery', '使用イメージ画像')}
                         </h3>
                         <div class="gallery-grid">
                             ${galleryImages}
@@ -901,23 +971,30 @@
 
             let optionsHTML = '';
             if (role.options && role.options.length > 0) {
+                const __pick = (typeof pickLocalized === 'function') ? pickLocalized : (v => (typeof v === 'object' && v !== null) ? (v.ja || v.en || '') : (v || ''));
                 const optionItems = role.options.map(opt => {
+                    const optName = __pick(opt.name);
+                    const optDesc = __pick(opt.description);
                     const subHTML = (opt.options && opt.options.length > 0)
-                        ? `<div class="option-sub-list">${opt.options.map(sub => `
+                        ? `<div class="option-sub-list">${opt.options.map(sub => {
+                            const subName = __pick(sub.name);
+                            const subDesc = __pick(sub.description);
+                            return `
                             <div class="option-sub-item">
                                 <span class="option-sub-arrow">└</span>
                                 <div class="option-sub-content">
-                                    <div class="option-sub-name">${sub.name}</div>
-                                    ${sub.description ? `<div class="option-sub-description">${formatText(sub.description)}</div>` : ''}
+                                    <div class="option-sub-name">${subName}</div>
+                                    ${subDesc ? `<div class="option-sub-description">${formatText(subDesc)}</div>` : ''}
                                 </div>
-                            </div>`).join('')}
+                            </div>`;
+                        }).join('')}
                         </div>`
                         : '';
                     return `
                     <div class="option-item">
                         <div class="option-content">
-                            <div class="option-name">${opt.name}</div>
-                            ${opt.description ? `<div class="option-description">${formatText(opt.description)}</div>` : ''}
+                            <div class="option-name">${optName}</div>
+                            ${optDesc ? `<div class="option-description">${formatText(optDesc)}</div>` : ''}
                             ${subHTML}
                         </div>
                     </div>`;
@@ -925,7 +1002,7 @@
                 optionsHTML = `
                     <div class="options-section">
                         <h3 class="section-title">
-                            <i class="fas fa-cog"></i> 設定
+                            <i class="fas fa-cog"></i> ${__t('roles.modal_options', '設定')}
                         </h3>
                         ${optionItems}
                     </div>
@@ -934,25 +1011,32 @@
 
             let abilitiesHTML = '';
             if (role.abilities && role.abilities.length > 0) {
-                const abilitiesItems = role.abilities.map(ability => `
+                const __pickA = (typeof pickLocalized === 'function') ? pickLocalized : (v => (typeof v === 'object' && v !== null) ? (v.ja || v.en || '') : (v || ''));
+                const abilitiesItems = role.abilities.map(ability => {
+                    const abName = __pickA(ability.name);
+                    const abDesc = __pickA(ability.description);
+                    return `
                     <div class="ability-item">
                         <div class="ability-button-container">
                             <img src="../resource/rolebutton/${ability.button}"
-                                 alt="${ability.name}"
+                                 alt="${abName}"
                                  class="ability-button"
                                  onerror="this.src='../resource/roleimage/NoImage.png'">
                         </div>
                         <div class="ability-content">
-                            <div class="ability-name">${ability.name}</div>
-                            <div class="ability-description">${formatText(ability.description)}</div>
+                            <div class="ability-name">${abName}</div>
+                            <div class="ability-description">${formatText(abDesc)}</div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
 
                 // abilities_title があれば「固有能力 〇〇」、なければ「固有能力」
-                const abilitiesSectionTitle = role.abilities_title
-                    ? `固有能力 ${role.abilities_title}`
-                    : '固有能力';
+                const __abilities = __t('roles.modal_abilities', '固有能力');
+                const __abilitiesTitleLocal = __pickA(role.abilities_title);
+                const abilitiesSectionTitle = __abilitiesTitleLocal
+                    ? `${__abilities} ${__abilitiesTitleLocal}`
+                    : __abilities;
 
                 abilitiesHTML = `
                     <div class="abilities-section">
@@ -970,41 +1054,62 @@
                              role.team === 'モディファイア' ? 'modifier' :
                              role.team === 'パーク' ? 'perk' : 'ghost';
 
+            const __pickM = (typeof pickLocalized === 'function') ? pickLocalized : (v => (typeof v === 'object' && v !== null) ? (v.ja || v.en || '') : (v || ''));
+            const __modalNameJa = (typeof role.name === 'object' && role.name !== null) ? (role.name.ja || '') : (role.name || '');
+            const __modalIntro = __pickM(role.intro);
+            const __modalDescription = __pickM(role.description);
+            const __modalTips = __pickM(role.tips);
+
             content.innerHTML = `
                 ${characterPath ? `<div class="modal-background-image" style="background-image: url('${characterPath}');"></div>` : ''}
                 ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="modal-from-logo" onerror="this.style.display='none'">` : ''}
 
                 <div class="modal-header" style="position: relative; z-index: 2;">
                     <div class="modal-icon">
-                        <img id="modal-detail-icon" src="" alt="${role.name}" style="display:none;">
+                        <img id="modal-detail-icon" src="" alt="${__modalNameJa}" style="display:none;">
                     </div>
                     <div class="modal-header-content">
                         <h2 class="modal-title" style="color: var(--uchu-text-primary);">
-                            <span class="modal-ja-name">${role.name}</span>${role.english_name ? `<span class="modal-english-name">/ ${role.english_name}</span>` : ''}
+                            ${(()=>{
+                                const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
+                                let primary, secondary;
+                                if (typeof role.name === 'object' && role.name !== null) {
+                                    primary   = isEn ? (role.name.en || role.name.ja) : role.name.ja;
+                                    secondary = isEn ? role.name.ja : (role.name.en || role.english_name);
+                                } else {
+                                    primary   = (isEn && role.english_name) ? role.english_name : role.name;
+                                    secondary = (isEn && role.english_name) ? role.name : role.english_name;
+                                }
+                                return `<span class="modal-ja-name">${primary}</span>${secondary && secondary !== primary ? `<span class="modal-english-name">/ ${secondary}</span>` : ''}`;
+                            })()}
                         </h2>
-                        ${role.intro ? `<div class="modal-intro">${role.intro}</div>` : ''}
+                        ${__modalIntro ? `<div class="modal-intro">${__modalIntro}</div>` : ''}
                     </div>
                 </div>
 
                 <div class="role-badges" style="position: relative; z-index: 2;">
-                    <span class="role-badge badge-${teamClass}">${role.team}</span>
+                    <span class="role-badge badge-${teamClass}">${(()=>{
+                        const TEAM_EN = {'クルーメイト':'Crewmate','インポスター':'Impostor','ニュートラル':'Neutral','モディファイア':'Modifier','ゴースト':'Ghost','パーク':'Perk'};
+                        const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
+                        return isEn ? (TEAM_EN[role.team] || role.team) : role.team;
+                    })()}</span>
                     ${role.from ? `<span class="role-badge" style="background: rgba(74, 144, 226, 0.2); color: var(--uchu-accent); border-color: var(--uchu-accent);">${(typeof FROM_SOURCES !== 'undefined' ? FROM_SOURCES.find(s => s.code === role.from)?.name : null) || role.from}</span>` : ''}
                 </div>
 
-                <div class="modal-description" style="position: relative; z-index: 2;">${formatText(role.description)}</div>
+                <div class="modal-description" style="position: relative; z-index: 2;">${formatText(__modalDescription)}</div>
 
                 <div style="position: relative; z-index: 2;">
                     ${abilitiesHTML}
 
                     ${optionsHTML}
 
-                    ${role.tips ? `
+                    ${__modalTips ? `
                         <div class="abilities-section">
                             <h3 class="section-title">
-                                <i class="fas fa-lightbulb"></i> 豆知識
+                                <i class="fas fa-lightbulb"></i> ${__t('roles.modal_tips', '豆知識')}
                             </h3>
                             <div style="color: var(--uchu-text-secondary); line-height: 1.8; font-size: 1rem;">
-                                ${formatText(role.tips)}
+                                ${formatText(__modalTips)}
                             </div>
                         </div>
                     ` : ''}
@@ -1014,7 +1119,7 @@
 
                 <div style="text-align: center; margin-top: var(--space-2xl); position: relative; z-index: 2;">
                     <button class="modal-close-btn" onclick="closeModal()">
-                        <i class="fas fa-times"></i> 閉じる
+                        <i class="fas fa-times"></i> ${__t('roles.modal_close', '閉じる')}
                     </button>
                 </div>
             `;
@@ -1079,7 +1184,7 @@
                            target="_blank"
                            class="modal-close-btn"
                            style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-                            <i class="fas fa-external-link-alt"></i> ${role.button.text || 'リンクを開く'}
+                            <i class="fas fa-external-link-alt"></i> ${role.button.text || __t('roles.modal_open_link', 'リンクを開く')}
                         </a>
                     </div>
                 `;
@@ -1142,6 +1247,7 @@
         function closeModal() {
             document.getElementById('roleModal').classList.remove('active');
             document.body.style.overflow = '';
+            window.__currentOpenedRole = null;
         }
 
         // Close modal on outside click

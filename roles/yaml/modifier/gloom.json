@@ -3,17 +3,35 @@
     "icon": "Gloom.png",
     "illust": "Gloom.png",
     "english_name": "Gloom",
-    "name": "グルーム",
+    "name": {
+        "ja": "グルーム",
+        "en": "Gloom"
+    },
     "team": "モディファイア",
     "color": "68, 148, 83",
-    "intro": "曇り日の暗雲",
-    "description": "通常時と停電時の視界が逆転します。",
-    "abilities_title": "暗視",
+    "intro": {
+        "ja": "曇り日の暗雲",
+        "en": "Dark Clouds on a Gloomy Day"
+    },
+    "description": {
+        "ja": "通常時と停電時の視界が逆転します。",
+        "en": "Your vision is inverted between normal and blackout conditions."
+    },
+    "abilities_title": {
+        "ja": "暗視",
+        "en": "Night Vision"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "暗視",
-            "description": "通常時と停電時の視界が逆転します。"
+            "name": {
+                "ja": "暗視",
+                "en": "Night Vision"
+            },
+            "description": {
+                "ja": "通常時と停電時の視界が逆転します。",
+                "en": "Your vision is inverted between normal and blackout conditions."
+            }
         }
     ],
     "from": "Original"

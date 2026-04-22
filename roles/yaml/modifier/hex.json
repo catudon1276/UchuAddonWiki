@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "hex",
     "icon": "Hex.png",
     "illust": "Hex.png",
     "english_name": "Hex",
-    "name": "ヘックス",
+    "name": {
+        "ja": "ヘックス",
+        "en": "Hex"
+    },
     "team": "モディファイア",
     "color": "236, 0, 140",
-    "intro": "魂の対価",
-    "description": "追放された際、ランダムで1人が道連れされます。",
-    "abilities_title": "呪縛",
+    "intro": {
+        "ja": "魂の対価",
+        "en": "The Price of a Soul"
+    },
+    "description": {
+        "ja": "追放された際、ランダムで1人が道連れされます。",
+        "en": "When ejected, one random player is dragged down with you."
+    },
+    "abilities_title": {
+        "ja": "呪縛",
+        "en": "Curse"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "呪縛",
-            "description": "追放された際、ランダムで1人が道連れされます。"
+            "name": {
+                "ja": "呪縛",
+                "en": "Curse"
+            },
+            "description": {
+                "ja": "追放された際、ランダムで1人が道連れされます。",
+                "en": "When ejected, one random player is dragged down with you."
+            }
         }
     ],
     "from": "TOHY"

@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "Star",
     "icon": "Star.png",
     "illust": "Star.png",
     "english_name": "Star",
-    "name": "スター",
+    "name": {
+        "ja": "スター",
+        "en": "Star"
+    },
     "team": "モディファイア",
     "color": "255, 255, 50",
-    "intro": "希望の一等星",
-    "description": "輝き続けます。",
-    "abilities_title": "輝き",
+    "intro": {
+        "ja": "希望の一等星",
+        "en": "Guiding Star of Hope"
+    },
+    "description": {
+        "ja": "輝き続けます。",
+        "en": "Keeps shining brightly."
+    },
+    "abilities_title": {
+        "ja": "輝き",
+        "en": "Shine"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "輝き",
-            "description": "輝き続けます。"
+            "name": {
+                "ja": "輝き",
+                "en": "Shine"
+            },
+            "description": {
+                "ja": "輝き続けます。",
+                "en": "Keeps shining brightly."
+            }
         }
     ],
     "options": [
         {
-            "name": "にじいろスターでのFPS数"
+            "name": {
+                "ja": "にじいろスターでのFPS数",
+                "en": "FPS for Rainbow Star"
+            }
         }
     ],
     "from": "SNR"

@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "guts",
     "icon": "Guts.png",
     "illust": "Guts.png",
     "english_name": "Guts",
-    "name": "ガッツ",
+    "name": {
+        "ja": "ガッツ",
+        "en": "Guts"
+    },
     "team": "モディファイア",
     "color": "255, 165, 0",
-    "intro": "不落の残火",
-    "description": "一度のみ吊られても復活します。",
-    "abilities_title": "根性",
+    "intro": {
+        "ja": "不落の残火",
+        "en": "The Unfallen Ember"
+    },
+    "description": {
+        "ja": "一度のみ吊られても復活します。",
+        "en": "Revives once after being ejected."
+    },
+    "abilities_title": {
+        "ja": "根性",
+        "en": "Guts"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "根性",
-            "description": "一度のみ吊られても復活します。"
+            "name": {
+                "ja": "根性",
+                "en": "Guts"
+            },
+            "description": {
+                "ja": "一度のみ吊られても復活します。",
+                "en": "Revives once after being ejected."
+            }
         }
     ],
     "from": "TOHY"

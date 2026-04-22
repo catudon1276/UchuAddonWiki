@@ -2,6 +2,29 @@
 let allRoles = [];
 let secretRoles = []; // シークレット役職
 let filteredRoles = [];
+
+/**
+ * {ja, en} オブジェクトまたは素の文字列から現在言語の値を取得する
+ *  - 英語モードで en が空/未定義なら ja にフォールバック
+ *  - 値が文字列のままならそのまま返す(後方互換)
+ */
+function pickLocalized(value) {
+    if (value == null) return '';
+    if (typeof value === 'string' || typeof value === 'number') return value;
+    if (typeof value === 'object') {
+        const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
+        if (isEn) {
+            if (value.en != null && value.en !== '') return value.en;
+            if (value.ja != null) return value.ja;
+            return '';
+        }
+        return value.ja != null ? value.ja : (value.en != null ? value.en : '');
+    }
+    return '';
+}
+// グローバル公開(index.htmlのインラインテンプレートからも使用)
+window.pickLocalized = pickLocalized;
+
 let activeFilters = {
     search: '',
     teams: [], // 配列に変更（複数選択対応）
@@ -273,7 +296,7 @@ function renderFromFilters() {
     const allBtn = document.createElement('button');
     allBtn.className = 'from-btn active';
     allBtn.dataset.from = 'all';
-    allBtn.textContent = 'すべて';
+    allBtn.textContent = __t('roles.filter_all', 'すべて');
     allBtn.addEventListener('click', function() {
         // すべて選択時は他を解除
         activeFilters.froms = [];
@@ -325,11 +348,19 @@ function filterAndRender() {
 
     // 通常の役職フィルタリング
     filteredRoles = allRoles.filter(role => {
-        // 検索フィルター
+        // 検索フィルター({ja,en}形式の両方を検索対象に)
         if (activeFilters.search) {
-            const searchMatch = role.name.toLowerCase().includes(activeFilters.search) ||
-                              role.description.toLowerCase().includes(activeFilters.search) ||
-                              (role.english_name && role.english_name.toLowerCase().includes(activeFilters.search));
+            const q = activeFilters.search;
+            const nameJa = (typeof role.name === 'object' ? role.name.ja : role.name) || '';
+            const nameEn = (typeof role.name === 'object' ? role.name.en : '') || '';
+            const descJa = (typeof role.description === 'object' ? role.description.ja : role.description) || '';
+            const descEn = (typeof role.description === 'object' ? role.description.en : '') || '';
+            const searchMatch =
+                nameJa.toLowerCase().includes(q) ||
+                nameEn.toLowerCase().includes(q) ||
+                descJa.toLowerCase().includes(q) ||
+                descEn.toLowerCase().includes(q) ||
+                (role.english_name && role.english_name.toLowerCase().includes(q));
             if (!searchMatch) return false;
         }
 
@@ -378,15 +409,26 @@ function renderRoles() {
         const roleColor = role.color ? `rgb(${role.color})` : 'rgb(102, 126, 234)';
         const cardId = `role-card-${index}`;
 
+        const nameDisplay = (()=>{
+            const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
+            // name が {ja,en} オブジェクトなら pickLocalized を使う
+            if (typeof role.name === 'object' && role.name !== null) {
+                return pickLocalized(role.name);
+            }
+            // 従来動作: english_name があり英語モードなら english_name を使う
+            return (isEn && role.english_name) ? role.english_name : role.name;
+        })();
+        const nameAlt = (typeof role.name === 'object' && role.name !== null) ? (role.name.ja || role.name.en || '') : role.name;
+
         return `
         <div class="role-card" onclick='showRoleDetails(${JSON.stringify(role).replace(/'/g, "&apos;")})' style="--role-color: ${roleColor};">
             <div class="role-hex-border">
                 <div class="role-hex-inner">
-                    <img id="${cardId}-icon" class="role-icon-img" alt="${role.name}" style="display:none;">
+                    <img id="${cardId}-icon" class="role-icon-img" alt="${nameAlt}" style="display:none;">
                 </div>
             </div>
             <div class="role-name-wrap">
-                <span class="role-name">${role.name}</span>
+                <span class="role-name">${nameDisplay}</span>
             </div>
         </div>
     `}).join('');
@@ -478,7 +520,7 @@ function showRoleDetails(role) {
     // シークレット役職の判定（複数条件で確実に判定）
     const isSecret = isSecretRole(role);
 
-    console.log('📋 showRoleDetails called:', role.name, 'team:', role.team, 'isSecret:', isSecret, '_isSecret:', role._isSecret, 'search_keywords:', role.search_keywords);
+    console.log('📋 showRoleDetails called:', pickLocalized(role.name), 'team:', role.team, 'isSecret:', isSecret, '_isSecret:', role._isSecret, 'search_keywords:', role.search_keywords);
 
     if (isSecret) {
         showSecretDetails(role);
@@ -497,18 +539,20 @@ function showRoleDetails(role) {
     if (role.abilities && role.abilities.length > 0) {
         const abilitiesItems = role.abilities.map(ability => {
             const buttonSrc = `../resource/rolebutton/${ability.button}`;
+            const abName = pickLocalized(ability.name);
+            const abDesc = pickLocalized(ability.description);
             return `
                 <div class="ability-item mb-3">
                     <div class="d-flex align-items-start">
                         <div class="ability-button-container">
                             <img src="${buttonSrc}"
-                                 alt="${ability.name}"
+                                 alt="${abName}"
                                  class="ability-button"
                                  onerror="this.src='../resource/rolebutton/NoImage.png'">
                         </div>
                         <div class="ability-content ms-3">
-                            <h6 class="ability-name">${ability.name}</h6>
-                            <p class="ability-description">${ability.description}</p>
+                            <h6 class="ability-name">${abName}</h6>
+                            <p class="ability-description">${abDesc}</p>
                         </div>
                     </div>
                 </div>
@@ -548,19 +592,36 @@ function showRoleDetails(role) {
     // 出典名を取得
     const fromSourceName = role.from ? (FROM_SOURCES.find(s => s.code === role.from)?.name || role.from) : '';
 
+    const __roleNameJa = (typeof role.name === 'object' && role.name !== null) ? (role.name.ja || '') : role.name;
+    const __roleNameEn = (typeof role.name === 'object' && role.name !== null) ? (role.name.en || '') : '';
+    const __roleDesc = pickLocalized(role.description);
+    const __roleIntro = pickLocalized(role.intro);
+    const __roleTips = pickLocalized(role.tips);
     overlayContent.innerHTML = `
         ${characterPath ? `<div class="character-background" style="background-image: url('${characterPath}');"></div>` : ''}
 
         <div class="role-detail-header">
             <div class="role-detail-title-section">
                 <div class="role-detail-intro-section">
-                    <img id="detail-icon" class="role-detail-icon-large" alt="${role.name}" style="display:none;">
+                    <img id="detail-icon" class="role-detail-icon-large" alt="${__roleNameJa}" style="display:none;">
                     <div class="role-detail-content-wrapper">
                         <h2 class="role-detail-name" style="color: ${roleColor};">
-                            ${role.name}
-                            ${role.english_name ? `<span class="role-detail-english-inline">${role.english_name}</span>` : ''}
+                            ${(()=>{
+                                const isEn = (window.UchuI18n && window.UchuI18n.lang) === 'en';
+                                // name が {ja,en} オブジェクト: 英語モードなら en / 日本語モードなら ja
+                                // 補助表示は反対側の言語(日本語モードなら english_name or name.en)
+                                let primary, secondary;
+                                if (typeof role.name === 'object' && role.name !== null) {
+                                    primary   = isEn ? (role.name.en || role.name.ja) : role.name.ja;
+                                    secondary = isEn ? role.name.ja : (role.name.en || role.english_name);
+                                } else {
+                                    primary   = (isEn && role.english_name) ? role.english_name : role.name;
+                                    secondary = (isEn && role.english_name) ? role.name : role.english_name;
+                                }
+                                return primary + (secondary && secondary !== primary ? `<span class="role-detail-english-inline">${secondary}</span>` : '');
+                            })()}
                         </h2>
-                        ${role.intro ? `<div class="role-detail-intro-text">${role.intro}</div>` : ''}
+                        ${__roleIntro ? `<div class="role-detail-intro-text">${__roleIntro}</div>` : ''}
                     </div>
                     ${fromLogoPath ? `<img src="${fromLogoPath}" alt="出典" class="role-detail-from-logo" onerror="this.style.display='none'">` : ''}
                 </div>
@@ -575,15 +636,15 @@ function showRoleDetails(role) {
         <div class="row position-relative" style="z-index: 2;">
             <div class="col-md-12">
                 <div class="mb-4">
-                    <p class="role-detail-description">${role.description}</p>
+                    <p class="role-detail-description">${__roleDesc}</p>
                 </div>
 
                 ${abilitiesHTML}
 
-                ${role.tips ? `
+                ${__roleTips ? `
                     <div class="mb-4">
                         <h5 class="text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>豆知識</h5>
-                        <p class="tips-text">${role.tips}</p>
+                        <p class="tips-text">${__roleTips}</p>
                     </div>
                 ` : ''}
             </div>

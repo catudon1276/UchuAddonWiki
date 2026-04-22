@@ -3,17 +3,35 @@
     "icon": "Tuna.png",
     "illust": "TunaModi.png",
     "english_name": "TunaModi",
-    "name": "マグロ",
+    "name": {
+        "ja": "マグロ",
+        "en": "Tuna"
+    },
     "team": "モディファイア",
     "color": "171, 245, 255",
-    "intro": "走れ！！",
-    "description": "動き続けないと死んでしまいます。",
-    "abilities_title": "回遊",
+    "intro": {
+        "ja": "走れ！！",
+        "en": "Run!!"
+    },
+    "description": {
+        "ja": "動き続けないと死んでしまいます。",
+        "en": "Dies if you stop moving."
+    },
+    "abilities_title": {
+        "ja": "回遊",
+        "en": "Migration"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "回遊",
-            "description": "動き続けないと死んでしまいます。"
+            "name": {
+                "ja": "回遊",
+                "en": "Migration"
+            },
+            "description": {
+                "ja": "動き続けないと死んでしまいます。",
+                "en": "Dies if you stop moving."
+            }
         }
     ],
     "from": "SNR"

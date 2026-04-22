@@ -3,17 +3,35 @@
     "icon": "Guest.png",
     "illust": "Guest.png",
     "english_name": "Guest",
-    "name": "ゲスト",
+    "name": {
+        "ja": "ゲスト",
+        "en": "Guest"
+    },
     "team": "モディファイア",
     "color": "66, 207, 144",
-    "intro": "数万光年を超えて、いまここに",
-    "description": "緊急ボタンを押せません。",
-    "abilities_title": "ゲスト",
+    "intro": {
+        "ja": "数万光年を超えて、いまここに",
+        "en": "Crossing Countless Light-Years, Here at Last"
+    },
+    "description": {
+        "ja": "緊急ボタンを押せません。",
+        "en": "Cannot press the emergency button."
+    },
+    "abilities_title": {
+        "ja": "ゲスト",
+        "en": "Guest"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "ゲスト",
-            "description": "緊急ボタンを押せません。"
+            "name": {
+                "ja": "ゲスト",
+                "en": "Guest"
+            },
+            "description": {
+                "ja": "緊急ボタンを押せません。",
+                "en": "Cannot press the emergency button."
+            }
         }
     ],
     "from": "Original"

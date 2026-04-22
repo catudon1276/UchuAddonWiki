@@ -1,56 +1,110 @@
-﻿{
+{
     "id": "eclipse",
     "icon": "Eclipse.png",
     "illust": "Eclipse.png",
     "english_name": "Eclipse",
-    "name": "エクリプス",
+    "name": {
+        "ja": "エクリプス",
+        "en": "Eclipse"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "災いが降り注ぐ",
-    "description": "隕石を召喚するインポスターです。",
-    "abilities_title": "宇宙からの厄災",
+    "intro": {
+        "ja": "災いが降り注ぐ",
+        "en": "Disaster Rains Down"
+    },
+    "description": {
+        "ja": "隕石を召喚するインポスターです。",
+        "en": "An Impostor who summons meteors."
+    },
+    "abilities_title": {
+        "ja": "宇宙からの厄災",
+        "en": "Calamity from Space"
+    },
     "abilities": [
         {
             "button": "MeteorMark.png",
-            "name": "マーク",
-            "description": "隕石の着弾地点をマークをします。"
+            "name": {
+                "ja": "マーク",
+                "en": "Mark"
+            },
+            "description": {
+                "ja": "隕石の着弾地点をマークをします。",
+                "en": "Marks the impact point of a meteor."
+            }
         },
         {
             "button": "MeteorButton.png",
-            "name": "メテオ",
-            "description": "マークをした場所に、隕石を降らせます。マーク地点がないと使用できません。"
+            "name": {
+                "ja": "メテオ",
+                "en": "Meteor"
+            },
+            "description": {
+                "ja": "マークをした場所に、隕石を降らせます。マーク地点がないと使用できません。",
+                "en": "Drops a meteor on the marked location. Cannot be used without a marked point."
+            }
         }
     ],
     "options": [
         {
-            "name": "メテオ使用可能回数"
+            "name": {
+                "ja": "メテオ使用可能回数",
+                "en": "Number of Meteor Uses"
+            }
         },
         {
-            "name": "マーククールダウン"
+            "name": {
+                "ja": "マーククールダウン",
+                "en": "Mark Cooldown"
+            }
         },
         {
-            "name": "メテオクールダウン"
+            "name": {
+                "ja": "メテオクールダウン",
+                "en": "Meteor Cooldown"
+            }
         },
         {
-            "name": "メテオ警告時間"
+            "name": {
+                "ja": "メテオ警告時間",
+                "en": "Meteor Warning Time"
+            }
         },
         {
-            "name": "マーク硬直時間"
+            "name": {
+                "ja": "マーク硬直時間",
+                "en": "Mark Stiffening Time"
+            }
         },
         {
-            "name": "メテオサイズ"
+            "name": {
+                "ja": "メテオサイズ",
+                "en": "Meteor Size"
+            }
         },
         {
-            "name": "マーク使用時メテオクールをリセット"
+            "name": {
+                "ja": "マーク使用時メテオクールをリセット",
+                "en": "Reset Meteor Cooldown When Using Mark"
+            }
         },
         {
-            "name": "会議時マーク地点リセット"
+            "name": {
+                "ja": "会議時マーク地点リセット",
+                "en": "Reset Mark Points at Meeting"
+            }
         },
         {
-            "name": "マーク設定SE",
+            "name": {
+                "ja": "マーク設定SE",
+                "en": "Mark Placement Sound Effect"
+            },
             "options": [
                 {
-                    "name": "SE範囲"
+                    "name": {
+                        "ja": "SE範囲",
+                        "en": "Sound Effect Range"
+                    }
                 }
             ]
         }

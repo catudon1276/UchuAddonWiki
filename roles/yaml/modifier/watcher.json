@@ -3,17 +3,35 @@
     "icon": "Watcher.png",
     "illust": "Watcher.png",
     "english_name": "Watcher",
-    "name": "ウォッチャー",
+    "name": {
+        "ja": "ウォッチャー",
+        "en": "Watcher"
+    },
     "team": "モディファイア",
     "color": "87, 38, 166",
-    "intro": "沈黙の裏を見る",
-    "description": "匿名投票の影響を受けません。",
-    "abilities_title": "洞察",
+    "intro": {
+        "ja": "沈黙の裏を見る",
+        "en": "See Behind the Silence"
+    },
+    "description": {
+        "ja": "匿名投票の影響を受けません。",
+        "en": "Unaffected by anonymous voting."
+    },
+    "abilities_title": {
+        "ja": "洞察",
+        "en": "Insight"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "洞察",
-            "description": "匿名投票の影響を受けません。"
+            "name": {
+                "ja": "洞察",
+                "en": "Insight"
+            },
+            "description": {
+                "ja": "匿名投票の影響を受けません。",
+                "en": "Unaffected by anonymous voting."
+            }
         }
     ],
     "from": "TORGM"

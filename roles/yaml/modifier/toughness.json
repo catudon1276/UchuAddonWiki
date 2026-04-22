@@ -3,17 +3,35 @@
     "icon": "Toughness.png",
     "illust": "Toughness.png",
     "english_name": "Toughness",
-    "name": "タフネス",
+    "name": {
+        "ja": "タフネス",
+        "en": "Toughness"
+    },
     "team": "モディファイア",
     "color": "222, 223, 255",
-    "intro": "神の加護",
-    "description": "1度だけキルを防ぎます。",
-    "abilities_title": "バリア",
+    "intro": {
+        "ja": "神の加護",
+        "en": "Divine Protection"
+    },
+    "description": {
+        "ja": "1度だけキルを防ぎます。",
+        "en": "Blocks a kill once."
+    },
+    "abilities_title": {
+        "ja": "バリア",
+        "en": "Barrier"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "バリア展開",
-            "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
+            "name": {
+                "ja": "バリア展開",
+                "en": "Deploy Barrier"
+            },
+            "description": {
+                "ja": "タスクをこなすことでキルを防ぐバリアを展開します。",
+                "en": "Completing tasks deploys a barrier that blocks a kill."
+            }
         }
     ],
     "from": "TOHY"

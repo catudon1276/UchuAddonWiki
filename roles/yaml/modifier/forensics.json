@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "forensics",
     "icon": "Forensic.png",
     "illust": "Forensics.png",
     "english_name": "Forensics",
-    "name": "フォレンジック",
+    "name": {
+        "ja": "フォレンジック",
+        "en": "Forensics"
+    },
     "team": "モディファイア",
     "color": "12, 90, 147",
-    "intro": "その死こそが、最後の刻み。",
-    "description": "追放されたプレイヤーがインポスターかそうでないかがわかります。",
-    "abilities_title": "検視",
+    "intro": {
+        "ja": "その死こそが、最後の刻み。",
+        "en": "That Death Is the Final Mark."
+    },
+    "description": {
+        "ja": "追放されたプレイヤーがインポスターかそうでないかがわかります。",
+        "en": "You learn whether an ejected player was an Impostor or not."
+    },
+    "abilities_title": {
+        "ja": "検視",
+        "en": "Forensics"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "検視",
-            "description": "追放されたプレイヤーがインポスターかそうでないかがわかります。"
+            "name": {
+                "ja": "検視",
+                "en": "Forensics"
+            },
+            "description": {
+                "ja": "追放されたプレイヤーがインポスターかそうでないかがわかります。",
+                "en": "Lets you learn whether an ejected player was an Impostor or not."
+            }
         }
     ],
     "from": "TOHY"

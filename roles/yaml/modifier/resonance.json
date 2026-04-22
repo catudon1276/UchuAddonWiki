@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "resonance",
     "icon": "Resonance.png",
     "illust": "Resonance.png",
     "english_name": "Resonance",
-    "name": "レゾナンス",
+    "name": {
+        "ja": "レゾナンス",
+        "en": "Resonance"
+    },
     "team": "モディファイア",
     "color": "198, 17, 17",
-    "intro": "虐殺コミュニケート",
-    "description": "味方のインポスターがキルした時フラッシュします。",
-    "abilities_title": "共鳴",
+    "intro": {
+        "ja": "虐殺コミュニケート",
+        "en": "Slaughter Communiqué"
+    },
+    "description": {
+        "ja": "味方のインポスターがキルした時フラッシュします。",
+        "en": "Flashes when a fellow Impostor performs a kill."
+    },
+    "abilities_title": {
+        "ja": "共鳴",
+        "en": "Resonance"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "共鳴",
-            "description": "味方のインポスターがキルした時フラッシュします。"
+            "name": {
+                "ja": "共鳴",
+                "en": "Resonance"
+            },
+            "description": {
+                "ja": "味方のインポスターがキルした時フラッシュします。",
+                "en": "Flashes when a fellow Impostor performs a kill."
+            }
         }
     ],
     "from": "TOUMR"

@@ -1,33 +1,63 @@
-﻿{
+{
     "id": "warlock",
     "icon": "Warlock.png",
     "illust": "Warlock.png",
     "english_name": "Warlock",
-    "name": "ウォーロック",
+    "name": {
+        "ja": "ウォーロック",
+        "en": "Warlock"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "自他の支配者",
-    "description": "呪われたプレイヤーにキルをさせるインポスターです。",
-    "abilities_title": "隷属の黒魔術",
+    "intro": {
+        "ja": "自他の支配者",
+        "en": "Ruler of Self and Others"
+    },
+    "description": {
+        "ja": "呪われたプレイヤーにキルをさせるインポスターです。",
+        "en": "An Impostor who makes cursed players kill."
+    },
+    "abilities_title": {
+        "ja": "隷属の黒魔術",
+        "en": "Black Magic of Enslavement"
+    },
     "abilities": [
         {
             "button": "WarlockCurseButton.png",
-            "name": "呪う",
-            "description": "プレイヤーを呪います。呪ったプレイヤーの近くに別のプレイヤーがいると呪殺ボタンが有効化されます。"
+            "name": {
+                "ja": "呪う",
+                "en": "Curse"
+            },
+            "description": {
+                "ja": "プレイヤーを呪います。呪ったプレイヤーの近くに別のプレイヤーがいると呪殺ボタンが有効化されます。",
+                "en": "Curses a player. When another player is near the cursed player, the Curse Kill button becomes active."
+            }
         }
     ],
     "options": [
         {
-            "name": "呪殺クールダウン"
+            "name": {
+                "ja": "呪殺クールダウン",
+                "en": "Curse Kill Cooldown"
+            }
         },
         {
-            "name": "呪いクールダウン"
+            "name": {
+                "ja": "呪いクールダウン",
+                "en": "Curse Cooldown"
+            }
         },
         {
-            "name": "同チームのプレイヤーを呪殺可能"
+            "name": {
+                "ja": "同チームのプレイヤーを呪殺可能",
+                "en": "Can Curse Kill Same-Team Players"
+            }
         },
         {
-            "name": "キル後の硬直時間"
+            "name": {
+                "ja": "キル後の硬直時間",
+                "en": "Stiffening Time After a Kill"
+            }
         }
     ],
     "from": "TOR"

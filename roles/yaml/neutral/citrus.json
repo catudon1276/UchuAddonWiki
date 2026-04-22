@@ -3,29 +3,71 @@
     "icon": "Citrus.png",
     "illust": "Citrus.png",
     "english_name": "Citrus",
-    "name": "シトラス",
+    "name": {
+        "ja": "シトラス",
+        "en": "Citrus"
+    },
     "team": "ニュートラル",
     "color": "255, 165, 47",
-    "intro": "みかんせん",
-    "description": "シトラスはプレイヤーを感染させることができます。\n感染させられたプレイヤーは判別できなくなります。",
-    "abilities_title": "柑染",
+    "intro": {
+        "ja": "みかんせん",
+        "en": "Citrusfection"
+    },
+    "description": {
+        "ja": "シトラスはプレイヤーを感染させることができます。\n感染させられたプレイヤーは判別できなくなります。",
+        "en": "Citrus can infect players.\nInfected players become indistinguishable."
+    },
+    "abilities_title": {
+        "ja": "柑染",
+        "en": "Citrus Infection"
+    },
     "abilities": [
         {
             "button": "CitrusInfectionButton.png",
-            "name": "感染",
-            "description": "ターゲットを感染させます。"
+            "name": {
+                "ja": "感染",
+                "en": "Infect"
+            },
+            "description": {
+                "ja": "ターゲットを感染させます。",
+                "en": "Infects the target."
+            }
         },
         {
             "button": "CitrusSelfInfectionButton.png",
-            "name": "自己感染",
-            "description": "自分を感染させます。"
+            "name": {
+                "ja": "自己感染",
+                "en": "Self Infect"
+            },
+            "description": {
+                "ja": "自分を感染させます。",
+                "en": "Infects yourself."
+            }
         }
     ],
-    "tips": "自分以外の生存者全員が柑橘状態になると勝利します。",
+    "tips": {
+        "ja": "自分以外の生存者全員が柑橘状態になると勝利します。",
+        "en": "You win when every surviving player other than yourself is in the citrus state."
+    },
     "options": [
-        { "name": "感染クールダウン" },
-        { "name": "ベントを使用可能" },
-        { "name": "感染させられたプレイヤーがスタンプ・エモートを使用可能" }
+        {
+            "name": {
+                "ja": "感染クールダウン",
+                "en": "Infect Cooldown"
+            }
+        },
+        {
+            "name": {
+                "ja": "ベントを使用可能",
+                "en": "Can Use Vents"
+            }
+        },
+        {
+            "name": {
+                "ja": "感染させられたプレイヤーがスタンプ・エモートを使用可能",
+                "en": "Infected Players Can Use Stamps and Emotes"
+            }
+        }
     ],
     "from": "Original"
 }

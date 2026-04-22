@@ -1,35 +1,65 @@
-﻿{
+{
     "id": "amnesia",
     "icon": "Amnesia.png",
     "illust": "Amnesia.png",
     "english_name": "Amnesia",
-    "name": "アムネシア",
+    "name": {
+        "ja": "アムネシア",
+        "en": "Amnesia"
+    },
     "team": "ニュートラル",
     "color": "79, 110, 115",
-    "intro": "記憶の抜け殻",
-    "description": "通報した死体の役職に変化する第三陣営です。",
-    "abilities_title": "忘却",
+    "intro": {
+        "ja": "記憶の抜け殻",
+        "en": "An Empty Shell of Memory"
+    },
+    "description": {
+        "ja": "通報した死体の役職に変化する第三陣営です。",
+        "en": "A third-party faction who transforms into the role of a reported body."
+    },
+    "abilities_title": {
+        "ja": "忘却",
+        "en": "Oblivion"
+    },
     "abilities": [
         {
             "button": "ReportButton.png",
-            "name": "忘却",
-            "description": "通報した死体の役職に変化します。"
+            "name": {
+                "ja": "忘却",
+                "en": "Oblivion"
+            },
+            "description": {
+                "ja": "通報した死体の役職に変化します。",
+                "en": "Transforms into the role of the reported body."
+            }
         }
     ],
     "options": [
         {
-            "name": "役職変化タイミング",
+            "name": {
+                "ja": "役職変化タイミング",
+                "en": "Role Change Timing"
+            },
             "options": [
                 {
-                    "name": "会議開始"
+                    "name": {
+                        "ja": "会議開始",
+                        "en": "At Meeting Start"
+                    }
                 },
                 {
-                    "name": "会議終了"
+                    "name": {
+                        "ja": "会議終了",
+                        "en": "At Meeting End"
+                    }
                 }
             ]
         },
         {
-            "name": "死体に矢印を表示"
+            "name": {
+                "ja": "死体に矢印を表示",
+                "en": "Show Arrow to Bodies"
+            }
         }
     ],
     "from": "SNR"

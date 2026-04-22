@@ -3,25 +3,49 @@
     "icon": "Hunch.png",
     "illust": "Hunch.png",
     "english_name": "Hunch",
-    "name": "ハンチ",
+    "name": {
+        "ja": "ハンチ",
+        "en": "Hunch"
+    },
     "team": "モディファイア",
     "color": "73, 166, 104",
-    "intro": "その死を見逃すな",
-    "description": "死を感知するモディファイアです。",
-    "abilities_title": "死の感知",
+    "intro": {
+        "ja": "その死を見逃すな",
+        "en": "Don't Let That Death Slip By"
+    },
+    "description": {
+        "ja": "死を感知するモディファイアです。",
+        "en": "A modifier who senses death."
+    },
+    "abilities_title": {
+        "ja": "死の感知",
+        "en": "Death Sense"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "死の感知",
-            "description": "近くで死亡が起こると感知します。"
+            "name": {
+                "ja": "死の感知",
+                "en": "Death Sense"
+            },
+            "description": {
+                "ja": "近くで死亡が起こると感知します。",
+                "en": "Senses when a death occurs nearby."
+            }
         }
     ],
     "options": [
         {
-            "name": "感知する範囲を制限",
+            "name": {
+                "ja": "感知する範囲を制限",
+                "en": "Limit Sensing Range"
+            },
             "options": [
                 {
-                    "name": "死亡感知範囲"
+                    "name": {
+                        "ja": "死亡感知範囲",
+                        "en": "Death Sensing Range"
+                    }
                 }
             ]
         }

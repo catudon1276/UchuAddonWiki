@@ -1,30 +1,57 @@
-﻿{
+{
     "id": "spectrePossession",
     "icon": "SpectrePossession.png",
     "illust": "SpectrePossession.png",
     "english_name": "SpectrePossession",
-    "name": "狐憑き",
+    "name": {
+        "ja": "狐憑き",
+        "en": "Spectre Possession"
+    },
     "team": "モディファイア",
     "color": "185, 152, 197",
-    "intro": "美しき呪い",
-    "description": "このモディファイアを持つプレイヤーは妖狐陣営になります。",
-    "abilities_title": "妖の仮面",
+    "intro": {
+        "ja": "美しき呪い",
+        "en": "A Beautiful Curse"
+    },
+    "description": {
+        "ja": "このモディファイアを持つプレイヤーは妖狐陣営になります。",
+        "en": "Players carrying this modifier join the Spectre faction."
+    },
+    "abilities_title": {
+        "ja": "妖の仮面",
+        "en": "Mask of the Spectre"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "狐憑き",
-            "description": "このモディファイアを持つプレイヤーは妖狐陣営になります。"
+            "name": {
+                "ja": "狐憑き",
+                "en": "Spectre Possession"
+            },
+            "description": {
+                "ja": "このモディファイアを持つプレイヤーは妖狐陣営になります。",
+                "en": "Players carrying this modifier join the Spectre faction."
+            }
         }
     ],
     "options": [
         {
-            "name": "狂信者設定"
+            "name": {
+                "ja": "狂信者設定",
+                "en": "Fanatic Settings"
+            }
         },
         {
-            "name": "狂信者能力",
+            "name": {
+                "ja": "狂信者能力",
+                "en": "Fanatic Ability"
+            },
             "options": [
                 {
-                    "name": "狂信能力に制限を追加"
+                    "name": {
+                        "ja": "狂信能力に制限を追加",
+                        "en": "Add Restrictions to the Fanatic Ability"
+                    }
                 }
             ]
         }

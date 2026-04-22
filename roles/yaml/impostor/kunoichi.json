@@ -1,67 +1,133 @@
-﻿{
+{
     "id": "kunoichi",
     "icon": "Kunoichi.png",
     "illust": "Kunoichi.png",
     "english_name": "Kunoichi",
-    "name": "クノイチ",
+    "name": {
+        "ja": "クノイチ",
+        "en": "Kunoichi"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "花は散り際こそ美しく",
-    "description": "クナイを投げてキルするインポスターです。",
-    "abilities_title": "桜花潜影",
+    "intro": {
+        "ja": "花は散り際こそ美しく",
+        "en": "Flowers Are Most Beautiful as They Fall"
+    },
+    "description": {
+        "ja": "クナイを投げてキルするインポスターです。",
+        "en": "An Impostor who kills by throwing kunai."
+    },
+    "abilities_title": {
+        "ja": "桜花潜影",
+        "en": "Hidden Shadow of the Cherry Blossom"
+    },
     "abilities": [
         {
             "button": "KunoichiKunaiButton.png",
-            "name": "装備",
-            "description": "クナイを装備/収納します。"
+            "name": {
+                "ja": "装備",
+                "en": "Equip"
+            },
+            "description": {
+                "ja": "クナイを装備/収納します。",
+                "en": "Equips or stows the kunai."
+            }
         },
         {
             "button": "VanillaKillButton.png",
-            "name": "クナイ投げ",
-            "description": "装備したクナイを投げます。クナイがプレイヤーに一定回数ヒットすることでキルできます。"
+            "name": {
+                "ja": "クナイ投げ",
+                "en": "Throw Kunai"
+            },
+            "description": {
+                "ja": "装備したクナイを投げます。クナイがプレイヤーに一定回数ヒットすることでキルできます。",
+                "en": "Throws the equipped kunai. A player can be killed once they are hit a certain number of times."
+            }
         },
         {
             "button": "KunoichiInvisibilyButton.png",
-            "name": "透明化",
-            "description": "一定時間止まることで透明化します。ボタンを押すか動くことで解除されます。"
+            "name": {
+                "ja": "透明化",
+                "en": "Invisibility"
+            },
+            "description": {
+                "ja": "一定時間止まることで透明化します。ボタンを押すか動くことで解除されます。",
+                "en": "Becomes invisible by standing still for a certain duration. Pressing the button or moving cancels it."
+            }
         }
     ],
     "options": [
         {
-            "name": "クナイクールダウン"
+            "name": {
+                "ja": "クナイクールダウン",
+                "en": "Kunai Cooldown"
+            }
         },
         {
-            "name": "クナイの当たり判定"
+            "name": {
+                "ja": "クナイの当たり判定",
+                "en": "Kunai Hitbox"
+            }
         },
         {
-            "name": "クナイの投擲スピード"
+            "name": {
+                "ja": "クナイの投擲スピード",
+                "en": "Kunai Throwing Speed"
+            }
         },
         {
-            "name": "キルに必要なヒット数"
+            "name": {
+                "ja": "キルに必要なヒット数",
+                "en": "Hits Required for a Kill"
+            }
         },
         {
-            "name": "フレンドリーファイア"
+            "name": {
+                "ja": "フレンドリーファイア",
+                "en": "Friendly Fire"
+            }
         },
         {
-            "name": "クナイの壁衝突"
+            "name": {
+                "ja": "クナイの壁衝突",
+                "en": "Kunai Wall Collision"
+            }
         },
         {
-            "name": "透明化能力",
+            "name": {
+                "ja": "透明化能力",
+                "en": "Invisibility Ability"
+            },
             "options": [
                 {
-                    "name": "透明化にボタンを使用",
-                    "description": "オフにすると透明化が自動的に行われます。"
+                    "name": {
+                        "ja": "透明化にボタンを使用",
+                        "en": "Use a Button to Activate Invisibility"
+                    },
+                    "description": {
+                        "ja": "オフにすると透明化が自動的に行われます。",
+                        "en": "When off, invisibility is triggered automatically."
+                    }
                 },
                 {
-                    "name": "透明化所要時間"
+                    "name": {
+                        "ja": "透明化所要時間",
+                        "en": "Time Required for Invisibility"
+                    }
                 },
                 {
-                    "name": "透明化中にクナイを投げられる"
+                    "name": {
+                        "ja": "透明化中にクナイを投げられる",
+                        "en": "Can Throw Kunai While Invisible"
+                    }
                 }
             ]
         },
         {
-            "name": "会議ごとにヒット数をリセット"
+            "name": {
+                "ja": "会議ごとにヒット数をリセット",
+                "en": "Reset Hit Count per Meeting"
+            }
         }
     ],
     "from": "SNR"

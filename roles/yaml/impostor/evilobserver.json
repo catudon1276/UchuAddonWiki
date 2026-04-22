@@ -3,28 +3,55 @@
     "icon": "Observer.png",
     "illust": "EvilObserver.png",
     "english_name": "Evil Observer",
-    "name": "イビルオブザーバー",
+    "name": {
+        "ja": "イビルオブザーバー",
+        "en": "Evil Observer"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "逃れ得ぬ監視網",
-    "description": "カメラを設置するインポスターです。",
-    "abilities_title": "カメラ設置",
+    "intro": {
+        "ja": "逃れ得ぬ監視網",
+        "en": "An Inescapable Surveillance Net"
+    },
+    "description": {
+        "ja": "カメラを設置するインポスターです。",
+        "en": "An Impostor who places cameras."
+    },
+    "abilities_title": {
+        "ja": "カメラ設置",
+        "en": "Place Camera"
+    },
     "abilities": [
         {
             "button": "ObserverPlaceButton.png",
-            "name": "カメラ設置",
-            "description": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。"
+            "name": {
+                "ja": "カメラ設置",
+                "en": "Place Camera"
+            },
+            "description": {
+                "ja": "定点カメラを設置することができます。会議後に有効化し、好きなタイミングでカメラの近くを監視することができます。",
+                "en": "Places a stationary camera. It activates after a meeting, and you can monitor the area around the camera at any time."
+            }
         }
     ],
     "options": [
         {
-            "name": "カメラ最大数"
+            "name": {
+                "ja": "カメラ最大数",
+                "en": "Maximum Cameras"
+            }
         },
         {
-            "name": "カメラ設置クールダウン"
+            "name": {
+                "ja": "カメラ設置クールダウン",
+                "en": "Place Camera Cooldown"
+            }
         },
         {
-            "name": "他プレイヤーがカメラを視認可能"
+            "name": {
+                "ja": "他プレイヤーがカメラを視認可能",
+                "en": "Other Players Can See Cameras"
+            }
         }
     ],
     "from": "Original"

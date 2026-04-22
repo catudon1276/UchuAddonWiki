@@ -1,24 +1,45 @@
-﻿{
+{
     "id": "miasma",
     "icon": "Miasma.png",
     "illust": "Miasma.png",
     "english_name": "Miasma",
-    "name": "ミアズマ",
+    "name": {
+        "ja": "ミアズマ",
+        "en": "Miasma"
+    },
     "team": "モディファイア",
     "color": "135, 135, 135",
-    "intro": "未練は黄泉へ還らず",
-    "description": "死亡した時、キラーの視野を狭めます。",
-    "abilities_title": "呪い",
+    "intro": {
+        "ja": "未練は黄泉へ還らず",
+        "en": "Regrets That Will Not Return to the Underworld"
+    },
+    "description": {
+        "ja": "死亡した時、キラーの視野を狭めます。",
+        "en": "When you die, the killer's field of vision is narrowed."
+    },
+    "abilities_title": {
+        "ja": "呪い",
+        "en": "Curse"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "呪い",
-            "description": "死亡した時、キラーの視野を狭めます。"
+            "name": {
+                "ja": "呪い",
+                "en": "Curse"
+            },
+            "description": {
+                "ja": "死亡した時、キラーの視野を狭めます。",
+                "en": "When you die, the killer's field of vision is narrowed."
+            }
         }
     ],
     "options": [
         {
-            "name": "キラーの視野"
+            "name": {
+                "ja": "キラーの視野",
+                "en": "Killer's Vision"
+            }
         }
     ],
     "from": "TOHY"

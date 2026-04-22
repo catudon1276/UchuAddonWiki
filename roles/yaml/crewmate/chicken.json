@@ -1,47 +1,101 @@
-﻿{
+{
     "id": "chicken",
     "icon": "Chicken.png",
     "illust": "Chicken.png",
     "english_name": "Chicken",
-    "name": "チキン",
+    "name": {
+        "ja": "チキン",
+        "en": "Chicken"
+    },
     "team": "クルーメイト",
     "color": "255, 238, 0",
-    "intro": "あなたは臆病者",
-    "description": "とても臆病で貧弱なクルーメイトです。",
-    "abilities_title": "貧弱",
+    "intro": {
+        "ja": "あなたは臆病者",
+        "en": "You Are a Coward"
+    },
+    "description": {
+        "ja": "とても臆病で貧弱なクルーメイトです。",
+        "en": "A very timid and fragile Crewmate."
+    },
+    "abilities_title": {
+        "ja": "貧弱",
+        "en": "Fragile"
+    },
     "abilities": [
       {
         "button": "NoImage.png",
-        "name": "貧弱体質",
-        "description": "様々な要因で簡単に死亡してしまいます。\nただし、試合終了まで生存するとクルーメイトが乗っ取り勝利します。\n\n死因一覧\n挟圧死　ドアミニゲームをする際に指を挟む\n転倒死　ベントの近くを通る\n錯乱死　停電が一定時間続く\n落下死　昇降機から落下する\n転落死　はしご・ジップラインから転落する\n恐怖死　投票を一定数入れられる"
+        "name": {
+            "ja": "貧弱体質",
+            "en": "Fragile Constitution"
+        },
+        "description": {
+            "ja": "様々な要因で簡単に死亡してしまいます。\nただし、試合終了まで生存するとクルーメイトが乗っ取り勝利します。\n\n死因一覧\n挟圧死　ドアミニゲームをする際に指を挟む\n転倒死　ベントの近くを通る\n錯乱死　停電が一定時間続く\n落下死　昇降機から落下する\n転落死　はしご・ジップラインから転落する\n恐怖死　投票を一定数入れられる",
+            "en": "Dies easily from various causes.\nHowever, if they survive until the end of the game, the Crewmates win by takeover.\n\nCauses of Death\nCrushing: Pinches fingers while playing the door minigame\nTripping: Passes near a vent\nPanic: Blackout continues for a certain time\nFalling: Falls off an elevator\nSlipping: Falls from a ladder or zipline\nFright: Receives a certain number of votes"
+        }
       }
     ],
     "options": [
         {
-            "name": "必要タスク数",
-            "description": "乗っ取り勝利に必要なタスク数を設定します。"
+            "name": {
+                "ja": "必要タスク数",
+                "en": "Required Tasks"
+            },
+            "description": {
+                "ja": "乗っ取り勝利に必要なタスク数を設定します。",
+                "en": "Sets the number of tasks required for a takeover victory."
+            }
         },
         {
-            "name": "死因の設定"
+            "name": {
+                "ja": "死因の設定",
+                "en": "Cause of Death Settings"
+            }
         },
         {
-            "name": "ベント確率"
+            "name": {
+                "ja": "ベント確率",
+                "en": "Vent Probability"
+            }
         },
         {
-            "name": "はしご確率"
+            "name": {
+                "ja": "はしご確率",
+                "en": "Ladder Probability"
+            }
         },
         {
-            "name": "ジップライン確率"
+            "name": {
+                "ja": "ジップライン確率",
+                "en": "Zipline Probability"
+            }
         },
         {
-            "name": "昇降機確率"
+            "name": {
+                "ja": "昇降機確率",
+                "en": "Elevator Probability"
+            }
         },
         {
-            "name": "ドア確率"
+            "name": {
+                "ja": "ドア確率",
+                "en": "Door Probability"
+            }
         },
         {
-            "name": "死亡する停電経過時間",
-            "description": "停電が何秒継続したら死亡するかを設定します。"
+            "name": {
+                "ja": "死亡する停電経過時間",
+                "en": "Blackout Duration Before Death"
+            },
+            "description": {
+                "ja": "停電が何秒継続したら死亡するかを設定します。",
+                "en": "Sets how many seconds a blackout must last before death."
+            }
+        },
+        {
+            "name": {
+                "ja": "死亡する投票数",
+                "en": "Votes Required to Die"
+            }
         }
     ],
     "from": "SNR"

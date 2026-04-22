@@ -3,17 +3,35 @@
     "icon": "Invisible.png",
     "illust": "Invisible.png",
     "english_name": "Invisible",
-    "name": "インビジブル",
+    "name": {
+        "ja": "インビジブル",
+        "en": "Invisible"
+    },
     "team": "モディファイア",
     "color": "125, 242, 255",
-    "intro": "無貌の影",
-    "description": "常に透明になります。透明は自覚できません。",
-    "abilities_title": "透明体",
+    "intro": {
+        "ja": "無貌の影",
+        "en": "A Faceless Shadow"
+    },
+    "description": {
+        "ja": "常に透明になります。透明は自覚できません。",
+        "en": "Always invisible. You cannot perceive your own invisibility."
+    },
+    "abilities_title": {
+        "ja": "透明体",
+        "en": "Invisible Body"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "透明体",
-            "description": "常に透明になります。透明は自覚できません。"
+            "name": {
+                "ja": "透明体",
+                "en": "Invisible Body"
+            },
+            "description": {
+                "ja": "常に透明になります。透明は自覚できません。",
+                "en": "Always invisible. You cannot perceive your own invisibility."
+            }
         }
     ],
     "from": "Original"

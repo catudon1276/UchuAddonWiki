@@ -1,35 +1,68 @@
-﻿{
+{
     "id": "voyager",
     "icon": "Voyager.png",
     "illust": "Voyager.png",
     "english_name": "Voyager",
-    "name": "ボイジャー",
+    "name": {
+        "ja": "ボイジャー",
+        "en": "Voyager"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "時の旅人",
-    "description": "次元を越えるインポスターです。",
-    "abilities_title": "パラレルダイブ",
+    "intro": {
+        "ja": "時の旅人",
+        "en": "Traveler of Time"
+    },
+    "description": {
+        "ja": "次元を越えるインポスターです。",
+        "en": "An Impostor who crosses dimensions."
+    },
+    "abilities_title": {
+        "ja": "パラレルダイブ",
+        "en": "Parallel Dive"
+    },
     "abilities": [
         {
             "button": "PDiveButton.png",
-            "name": "潜伏",
-            "description": "新たな次元へ移動します。潜伏中は他プレイヤーの見た目がシャッフルされ、透明化・速度上昇が付与されます。"
+            "name": {
+                "ja": "潜伏",
+                "en": "Dive"
+            },
+            "description": {
+                "ja": "新たな次元へ移動します。潜伏中は他プレイヤーの見た目がシャッフルされ、透明化・速度上昇が付与されます。",
+                "en": "Moves to a new dimension. While diving, other players' appearances are shuffled, and you gain invisibility and increased speed."
+            }
         },
         {
             "button": "PAwayButton.png",
-            "name": "離脱",
-            "description": "次元から離脱します。"
+            "name": {
+                "ja": "離脱",
+                "en": "Exit"
+            },
+            "description": {
+                "ja": "次元から離脱します。",
+                "en": "Exits the dimension."
+            }
         }
     ],
     "options": [
         {
-            "name": "潜伏クールダウン"
+            "name": {
+                "ja": "潜伏クールダウン",
+                "en": "Dive Cooldown"
+            }
         },
         {
-            "name": "潜伏持続時間"
+            "name": {
+                "ja": "潜伏持続時間",
+                "en": "Dive Duration"
+            }
         },
         {
-            "name": "潜伏中の速度"
+            "name": {
+                "ja": "潜伏中の速度",
+                "en": "Speed While Diving"
+            }
         }
     ],
     "from": "Original"

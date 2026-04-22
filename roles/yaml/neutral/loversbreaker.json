@@ -1,37 +1,73 @@
-﻿{
+{
     "id": "loversbreaker",
     "icon": "LoversBeraker.png",
     "illust": "LoversBreaker.png",
     "english_name": "LoversBreaker",
-    "name": "爆ぜ師",
+    "name": {
+        "ja": "爆ぜ師",
+        "en": "LoversBreaker"
+    },
     "team": "ニュートラル",
     "color": "235, 0, 192",
-    "intro": "リア充は爆破せよ",
-    "description": "ラバーズを爆破する第三陣営です。",
-    "abilities_title": "恋の断罪",
+    "intro": {
+        "ja": "リア充は爆破せよ",
+        "en": "Blow the Happy Couples Apart"
+    },
+    "description": {
+        "ja": "ラバーズを爆破する第三陣営です。",
+        "en": "A third-party faction who blows up Lovers."
+    },
+    "abilities_title": {
+        "ja": "恋の断罪",
+        "en": "Judgment of Love"
+    },
     "abilities": [
         {
             "button": "ExpButton.png",
-            "name": "爆破",
-            "description": "ラバーズを爆破します。爆発しろ！"
+            "name": {
+                "ja": "爆破",
+                "en": "Detonate"
+            },
+            "description": {
+                "ja": "ラバーズを爆破します。爆発しろ！",
+                "en": "Blows up Lovers. Explode!"
+            }
         }
     ],
     "options": [
         {
-            "name": "爆破クールダウン"
+            "name": {
+                "ja": "爆破クールダウン",
+                "en": "Detonate Cooldown"
+            }
         },
         {
-            "name": "勝利に必要な爆破回数"
+            "name": {
+                "ja": "勝利に必要な爆破回数",
+                "en": "Detonations Required to Win"
+            }
         },
         {
-            "name": "自爆までの失敗回数"
+            "name": {
+                "ja": "自爆までの失敗回数",
+                "en": "Failures Before Self-Destruction"
+            }
         },
         {
-            "name": "乗っ取り勝利",
-            "description": "オフにした場合、勝利条件を満たした時点で勝利します。"
+            "name": {
+                "ja": "乗っ取り勝利",
+                "en": "Takeover Win"
+            },
+            "description": {
+                "ja": "オフにした場合、勝利条件を満たした時点で勝利します。",
+                "en": "When off, you win the moment the win condition is met."
+            }
         },
         {
-            "name": "ラバーズになった瞬間死亡する"
+            "name": {
+                "ja": "ラバーズになった瞬間死亡する",
+                "en": "Dies the Moment They Become a Lover"
+            }
         }
     ],
     "from": "SNR"

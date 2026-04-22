@@ -3,17 +3,35 @@
     "icon": "Egoist.png",
     "illust": "Egoist.png",
     "english_name": "Egoist",
-    "name": "エゴイスト",
+    "name": {
+        "ja": "エゴイスト",
+        "en": "Egoist"
+    },
     "team": "モディファイア",
     "color": "170, 32, 201",
-    "intro": "開花する、己のEGO",
-    "description": "クルーメイトを裏切ったモディファイアです。",
-    "abilities_title": "裏切り",
+    "intro": {
+        "ja": "開花する、己のEGO",
+        "en": "The Blooming of Your Own EGO"
+    },
+    "description": {
+        "ja": "クルーメイトを裏切ったモディファイアです。",
+        "en": "A modifier who has betrayed the Crewmates."
+    },
+    "abilities_title": {
+        "ja": "裏切り",
+        "en": "Betrayal"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "裏切り",
-            "description": "クルーメイトの敗北時に勝利するようになります。"
+            "name": {
+                "ja": "裏切り",
+                "en": "Betrayal"
+            },
+            "description": {
+                "ja": "クルーメイトの敗北時に勝利するようになります。",
+                "en": "You win when the Crewmates lose."
+            }
         }
     ],
     "from": "TOUMR"

@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "bakery",
     "icon": "Bakery.png",
     "illust": "Bakery.png",
     "english_name": "Bakery",
-    "name": "ベーカリー",
+    "name": {
+        "ja": "ベーカリー",
+        "en": "Bakery"
+    },
     "team": "クルーメイト",
     "color": "3, 252, 111",
-    "intro": "今日も平和を届ける",
-    "description": "毎ターンパンを焼くクルーメイトです。",
-    "abilities_title": "パン焼き",
+    "intro": {
+        "ja": "今日も平和を届ける",
+        "en": "Delivering Peace Today as Well"
+    },
+    "description": {
+        "ja": "毎ターンパンを焼くクルーメイトです。",
+        "en": "A Crewmate who bakes bread each round."
+    },
+    "abilities_title": {
+        "ja": "パン焼き",
+        "en": "Bread Baking"
+    },
     "abilities": [
         {
             "button": "passBreadButton.png",
-            "name": "渡す",
-            "description": "焼いたパンをプレイヤーに渡します。"
+            "name": {
+                "ja": "渡す",
+                "en": "Pass"
+            },
+            "description": {
+                "ja": "焼いたパンをプレイヤーに渡します。",
+                "en": "Passes a baked bread to a player."
+            }
         }
     ],
     "options": [
         {
-            "name": "渡すクールダウン"
+            "name": {
+                "ja": "渡すクールダウン",
+                "en": "Pass Cooldown"
+            }
         },
         {
-            "name": "会議ごとのパン増加数"
+            "name": {
+                "ja": "会議ごとのパン増加数",
+                "en": "Bread Gained per Meeting"
+            }
         }
     ],
     "from": "Original"

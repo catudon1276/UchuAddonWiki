@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "autopsy",
     "icon": "Autopsy.png",
     "illust": "Autopsy.png",
     "english_name": "Autopsy",
-    "name": "オートプシー",
+    "name": {
+        "ja": "オートプシー",
+        "en": "Autopsy"
+    },
     "team": "モディファイア",
     "color": "128, 255, 221",
-    "intro": "斯くして奴は死んだ",
-    "description": "どこでもバイタルを見ることが出来ます。",
-    "abilities_title": "ポータブルバイタル",
+    "intro": {
+        "ja": "斯くして奴は死んだ",
+        "en": "And Thus He Died"
+    },
+    "description": {
+        "ja": "どこでもバイタルを見ることが出来ます。",
+        "en": "Can check Vitals from anywhere."
+    },
+    "abilities_title": {
+        "ja": "ポータブルバイタル",
+        "en": "Portable Vitals"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "ポータブルバイタル",
-            "description": "どこでもバイタルを見ることが出来ます。"
+            "name": {
+                "ja": "ポータブルバイタル",
+                "en": "Portable Vitals"
+            },
+            "description": {
+                "ja": "どこでもバイタルを見ることが出来ます。",
+                "en": "Lets you check Vitals from anywhere."
+            }
         }
     ],
     "from": "TOHY"

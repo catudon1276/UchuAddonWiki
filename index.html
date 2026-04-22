@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="2vSRIWc1lKrlZwJS37723PyQ04ZAkrjSz-Oypp2xyzw" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uchu Addon Wiki - Uchu Addon公式サイト</title>
+    <title data-i18n="meta.site_title_home">Uchu Addon Wiki - Uchu Addon公式サイト</title>
     <meta name="description" content="Uchu Addonの公式Wikiです。Uchu Addonに関する情報をまとめています。">
     <meta name="keywords" content="UchuAddon,Nebula On the Ship,Nos,アドオン,Uchu Addon,Wiki,役職">
     <meta property="og:title" content="Uchu Addon Wiki">
@@ -15,6 +15,7 @@
     <link rel="icon" type="image/png" href="resource/UchuLogo.png">
     <link rel="stylesheet" href="components/styles-common.css">
     <script src="components/theme.js"></script>
+    <script src="components/i18n.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* ------------------------------------------------
@@ -410,7 +411,7 @@
         }
 
         .ofuse-float-btn::after {
-            content: "ofuseで支援する";
+            content: var(--ofuse-tip, "ofuseで支援する");
             position: absolute;
             right: calc(100% + 12px);
             top: 50%;
@@ -477,7 +478,7 @@
             <div class="addon-info">
                 <div class="addon-info-content">
                     <div class="addon-info-badge"></div>
-                    <p class="addon-info-text">
+                    <p class="addon-info-text" data-i18n-html="home.addon_info_html">
                         <span class="addon-info-highlight">Uchu Addon</span>は、Among Us MOD「Nebula on the Ship」のアドオンです。<br>
                         新しい役職やゲームモードを追加し、より幅広くゲーム体験を提供します。
                     </p>
@@ -488,28 +489,28 @@
         <section class="action-buttons">
             <a href="roles/index.html" class="action-btn">
                 <i class="fas fa-users action-btn-icon"></i>
-                <div class="action-btn-title">役職一覧</div>
-                <div class="action-btn-desc">全ての役職を確認</div>
+                <div class="action-btn-title" data-i18n="home.action_roles_title">役職一覧</div>
+                <div class="action-btn-desc" data-i18n="home.action_roles_desc">全ての役職を確認</div>
             </a>
             <a href="gallery/index.html" class="action-btn">
                 <i class="fas fa-images action-btn-icon"></i>
-                <div class="action-btn-title">ギャラリー</div>
-                <div class="action-btn-desc">素材リソースを閲覧</div>
+                <div class="action-btn-title" data-i18n="home.action_gallery_title">ギャラリー</div>
+                <div class="action-btn-desc" data-i18n="home.action_gallery_desc">素材リソースを閲覧</div>
             </a>
             <a href="inquiry/index.html" class="action-btn">
                 <i class="fas fa-envelope action-btn-icon"></i>
-                <div class="action-btn-title">お問い合わせ</div>
-                <div class="action-btn-desc">ご意見・ご要望</div>
+                <div class="action-btn-title" data-i18n="home.action_inquiry_title">お問い合わせ</div>
+                <div class="action-btn-desc" data-i18n="home.action_inquiry_desc">ご意見・ご要望</div>
             </a>
             <a href="https://github.com/catudon1276/UchuAddon/releases" target="_blank" class="action-btn">
                 <i class="fas fa-download action-btn-icon"></i>
-                <div class="action-btn-title">ダウンロード</div>
-                <div class="action-btn-desc">最新版を入手</div>
+                <div class="action-btn-title" data-i18n="home.action_download_title">ダウンロード</div>
+                <div class="action-btn-desc" data-i18n="home.action_download_desc">最新版を入手</div>
             </a>
         </section>
 
         <section class="uchu-section movie-section">
-            <h2 class="uchu-section-title">Movie</h2>
+            <h2 class="uchu-section-title" data-i18n="home.section_movie">Movie</h2>
             <div class="movie-carousel-container">
                 <button class="carousel-btn carousel-prev" id="moviePrev">
                     <i class="fas fa-chevron-left"></i>
@@ -520,13 +521,13 @@
                             <div class="movie-wrapper">
                                 <iframe
                                     src="https://www.youtube.com/embed/ZUwTMQ8izjU"
-                                    title="UchuAddon紹介動画"
+                                    title="UchuAddon PV1 ~ 始動"
                                     frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen>
                                 </iframe>
                             </div>
-                            <p class="movie-desc">Uchu Addonの紹介動画です。新しい役職やゲームモードをご覧ください。</p>
+                            <p class="movie-desc" data-i18n="home.movie1_desc">UchuAddon Ver.1 のPVです。</p>
                         </div>
                     </div>
                     <div class="movie-slide">
@@ -534,13 +535,13 @@
                             <div class="movie-wrapper">
                                 <iframe
                                     src="https://www.youtube.com/embed/ZUwTMQ8izjU"
-                                    title="UchuAddon紹介動画2"
+                                    title="UchuAddon PV1 ~ START"
                                     frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen>
                                 </iframe>
                             </div>
-                            <p class="movie-desc">動画2本目の説明文（仮）</p>
+                            <p class="movie-desc" data-i18n="home.movie2_desc">UchuAddon Ver.1 のPVです。英語版となっております。</p>
                         </div>
                     </div>
                 </div>
@@ -554,7 +555,7 @@
             </div>
         </section>
 
-        <section class="uchu-section">
+        <section class="uchu-section" data-i18n-lock="true">
             <h2 class="uchu-section-title">Credit</h2>
             <div class="credits-grid">
                 <div class="credit-item">
@@ -571,7 +572,7 @@
                         <li>あらいもん</li>
                         <li>アンハッピーセット</li>
                         <li>たこやき</li>
-                        <li>ラムネ</li>
+                        <li>いおむ</li>
                     </ul>
                 </div>
 
@@ -610,14 +611,14 @@
         </section>
 
         <section class="update-log-section">
-            <h2 class="update-log-title">News</h2>
+            <h2 class="update-log-title" data-i18n="home.section_news">News</h2>
             <div class="update-timeline" id="updateTimeline">
                 <!-- 更新ログはJavaScriptで動的に読み込み -->
             </div>
         </section>
     </main>
 
-    <a href="https://ofuse.me/catudon" target="_blank" rel="noopener noreferrer" class="ofuse-float-btn" aria-label="ofuse で支援する">
+    <a href="https://ofuse.me/catudon" target="_blank" rel="noopener noreferrer" class="ofuse-float-btn" aria-label="ofuse で支援する" data-i18n-aria="home.ofuse_aria">
         <i class="fas fa-heart"></i>
     </a>
 
@@ -627,11 +628,32 @@
         // ★ パスワード保護（一般公開後の一時的な措置）
         (function() {
             const PASSWORD = 'Next Stage';
-            const input = prompt('このページはパスワードで保護されています。パスワードを入力してください。');
+            // i18n: localStorageから言語を先取り(i18n.jsは辞書を非同期読み込みのため)
+            const lang = (function(){ try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; } })();
+            const MSG = {
+                ja: { prompt: 'このページはパスワードで保護されています。パスワードを入力してください。', denied: 'アクセスが拒否されました。' },
+                en: { prompt: 'This page is password-protected. Please enter the password.', denied: 'Access denied.' }
+            };
+            const input = prompt(MSG[lang].prompt);
             if (input !== PASSWORD) {
-                document.body.innerHTML = '<p style="text-align:center;padding:4rem;color:#ef4444;font-family:sans-serif;">アクセスが拒否されました。</p>';
+                document.body.innerHTML = '<p style="text-align:center;padding:4rem;color:#ef4444;font-family:sans-serif;">' + MSG[lang].denied + '</p>';
                 return;
             }
+        })();
+
+        // ofuse フロートボタンの tooltip を言語に応じて更新
+        (function(){
+            function applyOfuseTip() {
+                const lang = (function(){ try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; } })();
+                const tip = lang === 'en' ? 'Support via ofuse' : 'ofuseで支援する';
+                document.documentElement.style.setProperty('--ofuse-tip', '"' + tip + '"');
+            }
+            applyOfuseTip();
+            document.addEventListener('click', function(e){
+                if (e.target.closest && e.target.closest('.lang-switch-btn')) {
+                    setTimeout(applyOfuseTip, 0);
+                }
+            });
         })();
 
         // ヘッダーとフッターを読み込み
@@ -670,13 +692,26 @@
         });
 
         // ニュース表示
+        let __newsCache = null;
+        function currentLang() {
+            try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; }
+        }
+        function pickLocalized(v) {
+            if (v && typeof v === 'object' && ('ja' in v || 'en' in v)) {
+                const lang = currentLang();
+                return v[lang] != null ? v[lang] : (v.ja != null ? v.ja : v.en);
+            }
+            return v;
+        }
         fetch('daily.json')
             .then(r => r.json())
             .then(data => {
-                renderNews(data.updates);
+                __newsCache = data.updates;
+                renderNews(__newsCache);
             })
             .catch(err => {
-                console.error('ニュースの読み込みに失敗しました:', err);
+                const msg = (window.UchuI18n && window.UchuI18n.t('home.news_load_error')) || 'ニュースの読み込みに失敗しました';
+                console.error(msg + ':', err);
             });
 
         function renderNews(updates) {
@@ -691,15 +726,27 @@
                     `<span class="update-tag">${tag}</span>`
                 ).join('') : '';
 
+                const title = pickLocalized(update.title);
+                const desc  = pickLocalized(update.description);
+
                 item.innerHTML = `
                     <div class="update-date">${update.date}</div>
-                    <div class="update-title">${update.title}</div>
-                    <div class="update-desc">${update.description}</div>
+                    <div class="update-title">${title}</div>
+                    <div class="update-desc">${desc}</div>
                     ${tags ? `<div class="update-tags">${tags}</div>` : ''}
                 `;
                 timeline.appendChild(item);
             });
         }
+
+        // 言語切替時にニュースを再描画
+        document.addEventListener('click', function(e){
+            if (e.target.closest && e.target.closest('.lang-switch-btn')) {
+                setTimeout(function(){
+                    if (__newsCache) renderNews(__newsCache);
+                }, 0);
+            }
+        });
     </script>
 </body>
 </html>

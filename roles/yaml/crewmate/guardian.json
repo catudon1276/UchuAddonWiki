@@ -1,19 +1,37 @@
-﻿{
+{
     "id": "guardian",
     "icon": "Toughness.png",
     "illust": "Toughness.png",
     "english_name": "Guardian",
-    "name": "ガーディアン",
+    "name": {
+        "ja": "ガーディアン",
+        "en": "Guardian"
+    },
     "team": "クルーメイト",
     "color": "222, 223, 255",
-    "intro": "神の加護",
-    "description": "キルバリアを展開するクルーメイトです。",
-    "abilities_title": "バリア",
+    "intro": {
+        "ja": "神の加護",
+        "en": "Divine Protection"
+    },
+    "description": {
+        "ja": "キルバリアを展開するクルーメイトです。",
+        "en": "A Crewmate who deploys a kill barrier."
+    },
+    "abilities_title": {
+        "ja": "バリア",
+        "en": "Barrier"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "バリア展開",
-            "description": "タスクをこなすことでキルを防ぐバリアを展開します。"
+            "name": {
+                "ja": "バリア展開",
+                "en": "Deploy Barrier"
+            },
+            "description": {
+                "ja": "タスクをこなすことでキルを防ぐバリアを展開します。",
+                "en": "Deploys a barrier that prevents kills by completing tasks."
+            }
         }
     ],
     "from": "Original"

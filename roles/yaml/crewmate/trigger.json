@@ -1,42 +1,84 @@
-﻿{
+{
     "id": "trigger",
     "icon": "Trigger.png",
     "illust": "Trigger.png",
     "english_name": "Trigger",
-    "name": "トリガー",
+    "name": {
+        "ja": "トリガー",
+        "en": "Trigger"
+    },
     "team": "クルーメイト",
     "color": "227, 227, 227",
-    "intro": "銀の銃弾",
-    "description": "ベントを解析・移設することが出来ます。",
-    "abilities_title": "メカニカル・グレース",
+    "intro": {
+        "ja": "銀の銃弾",
+        "en": "Silver Bullet"
+    },
+    "description": {
+        "ja": "ベントを解析・移設することが出来ます。",
+        "en": "Can analyze and relocate vents."
+    },
+    "abilities_title": {
+        "ja": "メカニカル・グレース",
+        "en": "Mechanical Grace"
+    },
     "abilities": [
         {
             "button": "TriggerAnalysisButton.png",
-            "name": "解析",
-            "description": "ベントを解析します。解析したベントを誰かが使うと会議で報告を受け取ります。"
+            "name": {
+                "ja": "解析",
+                "en": "Analyze"
+            },
+            "description": {
+                "ja": "ベントを解析します。解析したベントを誰かが使うと会議で報告を受け取ります。",
+                "en": "Analyzes a vent. If someone uses an analyzed vent, you receive a report during a meeting."
+            }
         },
         {
             "button": "TriggerDragButton.png",
-            "name": "移設",
-            "description": "ベントを掴み、移設します。"
+            "name": {
+                "ja": "移設",
+                "en": "Relocate"
+            },
+            "description": {
+                "ja": "ベントを掴み、移設します。",
+                "en": "Grabs a vent and relocates it."
+            }
         }
     ],
     "options": [
         {
-            "name": "解析クールダウン"
+            "name": {
+                "ja": "解析クールダウン",
+                "en": "Analyze Cooldown"
+            }
         },
         {
-            "name": "解析使用可能回数"
+            "name": {
+                "ja": "解析使用可能回数",
+                "en": "Number of Analyze Uses"
+            }
         },
         {
-            "name": "明暗の表示",
-            "description": "解析の結果に明暗結果を追加します。"
+            "name": {
+                "ja": "明暗の表示",
+                "en": "Show Light/Dark Result"
+            },
+            "description": {
+                "ja": "解析の結果に明暗結果を追加します。",
+                "en": "Adds a light/dark result to the analysis output."
+            }
         },
         {
-            "name": "移設クールダウン"
+            "name": {
+                "ja": "移設クールダウン",
+                "en": "Relocate Cooldown"
+            }
         },
         {
-            "name": "移設持続時間"
+            "name": {
+                "ja": "移設持続時間",
+                "en": "Relocate Duration"
+            }
         }
     ],
     "from": "Original"

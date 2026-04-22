@@ -1,41 +1,80 @@
-﻿{
+{
     "id": "vampire",
     "icon": "Vampire.png",
     "illust": "Vampire.png",
     "english_name": "Vampire",
-    "name": "ヴァンパイア",
+    "name": {
+        "ja": "ヴァンパイア",
+        "en": "Vampire"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "明けない夜と、癒えない渇き。",
-    "description": "遅延してキルをすることができるインポスターです。",
-    "abilities_title": "吸血",
+    "intro": {
+        "ja": "明けない夜と、癒えない渇き。",
+        "en": "An Unending Night and an Unquenchable Thirst."
+    },
+    "description": {
+        "ja": "遅延してキルをすることができるインポスターです。",
+        "en": "An Impostor who can kill with a delay."
+    },
+    "abilities_title": {
+        "ja": "吸血",
+        "en": "Bloodsucking"
+    },
     "abilities": [
         {
             "button": "BiteButton.png",
-            "name": "噛みつく",
-            "description": "プレイヤーに噛みつき、遅延してキルします。"
+            "name": {
+                "ja": "噛みつく",
+                "en": "Bite"
+            },
+            "description": {
+                "ja": "プレイヤーに噛みつき、遅延してキルします。",
+                "en": "Bites a player and kills them after a delay."
+            }
         },
         {
             "button": "GarlicButton.png",
-            "name": "ニンニク",
-            "description": "ニンニクを設置します。ニンニクの近くでは噛みつきボタンを押すことができません。"
+            "name": {
+                "ja": "ニンニク",
+                "en": "Garlic"
+            },
+            "description": {
+                "ja": "ニンニクを設置します。ニンニクの近くでは噛みつきボタンを押すことができません。",
+                "en": "Places garlic. The Bite button cannot be pressed near a garlic."
+            }
         }
     ],
     "options": [
         {
-            "name": "噛みつくクールタイム"
+            "name": {
+                "ja": "噛みつくクールタイム",
+                "en": "Bite Cooldown"
+            }
         },
         {
-            "name": "キルが起こるまでの秒数"
+            "name": {
+                "ja": "キルが起こるまでの秒数",
+                "en": "Seconds Until the Kill Occurs"
+            }
         },
         {
-            "name": "ニンニク設置個数"
+            "name": {
+                "ja": "ニンニク設置個数",
+                "en": "Number of Garlic Placements"
+            }
         },
         {
-            "name": "ニンニククールタイム"
+            "name": {
+                "ja": "ニンニククールタイム",
+                "en": "Garlic Cooldown"
+            }
         },
         {
-            "name": "ニンニク有効範囲"
+            "name": {
+                "ja": "ニンニク有効範囲",
+                "en": "Garlic Effective Range"
+            }
         }
     ],
     "from": "TOR"

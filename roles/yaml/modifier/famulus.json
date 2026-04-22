@@ -3,17 +3,35 @@
     "icon": "Famulus.png",
     "illust": "Baphomet.png",
     "english_name": "Famulus",
-    "name": "ファムルス",
+    "name": {
+        "ja": "ファムルス",
+        "en": "Famulus"
+    },
     "team": "モディファイア",
     "color": "31, 26, 122",
-    "intro": "無音に響く弔鐘",
-    "description": "バフォメットと共に勝利を狙います。",
-    "abilities_title": "眷属",
+    "intro": {
+        "ja": "無音に響く弔鐘",
+        "en": "A Funeral Bell Tolling in Silence"
+    },
+    "description": {
+        "ja": "バフォメットと共に勝利を狙います。",
+        "en": "Aims to win alongside Baphomet."
+    },
+    "abilities_title": {
+        "ja": "眷属",
+        "en": "Servitor"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "眷属",
-            "description": "バフォメットの眷属となります。バフォメットの勝利条件達成に協力します。"
+            "name": {
+                "ja": "眷属",
+                "en": "Servitor"
+            },
+            "description": {
+                "ja": "バフォメットの眷属となります。バフォメットの勝利条件達成に協力します。",
+                "en": "Becomes a servitor of Baphomet. Helps Baphomet fulfill their win condition."
+            }
         }
     ],
     "from": "Original"

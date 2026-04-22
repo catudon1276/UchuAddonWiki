@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "nimrod",
     "icon": "Nimrod.png",
     "illust": "Nimrod.png",
     "english_name": "Nimrod",
-    "name": "ニムロッド",
+    "name": {
+        "ja": "ニムロッド",
+        "en": "Nimrod"
+    },
     "team": "クルーメイト",
     "color": "199, 162, 70",
-    "intro": "覚悟の一矢",
-    "description": "追放時に選んだ人を道連れするクルーメイトです。",
-    "abilities_title": "道連れ",
+    "intro": {
+        "ja": "覚悟の一矢",
+        "en": "The Arrow of Resolve"
+    },
+    "description": {
+        "ja": "追放時に選んだ人を道連れするクルーメイトです。",
+        "en": "A Crewmate who drags a chosen player along upon ejection."
+    },
+    "abilities_title": {
+        "ja": "道連れ",
+        "en": "Drag Along"
+    },
     "abilities": [
         {
             "button": "NimrodButton.png",
-            "name": "道連れ",
-            "description": "会議中に指定したプレイヤーを道連れ追放することが出来ます。"
+            "name": {
+                "ja": "道連れ",
+                "en": "Drag Along"
+            },
+            "description": {
+                "ja": "会議中に指定したプレイヤーを道連れ追放することが出来ます。",
+                "en": "During a meeting, designates a player to be ejected along with the Nimrod."
+            }
         }
     ],
     "options": [
         {
-            "name": "道連れ試行最大回数"
+            "name": {
+                "ja": "道連れ試行最大回数",
+                "en": "Maximum Drag Along Attempts"
+            }
         },
         {
-            "name": "道連れ可能な最大残会議時間"
+            "name": {
+                "ja": "道連れ可能な最大残会議時間",
+                "en": "Maximum Remaining Meeting Time to Drag Along"
+            }
         }
     ],
     "from": "TOHY"

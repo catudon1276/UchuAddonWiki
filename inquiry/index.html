@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uchu Addon Wiki お問い合わせ</title>
+    <title data-i18n="meta.site_title_inquiry">Uchu Addon Wiki お問い合わせ</title>
     <meta property="og:title" content="Uchu Addon Wiki - お問い合わせ">
     <meta property="og:image" content="https://catudon1276.github.io/UchuAddonWiki/components/CoverIllust.png">
     <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../components/styles-common.css">
     <script src="../components/theme.js"></script>
+    <script src="../components/i18n.js"></script>
     <style>
         /* Inquiry Section */
         .inquiry-section {
@@ -152,8 +153,8 @@
     <div id="header"></div>
 
     <section class="inquiry-section">
-        <h1 class="uchu-section-title">Inquiry</h1>
-        <p style="color: var(--uchu-text-secondary); margin-bottom: var(--space-xl); text-align: center;">
+        <h1 class="uchu-section-title" data-i18n="inquiry.section_title">Inquiry</h1>
+        <p style="color: var(--uchu-text-secondary); margin-bottom: var(--space-xl); text-align: center;" data-i18n="inquiry.lead">
             ご質問やご要望があればお気軽にご連絡ください。
         </p>
         <div class="inquiry-form">
@@ -165,27 +166,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="category" class="form-label">カテゴリー (必須)</label>
+                    <label for="category" class="form-label" data-i18n="inquiry.label_category">カテゴリー (必須)</label>
                     <select id="category" class="form-input" required>
-                        <option value="" disabled selected>選択してください</option>
-                        <option value="バグ報告">バグ報告</option>
-                        <option value="リクエスト">リクエスト</option>
-                        <option value="感想">感想</option>
+                        <option value="" disabled selected data-i18n="inquiry.placeholder_category">選択してください</option>
+                        <option value="バグ報告" data-i18n="inquiry.category_bug">バグ報告</option>
+                        <option value="リクエスト" data-i18n="inquiry.category_request">リクエスト</option>
+                        <option value="感想" data-i18n="inquiry.category_feedback">感想</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="name" class="form-label">お名前 (任意)</label>
-                    <input type="text" id="name" class="form-input" placeholder="匿名でも結構です">
+                    <label for="name" class="form-label" data-i18n="inquiry.label_name">お名前 (任意)</label>
+                    <input type="text" id="name" class="form-input" placeholder="匿名でも結構です" data-i18n-placeholder="inquiry.placeholder_name">
                 </div>
 
                 <div class="form-group">
-                    <label for="message" class="form-label">内容 (必須)</label>
-                    <textarea id="message" class="form-textarea" placeholder="お問い合わせ内容を入力してください..." required></textarea>
+                    <label for="message" class="form-label" data-i18n="inquiry.label_message">内容 (必須)</label>
+                    <textarea id="message" class="form-textarea" placeholder="お問い合わせ内容を入力してください..." required data-i18n-placeholder="inquiry.placeholder_message"></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    <i class="fas fa-paper-plane"></i> 送信する
+                    <i class="fas fa-paper-plane"></i> <span data-i18n="inquiry.submit">送信する</span>
                 </button>
             </form>
 
@@ -199,6 +200,15 @@
         // ヘッダーとフッターを読み込み
         fetch('../components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
         fetch('../components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
+
+        // i18n ヘルパー
+        function __t(key, ja) {
+            if (window.UchuI18n && typeof window.UchuI18n.t === 'function') {
+                const v = window.UchuI18n.t(key);
+                if (v != null) return v;
+            }
+            return ja;
+        }
 
         // フォーム送信処理
         const form = document.getElementById('inquiryForm');
@@ -223,7 +233,9 @@
             const now = Date.now();
             if (lastSent && (now - parseInt(lastSent)) < 60000) {
                 const remaining = Math.ceil((60000 - (now - parseInt(lastSent))) / 1000);
-                statusMessage.textContent = `スパム防止のため、あと${remaining}秒お待ちください`;
+                const pre = __t('inquiry.error_cooldown_prefix', 'スパム防止のため、あと');
+                const suf = __t('inquiry.error_cooldown_suffix', '秒お待ちください');
+                statusMessage.textContent = `${pre}${remaining}${suf}`;
                 statusMessage.className = 'status-message error';
                 return;
             }
@@ -233,14 +245,14 @@
             const message = document.getElementById('message').value.trim();
 
             if (!category || !message) {
-                statusMessage.textContent = 'カテゴリーと内容を入力してください';
+                statusMessage.textContent = __t('inquiry.error_category_required', 'カテゴリーと内容を入力してください');
                 statusMessage.className = 'status-message error';
                 return;
             }
 
             // 送信中状態
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + __t('inquiry.submitting', '送信中...');
             statusMessage.className = 'status-message';
             statusMessage.style.display = 'none';
 
@@ -255,25 +267,25 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    statusMessage.textContent = '送信が完了しました。ありがとうございます！';
+                    statusMessage.textContent = __t('inquiry.success', '送信が完了しました。ありがとうございます！');
                     statusMessage.className = 'status-message success';
                     form.reset();
                     // 送信時刻を記録
                     localStorage.setItem('lastInquiryTime', Date.now().toString());
                 } else if (response.status === 400) {
                     // Gemini による不適切コンテンツ判定
-                    statusMessage.textContent = '⚠️ ' + (data.error || '不適切な内容が含まれているため送信できません');
+                    statusMessage.textContent = '⚠️ ' + (data.error || __t('inquiry.error_inappropriate', '不適切な内容が含まれているため送信できません'));
                     statusMessage.className = 'status-message warning';
                 } else {
-                    throw new Error(data.error || '送信に失敗しました');
+                    throw new Error(data.error || __t('inquiry.error_failed', '送信に失敗しました'));
                 }
             } catch (error) {
                 console.error('Error:', error);
-                statusMessage.textContent = error.message || 'エラーが発生しました。もう一度お試しください。';
+                statusMessage.textContent = error.message || __t('inquiry.error_generic', 'エラーが発生しました。もう一度お試しください。');
                 statusMessage.className = 'status-message error';
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 送信する';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + __t('inquiry.submit', '送信する');
             }
         });
     </script>

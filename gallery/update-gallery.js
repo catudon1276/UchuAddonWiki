@@ -16,20 +16,25 @@ const OUTPUT_FILE = path.join(__dirname, 'gallery.json');
 // 使用するカテゴリのみ定義
 const CATEGORY_CONFIG = {
     'logo': {
-        name: 'タイトル',
+        name: { ja: 'タイトル', en: 'Title' },
         description: 'UchuAddonの公式ロゴ',
         order: 1,
-        fixedFiles: ['UchuAddonTitleLogo.png','UchuAddonTitleFront.png']  // 固定ファイル
-    },
-    'roleimage': {
-        name: '役職立ち絵',
-        description: '役職詳細ページの背景画像・立ち絵',
-        order: 2
+        fixedFiles: ['UchuAddonTitleLogo.png','UchuAddonTitleFront.png']
     },
     'rolebutton': {
-        name: '能力ボタン',
+        name: { ja: '能力ボタン', en: 'Ability Buttons' },
         description: '役職の能力ボタン画像',
+        order: 2
+    },
+    'roleimage': {
+        name: { ja: '役職立ち絵', en: 'Role Artwork' },
+        description: '役職詳細ページの背景画像・立ち絵',
         order: 3
+    },
+    'promotionart': {
+        name: { ja: 'プロモーションアート', en: 'Promotion Art' },
+        description: 'プロモーション用イラスト',
+        order: 4
     }
 };
 

@@ -3,33 +3,66 @@
     "icon": "Alchemist.png",
     "illust": "Alchemist.png",
     "english_name": "Alchemist",
-    "name": "アルケミスト",
+    "name": {
+        "ja": "アルケミスト",
+        "en": "Alchemist"
+    },
     "team": "クルーメイト",
     "color": "42, 44, 80",
-    "intro": "死への調和",
-    "description": "死体を錬金し、錬金弾を作成するクルーメイトです。",
-    "abilities_title": "錬金術",
+    "intro": {
+        "ja": "死への調和",
+        "en": "Harmony with Death"
+    },
+    "description": {
+        "ja": "死体を錬金し、錬金弾を作成するクルーメイトです。",
+        "en": "A Crewmate who performs alchemy on dead bodies to create alchemy bullets."
+    },
+    "abilities_title": {
+        "ja": "錬金術",
+        "en": "Alchemy"
+    },
     "abilities": [
         {
             "button": "Alchemy.png",
-            "name": "錬金",
-            "description": "死体を錬金し、錬金弾を作成します。"
+            "name": {
+                "ja": "錬金",
+                "en": "Alchemy"
+            },
+            "description": {
+                "ja": "死体を錬金し、錬金弾を作成します。",
+                "en": "Performs alchemy on a dead body to create an alchemy bullet."
+            }
         },
         {
             "button": "AlchemyBullet.png",
-            "name": "錬金弾",
-            "description": "会議中に使用できる錬金弾です。\n選択したプレイヤーをキルします。"
+            "name": {
+                "ja": "錬金弾",
+                "en": "Alchemy Bullet"
+            },
+            "description": {
+                "ja": "会議中に使用できる錬金弾です。\n選択したプレイヤーをキルします。",
+                "en": "An alchemy bullet that can be used during a meeting.\nKills the selected player."
+            }
         }
     ],
     "options": [
         {
-            "name": "錬金クールダウン"
+            "name": {
+                "ja": "錬金クールダウン",
+                "en": "Alchemy Cooldown"
+            }
         },
         {
-            "name": "一度の錬金で手に入る錬金弾"
+            "name": {
+                "ja": "一度の錬金で手に入る錬金弾",
+                "en": "Alchemy Bullets Gained per Alchemy"
+            }
         },
         {
-            "name": "1会議の最大弾数"
+            "name": {
+                "ja": "1会議の最大弾数",
+                "en": "Maximum Bullets per Meeting"
+            }
         }
     ],
     "from": "Original"

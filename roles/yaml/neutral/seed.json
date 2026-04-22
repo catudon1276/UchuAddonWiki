@@ -1,43 +1,85 @@
-﻿{
+{
     "id": "seed",
     "icon": "Seed.png",
     "illust": "Seed.png",
     "english_name": "Seed",
-    "name": "シード",
+    "name": {
+        "ja": "シード",
+        "en": "Seed"
+    },
     "team": "ニュートラル",
     "color": "106, 178, 189",
-    "intro": "涙の花",
-    "description": "共生相手と共に勝利する第三陣営です。",
-    "abilities_title": "咲き始めのクローバー",
+    "intro": {
+        "ja": "涙の花",
+        "en": "Flower of Tears"
+    },
+    "description": {
+        "ja": "共生相手と共に勝利する第三陣営です。",
+        "en": "A third-party faction who wins alongside a symbiotic partner."
+    },
+    "abilities_title": {
+        "ja": "咲き始めのクローバー",
+        "en": "Budding Clover"
+    },
     "abilities": [
         {
             "button": "SeedButton.png",
-            "name": "共生",
-            "description": "対象と共生します。共生相手と共に勝利することが出来ます。"
+            "name": {
+                "ja": "共生",
+                "en": "Symbiosis"
+            },
+            "description": {
+                "ja": "対象と共生します。共生相手と共に勝利することが出来ます。",
+                "en": "Enters a symbiotic bond with the target. You can win alongside your symbiotic partner."
+            }
         }
     ],
     "options": [
         {
-            "name": "共生クールダウン"
+            "name": {
+                "ja": "共生クールダウン",
+                "en": "Symbiosis Cooldown"
+            }
         },
         {
-            "name": "共生使用可能回数"
+            "name": {
+                "ja": "共生使用可能回数",
+                "en": "Number of Symbiosis Uses"
+            }
         },
         {
-            "name": "死亡時勝利ブロック"
+            "name": {
+                "ja": "死亡時勝利ブロック",
+                "en": "Block Win on Death"
+            }
         },
         {
-            "name": "シードゲージ",
-            "description": "勝利にシードゲージを必要にします。",
+            "name": {
+                "ja": "シードゲージ",
+                "en": "Seed Gauge"
+            },
+            "description": {
+                "ja": "勝利にシードゲージを必要にします。",
+                "en": "Requires the Seed Gauge for victory."
+            },
             "options": [
                 {
-                    "name": "勝利に必要なゲージ量"
+                    "name": {
+                        "ja": "勝利に必要なゲージ量",
+                        "en": "Gauge Amount Required to Win"
+                    }
                 },
                 {
-                    "name": "余剰ゲージ量"
+                    "name": {
+                        "ja": "余剰ゲージ量",
+                        "en": "Surplus Gauge Amount"
+                    }
                 },
                 {
-                    "name": "シードゲージの減少速度"
+                    "name": {
+                        "ja": "シードゲージの減少速度",
+                        "en": "Seed Gauge Decay Rate"
+                    }
                 }
             ]
         }

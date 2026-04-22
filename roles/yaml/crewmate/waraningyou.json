@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "waraningyou",
     "icon": "Waraningyou.png",
     "illust": "Waraningyou.png",
     "english_name": "Waraningyou",
-    "name": "わら人形",
+    "name": {
+        "ja": "わら人形",
+        "en": "Straw Doll"
+    },
     "team": "クルーメイト",
     "color": "163, 149, 112",
-    "intro": "人を呪わば穴二つ",
-    "description": "自身への投票を蓄積するクルーメイトです。",
-    "abilities_title": "呪い",
+    "intro": {
+        "ja": "人を呪わば穴二つ",
+        "en": "Curses, Like Chickens, Come Home to Roost"
+    },
+    "description": {
+        "ja": "自身への投票を蓄積するクルーメイトです。",
+        "en": "A Crewmate who accumulates votes cast against themselves."
+    },
+    "abilities_title": {
+        "ja": "呪い",
+        "en": "Curse"
+    },
     "abilities": [
         {
             "button": "CurseButton.png",
-            "name": "呪う",
-            "description": "蓄積した投票数を使い、次の会議で特定の行動を行います。"
+            "name": {
+                "ja": "呪う",
+                "en": "Curse"
+            },
+            "description": {
+                "ja": "蓄積した投票数を使い、次の会議で特定の行動を行います。",
+                "en": "Uses accumulated votes to perform a specific action in the next meeting."
+            }
         }
     ],
     "options": [
         {
-            "name": "呪う使用時スキップ投票可能"
+            "name": {
+                "ja": "呪う使用時スキップ投票可能",
+                "en": "Can Vote Skip When Using Curse"
+            }
         },
         {
-            "name": "票数の初期値"
+            "name": {
+                "ja": "票数の初期値",
+                "en": "Initial Vote Count"
+            }
         }
     ],
     "from": "Original"

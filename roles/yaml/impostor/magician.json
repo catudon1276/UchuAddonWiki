@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "magician",
     "icon": "Magician.png",
     "illust": "Magician.png",
     "english_name": "Magician",
-    "name": "マジシャン",
+    "name": {
+        "ja": "マジシャン",
+        "en": "Magician"
+    },
     "team": "インポスター",
     "color": "198, 17, 17",
-    "intro": "奇術の使い手",
-    "description": "プレイヤーの位置をシャッフルするインポスターです。",
-    "abilities_title": "マジック",
+    "intro": {
+        "ja": "奇術の使い手",
+        "en": "Master of Illusions"
+    },
+    "description": {
+        "ja": "プレイヤーの位置をシャッフルするインポスターです。",
+        "en": "An Impostor who shuffles players' positions."
+    },
+    "abilities_title": {
+        "ja": "マジック",
+        "en": "Magic"
+    },
     "abilities": [
         {
             "button": "MagicButton.png",
-            "name": "マジック",
-            "description": "プレイヤーの位置をシャッフルします。"
+            "name": {
+                "ja": "マジック",
+                "en": "Magic"
+            },
+            "description": {
+                "ja": "プレイヤーの位置をシャッフルします。",
+                "en": "Shuffles the positions of players."
+            }
         }
     ],
     "options": [
         {
-            "name": "マジッククールダウン"
+            "name": {
+                "ja": "マジッククールダウン",
+                "en": "Magic Cooldown"
+            }
         },
         {
-            "name": "マジック使用可能回数"
+            "name": {
+                "ja": "マジック使用可能回数",
+                "en": "Number of Magic Uses"
+            }
         }
     ],
     "from": "ExR"

@@ -1,43 +1,85 @@
-﻿{
+{
     "id": "chicken",
     "icon": "Chicken.png",
     "illust": "Chicken.png",
     "english_name": "Chicken",
-    "name": "チキン",
+    "name": {
+        "ja": "チキン",
+        "en": "Chicken"
+    },
     "team": "モディファイア",
     "color": "255, 238, 0",
-    "intro": "あなたは臆病者",
-    "description": "とても臆病で貧弱なモディファイアです。",
-    "abilities_title": "貧弱",
+    "intro": {
+        "ja": "あなたは臆病者",
+        "en": "You Are a Coward"
+    },
+    "description": {
+        "ja": "とても臆病で貧弱なモディファイアです。",
+        "en": "A very timid and fragile modifier."
+    },
+    "abilities_title": {
+        "ja": "貧弱",
+        "en": "Frailty"
+    },
     "abilities": [
         {
             "button": "NoImage.png",
-            "name": "貧弱体質",
-            "description": "ドアに挟まれる・落下・転落・停電の錯乱・ベントの転倒・投票による恐怖など、様々な原因で死んでしまいます。"
+            "name": {
+                "ja": "貧弱体質",
+                "en": "Frail Constitution"
+            },
+            "description": {
+                "ja": "ドアに挟まれる・落下・転落・停電の錯乱・ベントの転倒・投票による恐怖など、様々な原因で死んでしまいます。",
+                "en": "Can die from many causes — being crushed by doors, falling, tumbling, panic during blackouts, tripping on vents, or fear from voting."
+            }
         }
     ],
     "options": [
         {
-            "name": "死因の設定"
+            "name": {
+                "ja": "死因の設定",
+                "en": "Cause of Death Settings"
+            }
         },
         {
-            "name": "ベント確率"
+            "name": {
+                "ja": "ベント確率",
+                "en": "Vent Chance"
+            }
         },
         {
-            "name": "はしご確率"
+            "name": {
+                "ja": "はしご確率",
+                "en": "Ladder Chance"
+            }
         },
         {
-            "name": "ジップライン確率"
+            "name": {
+                "ja": "ジップライン確率",
+                "en": "Zipline Chance"
+            }
         },
         {
-            "name": "昇降機確率"
+            "name": {
+                "ja": "昇降機確率",
+                "en": "Elevator Chance"
+            }
         },
         {
-            "name": "ドア確率"
+            "name": {
+                "ja": "ドア確率",
+                "en": "Door Chance"
+            }
         },
         {
-            "name": "死亡する停電経過時間",
-            "description": "停電が何秒継続したら死亡するかを設定します。"
+            "name": {
+                "ja": "死亡する停電経過時間",
+                "en": "Blackout Duration Before Death"
+            },
+            "description": {
+                "ja": "停電が何秒継続したら死亡するかを設定します。",
+                "en": "Sets how many seconds of blackout before death occurs."
+            }
         }
     ],
     "from": "SNR"

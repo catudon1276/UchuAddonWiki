@@ -1,26 +1,35 @@
 {
-  "_comment": "UchuAddon デイリーログ - 新しい更新は配列の先頭に追加してください",
+  "_comment": "UchuAddon デイリーログ - 新しい更新は配列の先頭に追加してください。title/description は {ja, en} オブジェクトで各言語を記述。",
   "updates": [
     {
       "date": "2026-04-18",
-      "title": "Ver.1 リリース",
-      "description": "Ver.1を正式リリースしました。全てのプレイヤーが利用可能になりました。お楽しみください！",
+      "title": { "ja": "Ver.1 リリース", "en": "Ver.1 Released" },
+      "description": {
+        "ja": "Ver.1を正式リリースしました。全てのプレイヤーが利用可能になりました。お楽しみください！",
+        "en": "Ver.1 has been officially released. It is now available to all players. Enjoy!"
+      },
       "tags": [
         "Release"
       ]
     },
     {
       "date": "2026-01-16",
-      "title": "Wikiサイト開設",
-      "description": "UchuAddonの公式Wikiサイトを公開しました。役職情報やリソースギャラリーを閲覧できます。",
+      "title": { "ja": "Wikiサイト開設", "en": "Wiki Site Launched" },
+      "description": {
+        "ja": "UchuAddonの公式Wikiサイトを公開しました。役職情報やリソースギャラリーを閲覧できます。",
+        "en": "The official Uchu Addon Wiki site has been launched. You can browse role information and the resource gallery."
+      },
       "tags": [
         "Wiki"
       ]
     },
     {
       "date": "2025-11-09",
-      "title": "Ver β1.0.0 リリース",
-      "description": "限定ベータテスターによる動作確認を開始しました。",
+      "title": { "ja": "Ver β1.0.0 リリース", "en": "Ver β1.0.0 Released" },
+      "description": {
+        "ja": "限定ベータテスターによる動作確認を開始しました。",
+        "en": "Limited beta testing has begun with selected testers."
+      },
       "tags": [
         "Beta",
         "Test"
@@ -28,8 +37,11 @@
     },
     {
       "date": "2025-11-04",
-      "title": "開発開始",
-      "description": "UchuAddonプロジェクトの開発を開始しました。",
+      "title": { "ja": "開発開始", "en": "Development Started" },
+      "description": {
+        "ja": "UchuAddonプロジェクトの開発を開始しました。",
+        "en": "Development of the Uchu Addon project has begun."
+      },
       "tags": [
         "Development"
       ]

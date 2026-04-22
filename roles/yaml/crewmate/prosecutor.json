@@ -1,27 +1,51 @@
-﻿{
+{
     "id": "prosecutor",
     "icon": "Prosecutor.png",
     "illust": "Prosecutor.png",
     "english_name": "Prosecutor",
-    "name": "プロセキューター",
+    "name": {
+        "ja": "プロセキューター",
+        "en": "Prosecutor"
+    },
     "team": "クルーメイト",
     "color": "52, 119, 235",
-    "intro": "地獄で会おうぜ",
-    "description": "プレイヤーを強制追放します。",
-    "abilities_title": "有罪判決",
+    "intro": {
+        "ja": "地獄で会おうぜ",
+        "en": "See You in Hell"
+    },
+    "description": {
+        "ja": "プレイヤーを強制追放します。",
+        "en": "Forcibly ejects a player."
+    },
+    "abilities_title": {
+        "ja": "有罪判決",
+        "en": "Guilty Verdict"
+    },
     "abilities": [
         {
             "button": "ProsecutorButton.png",
-            "name": "プロセキュート",
-            "description": "使用後、投票したプレイヤーを強制追放します。"
+            "name": {
+                "ja": "プロセキュート",
+                "en": "Prosecute"
+            },
+            "description": {
+                "ja": "使用後、投票したプレイヤーを強制追放します。",
+                "en": "After use, the player you voted for is forcibly ejected."
+            }
         }
     ],
     "options": [
         {
-            "name": "プロセキュート使用可能回数"
+            "name": {
+                "ja": "プロセキュート使用可能回数",
+                "en": "Number of Prosecute Uses"
+            }
         },
         {
-            "name": "対象がクルーメイトの場合死亡する"
+            "name": {
+                "ja": "対象がクルーメイトの場合死亡する",
+                "en": "Dies If the Target Is a Crewmate"
+            }
         }
     ],
     "from": "TOU"

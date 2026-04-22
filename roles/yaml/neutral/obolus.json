@@ -1,53 +1,107 @@
-﻿{
+{
     "id": "obolus",
     "icon": "Obolus.png",
     "illust": "Obolus.png",
     "english_name": "Obolus",
-    "name": "オボルス",
+    "name": {
+        "ja": "オボルス",
+        "en": "Obolus"
+    },
     "team": "ニュートラル",
     "color": "189, 135, 26",
-    "intro": "最後の一撃",
-    "description": "インポスターをキルすると勝利します。ただし、キルは1ターンに1度しか行えません。",
-    "abilities_title": "暗殺",
+    "intro": {
+        "ja": "最後の一撃",
+        "en": "The Final Strike"
+    },
+    "description": {
+        "ja": "インポスターをキルすると勝利します。ただし、キルは1ターンに1度しか行えません。",
+        "en": "Wins by killing an Impostor. However, kills can only be performed once per round."
+    },
+    "abilities_title": {
+        "ja": "暗殺",
+        "en": "Assassination"
+    },
     "abilities": [
         {
             "button": "KillButtonOrange.png",
-            "name": "キル",
-            "description": "インポスターをキルします。キルは1ターンに1度しか行えません。"
+            "name": {
+                "ja": "キル",
+                "en": "Kill"
+            },
+            "description": {
+                "ja": "インポスターをキルします。キルは1ターンに1度しか行えません。",
+                "en": "Kills an Impostor. Kills can only be performed once per round."
+            }
         }
     ],
     "options": [
         {
-            "name": "キルクールダウン"
+            "name": {
+                "ja": "キルクールダウン",
+                "en": "Kill Cooldown"
+            }
         },
         {
-            "name": "キル封印ターン数",
-            "description": "<b>設定ターン</b>が経過するまで、キルボタンをロックします"
+            "name": {
+                "ja": "キル封印ターン数",
+                "en": "Rounds Kill is Sealed"
+            },
+            "description": {
+                "ja": "<b>設定ターン</b>が経過するまで、キルボタンをロックします",
+                "en": "Locks the Kill button until the <b>configured number of rounds</b> has passed."
+            }
         },
         {
-            "name": "隠れているプレイヤーをキル可能"
+            "name": {
+                "ja": "隠れているプレイヤーをキル可能",
+                "en": "Can Kill Hidden Players"
+            }
         },
         {
-            "name": "インポスター視界"
+            "name": {
+                "ja": "インポスター視界",
+                "en": "Impostor Vision"
+            }
         },
         {
-            "name": "停電の影響を受けない"
+            "name": {
+                "ja": "停電の影響を受けない",
+                "en": "Unaffected by Blackouts"
+            }
         },
         {
-            "name": "追加勝利",
-            "description": "勝利条件を満たすと追加勝利するようになります。"
+            "name": {
+                "ja": "追加勝利",
+                "en": "Additional Win"
+            },
+            "description": {
+                "ja": "勝利条件を満たすと追加勝利するようになります。",
+                "en": "Grants an additional win when the win condition is met."
+            }
         },
         {
-            "name": "勝利拡張設定"
+            "name": {
+                "ja": "勝利拡張設定",
+                "en": "Extended Win Settings"
+            }
         },
         {
-            "name": "<color=#08bef5>ジャッカル</color>へのキルでも勝利可能"
+            "name": {
+                "ja": "<color=#08bef5>ジャッカル</color>へのキルでも勝利可能",
+                "en": "Can Also Win by Killing <color=#08bef5>Jackal</color>"
+            }
         },
         {
-            "name": "<color=#b98900>タイラント</color>へのキルでも勝利可能"
+            "name": {
+                "ja": "<color=#b98900>タイラント</color>へのキルでも勝利可能",
+                "en": "Can Also Win by Killing <color=#b98900>Tyrant</color>"
+            }
         },
         {
-            "name": "<color=#bd871a>オボルス</color>へのキルでも勝利可能"
+            "name": {
+                "ja": "<color=#bd871a>オボルス</color>へのキルでも勝利可能",
+                "en": "Can Also Win by Killing <color=#bd871a>Obolus</color>"
+            }
         }
     ],
     "from": "Original"
