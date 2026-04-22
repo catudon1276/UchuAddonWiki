@@ -15,8 +15,8 @@
     },
     "rolebutton": {
         "name": {
-            "ja": "能力ボタン",
-            "en": "Ability Buttons"
+            "ja": "ゲーム内イラスト",
+            "en": "In-Game Assets"
         },
         "description": "役職の能力ボタン画像",
         "images": [

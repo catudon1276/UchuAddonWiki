@@ -22,8 +22,8 @@ const CATEGORY_CONFIG = {
         fixedFiles: ['UchuAddonTitleLogo.png','UchuAddonTitleFront.png']
     },
     'rolebutton': {
-        name: { ja: '能力ボタン', en: 'Ability Buttons' },
-        description: '役職の能力ボタン画像',
+        name: { ja: 'ゲーム内イラスト', en: 'In-Game Assets' },
+        description: 'ゲーム内で使用されるイラスト・アセット',
         order: 2
     },
     'roleimage': {
