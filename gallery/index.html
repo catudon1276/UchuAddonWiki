@@ -362,22 +362,32 @@
         }
 
         .modal-btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            background: #ffffff;
+            color: #0f172a;
             border: none;
-            border-radius: 12px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         .modal-btn:hover {
-            transform: translateY(-2px);
+            opacity: 0.85;
+            transform: translateY(-1px);
         }
 
         .modal-btn.close-btn {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        .modal-btn.close-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
         }
 
         /* プロモーションアート：横A4想定・3列表示 */
@@ -424,10 +434,10 @@
     <div id="header"></div>
 
     <div class="hero-section">
-        <h1 class="hero-title"><i class="fas fa-images me-3"></i> <span data-i18n="gallery.section_title">GALLERY</span></h1>
+        <h1 class="hero-title"><i class="fas fa-images" style="margin-right:0.5rem;"></i><span data-i18n="gallery.section_title">GALLERY</span></h1>
 
         <div class="terms-section">
-            <h3 class="terms-title"><i class="fas fa-file-contract me-2"></i><span data-i18n="gallery.terms_title">ご利用規約</span></h3>
+            <h3 class="terms-title"><i class="fas fa-file-contract" style="margin-right:0.5rem;"></i><span data-i18n="gallery.terms_title">ご利用規約</span></h3>
             <div class="terms-content">
                 <p class="terms-intro" data-i18n="gallery.terms_intro">本アドオンで登場するボタンやイラストです。配信や動画でお使いいただけます。</p>
 
@@ -473,8 +483,8 @@
         <div class="modal-content">
             <img id="modalImage" class="modal-image" src="" alt="">
             <div class="modal-controls">
-                <button id="modalDownloadBtn" class="modal-btn"><i class="fas fa-download me-2"></i><span data-i18n="gallery.modal_download">ダウンロード</span></button>
-                <button id="modalCloseBtn" class="modal-btn close-btn"><i class="fas fa-times me-2"></i><span data-i18n="gallery.modal_close">閉じる</span></button>
+                <button id="modalDownloadBtn" class="modal-btn"><i class="fas fa-download"></i><span data-i18n="gallery.modal_download">ダウンロード</span></button>
+                <button id="modalCloseBtn" class="modal-btn close-btn"><i class="fas fa-times"></i><span data-i18n="gallery.modal_close">閉じる</span></button>
             </div>
         </div>
     </div>

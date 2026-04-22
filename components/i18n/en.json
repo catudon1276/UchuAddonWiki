@@ -29,7 +29,7 @@
     "nav_inquiry": "Contact",
     "discover_title": "Discover More",
     "bottom_project": "<strong>Uchu Addon</strong> - Among Us Addon Project",
-    "bottom_rights": "© 2026 UchuAddonWiki. All rights reserved."
+    "bottom_rights": "© 2026 Uchu Addon Wiki. All rights reserved."
   },
   "home": {
     "addon_info_html": "<span class=\"addon-info-highlight\">Uchu Addon</span> is an addon for the Among Us MOD \"Nebula on the Ship\".<br>It adds new roles and game modes for a broader gameplay experience.",
@@ -74,7 +74,7 @@
     "modal_open_link": "Open link",
     "guideline_toggle": "Guidelines for porting / secondary use",
     "guideline_1_title": "1. Role ideas and specifications",
-    "guideline_1_body_html": "<span style=\"font-weight:600;\">Porting permission:</span> We do not claim copyright over the ideas, gameplay, or logic of roles originally designed by UchuAddon. You may freely port them to other environments or create modified versions.<br>However, this does not apply to roles derived from other MODs. Please refer to \"3. Roles derived from other MODs\" below.",
+    "guideline_1_body_html": "<span style=\"font-weight:600;\">Porting permission:</span> We do not claim copyright over the ideas, gameplay, or logic of roles originally designed by Uchu Addon. You may freely port them to other environments or create modified versions.<br>However, this does not apply to roles derived from other MODs. Please refer to \"3. Roles derived from other MODs\" below.",
     "guideline_2_title": "2. Proprietary resources are not reusable",
     "guideline_2_body_html": "<span style=\"font-weight:600;\">Prohibited:</span> Extracting the button illustrations, images, effects, textures, and other resources included in this addon (as-is or modified) and porting/using them in other MODs or projects is strictly prohibited.",
     "guideline_3_title": "3. Roles derived from other MODs",
