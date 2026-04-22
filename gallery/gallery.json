@@ -1,9 +1,12 @@
 {
     "_comment": "ギャラリーページで表示する画像リスト。このファイルは自動生成されています。",
     "_update_info": "resourceフォルダに画像を追加すると、GitHub Actions経由で自動更新されます",
-    "_generated_at": "2026-04-22T00:00:00.000Z",
+    "_generated_at": "2026-04-22T05:22:15.101Z",
     "logo": {
-        "name": { "ja": "タイトル", "en": "Title" },
+        "name": {
+            "ja": "タイトル",
+            "en": "Title"
+        },
         "description": "UchuAddonの公式ロゴ",
         "images": [
             "UchuAddonTitleLogo.png",
@@ -11,8 +14,11 @@
         ]
     },
     "rolebutton": {
-        "name": { "ja": "ゲーム内イラスト", "en": "Assets" },
-        "description": "役職の能力ボタンなどのゲーム内登場するイラスト",
+        "name": {
+            "ja": "能力ボタン",
+            "en": "Ability Buttons"
+        },
+        "description": "役職の能力ボタン画像",
         "images": [
             "AdmiralSkillButton.png",
             "Alchemy.png",
@@ -121,8 +127,11 @@
         ]
     },
     "roleimage": {
-        "name": { "ja": "役職立ち絵", "en": "Role Artwork" },
-        "description": "役職の立ち絵イラスト",
+        "name": {
+            "ja": "役職立ち絵",
+            "en": "Role Artwork"
+        },
+        "description": "役職詳細ページの背景画像・立ち絵",
         "images": [
             "Admiral.png",
             "Alchemist.png",
@@ -151,6 +160,7 @@
             "Express.png",
             "Forensics.png",
             "Gloom.png",
+            "Guest.png",
             "Guts.png",
             "Harvester.png",
             "Hex.png",
@@ -195,7 +205,6 @@
             "Toughness.png",
             "Trigger.png",
             "Tuna.png",
-            "Uchu__20260329183105.png",
             "Vampire.png",
             "Visor.png",
             "Voyager.png",
@@ -203,12 +212,19 @@
             "Warlock.png",
             "Watcher.png",
             "Witch.png",
-            "Xinobi.png"
+            "Xinobi.png",
+            "nova.png"
         ]
     },
     "promotionart": {
-        "name": { "ja": "プロモーションアート", "en": "Promotion Art" },
+        "name": {
+            "ja": "プロモーションアート",
+            "en": "Promotion Art"
+        },
         "description": "プロモーション用イラスト",
-        "images": []
+        "images": [
+            "PV1 - Art1.png",
+            "PV1 - Art2.png"
+        ]
     }
 }
