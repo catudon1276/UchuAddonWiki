@@ -2,7 +2,7 @@
   "_comment": "UchuAddon デイリーログ - 新しい更新は配列の先頭に追加してください。title/description は {ja, en} オブジェクトで各言語を記述。",
   "updates": [
     {
-      "date": "2026-04-18",
+      "date": "2026-04-24",
       "title": { "ja": "Ver.1 リリース", "en": "Ver.1 Released" },
       "description": {
         "ja": "Ver.1を正式リリースしました。全てのプレイヤーが利用可能になりました。お楽しみください！",

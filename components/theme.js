@@ -25,7 +25,7 @@ function updateIcon() {
     const icon = document.getElementById('themeIcon');
     if (!icon) return;
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
 }
 
 // ヘッダー読み込み後にアイコンを合わせる

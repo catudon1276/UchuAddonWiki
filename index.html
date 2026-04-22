@@ -168,6 +168,51 @@
             width: 100%; height: 100%;
         }
 
+        .yt-facade {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            cursor: pointer;
+            background: #000;
+        }
+
+        .yt-facade img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.2s;
+        }
+
+        .yt-facade:hover img {
+            opacity: 0.85;
+        }
+
+        .yt-facade .yt-play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 68px; height: 48px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            pointer-events: none;
+        }
+
+        .yt-facade:hover .yt-play-btn {
+            background: #ff0000;
+        }
+
+        .yt-facade .yt-play-btn::after {
+            content: '';
+            border-style: solid;
+            border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent #fff;
+            margin-left: 4px;
+        }
+
         .movie-desc {
             color: var(--uchu-text-secondary);
             text-align: center;
@@ -515,36 +560,7 @@
                 <button class="carousel-btn carousel-prev" id="moviePrev">
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <div class="movie-carousel">
-                    <div class="movie-slide active">
-                        <div class="movie-container">
-                            <div class="movie-wrapper">
-                                <iframe
-                                    src="https://www.youtube.com/embed/ZUwTMQ8izjU"
-                                    title="UchuAddon PV1 ~ 始動"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowfullscreen>
-                                </iframe>
-                            </div>
-                            <p class="movie-desc" data-i18n="home.movie1_desc">UchuAddon Ver.1 のPVです。</p>
-                        </div>
-                    </div>
-                    <div class="movie-slide">
-                        <div class="movie-container">
-                            <div class="movie-wrapper">
-                                <iframe
-                                    src="https://www.youtube.com/embed/ZUwTMQ8izjU"
-                                    title="UchuAddon PV1 ~ START"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowfullscreen>
-                                </iframe>
-                            </div>
-                            <p class="movie-desc" data-i18n="home.movie2_desc">UchuAddon Ver.1 のPVです。英語版となっております。</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="movie-carousel" id="movieCarousel"></div>
                 <button class="carousel-btn carousel-next" id="movieNext">
                     <i class="fas fa-chevron-right"></i>
                 </button>
@@ -660,36 +676,106 @@
         fetch('components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
         fetch('components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
 
-        // 動画カルーセル
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.movie-slide');
-        const indicators = document.querySelectorAll('.indicator');
+        // ── 動画リスト ──────────────────────────────
+        // ja/en それぞれ url と desc を設定。en がなければ ja にフォールバック。
+        const MOVIES = [
+            {
+                ja: { url: 'https://www.youtube.com/embed/aeStO4EYixA', desc: 'UchuAddon Ver.1 のPVです。' },
+                en: { url: 'https://www.youtube.com/embed/RtyvGr9iyH0', desc: 'PV for UchuAddon Ver.1.' },
+            },
+            {
+                ja: { url: 'https://www.youtube.com/embed/ZUwTMQ8izjU', desc: '魔法少女之魔女裁判コスチューム動画です。※UchuAddonは無関係です。' },
+                en: { url: 'https://www.youtube.com/embed/ZUwTMQ8izjU', desc: 'Video of "Magical Girl Witch Trials" Costume.※UchuAddon is unrelated.' }
+            },
+        ];
+        // ─────────────────────────────────────────
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
-            indicators.forEach((indicator, i) => {
-                indicator.classList.toggle('active', i === index);
+        let currentSlide = 0;
+        const carousel = document.getElementById('movieCarousel');
+        const indicatorContainer = document.getElementById('movieIndicators');
+
+        function getLang() {
+            try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; }
+        }
+
+        function getVisibleMovies() {
+            const lang = getLang();
+            return MOVIES.map(m => m[lang] || m.ja); // en がなければ ja にフォールバック
+        }
+
+        function videoIdFromUrl(url) {
+            const m = url.match(/\/embed\/([^?&]+)/);
+            return m ? m[1] : '';
+        }
+
+        function buildCarousel() {
+            const movies = getVisibleMovies();
+            currentSlide = 0;
+
+            carousel.innerHTML = movies.map((m, i) => {
+                const vid = videoIdFromUrl(m.url);
+                const thumb = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
+                const iframeUrl = m.url + (m.url.includes('?') ? '&' : '?') + 'autoplay=1';
+                return `
+                <div class="movie-slide${i === 0 ? ' active' : ''}">
+                    <div class="movie-container">
+                        <div class="movie-wrapper">
+                            <div class="yt-facade" data-url="${iframeUrl}">
+                                <img src="${thumb}"
+                                     onerror="this.src='https://img.youtube.com/vi/${vid}/hqdefault.jpg'"
+                                     alt="">
+                                <div class="yt-play-btn"></div>
+                            </div>
+                        </div>
+                        <p class="movie-desc">${m.desc}</p>
+                    </div>
+                </div>`;
+            }).join('');
+
+            indicatorContainer.innerHTML = movies.map((_, i) =>
+                `<span class="indicator${i === 0 ? ' active' : ''}" data-index="${i}"></span>`
+            ).join('');
+
+            indicatorContainer.querySelectorAll('.indicator').forEach(dot => {
+                dot.addEventListener('click', () => { currentSlide = +dot.dataset.index; showSlide(); });
             });
         }
 
+        function showSlide() {
+            carousel.querySelectorAll('.movie-slide').forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+            indicatorContainer.querySelectorAll('.indicator').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+        }
+
         document.getElementById('moviePrev').addEventListener('click', () => {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(currentSlide);
+            currentSlide = (currentSlide - 1 + getVisibleMovies().length) % getVisibleMovies().length;
+            showSlide();
         });
 
         document.getElementById('movieNext').addEventListener('click', () => {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
+            currentSlide = (currentSlide + 1) % getVisibleMovies().length;
+            showSlide();
         });
 
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                currentSlide = index;
-                showSlide(currentSlide);
-            });
+        carousel.addEventListener('click', e => {
+            const facade = e.target.closest('.yt-facade');
+            if (!facade) return;
+            const url = facade.dataset.url;
+            const wrapper = facade.parentElement;
+            facade.remove();
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.allowFullscreen = true;
+            iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
+            wrapper.appendChild(iframe);
         });
+
+        document.addEventListener('click', e => {
+            if (e.target.closest && e.target.closest('.lang-switch-btn')) setTimeout(buildCarousel, 50);
+        });
+
+        buildCarousel();
 
         // ニュース表示
         let __newsCache = null;

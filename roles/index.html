@@ -496,6 +496,11 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
+        /* 役職固有の名称など、大文字化したくない部分用 */
+        .section-title .section-title-dynamic {
+            text-transform: none;
+            letter-spacing: normal;
+        }
 
         .ability-item {
             background: rgba(244, 246, 250, 0.7);
@@ -1032,10 +1037,11 @@
                 }).join('');
 
                 // abilities_title があれば「固有能力 〇〇」、なければ「固有能力」
+                // 固定ラベル(__abilities)は uppercase、役職固有名(__abilitiesTitleLocal)は元表記のまま
                 const __abilities = __t('roles.modal_abilities', '固有能力');
                 const __abilitiesTitleLocal = __pickA(role.abilities_title);
                 const abilitiesSectionTitle = __abilitiesTitleLocal
-                    ? `${__abilities} ${__abilitiesTitleLocal}`
+                    ? `${__abilities} <span class="section-title-dynamic">${__abilitiesTitleLocal}</span>`
                     : __abilities;
 
                 abilitiesHTML = `
