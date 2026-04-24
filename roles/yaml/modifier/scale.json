@@ -33,79 +33,62 @@
             }
         }
     ],
-    "options": [
+"options": [
         {
             "name": {
-                "ja": "サイズ設定",
-                "en": "Size Settings"
+                "ja": "<b>サイズ設定</b>",
+                "en": "<b>Size Settings</b>"
             }
         },
         {
             "name": {
                 "ja": "サイズ設定方法",
-                "en": "Size Configuration Method"
+                "en": "Size Setting Method"
             },
             "options": [
                 {
                     "name": {
-                        "ja": "サイズ",
-                        "en": "Size"
+                        "ja": "固定",
+                        "en": "Fixed"
                     }
                 },
                 {
                     "name": {
-                        "ja": "最大サイズ",
-                        "en": "Maximum Size"
+                        "ja": "ランダム",
+                        "en": "Random"
                     }
                 },
                 {
                     "name": {
-                        "ja": "最小サイズ",
-                        "en": "Minimum Size"
-                    }
-                },
-                {
-                    "name": {
-                        "ja": "会議後に再抽選",
-                        "en": "Re-randomize After Meetings"
-                    }
-                },
-                {
-                    "name": {
-                        "ja": "セレクト枠数",
-                        "en": "Number of Select Slots"
-                    }
-                },
-                {
-                    "name": {
-                        "ja": "選出枠",
-                        "en": "Selection Slot"
-                    }
-                },
-                {
-                    "name": {
-                        "ja": "会議後に再選出",
-                        "en": "Reselect After Meetings"
+                        "ja": "選出",
+                        "en": "Selected"
                     }
                 }
             ]
         },
         {
             "name": {
-                "ja": "固定",
-                "en": "Fixed"
+                "ja": "サイズ",
+                "en": "Size"
+            },
+            "description": ""
+        },
+        {
+            "name": {
+                "ja": "最大サイズ",
+                "en": "Maximum Size"
             }
         },
         {
             "name": {
-                "ja": "ランダム",
-                "en": "Random"
+                "ja": "最小サイズ",
+                "en": "Minimum Size"
             }
         },
         {
             "name": {
-                "ja": "選出",
-                "en": "Selected"
+                "ja": "会議後にサイズを再抽選",
+                "en": "Re-draw size after meeting"
             }
         }
     ],

@@ -641,22 +641,6 @@
     <div id="footer"></div>
 
     <script>
-        // ★ パスワード保護（一般公開後の一時的な措置）
-        (function() {
-            const PASSWORD = 'Next Stage';
-            // i18n: localStorageから言語を先取り(i18n.jsは辞書を非同期読み込みのため)
-            const lang = (function(){ try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; } })();
-            const MSG = {
-                ja: { prompt: 'このページはパスワードで保護されています。パスワードを入力してください。', denied: 'アクセスが拒否されました。' },
-                en: { prompt: 'This page is password-protected. Please enter the password.', denied: 'Access denied.' }
-            };
-            const input = prompt(MSG[lang].prompt);
-            if (input !== PASSWORD) {
-                document.body.innerHTML = '<p style="text-align:center;padding:4rem;color:#ef4444;font-family:sans-serif;">' + MSG[lang].denied + '</p>';
-                return;
-            }
-        })();
-
         // ofuse フロートボタンの tooltip を言語に応じて更新
         (function(){
             function applyOfuseTip() {
