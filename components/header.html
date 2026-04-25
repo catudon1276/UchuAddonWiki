@@ -9,6 +9,7 @@
             <li><a href="/UchuAddonWiki/" class="uchu-nav-link" data-i18n="nav.home">トップ</a></li>
             <li><a href="/UchuAddonWiki/roles/" class="uchu-nav-link" data-i18n="nav.roles">役職</a></li>
             <li><a href="/UchuAddonWiki/gallery/" class="uchu-nav-link" data-i18n="nav.gallery">ギャラリー</a></li>
+            <li><a href="/UchuAddonWiki/changelog/" class="uchu-nav-link" data-i18n="nav.changelog">更新履歴</a></li>
             <li><a href="/UchuAddonWiki/inquiry/" class="uchu-nav-link" data-i18n="nav.inquiry">お問い合わせ</a></li>
             <li>
                 <div class="lang-switcher" role="group" aria-label="Language" data-i18n-aria="nav.lang_switch_aria">
@@ -34,6 +35,7 @@
         if ((p === '/UchuAddonWiki/' || p === '/UchuAddonWiki/index.html') && h === '/UchuAddonWiki/') link.classList.add('active');
         else if (p.includes('/roles/') && h.includes('/roles/')) link.classList.add('active');
         else if (p.includes('/gallery/') && h.includes('/gallery/')) link.classList.add('active');
+        else if (p.includes('/changelog/') && h.includes('/changelog/')) link.classList.add('active');
         else if (p.includes('/inquiry/') && h.includes('/inquiry/')) link.classList.add('active');
     });
 })();

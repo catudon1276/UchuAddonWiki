@@ -4,6 +4,7 @@
     "site_title_roles": "Uchu Addon Wiki 役職",
     "site_title_gallery": "Uchu Addon Wiki ギャラリー",
     "site_title_inquiry": "Uchu Addon Wiki お問い合わせ",
+    "site_title_changelog": "Uchu Addon Wiki - バージョン履歴",
     "description_home": "Uchu Addonの公式Wikiです。Uchu Addonに関する情報をまとめています。",
     "og_title_home": "Uchu Addon Wiki",
     "og_description_home": "Uchu Addonの公式Wikiです。役職に関する情報をまとめています。",
@@ -16,6 +17,7 @@
     "roles": "役職",
     "gallery": "ギャラリー",
     "inquiry": "お問い合わせ",
+    "changelog": "更新履歴",
     "theme_toggle_aria": "ダークモード切り替え",
     "lang_switch_aria": "言語切り替え"
   },
@@ -27,6 +29,7 @@
     "nav_roles": "役職一覧",
     "nav_gallery": "ギャラリー",
     "nav_inquiry": "お問い合わせ",
+    "nav_changelog": "更新履歴",
     "discover_title": "Discover More",
     "bottom_project": "<strong>Uchu Addon</strong> - Among Us Addon Project",
     "bottom_rights": "© 2026 Uchu Addon Wiki. All rights reserved."
@@ -98,6 +101,12 @@
     "modal_download": "ダウンロード",
     "modal_close": "閉じる",
     "load_error": "読み込みエラー"
+  },
+  "changelog": {
+    "section_title": "CHANGELOG",
+    "section_subtitle": "バージョンアップの変更内容をまとめています",
+    "empty": "履歴はまだありません",
+    "load_error": "読み込みに失敗しました"
   },
   "inquiry": {
     "section_title": "Inquiry",

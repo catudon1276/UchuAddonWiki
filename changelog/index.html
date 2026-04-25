@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="meta.site_title_changelog">Uchu Addon Wiki - バージョン履歴</title>
+    <meta property="og:title" content="Uchu Addon Wiki - バージョン履歴">
+    <meta property="og:image" content="https://catudon1276.github.io/UchuAddonWiki/components/CoverIllust.png">
+    <link rel="icon" type="image/png" href="../resource/UchuLogo.png">
+    <link rel="stylesheet" href="../components/styles-common.css">
+    <script src="../components/theme.js"></script>
+    <script src="../components/i18n.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .changelog-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg) var(--space-2xl);
+        }
+
+        /* ------------------------------------------------
+           Scroll reveal
+           ------------------------------------------------ */
+        .version-entry {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s ease, transform 0.35s ease;
+        }
+
+        .version-entry.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ------------------------------------------------
+           Version Entry
+           ------------------------------------------------ */
+        .version-entry {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 0 var(--space-2xl);
+            margin-bottom: var(--space-2xl);
+            position: relative;
+        }
+
+        /* 縦のタイムライン線 */
+        .version-entry::before {
+            content: '';
+            position: absolute;
+            left: 159px;
+            top: 0;
+            bottom: calc(-1 * var(--space-2xl));
+            width: 1px;
+            background: var(--uchu-border);
+        }
+
+        .version-entry:last-child::before {
+            display: none;
+        }
+
+        /* ------------------------------------------------
+           Version Sidebar (左カラム)
+           ------------------------------------------------ */
+        .version-sidebar {
+            text-align: right;
+            padding-right: var(--space-xl);
+            padding-top: 2px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* タイムライン上のドット */
+        .version-sidebar::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 8px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--uchu-text-muted);
+            border: 2px solid var(--uchu-bg-light);
+            z-index: 1;
+        }
+
+        .version-badge {
+            display: inline-block;
+            font-family: var(--font-heading);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--uchu-text-primary);
+            letter-spacing: 0.03em;
+        }
+
+        .version-badge-link {
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .version-badge-link:hover {
+            color: var(--uchu-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .version-date {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--uchu-text-muted);
+            margin-top: 4px;
+            letter-spacing: 0.04em;
+        }
+
+        .version-type-tag {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .type-release  { color: #16a34a; border-color: rgba(22,163,74,0.35); background: rgba(22,163,74,0.08); }
+        .type-beta     { color: #d97706; border-color: rgba(217,119,6,0.35); background: rgba(217,119,6,0.08); }
+        .type-hotfix   { color: #dc2626; border-color: rgba(220,38,38,0.35); background: rgba(220,38,38,0.08); }
+        .type-dev      { color: #6b7280; border-color: rgba(107,114,128,0.35); background: rgba(107,114,128,0.08); }
+
+        /* ------------------------------------------------
+           Version Body (右カラム)
+           ------------------------------------------------ */
+        .version-body {
+            padding-bottom: var(--space-xl);
+        }
+
+        /* ------------------------------------------------
+           Change Groups（カテゴリまとめ表示）
+           ------------------------------------------------ */
+        .change-groups {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .change-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .change-group-header {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 3px;
+            border: 1px solid;
+            align-self: flex-start;
+            margin-bottom: 2px;
+        }
+
+        .cat-new    { color: #2563eb; border-color: rgba(37,99,235,0.3); background: rgba(37,99,235,0.08); }
+        .cat-fix    { color: #dc2626; border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.08); }
+        .cat-change { color: #d97706; border-color: rgba(217,119,6,0.3); background: rgba(217,119,6,0.08); }
+        .cat-remove { color: #6b7280; border-color: rgba(107,114,128,0.3); background: rgba(107,114,128,0.08); }
+        .cat-caution { color: #b45309; border-color: rgba(180,83,9,0.3); background: rgba(180,83,9,0.08); }
+
+        .change-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .change-item {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-sm);
+            font-size: 0.88rem;
+            color: var(--uchu-text-secondary);
+            line-height: 1.65;
+            padding-left: var(--space-sm);
+        }
+
+        .change-item::before {
+            content: '·';
+            flex-shrink: 0;
+            color: var(--uchu-text-muted);
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        /* Caution はブロック表示 */
+        .caution-block {
+            margin-top: 2px;
+            background: rgba(180,83,9,0.06);
+            border: 1px solid rgba(180,83,9,0.2);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md) var(--space-lg);
+        }
+
+        .caution-block .change-items {
+            white-space: pre-line;
+            font-size: 0.88rem;
+            color: var(--uchu-text-secondary);
+            line-height: 1.75;
+            padding-left: 0;
+        }
+
+        /* ------------------------------------------------
+           Empty state
+           ------------------------------------------------ */
+        .changelog-empty {
+            text-align: center;
+            padding: var(--space-2xl);
+            color: var(--uchu-text-muted);
+        }
+
+        /* ------------------------------------------------
+           Responsive
+           ------------------------------------------------ */
+        @media (max-width: 600px) {
+            .version-entry {
+                grid-template-columns: 1fr;
+            }
+
+            .version-entry::before {
+                display: none;
+            }
+
+            .version-sidebar {
+                text-align: left;
+                padding-right: 0;
+                padding-bottom: var(--space-sm);
+                display: flex;
+                align-items: center;
+                gap: var(--space-md);
+                flex-wrap: wrap;
+            }
+
+            .version-sidebar::after {
+                display: none;
+            }
+
+            .version-date {
+                display: inline;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+
+    <section class="uchu-section">
+        <div class="uchu-section-header">
+            <h1 class="uchu-section-title">
+                <i class="fas fa-history"></i> <span data-i18n="changelog.section_title">CHANGELOG</span>
+            </h1>
+            <p class="uchu-section-subtitle" data-i18n="changelog.section_subtitle">
+                バージョンアップの変更内容をまとめています
+            </p>
+        </div>
+
+        <div class="changelog-container">
+            <div id="changelogList">
+                <!-- JavaScript で生成 -->
+            </div>
+        </div>
+    </section>
+
+    <div id="footer"></div>
+
+    <script>
+        fetch('../components/header.html').then(r => r.text()).then(d => document.getElementById('header').innerHTML = d);
+        fetch('../components/footer.html').then(r => r.text()).then(d => document.getElementById('footer').innerHTML = d);
+
+        const TYPE_LABEL = {
+            release: { ja: 'Release', en: 'Release' },
+            beta:    { ja: 'Beta',    en: 'Beta'    },
+            hotfix:  { ja: 'Hotfix',  en: 'Hotfix'  },
+            dev:     { ja: 'Dev',     en: 'Dev'     },
+        };
+
+        const CAT_LABEL = {
+            new:     { ja: 'New',      en: 'New'      },
+            fix:     { ja: 'Bug Fix',  en: 'Bug Fix'  },
+            change:  { ja: 'Change',   en: 'Change'   },
+            remove:  { ja: 'Remove',   en: 'Remove'   },
+            caution: { ja: 'Caution',  en: 'Caution'  },
+        };
+
+        const CAT_ORDER = ['new', 'change', 'fix', 'remove', 'caution'];
+
+        function getLang() {
+            try { return localStorage.getItem('uchuLang') === 'en' ? 'en' : 'ja'; } catch(e) { return 'ja'; }
+        }
+
+        function pick(v) {
+            if (v && typeof v === 'object' && ('ja' in v || 'en' in v)) {
+                const l = getLang();
+                return v[l] != null ? v[l] : (v.ja != null ? v.ja : v.en);
+            }
+            return v || '';
+        }
+
+        let __clData = null;
+
+        function render(versions) {
+            const list = document.getElementById('changelogList');
+            if (!versions || versions.length === 0) {
+                list.innerHTML = '<div class="changelog-empty"><i class="fas fa-inbox" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:1rem;"></i><p data-i18n="changelog.empty">履歴はまだありません</p></div>';
+                return;
+            }
+
+            list.innerHTML = versions.map(ver => {
+                const typeClass = 'type-' + (ver.type || 'dev');
+                const typeLabel = pick(TYPE_LABEL[ver.type] || { ja: ver.type, en: ver.type });
+
+                let changesHTML = '';
+                if (ver.changes && ver.changes.length > 0) {
+                    // カテゴリでグループ化（出現順を維持）
+                    const groups = new Map();
+                    ver.changes.forEach(c => {
+                        const cat = c.category || 'new';
+                        if (!groups.has(cat)) groups.set(cat, []);
+                        groups.get(cat).push(c);
+                    });
+
+                    // CAT_ORDER に従って並べ、残りは末尾に
+                    const orderedKeys = [
+                        ...CAT_ORDER.filter(k => groups.has(k)),
+                        ...[...groups.keys()].filter(k => !CAT_ORDER.includes(k))
+                    ];
+
+                    changesHTML = `<div class="change-groups">${orderedKeys.map(cat => {
+                        const items = groups.get(cat);
+                        const catClass = 'cat-' + cat;
+                        const catLabel = pick(CAT_LABEL[cat] || { ja: cat, en: cat });
+                        const isCaution = cat === 'caution';
+
+                        if (isCaution) {
+                            return `<div class="change-group">
+                                <span class="change-group-header ${catClass}">${catLabel}</span>
+                                <div class="caution-block">
+                                    <div class="change-items">${items.map(c => pick(c.text)).join('\n')}</div>
+                                </div>
+                            </div>`;
+                        }
+
+                        return `<div class="change-group">
+                            <span class="change-group-header ${catClass}">${catLabel}</span>
+                            <ul class="change-items">${items.map(c =>
+                                `<li class="change-item">${pick(c.text)}</li>`
+                            ).join('')}</ul>
+                        </div>`;
+                    }).join('')}</div>`;
+                }
+
+                const releaseUrl = `https://github.com/catudon1276/UchuAddon/releases/tag/${ver.version}`;
+                const isLinkable = /^\d/.test(ver.version); // 数字始まり(正式版)のみリンク
+
+                return `
+                <div class="version-entry">
+                    <div class="version-sidebar">
+                        ${isLinkable
+                            ? `<a class="version-badge version-badge-link" href="${releaseUrl}" target="_blank" rel="noopener">v${ver.version}</a>`
+                            : `<span class="version-badge">v${ver.version}</span>`
+                        }
+                        <span class="version-date">${ver.date || ''}</span>
+                        ${ver.type ? `<span class="version-type-tag ${typeClass}">${typeLabel}</span>` : ''}
+                    </div>
+                    <div class="version-body">
+                        ${changesHTML}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        fetch('../changelog.json')
+            .then(r => r.json())
+            .then(data => {
+                __clData = data.versions;
+                render(__clData);
+                observeEntries();
+            })
+            .catch(err => {
+                console.error('changelog.json の読み込みに失敗しました:', err);
+                document.getElementById('changelogList').innerHTML =
+                    '<div class="changelog-empty"><p data-i18n="changelog.load_error">読み込みに失敗しました</p></div>';
+            });
+
+        // スクロール出現アニメーション
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        function observeEntries() {
+            document.querySelectorAll('.version-entry:not(.is-visible)').forEach(el => {
+                revealObserver.observe(el);
+            });
+        }
+
+        // 言語切替時に再描画
+        document.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('.lang-switch-btn')) {
+                setTimeout(function() {
+                    if (__clData) { render(__clData); observeEntries(); }
+                }, 0);
+            }
+        });
+    </script>
+</body>
+</html>

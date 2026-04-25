@@ -4,6 +4,7 @@
     "site_title_roles": "Uchu Addon Wiki - Roles",
     "site_title_gallery": "Uchu Addon Wiki - Gallery",
     "site_title_inquiry": "Uchu Addon Wiki - Contact",
+    "site_title_changelog": "Uchu Addon Wiki - Changelog",
     "description_home": "The official Wiki for Uchu Addon. All information about Uchu Addon is gathered here.",
     "og_title_home": "Uchu Addon Wiki",
     "og_description_home": "The official Wiki for Uchu Addon. Information about the roles is gathered here.",
@@ -16,6 +17,7 @@
     "roles": "Roles",
     "gallery": "Gallery",
     "inquiry": "Contact",
+    "changelog": "Changelog",
     "theme_toggle_aria": "Toggle dark mode",
     "lang_switch_aria": "Switch language"
   },
@@ -27,6 +29,7 @@
     "nav_roles": "Roles",
     "nav_gallery": "Gallery",
     "nav_inquiry": "Contact",
+    "nav_changelog": "Changelog",
     "discover_title": "Discover More",
     "bottom_project": "<strong>Uchu Addon</strong> - Among Us Addon Project",
     "bottom_rights": "© 2026 Uchu Addon Wiki. All rights reserved."
@@ -98,6 +101,12 @@
     "modal_download": "Download",
     "modal_close": "Close",
     "load_error": "Failed to load."
+  },
+  "changelog": {
+    "section_title": "CHANGELOG",
+    "section_subtitle": "A summary of changes for each version update",
+    "empty": "No history yet",
+    "load_error": "Failed to load"
   },
   "inquiry": {
     "section_title": "Inquiry",
