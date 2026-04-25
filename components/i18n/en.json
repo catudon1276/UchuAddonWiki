@@ -44,16 +44,12 @@
     "action_inquiry_desc": "Feedback & requests",
     "action_changelog_title": "Changelog",
     "action_changelog_desc": "Version history",
-    "action_download_title": "Download",
-    "action_download_desc": "Get the latest version",
     "section_movie": "Movie",
     "section_credit": "Credit",
     "section_news": "News",
     "ofuse_tooltip": "Support via ofuse",
     "ofuse_aria": "Support via ofuse",
-    "news_load_error": "Failed to load news",
-    "password_prompt": "This page is password-protected. Please enter the password.",
-    "password_denied": "Access denied."
+    "news_load_error": "Failed to load news"
   },
   "roles": {
     "section_title": "ROLES",

@@ -44,16 +44,12 @@
     "action_inquiry_desc": "ご意見・ご要望",
     "action_changelog_title": "更新履歴",
     "action_changelog_desc": "バージョンアップ内容",
-    "action_download_title": "ダウンロード",
-    "action_download_desc": "最新版を入手",
     "section_movie": "Movie",
     "section_credit": "Credit",
     "section_news": "News",
     "ofuse_tooltip": "ofuseで支援する",
     "ofuse_aria": "ofuse で支援する",
-    "news_load_error": "ニュースの読み込みに失敗しました",
-    "password_prompt": "このページはパスワードで保護されています。パスワードを入力してください。",
-    "password_denied": "アクセスが拒否されました。"
+    "news_load_error": "ニュースの読み込みに失敗しました"
   },
   "roles": {
     "section_title": "ROLES",
