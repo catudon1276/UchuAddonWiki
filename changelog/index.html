@@ -326,41 +326,31 @@
                 const typeClass = 'type-' + (ver.type || 'dev');
                 const typeLabel = pick(TYPE_LABEL[ver.type] || { ja: ver.type, en: ver.type });
 
+                // CAT_ORDER の順で、verにキーがあるものだけ表示
+                const orderedKeys = CAT_ORDER.filter(k => {
+                    const v = ver[k];
+                    return Array.isArray(v) ? v.length > 0 : !!v;
+                });
+
                 let changesHTML = '';
-                if (ver.changes && ver.changes.length > 0) {
-                    // カテゴリでグループ化（出現順を維持）
-                    const groups = new Map();
-                    ver.changes.forEach(c => {
-                        const cat = c.category || 'new';
-                        if (!groups.has(cat)) groups.set(cat, []);
-                        groups.get(cat).push(c);
-                    });
-
-                    // CAT_ORDER に従って並べ、残りは末尾に
-                    const orderedKeys = [
-                        ...CAT_ORDER.filter(k => groups.has(k)),
-                        ...[...groups.keys()].filter(k => !CAT_ORDER.includes(k))
-                    ];
-
+                if (orderedKeys.length > 0) {
                     changesHTML = `<div class="change-groups">${orderedKeys.map(cat => {
-                        const items = groups.get(cat);
                         const catClass = 'cat-' + cat;
                         const catLabel = pick(CAT_LABEL[cat] || { ja: cat, en: cat });
-                        const isCaution = cat === 'caution';
 
-                        if (isCaution) {
+                        if (cat === 'caution') {
                             return `<div class="change-group">
                                 <span class="change-group-header ${catClass}">${catLabel}</span>
                                 <div class="caution-block">
-                                    <div class="change-items">${items.map(c => pick(c.text)).join('\n')}</div>
+                                    <div class="change-items">${ver.caution}</div>
                                 </div>
                             </div>`;
                         }
 
                         return `<div class="change-group">
                             <span class="change-group-header ${catClass}">${catLabel}</span>
-                            <ul class="change-items">${items.map(c =>
-                                `<li class="change-item">${pick(c.text)}</li>`
+                            <ul class="change-items">${ver[cat].map(text =>
+                                `<li class="change-item">${text}</li>`
                             ).join('')}</ul>
                         </div>`;
                     }).join('')}</div>`;
@@ -386,7 +376,7 @@
             }).join('');
         }
 
-        fetch('../changelog.json')
+        fetch('./changelog.json')
             .then(r => r.json())
             .then(data => {
                 __clData = data.versions;
