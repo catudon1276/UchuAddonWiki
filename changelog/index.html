@@ -349,15 +349,15 @@
                             return `<div class="change-group">
                                 <span class="change-group-header ${catClass}">${catLabel}</span>
                                 <div class="caution-block">
-                                    <div class="change-items">${ver.caution}</div>
+                                    <div class="change-items">${pick(ver.caution)}</div>
                                 </div>
                             </div>`;
                         }
 
                         return `<div class="change-group">
                             <span class="change-group-header ${catClass}">${catLabel}</span>
-                            <ul class="change-items">${ver[cat].map(text =>
-                                `<li class="change-item">${text}</li>`
+                            <ul class="change-items">${ver[cat].map(item =>
+                                `<li class="change-item">${pick(item)}</li>`
                             ).join('')}</ul>
                         </div>`;
                     }).join('')}</div>`;

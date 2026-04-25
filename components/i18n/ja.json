@@ -42,6 +42,8 @@
     "action_gallery_desc": "素材リソースを閲覧",
     "action_inquiry_title": "お問い合わせ",
     "action_inquiry_desc": "ご意見・ご要望",
+    "action_changelog_title": "更新履歴",
+    "action_changelog_desc": "バージョンアップ内容",
     "action_download_title": "ダウンロード",
     "action_download_desc": "最新版を入手",
     "section_movie": "Movie",

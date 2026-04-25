@@ -42,6 +42,8 @@
     "action_gallery_desc": "Browse asset resources",
     "action_inquiry_title": "Contact",
     "action_inquiry_desc": "Feedback & requests",
+    "action_changelog_title": "Changelog",
+    "action_changelog_desc": "Version history",
     "action_download_title": "Download",
     "action_download_desc": "Get the latest version",
     "section_movie": "Movie",

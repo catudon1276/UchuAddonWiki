@@ -1,34 +1,76 @@
 {
-  "_comment": "新しいバージョンは配列の先頭に追加。type: release/beta/hotfix/dev  使えるキー: new/change/fix/remove/caution  不要なキーは省略可",
+  "_comment": "新しいバージョンは配列の先頭に追加。type: release/beta/hotfix/dev  使えるキー: new/change/fix/remove/caution  各項目は文字列または {ja, en} オブジェクトで記述。不要なキーは省略可",
   "versions": [
     {
       "version": "1.0.3",
       "date": "2026-04-25",
       "type": "hotfix",
       "change": [
-        "Chickenの恐怖死を、追加追放者として扱うようにしました",
-        "Novaの効果音のボリュームを変更しました",
-        "Novaの当たり判定を調整しました"
+        {
+          "ja": "Chickenの恐怖死を、追加追放者として扱うようにしました",
+          "en": "Chicken's fear death is now treated as an additional exile"
+        },
+        {
+          "ja": "Novaの効果音のボリュームを変更しました",
+          "en": "Adjusted the volume of Nova's sound effects"
+        },
+        {
+          "ja": "Novaの当たり判定を調整しました",
+          "en": "Adjusted Nova's hit detection"
+        }
       ],
       "fix": [
-        "ニンニクの範囲が可視化されない問題を修正",
-        "Novaがベントに入った際、装備していなくてもクールがリセットされてしまう問題を修正",
-        "Novaで、クール同期のオプションがoffでもクールがリセットされてしまう問題を修正",
-        "Guestが付いていても、Alertなどのポータブルボタンを押せる問題を修正",
-        "パンや魔術の会議マークがメニュー上にも表示される問題を修正",
-        "Moiraで、ボタンが押せないオプションがonだと全員が押せなくなる問題を修正",
-        "Sonarのアンテナの見た目に関する問題を修正",
-        "Chickenのリザルトが一致しない場合がある問題を修正",
-        "欠けていた翻訳を追加しました"
+        {
+          "ja": "ニンニクの範囲が可視化されない問題を修正",
+          "en": "Fixed an issue where Garlic's range was not visible"
+        },
+        {
+          "ja": "Novaがベントに入った際、装備していなくてもクールがリセットされてしまう問題を修正",
+          "en": "Fixed an issue where Nova's cooldown reset when entering a vent even without the ability equipped"
+        },
+        {
+          "ja": "Novaで、クール同期のオプションがoffでもクールがリセットされてしまう問題を修正",
+          "en": "Fixed an issue where Nova's cooldown reset even when the sync option was off"
+        },
+        {
+          "ja": "Guestが付いていても、Alertなどのポータブルボタンを押せる問題を修正",
+          "en": "Fixed an issue where portable buttons such as Alert could be pressed even with Guest assigned"
+        },
+        {
+          "ja": "パンや魔術の会議マークがメニュー上にも表示される問題を修正",
+          "en": "Fixed an issue where meeting marks for Bread and Magic appeared in the menu"
+        },
+        {
+          "ja": "Moiraで、ボタンが押せないオプションがonだと全員が押せなくなる問題を修正",
+          "en": "Fixed an issue where Moira's \"button disabled\" option prevented everyone from pressing buttons"
+        },
+        {
+          "ja": "Sonarのアンテナの見た目に関する問題を修正",
+          "en": "Fixed a visual issue with Sonar's antenna"
+        },
+        {
+          "ja": "Chickenのリザルトが一致しない場合がある問題を修正",
+          "en": "Fixed an issue where Chicken's result could be inconsistent"
+        },
+        {
+          "ja": "欠けていた翻訳を追加しました",
+          "en": "Added missing translations"
+        }
       ],
-      "caution": "微調整アップデートに伴い、自動ダウンロードされるファイル名を変更しました。\n今後は「[M55]UchuAddon.zip」を正式名称として使用します。\nお手数をおかけしますが、旧ファイルである「[M55]UchuAddon.Ver-1.0.2.zip」は削除（破棄）していただきますよう、お願いいたします。"
+      "caution": {
+        "ja": "微調整アップデートに伴い、自動ダウンロードされるファイル名を変更しました。\n今後は「[M55]UchuAddon.zip」を正式名称として使用します。\nお手数をおかけしますが、旧ファイルである「[M55]UchuAddon.Ver-1.0.2.zip」は削除（破棄）していただきますよう、お願いいたします。",
+        "en": "With this minor update, the auto-download filename has been changed.\nThe new official filename is \"[M55]UchuAddon.zip\".\nPlease delete the old file \"[M55]UchuAddon.Ver-1.0.2.zip\"."
+      }
     },
     {
       "version": "1.0.2",
       "date": "2026-04-25",
       "type": "hotfix",
       "fix": [
-        "Novaのキルクール同期オプションが表示されていなかった問題を修正"
+        {
+          "ja": "Novaのキルクール同期オプションが表示されていなかった問題を修正",
+          "en": "Fixed an issue where Nova's kill cooldown sync option was not displayed"
+        }
       ]
     },
     {
@@ -36,11 +78,20 @@
       "date": "2026-04-24",
       "type": "hotfix",
       "fix": [
-        "動作しない問題を修正",
-        "Serial Killerにマッドメイト化がある問題を修正"
+        {
+          "ja": "動作しない問題を修正",
+          "en": "Fixed an issue where the addon did not function"
+        },
+        {
+          "ja": "Serial Killerにマッドメイト化がある問題を修正",
+          "en": "Fixed an issue where Serial Killer had a Madmate conversion"
+        }
       ],
       "change": [
-        "Novaのキルクール同期をキル時にも適用しました"
+        {
+          "ja": "Novaのキルクール同期をキル時にも適用しました",
+          "en": "Nova's kill cooldown sync now also applies on kill"
+        }
       ]
     },
     {
@@ -48,7 +99,10 @@
       "date": "2026-04-24",
       "type": "release",
       "new": [
-        "Ver.1 正式リリース"
+        {
+          "ja": "Ver.1 正式リリース",
+          "en": "Ver.1 official release"
+        }
       ]
     },
     {
@@ -56,7 +110,10 @@
       "date": "2025-11-09",
       "type": "beta",
       "new": [
-        "限定ベータテスターによる動作確認を開始"
+        {
+          "ja": "限定ベータテスターによる動作確認を開始",
+          "en": "Limited beta testing has begun with selected testers"
+        }
       ]
     },
     {
@@ -64,7 +121,10 @@
       "date": "2025-11-04",
       "type": "dev",
       "new": [
-        "UchuAddonプロジェクトの開発を開始"
+        {
+          "ja": "UchuAddonプロジェクトの開発を開始",
+          "en": "Development of the Uchu Addon project has begun"
+        }
       ]
     }
   ]
