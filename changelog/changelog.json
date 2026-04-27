@@ -2,6 +2,55 @@
   "_comment": "新しいバージョンは配列の先頭に追加。type: release/beta/hotfix/dev  使えるキー: new/change/fix/remove/caution  各項目は文字列または {ja, en} オブジェクトで記述。不要なキーは省略可",
   "versions": [
     {
+      "version": "1.0.4",
+      "date": "2026-04-27",
+      "type": "hotfix",
+      "change": [
+        {
+          "ja": "報告画面をリニューアルしました",
+          "en": "Renewed the report screen"
+        },
+        {
+          "ja": "SerialKillerの自殺ボタンが有効な場合、キーショートカットを表示するようにしました",
+          "en": "The key shortcut is now shown when SerialKiller's suicide button is enabled"
+        }
+      ],
+      "fix": [
+        {
+          "ja": "会議開始直前にXinobiの変化が解けてしまう問題を修正しました",
+          "en": "Fixed an issue where Xinobi's transformation was cancelled just before a meeting started"
+        },
+        {
+          "ja": "Chickenのリザルトが正常ではない問題を修正しました",
+          "en": "Fixed an issue where Chicken's result was incorrect"
+        },
+        {
+          "ja": "Enchanterが勝利できない問題を修正しました",
+          "en": "Fixed an issue where Enchanter could not win"
+        },
+        {
+          "ja": "Tunaが勝利できない問題を修正しました",
+          "en": "Fixed an issue where Tuna could not win"
+        },
+        {
+          "ja": "Baphometのゲージがマイナスの値に行く場合がある問題を修正しました",
+          "en": "Fixed an issue where Baphomet's gauge could go negative"
+        },
+        {
+          "ja": "Kunoichiの証拠が残らない問題を修正しました",
+          "en": "Fixed an issue where Kunoichi's evidence was not left behind"
+        },
+        {
+          "ja": "Kunoichiの透明化クールダウンが正常に動作していなかった問題を修正しました",
+          "en": "Fixed an issue where Kunoichi's invisibility cooldown was not working correctly"
+        },
+        {
+          "ja": "SerialKillerがキルをしていなくても会議終了時にタイマーがスタートしてしまう問題を修正しました",
+          "en": "Fixed an issue where SerialKiller's timer started after a meeting even without a kill"
+        }
+      ]
+    },
+    {
       "version": "1.0.3",
       "date": "2026-04-25",
       "type": "hotfix",
