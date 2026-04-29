@@ -2,6 +2,51 @@
   "_comment": "新しいバージョンは配列の先頭に追加。type: release/beta/hotfix/dev  使えるキー: new/change/fix/remove/caution  各項目は文字列または {ja, en} オブジェクトで記述。不要なキーは省略可",
   "versions": [
     {
+      "version": "1.0.5",
+      "date": "2026-04-29",
+      "type": "hotfix",
+      "change": [
+        {
+          "ja": "Novaの効果音の音量を調整しました",
+          "en": "Adjusted the volume of Nova's sound effects"
+        },
+        {
+          "ja": "Triggerのベントの更新間隔を速くしました",
+          "en": "Increased the vent update frequency for Trigger"
+        }
+      ],
+      "fix": [
+        {
+          "ja": "死因が正しく表示されない問題を修正しました",
+          "en": "Fixed an issue where the cause of death was not displayed correctly"
+        },
+        {
+          "ja": "Magicianの交換対象に死者が含まれている問題を修正しました",
+          "en": "Fixed an issue where dead players were included in Magician's swap targets"
+        },
+        {
+          "ja": "Chickenの錯乱死のタイマーが会議中も進行する問題を修正しました",
+          "en": "Fixed an issue where Chicken's confusion death timer continued during meetings"
+        },
+        {
+          "ja": "Kunoichiのクナイが役職が変わった際に消えない問題を修正しました",
+          "en": "Fixed an issue where Kunoichi's kunai did not disappear when the role changed"
+        },
+        {
+          "ja": "Novaの星砲が役職が変わった際に消えない問題を修正しました",
+          "en": "Fixed an issue where Nova's star cannon did not disappear when the role changed"
+        },
+        {
+          "ja": "Kunoichiのドキュメントに足りない画像があった問題を修正しました",
+          "en": "Fixed an issue where images were missing from Kunoichi's documentation"
+        },
+        {
+          "ja": "足りない翻訳を追加しました",
+          "en": "Added missing translations"
+        }
+      ]
+    },
+    {
       "version": "1.0.4",
       "date": "2026-04-27",
       "type": "hotfix",
